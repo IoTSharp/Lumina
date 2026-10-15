@@ -21,6 +21,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private int _top;
     private int _width = 120;
     private int _height = 24;
+    private int _clientWidth = 120;
+    private int _clientHeight = 24;
     private bool _enabled = true;
     private bool _visible = true;
     private bool _disposed;
@@ -262,6 +264,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? SizeChanged;
 
     /// <summary>
+    /// Occurs when the size of the control's client area changes.
+    /// </summary>
+    public event EventHandler? ClientSizeChanged;
+
+    /// <summary>
     /// Occurs when the control is resized.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -389,6 +396,26 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         get => _height;
         set => SetBounds(_left, _top, _width, value, BoundsSpecified.Height);
     }
+
+    /// <summary>
+    /// Gets or sets the size of the control's client area.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Size ClientSize
+    {
+        get => new(_clientWidth, _clientHeight);
+        set => SetClientSizeCore(value.Width, value.Height);
+    }
+
+    /// <summary>
+    /// Gets the rectangle representing the control's client area.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Rectangle ClientRectangle => new(0, 0, _clientWidth, _clientHeight);
 
     /// <summary>
     /// Gets or sets the right edge of the control.
@@ -618,6 +645,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             ApplyBounds();
         }
 
+        int previousClientWidth = _clientWidth;
+        int previousClientHeight = _clientHeight;
+        UpdateClientSize();
+        sizeChanged |= previousClientWidth != _clientWidth || previousClientHeight != _clientHeight;
+
         OnBoundsChanged();
 
         // Keep the standard notification chain independent of the historical layout
@@ -627,7 +659,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         try
         {
             if (locationChanged) { OnLocationChanged(EventArgs.Empty); }
-            if (sizeChanged) { OnSizeChanged(EventArgs.Empty); }
+            if (sizeChanged)
+            {
+                OnSizeChanged(EventArgs.Empty);
+                OnClientSizeChanged(EventArgs.Empty);
+            }
         }
         catch (Exception exception) when (hasHandle)
         {
@@ -636,6 +672,26 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             // handleless setters and direct protected calls synchronous.
             Application.OnThreadException(exception);
         }
+    }
+
+    /// <summary>
+    /// Sets the size of the client area and adjusts the control's outer size.
+    /// </summary>
+    /// <param name="x">The desired client width.</param>
+    /// <param name="y">The desired client height.</param>
+    protected virtual void SetClientSizeCore(int x, int y)
+    {
+        ThrowIfDisposed();
+
+        Size nonClient = GetNonClientSize();
+        Size = new Size(unchecked(x + nonClient.Width), unchecked(y + nonClient.Height));
+
+        // WinForms commits the original request after the bounds operation. Keep
+        // this separate from the native client rectangle: negative requests and
+        // reentrant handlers can intentionally leave the two values different.
+        _clientWidth = x;
+        _clientHeight = y;
+        OnClientSizeChanged(EventArgs.Empty);
     }
 
     /// <summary>
@@ -996,6 +1052,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _height = nativeHeight == _height ? bounds.Bottom - bounds.Top : Math.Max(0, _height);
         }
 
+        UpdateClientSize();
+
         RegisterSubclass();
 
         if (Owner.UiFontHandle != 0)
@@ -1105,6 +1163,15 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         OnResize(EventArgs.Empty);
         SizeChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="ClientSizeChanged"/> event.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    protected virtual void OnClientSizeChanged(EventArgs e)
+    {
+        ClientSizeChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -1581,6 +1648,37 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
             _ = Win32.MoveWindow(Handle, nativeLeft, nativeTop, _width, GetNativeHeight(_height), true);
         }
+    }
+
+    private void UpdateClientSize()
+    {
+        if (Handle != 0)
+        {
+            if (!Win32.GetClientRect(Handle, out Win32.RECT client))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            _clientWidth = client.Right - client.Left;
+            _clientHeight = client.Bottom - client.Top;
+        }
+        else
+        {
+            Size nonClient = GetNonClientSize();
+            _clientWidth = unchecked(_width - nonClient.Width);
+            _clientHeight = unchecked(_height - nonClient.Height);
+        }
+    }
+
+    private Size GetNonClientSize()
+    {
+        Win32.RECT rectangle = default;
+        if (!Win32.AdjustWindowRectEx(ref rectangle, Style, false, ExStyle))
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        return new Size(rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top);
     }
 
     private void ThrowIfDisposed()

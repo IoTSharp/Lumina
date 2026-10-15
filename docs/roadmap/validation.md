@@ -241,6 +241,27 @@ Select/CanSelect、完整键盘/验证/布局/继承与重建竞态，非泛型 
 
 复现：`./tools/compatibility/Test-ControlBoundsNotifications.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemInterfaces.ps1`，均支持先单独取得固定参考。旧驱动保留，完整 Demo 继续 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。证据在 artifacts/compatibility-batch011；下一批见 [012](batches/012.md)。
 
+## 批次 012 · 2026-10-16 实施结果
+
+本批完成基础客户区及子项枚举两个明确范围，详见 [批次 012](batches/012.md)。父任务仍保留布局、完整派生约束、所属与 native 等未完内容，代码完成与完整兼容验收分开。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，本次增量 298 警告；13 项目/17 目标仅 .NET 10，原始 Designer/resx 无改动 |
+| 全线回归 | ✅ | 1,413 项通过，0 失败/跳过；新增客户区 80 项、枚举 347 项，原生检查沿用独立 STA/禁止并行 collection |
+| 基础客户区差分 | ✅ 指定轻量范围 | ClientSize/ClientRectangle/ClientSizeChanged 与 protected core/On*，四有限边框、11 入口/重复/零负恢复/覆盖/重入/原异常及缓存不一致后仅位置变更，共 5,556 条固定 WinForms 10.0.11/JIT/实际 AOT 相同 |
+| 缓存/通知契约 | ✅ 指定场景 | Client core 正常执行至末尾时提交原始请求并通知（不检查是否同值，末尾事件异常同步传播）；native 与托管缓存可因负值/重入不同。客户区缓存变化亦发尺寸链，旧 OnBoundsChanged/GetNativeHeight 保留。GetClientRect/AdjustWindowRectEx 失败真实抛错；完整外部自主通知/异常模式未关闭 |
+| 枚举差分 | ✅ 指定轻量范围 | 2,531 条固定参考/JIT 相同；公开 IEnumerator/直接 IEnumerable virtual-final，变更使 MoveNext/Reset 失效但保留 Current 缓存，空 Clear 不失效，首项恢复换表使旧空枚举器保持为空，view 共享当前表/key 缓存独立。历史泛型 typed 无效 Current=null 作为扩展保留 |
+| 既有差分回归 | ✅ | 全部 19 个旧驱动通过，覆盖组件/投递/Action旧Task/ValueTask/显式与默认context/焦点/原尺寸/指定边界/通知，以及Item与全部子项基础/样式/key/集合/Add/AddRange/变更/接口 |
+| 客户区探针 AOT | ✅ 发布/实际运行/PE | 5,556 条与 JIT 相同；EXE 2,592,256 字节，CLR Header 为 0，无 IL2xxx/IL3xxx。探针对五个实际反射成员加入精确 DynamicDependency，库裁剪策略不变 |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,107,264 字节，CLR Header 为 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留。完整主窗操作/正常关闭后置，新枚举未记实际 AOT 运行验收 |
+| 依赖与 API | ✅ 指定图/形状 | net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，仍用官方 System.Drawing.Common；重新导出固定 1,095 类型/61,240 行，运行状态 unverified 不变 |
+| 文档与任务索引 | ✅ 结构 | 401 份 Markdown、187 组控件/API 页、2,025 项任务；两个明确子范围代码完成，父任务及下一批待实施内容独立保留 |
+
+SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换、外部原生自主通知、完整布局/滚动/Form 生命周期、真实多线程/压力/完整所属/挂接样式/native 仍另列。ApplicationContext/多 UI/模态/关闭重建、Form 全局 OpenForms 退出、复杂 UI/设备/设计器及 Linux/macOS 仍待后续，不从任务/构建数量推算 98%。
+
+复现：`./tools/compatibility/Test-ControlClientSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemEnumeration.ps1`，均可先单独取固定参考；日志/TRX/PE/项目/依赖证据在 artifacts/compatibility-batch012。下一批见 [013](batches/013.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

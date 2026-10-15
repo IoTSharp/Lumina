@@ -327,7 +327,7 @@ public class ListViewSubItemAddRangeTests
         Assert.Equal(1, new ListViewItem.ListViewSubItemCollection(owner).IndexOfKey("target"));
         property.Clear();
         AddRange(second, mode, ["new primary", "new earlier", "new later", "new last"], font);
-        foreach (var item in first)
+        foreach (ListViewItem.ListViewSubItem item in first)
         {
             item.Name = "target";
         }

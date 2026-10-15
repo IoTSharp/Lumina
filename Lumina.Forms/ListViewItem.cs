@@ -11,7 +11,7 @@ namespace Lumina.Forms;
 public class ListViewItem
 {
     // Collection instances are views over the item's data; each view keeps its own key cache.
-    private readonly List<ListViewSubItem> _subItemData = [];
+    private List<ListViewSubItem> _subItemData = [];
     private ListViewSubItemCollection? _subItems;
 
     /// <summary>
@@ -69,6 +69,9 @@ public class ListViewItem
             _subItems ??= new ListViewSubItemCollection(this);
             if (_subItems.Count == 0)
             {
+                // Restoring the primary subitem starts a new data list. Existing empty
+                // enumerators keep observing the old list, while every view sees this one.
+                _subItemData = [];
                 _subItems.Add(string.Empty);
             }
 
@@ -208,9 +211,10 @@ public class ListViewItem
     /// </summary>
     public class ListViewSubItemCollection : IList, IList<ListViewSubItem>
     {
-        private readonly List<ListViewSubItem> _items;
         private readonly ListViewItem _owner;
         private int _lastAccessedIndex = -1;
+
+        private List<ListViewSubItem> _items => _owner._subItemData;
 
         /// <summary>
         /// Initializes a new view of the subitems belonging to the specified item.
@@ -220,7 +224,6 @@ public class ListViewItem
         {
             ArgumentNullException.ThrowIfNull(owner);
             _owner = owner;
-            _items = owner._subItemData;
         }
 
         /// <summary>
@@ -372,7 +375,11 @@ public class ListViewItem
         /// </summary>
         public void Clear()
         {
-            _items.Clear();
+            // The standard collection leaves an already empty enumeration valid.
+            if (_items.Count > 0)
+            {
+                _items.Clear();
+            }
         }
 
         /// <summary>
@@ -396,7 +403,10 @@ public class ListViewItem
             ((ICollection)this).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<ListViewSubItem> GetEnumerator()
+        /// <summary>
+        /// Returns an enumerator over the subitems in their current order.
+        /// </summary>
+        public IEnumerator GetEnumerator()
         {
             return _items.GetEnumerator();
         }
@@ -604,9 +614,11 @@ public class ListViewItem
             return RemoveItem(item);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator<ListViewSubItem> IEnumerable<ListViewSubItem>.GetEnumerator()
         {
-            return GetEnumerator();
+            // Keep the historical generic consumption path alongside the standard
+            // non-generic public signature, using the same identity and version rules.
+            return _items.GetEnumerator();
         }
     }
 }

@@ -4,11 +4,11 @@
 
 ## 当前接续点
 
-- 调度状态：批次 011 两个明确子范围代码完成，集成检查及实现提交推送完成；批次 012 本地接续聊天已创建只读准备。本次归属交接成功推送并核对远端后，旧主发送“开始接管”；新聊天自检并确认实际接管后旧主立即归档。
+- 调度状态：批次 012 两个明确子范围代码完成，集成检查通过；当前主聊天更新台账、提交推送并准备批次 013 只读接续。批次 011 实现和归属交接均已分别成功推送并核对。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a140f3-8a95-7880-b43e-9d87045f5954`（批次 012，本地 Lumina 项目；已创建，只读准备，待“开始接管”后自检并实际接管）。批次 011 主会话 `01a140e2-3003-7a32-a6b5-bcb8c7be2070` 仅完成本次归属交接提交、推送、启动与接管确认；新主实际接管后立即停止全部写入/构建/Git并归档，不等待批次 012 完成。批次 010 主聊天 `01a140d0-c286-7b53-ac50-1950177bed9c` 已通过应用工具确认归档，更早主聊天均已交接。
+- 当前编码主会话：`01a140f3-8a95-7880-b43e-9d87045f5954`（批次 012，本地 Lumina 项目；已实际接管）。接管时工作区干净，HEAD/origin/main/远端 refs/heads/main 均为归属交接提交 `c923160f9c70ae6cbd6e0824df5776a4f85e7fe9`，已在 commentary 和向旧主消息中明确确认实际接管；应用工具确认批次 011 旧主 `01a140e2-3003-7a32-a6b5-bcb8c7be2070` 已归档并停止写入，未等待本批完成。批次 010 及更早主聊天均已交接归档。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[012 · 客户区与子项枚举首范围](docs/roadmap/batches/012.md)，新主聊天只读准备，归属交接推送后接管；[011](docs/roadmap/batches/011.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 当前批次：[012 · 客户区与子项枚举首范围](docs/roadmap/batches/012.md)明确范围代码完成；下一批已划定 [013 · 客户区换算扩展与子项字符串首范围](docs/roadmap/batches/013.md)，交接后领取；[011](docs/roadmap/batches/011.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
 - 最近实现提交：`cc7f4e42855fb186e92fa33a555a14e3f8035d96`（批次 011），已成功推送 origin/main，HEAD/origin/main/远端 refs/heads/main 已核对一致，推送后工作区干净。本记录随后单独提交并推送归属交接，新主聊天实际接管时记录并核对其 SHA。批次 010 实现 `86eb13eab3f5b2a6d3bda3215cfebf25cf377796` 与交接 `c53d980e74819653a709c192c7bbbe860b687552` 同样已验证；原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
@@ -78,6 +78,10 @@
 - 批次 011 子项：非泛型 IList/ICollection 与 typed 引用查询/复制首范围完成，1,406 条固定参考/JIT 相同，270 项新增回归。对象变更类型先于位置，重复 Add 返回首次引用索引；CopyTo 为 private 显式 dest/index，空集合跳过验证、不恢复首项，非空保留 rank/索引/容量/类型顺序、非零下界与派生数组部分写入。各 view SyncRoot 为自身，IsSynchronized 按参考 true，不代表完整并发已验收。历史泛型/typed 消费、独立 key 缓存及借用 Font 保持，完整枚举/所属/native仍缺。
 - 批次 011 集成：986 项全线测试通过，主线双目标 Release 0 错误/本次增量 301 警告；组件/投递/异步/context/焦点/旧尺寸/指定边界及全部子项旧参考JIT回归通过。通知实际AOT运行2,280条相同，EXE2,618,880字节，Demo AOT4,106,240字节，两者CLR Header为0；新探针无IL2xxx/IL3xxx，Demo既有IL3050保留，新子项接口未计实际AOT运行验收。13项目/17目标仅.NET10，原始Designer/resx和net10.0依赖满足约束，API运行状态仍unverified。
 - 批次 012 文件责任：Control-09a 子智能体负责 Control.cs 与独立客户区/ClientSizeChanged 探针/测试；ListViewSubItem-02f 子智能体负责 ListViewItem.cs 与独立枚举消费/修改轨迹探针/测试。Win32必要interop、现有测试适配、文档/API/索引、集成/Git由主聊天协调；先固定参考，完整布局/所有派生约束/外部原生自主通知、多线程并发/压力/完整所属/native另列。
+- 批次 012 客户区：ClientSize/ClientRectangle/ClientSizeChanged、SetClientSizeCore/OnClientSizeChanged 完成，5,556 条固定参考/JIT/实际 AOT 全同，80 项新增回归。独立客户区缓存保留原始请求与重复通知；缓存变化使仅位置操作也可触发标准尺寸链，四有限边框/raw负值/重入/原异常有证据，旧边界/GetNativeHeight/OnBoundsChanged 保留。构造默认/SizeFromClientSize/全部派生/外部自主通知/完整布局另列。
+- 批次 012 枚举：public IEnumerator/直接 IEnumerable virtual-final 及历史泛型显式消费完成，2,531 条固定参考/JIT 全同，347 项新增回归。结构变化使 MoveNext/Reset 失效但 Current 缓存保留；空 Clear 不失效、owner.SubItems 恢复首项换表，全部 view 共享当前表、旧空枚举器仍为空。历史泛型 typed 无效 Current=null 另记；并发/完整所属/挂接样式/native 未关闭。
+- 批次 012 集成：1,413 项全线通过，双目标 Release 0 错误/最终增量298警告，19个既有差分驱动全部通过。客户区实际 AOT5,556条相同，EXE2,592,256字节、无IL2xxx/IL3xxx；Demo AOT4,107,264字节，两者CLR Header0。Demo既有IL3050和新枚举未计实际AOT运行验收的边界保留；13项目/17目标仅.NET10、原始Designer/resx/net10.0依赖满足要求，API1,095类型/61,240行与unverified不变。证据 artifacts/compatibility-batch012。
+- 批次 013 文件责任：Control-09b 子智能体负责 Control.cs 与独立 SizeFromClientSize 元数据/调用/换算探针测试；ListViewSubItem-06a 子智能体负责 ListViewItem.cs 与独立 ToString 探针测试。主聊天保留Win32必要interop、现有测试适配、全部共享文档/API/索引、集成与Git；先固定参考、主聊天统一顺序运行。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
 - 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。

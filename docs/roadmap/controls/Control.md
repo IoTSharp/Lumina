@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～011 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点 157 条、零/负尺寸与首次创建 756 条、指定边界 2,034 条固定参考/JIT/实际 AOT 观测保留。批次 011 完成标准位置尺寸通知及 protected 扩展，2,280 条三端相同、99 项新增回归通过。客户区/ClientSizeChanged、外部原生自主移动尺寸通知、Select/CanSelect、完整键盘/布局、构造、Controls/Parent 和关闭竞态仍待后续。
+🟡 **现状：**批次 002～012 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点 157 条、零/负尺寸与首次创建 756 条、指定边界 2,034 条及位置尺寸通知 2,280 条既有固定参考/JIT/实际 AOT 观测保留。批次 012 完成基础客户区与 ClientSizeChanged 首范围，5,556 条固定参考/JIT/实际 AOT 相同，80 项新增回归通过。SizeFromClientSize 扩展、外部原生自主通知、Select/CanSelect、完整键盘/布局、构造、Controls/Parent 和关闭竞态仍待后续。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -28,9 +28,10 @@
 | ⬜ | P1 / Control-07 | Handle 延迟创建、CreateControl/CreateHandle/RecreateHandle/DestroyHandle、FromHandle/FromChildHandle 与映射表一致；HandleCreated/HandleDestroyed、重建后属性恢复和 GCHandle 寿命逐项测。 |
 | 🟡 | P1 / Control-08 | 批次 002 完成 Component 释放子范围（Control-08a）；UI 父子级联 Dispose、借用 Font/Image/菜单资源所有权和完整事件解绑仍待后续实现。 |
 | ✅ | P1 / Control-08a | 批次 002：继承 Component.Dispose 并覆盖 Dispose(bool)，保留派生 OnDisposing；Site 移除、组件容器级联、重复/重入、Dispose(false)、异常传播和状态退出均有回归。5 项生命周期观测与本机 WinForms 10.0.11 相同；不等同完整控件生命周期验收。 |
-| ⬜ | P1 / Control-09 | 校准 Bounds/ClientSize/ClientRectangle/PreferredSize、MinimumSize/MaximumSize、Dock/Anchor/AutoSize/GetPreferredSize、Padding/Margin、BringToFront/SendToBack 和 z-order。 |
-| ⬜ | P1 / Control-09a | 批次 012 首范围：固定参考补 ClientSize/ClientRectangle、ClientSizeChanged 与 SetClientSizeCore/OnClientSizeChanged，覆盖明确初始化的基础 Control 与有限边框样式、无/有 HWND、零负/恢复、回调矩形/顺序/覆盖/重入/异常。保留原边界/通知/原生高度扩展；全部派生约束、构造默认、外部原生自主通知、完整布局与 Form 生命周期另列。 |
-| 🟡 | P1 / Control-10 | 批次 011 已完成位置尺寸通知（10a）；嵌套 SuspendLayout、ResumeLayout(false/true)、PerformLayout 重载/LayoutEventArgs、ClientSizeChanged 与完整 Layout 顺序仍待后续，不随子范围关闭。 |
+| 🟡 | P1 / Control-09 | 批次 012 完成基础客户区（09a）；SizeFromClientSize、PreferredSize、MinimumSize/MaximumSize、Dock/Anchor/AutoSize/GetPreferredSize、Padding/Margin、BringToFront/SendToBack 和 z-order 及全部派生约束仍待后续，不随子范围关闭。 |
+| ✅ | P1 / Control-09a | 批次 012：标准 ClientSize/ClientRectangle、ClientSizeChanged 与 protected virtual SetClientSizeCore/OnClientSizeChanged 完成；明确初始化基础 Control、四有限边框样式、无/有 HWND、零负/恢复、顺序/覆盖/重入/异常共 5,556 条固定参考/JIT/实际 AOT 相同，80 项新增回归通过。保留原始客户区请求缓存与重复通知；客户区缓存变化可使仅位置操作触发标准尺寸通知。旧边界/通知/原生高度扩展保留；构造默认、SizeFromClientSize、全部派生约束、外部自主通知、完整布局和 Form 生命周期另列。 |
+| ⬜ | P1 / Control-09b | 批次 013 首范围：固定参考补 protected SizeFromClientSize 的真实形状/输入输出、是否改变状态/创建句柄与标准入口的实际虚调用轨迹；基础 Control/四有限边框、正零负极值、覆盖/重入/异常。完整布局/全部派生约束/DPI 切换/Form 生命周期另列。 |
+| 🟡 | P1 / Control-10 | 批次 011 完成位置尺寸通知（10a），批次 012 完成基础客户区通知（09a）；嵌套 SuspendLayout、ResumeLayout(false/true)、PerformLayout 重载/LayoutEventArgs 与完整 Layout 顺序仍待后续，不随子范围关闭。 |
 | ✅ | P1 / Control-10a | 批次 011：标准 LocationChanged/Move、SizeChanged/Resize 与四个 protected virtual On* 已接入七属性/两族 SetBounds/直接 core；重复、指定/未知位、零负尺寸、覆盖/不调 base、重入/原异常和参数轨迹共 2,280 条固定参考/JIT/实际 AOT 相同，99 项新增回归通过。OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数；旧 OnBoundsChanged 独立保留。ClientSizeChanged/客户区、外部原生自主移动/尺寸通知、完整 Layout 与全部派生约束另列。 |
 | ⬜ | P1 / Control-11 | 实现 Enabled/Visible/Text/Font/BackColor/ForeColor/RightToLeft/Cursor 的有效值继承、Reset/ShouldSerialize 和变更事件；句柄前后赋值与重新 Parent 结果一致。 |
 | ⬜ | P1 / Control-12 | 对齐 Tab/助记键、Enter/Leave/GotFocus/LostFocus、CausesValidation/Validating/Validated；KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress 与 IME 组合态。 |
@@ -72,6 +73,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - 2026-10-16 · 批次 010：先固定 WinForms 10.0.11，再实现 BoundsSpecified 的八个标准值/Flags、x/y 命名的两族 SetBounds 和 protected virtual SetBoundsCore。外层按已知位保留其他分量，未知位原样交给 core，有效矩形未变不调用；core 本身接受完整矩形，包括派生调整的未指定分量和 specified=None，重复直接调用仍可被覆盖观察。七个位置/尺寸属性按对应标志进入同一路径，派生可拒绝、调整或抛异常。2,034 条固定参考/JIT/实际 AOT 完全相同，60 项新增回归通过；AOT EXE 2,576,896 字节，无 IL2xxx/IL3xxx。保留旧零/负尺寸、首次创建回读、GetNativeHeight 与 OnBoundsChanged，完整布局/Min/Max/事件和派生约束继续另列，见 [批次 010](../batches/010.md)。
 
 - 2026-10-16 · 批次 011：先运行固定 WinForms 10.0.11 参考，再接入 LocationChanged/Move、SizeChanged/Resize 与四个标准 protected virtual On*。整矩形先提交，两族变化先快照，保持 Move→LocationChanged→Resize→SizeChanged 的顺序及重入后外层待发通知。OnLocationChanged 向 OnMove 透传参数，OnSizeChanged 仅向 OnResize 传 EventArgs.Empty，SizeChanged 仍用原参数；覆盖不调 base 按标准抑制对应通知链。无自身 HWND setter 和直接 On* 传播原异常；有 HWND setter 转交既有 Application.ThreadException，默认异常 UI/模式仍按既有缺口披露。旧 ApplyBounds→OnBoundsChanged 布局衔接保留，标准通知独立于该旧 hook。2,280 条固定参考/JIT/实际 AOT 相同，99 项新增测试；通知 AOT EXE 2,618,880 字节，无 CLR Header 或 IL2xxx/IL3xxx。客户区、外部原生自主通知、完整布局、构造默认/全部派生约束与 Form 生命周期未关闭，见 [批次 011](../batches/011.md)。
+
+- 2026-10-16 · 批次 012：先固定参考，再补基础客户区与标准元数据。四有限边框/无有 HWND/11 入口/重复/零负恢复/覆盖重入异常及缓存异常态后仅位置更新共 5,556 条固定 WinForms 10.0.11/JIT/实际 AOT 全同，80 项新增回归通过。外框先提交，随后同步客户区缓存，位置/尺寸通知与客户区通知按参考顺序触发；缓存变化也算尺寸变化。SetClientSizeCore 正常执行至末尾时提交原始客户区请求并调用 OnClientSizeChanged（不检查是否同值，事件异常同步传播），故同值仍通知，raw 负值/重入可使缓存不同于原生客户区；不能简单实时 native getter 替换。GetClientRect/AdjustWindowRectEx 失败真实抛错，旧 OnBoundsChanged/GetNativeHeight 保留。客户区 AOT EXE 2,592,256 字节，无 CLR Header 或 IL2xxx/IL3xxx；探针的五个反射成员精确保留不改变库裁剪策略。SizeFromClientSize、构造默认、全部派生约束/外部自主通知/完整布局/Form 生命周期继续另列，见 [批次 012](../batches/012.md)。
 
 ## 原始资料
 
