@@ -10,6 +10,8 @@ namespace Lumina.Forms;
 /// </summary>
 public class ListViewItem
 {
+    // Collection instances are views over the item's data; each view keeps its own key cache.
+    private readonly List<ListViewSubItem> _subItemData = [];
     private ListViewSubItemCollection? _subItems;
 
     /// <summary>
@@ -50,7 +52,7 @@ public class ListViewItem
     [AllowNull]
     public string Text
     {
-        get => _subItems is null || _subItems.Count == 0 ? string.Empty : _subItems[0].Text;
+        get => _subItemData.Count == 0 ? string.Empty : _subItemData[0].Text;
         set
         {
             SubItems[0].Text = value;
@@ -206,19 +208,38 @@ public class ListViewItem
     /// </summary>
     public class ListViewSubItemCollection : IList<ListViewSubItem>
     {
-        private readonly List<ListViewSubItem> _items = [];
+        private readonly List<ListViewSubItem> _items;
         private readonly ListViewItem _owner;
         private int _lastAccessedIndex = -1;
 
-        internal ListViewSubItemCollection(ListViewItem owner)
+        /// <summary>
+        /// Initializes a new view of the subitems belonging to the specified item.
+        /// </summary>
+        /// <param name="owner">The item whose subitems are exposed by the collection.</param>
+        public ListViewSubItemCollection(ListViewItem owner)
         {
+            ArgumentNullException.ThrowIfNull(owner);
             _owner = owner;
+            _items = owner._subItemData;
         }
 
+        /// <summary>
+        /// Gets or replaces the subitem at the specified index.
+        /// </summary>
         public ListViewSubItem this[int index]
         {
             get => _items[index];
-            set => _items[index] = value;
+            set
+            {
+                // WinForms validates the position before checking the replacement value.
+                if ((uint)index >= (uint)_items.Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                ArgumentNullException.ThrowIfNull(value);
+                _items[index] = value;
+            }
         }
 
         /// <summary>

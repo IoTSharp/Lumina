@@ -23,9 +23,9 @@
 | API-7B9D9D34C8108F90 | Method | `public virtual System.Void Post(System.Threading.SendOrPostCallback d, System.Object state)` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-D998A5344A739A91 | Method | `public virtual System.Void Send(System.Threading.SendOrPostCallback d, System.Object state)` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-8523DCE107634146 | Method | `public static System.Void SetSynchronizationContext(System.Threading.SynchronizationContext syncContext)` | `System.Threading.SynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-EF04758184118792 | Method | `public static System.Void Uninstall()` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-EF04758184118792 | Method | `public static System.Void Uninstall()` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-CCE4BAF761DC2A80 | Method | `public virtual System.Int32 Wait(System.IntPtr[] waitHandles, System.Boolean waitAll, System.Int32 millisecondsTimeout)` | `System.Threading.SynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-70A578CDA56627A6 | Property | `static System.Boolean AutoInstall { public get; public set; }` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-70A578CDA56627A6 | Property | `static System.Boolean AutoInstall { public get; public set; }` | `System.Windows.Forms.WindowsFormsSynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-26F5D9C9FDAFD08A | Property | `static System.Threading.SynchronizationContext Current { public get; }` | `System.Threading.SynchronizationContext`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 
 ## 受保护扩展成员（独立验收，不稀释公开 API 指标）

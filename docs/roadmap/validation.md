@@ -139,6 +139,27 @@
 
 复现：`./tools/compatibility/Test-WindowsFormsSynchronizationContext.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemKeys.ps1`；旧驱动继续保留。日志、TRX、项目目标和 PE 证据写 artifacts/compatibility-batch006，完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。下一批范围见 [007](batches/007.md)，代码完成与兼容验收分开，不推算 98%。
 
+## 批次 007 · 2026-10-16 实施结果
+
+本批完成默认同步上下文和集合视图/整数索引的明确子范围，详见 [批次 007](batches/007.md)。FND-002/003、Control-05、Form-04、Application-03/14 和完整 context/集合父任务继续部分完成；以下不是完整兼容验收。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 最终 0 错误、本次增量 315 警告；13 项目/17 目标仅 .NET 10；原始 Designer/resx 未改 |
+| 全线测试 | ✅ | 236 项通过，0 失败/跳过；新增 18 项独立 STA 与 27 项集合回归 |
+| 默认 context 差分 | ✅ 指定轻量范围 | 固定 WinForms 10.0.11、Lumina JIT、实际 AOT 的 204 条相同；AutoInstall/Uninstall、null/base/custom/forms Current、构造/前驱缓存、默认 callback await UI 恢复、Run 还原与两个不同 STA 的无 Form 退出 |
+| 原生退出修复 | ✅ 指定场景 | ExitThread 只 PostQuit，离开 HWND 回调后的最外层 finally 才释放本线程 activation handle/cookie；修正新增无 Form 检查定位的 DeactivateActCtx SEH，不吞异常 |
+| 集合视图差分 | ✅ 指定轻量范围 | 72 条参考/JIT 相同；公共 owner 构造与 null 参数、共享数据/独立视图、延迟首项、整数 index/value 顺序、替换身份和各视图 key 缓存 |
+| 既有回归 | ✅ | 显式 context57、同步投递69、Action59/旧Task、ValueTask90、Item41、子项基础/样式各37和 key209 参考/JIT 均保留 |
+| 安装探针 AOT | ✅ 发布/运行/PE | 2,750,464 字节，CLR Header 为 0；实际运行 204 条与 JIT 相同，发布无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | 4,105,216 字节，CLR Header 为 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留；完整可见操作与正常关闭未重记通过 |
+| 依赖与 API | ✅ 指定图/形状 | Windows 使用官方 Drawing，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing；重新导出后固定 1,095 类型/61,240 行不变，运行状态仍 unverified |
+| 任务索引与文档 | ✅ 结构 | 396 份 Markdown、187 组控件/API 页、2,015 项任务检查 0 结构错误；新增批次 008 两个待实施子范围，任务数量不作为兼容率 |
+
+全部 ApplicationContext/Run/模态、线程退出/关闭/重建/跨线程 Dispose 竞态仍待后续。当前 Form 最后窗体退出使用进程全局 OpenForms 计数，多 UI 退出语义未完成；安装单元测试显式请求自身 STA ExitThread，以免其他并行测试窗体决定该循环的结束。顺序参考探针仍保留仅 Close 的退出路径。复杂 UI/设备/压力/设计器集中后置，先 Windows 后 Linux，macOS 单列。
+
+复现：`./tools/compatibility/Test-WindowsFormsSynchronizationContextInstall.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemCollection.ps1`，两者可先单独记录固定参考；旧驱动保留。日志、TRX 和 PE/项目/依赖证据在 artifacts/compatibility-batch007。完整 Demo 发布继续使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

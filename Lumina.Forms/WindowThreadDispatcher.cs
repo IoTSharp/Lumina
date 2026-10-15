@@ -297,6 +297,7 @@ internal sealed class WindowThreadDispatcher
         private readonly object _caller;
         private readonly object?[]? _args;
         private readonly ExecutionContext? _executionContext;
+        private SynchronizationContext? _synchronizationContext;
         private ManualResetEvent? _completion;
         private object? _result;
         private ExceptionDispatchInfo? _exception;
@@ -346,7 +347,15 @@ internal sealed class WindowThreadDispatcher
                 }
                 else
                 {
-                    ExecutionContext.Run(_executionContext, static state => ((Invocation)state!).InvokeDelegate(), this);
+                    if (SynchronizationContext.Current is null)
+                    {
+                        WindowsFormsSynchronizationContext.InstallIfNeeded();
+                    }
+
+                    // Ambient caller state flows, but the native destination owns
+                    // the synchronization context used by callback continuations.
+                    _synchronizationContext = SynchronizationContext.Current;
+                    ExecutionContext.Run(_executionContext, static state => ((Invocation)state!).InvokeWithSynchronizationContext(), this);
                 }
             }
             catch (Exception exception)
@@ -365,6 +374,26 @@ internal sealed class WindowThreadDispatcher
         {
             _exception = ExceptionDispatchInfo.Capture(exception);
             Complete();
+        }
+
+        private void InvokeWithSynchronizationContext()
+        {
+            if (_synchronizationContext is null)
+            {
+                InvokeDelegate();
+                return;
+            }
+
+            SynchronizationContext? previous = SynchronizationContext.Current;
+            try
+            {
+                SynchronizationContext.SetSynchronizationContext(_synchronizationContext);
+                InvokeDelegate();
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(previous);
+            }
         }
 
         private void InvokeDelegate()

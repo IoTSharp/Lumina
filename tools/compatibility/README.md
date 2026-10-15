@@ -28,3 +28,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 006：`./tools/compatibility/Test-WindowsFormsSynchronizationContext.ps1 -Variant both -PublishAot` 比较显式标准 context 的 57 条固定参考/JIT/实际 Native AOT 观测，包含无 Form 投递、FIFO/state/ExecutionContext/原异常、复制/共享释放与显式安装后的 await 恢复。null Send/Post 在各自独立进程以 3 秒超时记录：参考 null Send 挂起，Lumina 明确抛 ArgumentNullException（d），null Post 两端均接受无回调；这两项不混进相等计数。`-Variant reference` 先取基线，`-SkipIsolated` 可跳过独立边界进程；默认安装/还原、完整线程退出/跨线程释放/多 UI/模态仍待后续。
 
 `./tools/compatibility/Test-ListViewSubItemKeys.ps1` 比较四个标准 virtual key 成员的 209 条参考/JIT 观测，支持 `-ReferenceOnly`；保留上次索引缓存与等长 InvariantCultureIgnoreCase，覆盖 Name/集合修改、重复 key、null/空、两文化的 Unicode/嵌入 NUL 及首项延迟恢复。完整 IList/公开集合构造/所属/native 仍缺。两个新驱动日志写 artifacts/compatibility-batch006；共享文档、任务索引与运行验收状态继续分开记录。
+
+批次 007：`./tools/compatibility/Test-WindowsFormsSynchronizationContextInstall.ps1 -Variant both -PublishAot` 比较默认安装首范围的 204 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取得参考。独立 STA 覆盖线程局部 AutoInstall、null/base/custom/forms Current、Uninstall/重复/前驱缓存、构造异常、默认直接/BeginInvoke/ValueTask/工作线程 callback await UI 恢复、Run 还原和两个不同 STA 的无 Form ExitThread。旧显式投递 57 条继续由批次 006 驱动保留；默认安装不关闭完整模态/多 UI 退出与生命周期竞态。
+
+`./tools/compatibility/Test-ListViewSubItemCollection.ps1` 比较公共构造、同 owner 多集合视图、延迟首项、整数索引验证顺序/身份及独立 key 缓存的 72 条观测，支持 `-ReferenceOnly`；完整非泛型 IList、添加/插入/所属/native 仍缺。新日志/结果在 artifacts/compatibility-batch007；18 项独立 STA 和 27 项集合回归纳入 Lumina.Tests。完整 Demo 仍保持固定双目标和原始 Designer/resx，代码完成与兼容验收分开。

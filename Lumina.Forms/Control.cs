@@ -44,6 +44,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private Point _lastContextMenuScreenLocation = new(int.MinValue, int.MinValue);
 
     /// <summary>
+    /// Initializes a control and installs the thread's UI synchronization context when enabled.
+    /// </summary>
+    public Control()
+    {
+        WindowsFormsSynchronizationContext.InstallIfNeeded();
+    }
+
+    /// <summary>
     /// Gets or sets the design-time or lookup name of the control.
     /// </summary>
     public string Name { get; set; } = string.Empty;

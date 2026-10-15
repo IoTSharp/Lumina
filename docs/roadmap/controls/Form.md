@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**Form 独立实现 IDisposable，未继承 ContainerControl/Control。已有真实顶层 HWND、生命周期首范围与同步/Action/Func/ValueTask 投递；批次 006 的显式同步上下文独立于 Form 存活并有指定 await 检查。Layout 使用 EventHandler、FormClosing 使用泛型 EventHandler，标准继承、FormClosed/ShowDialog、同步上下文默认安装等仍待实现。
+🟡 **现状：**Form 独立实现 IDisposable，未继承 ContainerControl/Control。已有真实顶层 HWND、生命周期首范围与同步/Action/Func/ValueTask 投递；批次 007 补构造时默认 context 安装与指定 await 恢复。Layout 使用 EventHandler、FormClosing 使用泛型 EventHandler，标准继承、FormClosed/ShowDialog、多 UI 退出与完整生命周期仍待实现。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -14,7 +14,7 @@
 | ⬜ | P0 / Form-01 | 建立标准 Form : ContainerControl 继承，使 Form 可作 Control/IWin32Window/Component 使用；Controls 返回标准 ControlCollection，直接子控件 Parent 正确，删除重复的两套基础状态。 |
 | ⬜ | P0 / Form-02 | 修正 FormClosingEventHandler/FormClosedEventHandler、LayoutEventHandler 等准确类型和事件参数；Created 等历史自有事件不能抵扣 HandleCreated；旧 Closing/Closed 仍按基线保留兼容。 |
 | ⬜ | P0 / Form-03 | 实现 ShowDialog()/ShowDialog(IWin32Window)、Show(owner)、DialogResult、Modal；owner 禁用恢复、嵌套消息循环、Esc/Enter、取消关闭与对话框复用完整验收。 |
-| 🟡 | P0 / Form-04 | 批次 003～005 在现有独立 Form 复用内部投递实现，批次 006 补独立显式 context 与指定 await 恢复；标准继承、context 默认安装/还原及完整关闭竞态未关闭。 |
+| 🟡 | P0 / Form-04 | 批次 003～007 在现有独立 Form 复用投递、显式与默认 context/await 恢复；标准继承、完整关闭/重建/退出与多 UI/模态竞态仍未关闭。 |
 | ⬜ | P1 / Form-05 | 校准默认 Text/StartPosition/Size/ClientSize/AutoScaleMode 等；当前 Lumina Native Form/Manual/960×640 不是标准默认，Designer 不应被迫重复赋值抵消库默认。 |
 | ⬜ | P1 / Form-06 | 实现显示生命周期：HandleCreated、BindingContextChanged、Load、VisibleChanged、Activated、Shown 真实顺序；Hide→Show 不重复 Load/Shown；Visible/WindowState/Handle 同步。 |
 | ⬜ | P1 / Form-07 | 实现 Close/FormClosing.Cancel、CloseReason、FormClosed、Dispose；用户关闭、owner/MDI 关闭、Application.Exit、系统关机的事件原因与取消作用域不同，不能统一 UserClosing。 |
@@ -50,6 +50,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - 2026-10-16 · 批次 004：因标准继承链尚缺，在 Form 增加同名 Action/Func<T> 的 InvokeAsync(CancellationToken) 入口，复用 WindowThreadDispatcher；UI/工作线程及结果/释放后的指定观测纳入 59 条三端对照。没有改变 Form 继承链；ValueTask、标准同步上下文和完整关闭/生命周期仍保留。
 
 - 2026-10-16 · 批次 005：增加标准 Func<CancellationToken,ValueTask> / ValueTask<T> 同名入口，复用 WindowThreadDispatcher；UI 首次调用、返回值与 async token lambda 纳入 90 条参考/JIT/AOT 观测。未改变独立 Form 的继承链；同步上下文与 callback 内 await 后 UI 恢复、全部关闭竞态继续待后续。
+
+- 2026-10-16 · 批次 007：Form 构造接入默认 context，现有 Application.Run 在 Show 前安装并于最外层 finally 还原；默认 await/工作线程投递有对照。Form 仍独立于 Control，最后窗体退出判断仍使用进程全局 OpenForms 计数，多 UI 线程与 ApplicationContext 退出语义继续缺失；不把当前子范围写成完整 Form 生命周期兼容，见 [批次 007](../batches/007.md)。
 
 ## 原始资料
 

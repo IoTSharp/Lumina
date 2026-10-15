@@ -9,15 +9,33 @@ namespace Lumina.Forms;
 /// </summary>
 /// <remarks>
 /// Constructing this context does not install it as <see cref="SynchronizationContext.Current"/>.
-/// Automatic installation and restoration are not implemented yet.
+/// Controls and application message loops install it automatically when <see cref="AutoInstall"/> is enabled.
 /// </remarks>
 public sealed class WindowsFormsSynchronizationContext : SynchronizationContext, IDisposable
 {
     [ThreadStatic]
     private static SynchronizationContextWindow? t_window;
 
+    [ThreadStatic]
+    private static SynchronizationContext? t_previousContext;
+
+    [ThreadStatic]
+    private static bool t_autoInstallDisabled;
+
+    [ThreadStatic]
+    private static bool t_installing;
+
     private readonly WeakReference<Thread> _destinationThread;
     private volatile SynchronizationContextWindow? _window;
+
+    /// <summary>
+    /// Gets or sets whether controls and message loops automatically install a context on the current thread.
+    /// </summary>
+    public static bool AutoInstall
+    {
+        get => !t_autoInstallDisabled;
+        set => t_autoInstallDisabled = !value;
+    }
 
     /// <summary>
     /// Creates a context that dispatches callbacks on the current thread.
@@ -69,6 +87,50 @@ public sealed class WindowsFormsSynchronizationContext : SynchronizationContext,
         _window?.Dispose();
         _window = null;
         GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Restores the previous context and disables automatic installation on the current thread.
+    /// </summary>
+    public static void Uninstall() => Uninstall(turnOffAutoInstall: true);
+
+    internal static void Uninstall(bool turnOffAutoInstall)
+    {
+        if (!AutoInstall) { return; }
+
+        if (AsyncOperationManager.SynchronizationContext is WindowsFormsSynchronizationContext)
+        {
+            AsyncOperationManager.SynchronizationContext = t_previousContext ?? new SynchronizationContext();
+            t_previousContext = null;
+        }
+
+        if (turnOffAutoInstall) { AutoInstall = false; }
+    }
+
+    internal static void InstallIfNeeded()
+    {
+        // A managed, handleless control remains usable on other platforms while
+        // the native dispatch backend is Windows-only. Explicit contexts retain
+        // their platform check in the message-window constructor.
+        if (!OperatingSystem.IsWindows() || !AutoInstall || t_installing) { return; }
+
+        if (Current is null) { t_previousContext = null; }
+        if (t_previousContext is not null) { return; }
+
+        t_installing = true;
+        try
+        {
+            SynchronizationContext current = AsyncOperationManager.SynchronizationContext;
+            if (current.GetType() == typeof(SynchronizationContext))
+            {
+                t_previousContext = current;
+                AsyncOperationManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
+            }
+        }
+        finally
+        {
+            t_installing = false;
+        }
     }
 
     /// <summary>

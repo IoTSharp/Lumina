@@ -52,6 +52,7 @@ public class Form : IDisposable, ISynchronizeInvoke
     /// </summary>
     public Form()
     {
+        WindowsFormsSynchronizationContext.InstallIfNeeded();
         _controls = new ControlCollection(this);
     }
 

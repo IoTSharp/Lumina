@@ -14,7 +14,7 @@
 | 🟡 | P0 / Application-01 | Run(Form mainForm) 的 void/命名参数/null 主窗路径已修正；Run()/Run(ApplicationContext)、拒绝非法嵌套 Run、模态与主循环分别管理、主窗与最后窗口退出区分仍待实现。 |
 | ✅ | P0 / Application-01a | 批次 001：Run(Form mainForm) 返回 void，支持相同命名参数调用；null 主窗沿消息循环执行，移除不符基线的空值异常。无界面签名检查和双目标编译通过，消息循环生命周期属于父任务待办。 |
 | ✅ | P0 / Application-02 | SetHighDpiMode 返回真实系统 BOOL/HRESULT 的成功结果，校验枚举，按 OS 能力回退；HighDpiMode 读取当前线程实际 awareness。首次窗口/托盘窗口创建前永久关闭设置入口，manifest/宿主/重复调用失败不假报成功。14 组隔离进程对照通过；旧系统回退、建窗回调、跨屏及真实缩放验收后置。 |
-| ⬜ | P0 / Application-03 | 安装并卸载 WindowsFormsSynchronizationContext，确定 UI 创建线程与投递窗口；处理 InvokeAsync/await 回到 UI、退出期间取消和线程存活。 |
+| 🟡 | P0 / Application-03 | 批次 007 完成现有 Run/RunMessageLoop 与控件/窗体构造的默认 context 安装/还原、默认 callback await UI 恢复；完整 ApplicationContext/模态、多 UI 线程与退出取消/竞态仍缺。 |
 | ⬜ | P1 / Application-04 | 实现 Exit()/Exit(CancelEventArgs)/ExitThread、ApplicationExit/ThreadExit；各 FormClosing 取消必须阻止不应发生的全局退出，多个 UI 线程和无主窗 Context 分别验收。 |
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
 | ⬜ | P1 / Application-06 | 实现 AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、消息预处理/快捷键/IsDialogMessage；WM_QUIT/GetMessage=-1 处理明确，不能只做 Translate/Dispatch。 |
@@ -26,7 +26,7 @@
 | ⬜ | P1 / Application-11 | 实现 CurrentCulture/CurrentInputLanguage、UseWaitCursor，影响现有窗口和新窗口；输入语言事件与控件 IME 路径联动。 |
 | ⬜ | P2 / Application-12 | 补 StartupPath/ExecutablePath、CompanyName/ProductName/ProductVersion、各 AppDataPath/Registry、Restart/OleRequired/SetSuspendState/消息循环注册等全部剩余 API；Windows Registry/电源/OLE 专属部分单列，但 Windows 分母保留。 |
 | ⬜ | P1 / Application-13 | Native AOT 全 Demo 真正可见主窗、输入、模态、关闭/退出后进程正常结束；资源/TypeConverter 的 IL2026/IL3053 追具体路径，测试不能只看 publish exit code。 |
-| ⬜ | P1 / Application-14 | Windows 共享现有 USER32 消息泵与 common-controls activation context；context 是 UI 线程资源，不能一次 ExitThread 释放其他 UI 线程仍需的状态。 |
+| 🟡 | P1 / Application-14 | 批次 007 将 activation handle/cookie 归属本线程，ExitThread 只请求退出、最外层循环离开 native 回调后释放，修正无 Form 退出的 SEH。完整样式策略/线程退出/多 UI 生命周期与模态仍待后续。 |
 | ⬜ | P2 / Application-15 | Linux 用 GtkApplication/GApplication + GMainContext 投递；Run(Context) 保持 application hold/release 与无窗口托盘模式；不能启动第二个互相竞争的 GTK 主循环。 |
 | ⬜ | P3 / Application-16 | macOS 用 NSApplication.run 与主 run loop、delegate 生命周期；关闭最后窗口是否退出由 ApplicationContext 决定，Command-Q 走可取消关闭链，所有 AppKit API 在主线程。 |
 | ⬜ | 验收 / Application-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -47,6 +47,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - 2026-10-15：增加评估和待办；本轮未实现运行库功能。
 - 2026-10-15 · 批次 001：修复启动签名、命名参数/null 主窗路径；新增 AOT 友好的 DPI interop、真实状态回读及建窗门禁；6 项无副作用回归、14 组独立进程 DPI 对照通过。Run 的其他重载及完整生命周期未关闭，Windows/Linux/macOS 的完整兼容验收仍待后续。
 - 2026-10-16 · 批次 003：新增标准 ThreadException/OnThreadException 的首个可观察范围；4 项托管测试覆盖对象身份/线程隔离/重入/异常恢复，线程探针证明未调用 EndInvoke 的错误也在 UI 线程上报。默认原生 OK 提示不等同标准 ThreadExceptionDialog，SetUnhandledExceptionMode 及原生回调全族仍未完成；错误事件处理器再抛时显式 FailFast 防止越过 native ABI。
+
+- 2026-10-16 · 批次 007：现有 Run/RunMessageLoop 共享安装与外层 finally 还原；204 条参考/JIT/实际 AOT 观测和新增 STA 检查覆盖标准 AutoInstall/Uninstall、默认 await 与两个不同 STA 的无 Form 循环。ExitThread 不在 HWND 回调内提前 DeactivateActCtx，实际释放移至外层循环退出后，激活资源改为线程归属并允许下次进入重新激活。全局 OpenForms 的最后窗体退出判断、ApplicationContext/完整 Run/模态与并行 UI 退出仍保留，见 [批次 007](../batches/007.md)。
 
 ## 原始资料
 

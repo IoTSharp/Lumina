@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前支持无参、string、string[] 基础构造、Text/SubItems 和 ForeColor。批次 003 的 41 条构造与清空后访问观测继续保留，批次 006 补集合四个标准 virtual key 成员，209 条固定参考端观测相同。图像/分组/颜色字体等其余构造、全部所属、选择、勾选及完整集合契约仍待实现。
+当前支持无参、string、string[] 基础构造、Text/SubItems 和 ForeColor。批次 007 补集合公共构造、共享 owner 数据及整数索引首范围，72 条固定参考对照相同，原 41 条构造和 209 条 key 对照保留。图像/分组/颜色字体等其余构造、全部所属、选择、勾选及完整集合契约仍待实现。
 
 - 标准继承/契约：`ListViewItem : ICloneable, ISerializable`；不是 Control/Component。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -28,7 +28,7 @@
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
 | ⬜ | P1 | `ListViewItem-04` | ImageIndex/ImageKey/ImageList、IndentCount/Group、Name/Tag/ToolTipText；key/index 互斥、组替换、图像列表重建同步。 |
-| 🟡 | P1 | `ListViewItem-05` | 批次 006 完成 Name key 的四个 virtual 成员、重复 key/缓存位置和首次命中移除指定范围（ListViewSubItem-03a）。完整 Add/AddRange/Insert/Remove/Clear/整数索引、IList/构造、所属与 native 同步仍待实现。 |
+| 🟡 | P1 | `ListViewItem-05` | 批次 006/007 完成 key 四个 virtual 成员及公共集合构造/共享视图/整数索引首范围（ListViewSubItem-03a/02a）；完整 Add/AddRange/Insert/Remove/Clear、非泛型 IList、所属与 native 同步仍缺。 |
 | ⬜ | P2 | `ListViewItem-06` | BackColor/ForeColor/Font/UseItemStyleForSubItems，父 ListView 继承值与每子项独立样式，变更实时更新对应 native item/subitem。 |
 | ⬜ | P2 | `ListViewItem-07` | Clone 深浅拷贝边界、SubItems 和 Group/Tag/Font 引用规则；序列化与设计器 .resx 常见项资源往返，AOT 不走任意类型反序列化。 |
 | ⬜ | P2 | `ListViewItem-08` | VirtualMode 的 RetrieveVirtualItem 返回值及 item 所属关系、重复返回同一 item、模式切换；不把常规 Items 所有权强套到虚拟模式。 |
@@ -68,6 +68,8 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 - 2026-10-16 · 批次 006：嵌套集合增加四个标准 virtual key 成员，209 条固定参考/Lumina 观测相同，新增 38 项回归。保留单索引缓存、等长不变文化忽略大小写、重复 key 与 Name/集合修改及单项移除；原 41 条构造、37 条基础子项及 37 条样式回归保留。完整集合构造/IList/所属/native 仍另列。
 
 历史按对应源码路径的相关内容摘要，不把提交标题当成功能验收证明。
+
+- 2026-10-16 · 批次 007：owner 持有唯一子项数据，公共集合视图共享该数据但保留独立 key 缓存，Text 在外部视图添加/替换/清空后保持一致；整数索引首范围、对象身份与延迟首项恢复有 72 条固定参考对照，原 41 条基础构造回归保留。完整集合/所属/native 不随此关闭，见 [批次 007](../batches/007.md)。
 
 ## 官方资料
 

@@ -36,17 +36,24 @@ public static class Application
     private static readonly Lock s_syncRoot = new();
     private static readonly HashSet<Form> s_openForms = [];
     private static bool s_commonControlsInitialized;
-    private static nint s_visualStylesActivationContext;
-    private static nuint s_visualStylesActivationCookie;
     private static bool s_visualStylesEnabled;
     private static bool s_compatibleTextRenderingDefault;
     private static bool s_nativeWindowCreated;
+
+    [ThreadStatic]
+    private static nint t_visualStylesActivationContext;
+
+    [ThreadStatic]
+    private static nuint t_visualStylesActivationCookie;
 
     [ThreadStatic]
     private static ThreadExceptionEventHandler? t_threadException;
 
     [ThreadStatic]
     private static bool t_handlingThreadException;
+
+    [ThreadStatic]
+    private static int t_messageLoopDepth;
 
     /// <summary>
     /// Occurs on the UI thread when an asynchronous window callback throws an exception.
@@ -162,7 +169,6 @@ public static class Application
     /// </summary>
     public static void ExitThread()
     {
-        DisposeThemedCommonControlsActivation();
         Win32.PostQuitMessage(0);
     }
 
@@ -190,9 +196,7 @@ public static class Application
     /// <param name="mainForm">The main form to show and use as the message loop owner.</param>
     public static void Run(Form mainForm)
     {
-        EnsureVisualStylesInitialized();
-        mainForm?.Show();
-        _ = RunMessageLoop();
+        _ = RunMessageLoopCore(mainForm);
     }
 
     /// <summary>
@@ -200,16 +204,44 @@ public static class Application
     /// </summary>
     /// <returns>The exit code returned by the Win32 message loop.</returns>
     public static int RunMessageLoop()
+        => RunMessageLoopCore(mainForm: null);
+
+    private static int RunMessageLoopCore(Form? mainForm)
     {
-        EnsureVisualStylesInitialized();
-
-        while (Win32.GetMessage(out var message, 0, 0, 0) > 0)
+        t_messageLoopDepth++;
+        try
         {
-            _ = Win32.TranslateMessage(in message);
-            _ = Win32.DispatchMessage(in message);
-        }
+            WindowsFormsSynchronizationContext.InstallIfNeeded();
+            EnsureVisualStylesInitialized();
+            mainForm?.Show();
 
-        return 0;
+            while (Win32.GetMessage(out var message, 0, 0, 0) > 0)
+            {
+                _ = Win32.TranslateMessage(in message);
+                _ = Win32.DispatchMessage(in message);
+            }
+
+            return 0;
+        }
+        finally
+        {
+            if (--t_messageLoopDepth == 0)
+            {
+                // Exiting the outer loop restores its predecessor without changing
+                // the caller's policy or disposing the shared dispatch destination.
+                try
+                {
+                    WindowsFormsSynchronizationContext.Uninstall(turnOffAutoInstall: false);
+                }
+                finally
+                {
+                    // HWND dispatch temporarily pushes the window's activation
+                    // context. Release ours only after returning from that frame,
+                    // on the thread that originally activated its cookie.
+                    DisposeThemedCommonControlsActivation();
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -257,6 +289,10 @@ public static class Application
         if (!s_visualStylesEnabled)
         {
             EnableVisualStyles();
+        }
+        else
+        {
+            EnsureThemedCommonControlsActivated();
         }
     }
 
@@ -400,7 +436,7 @@ public static class Application
 
         lock (s_syncRoot)
         {
-            if (s_visualStylesActivationCookie != 0)
+            if (t_visualStylesActivationCookie != 0)
             {
                 return;
             }
@@ -427,8 +463,8 @@ public static class Application
                     return;
                 }
 
-                s_visualStylesActivationContext = handle;
-                s_visualStylesActivationCookie = activationCookie;
+                t_visualStylesActivationContext = handle;
+                t_visualStylesActivationCookie = activationCookie;
             }
             catch
             {
@@ -452,16 +488,19 @@ public static class Application
     {
         lock (s_syncRoot)
         {
-            if (s_visualStylesActivationCookie != 0)
+            if (t_visualStylesActivationCookie != 0)
             {
-                _ = Win32.DeactivateActCtx(0, s_visualStylesActivationCookie);
-                s_visualStylesActivationCookie = 0;
+                if (!Win32.DeactivateActCtx(0, t_visualStylesActivationCookie))
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+                t_visualStylesActivationCookie = 0;
             }
 
-            if (s_visualStylesActivationContext != 0 && s_visualStylesActivationContext != new nint(-1))
+            if (t_visualStylesActivationContext != 0 && t_visualStylesActivationContext != new nint(-1))
             {
-                Win32.ReleaseActCtx(s_visualStylesActivationContext);
-                s_visualStylesActivationContext = 0;
+                Win32.ReleaseActCtx(t_visualStylesActivationContext);
+                t_visualStylesActivationContext = 0;
             }
         }
     }

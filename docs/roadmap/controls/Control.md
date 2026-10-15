@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～005 已接入 Component/IWin32Window、组件释放、真实 HWND 同步及 Action/Func/ValueTask 投递。批次 006 补独立显式同步上下文类型及显式 await 恢复，旧投递检查保持通过。Focus() 仍返回 void；布局、完整构造、Controls/Parent、同步上下文默认安装及关闭竞态仍待后续范围。
+🟡 **现状：**批次 002～007 已接入 Component/IWin32Window、组件释放、真实 HWND 同步及 Action/Func/ValueTask 投递、显式和默认同步上下文。批次 007 增加构造时安装与默认 callback await 恢复；Focus() 仍返回 void，布局、完整构造、Controls/Parent 和关闭竞态仍待后续范围。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -14,11 +14,12 @@
 | 🟡 | P0 / Control-01 | 批次 002 已完成 Component/IWin32Window（Control-01a），批次 003 已实现真实 UI 投递的 ISynchronizeInvoke；IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
 | ⬜ | P0 / Control-02 | 把 Focus() 改为标准 bool，补 Select/CanSelect/CanFocus/Focused/ContainsFocus；默认大小允许零尺寸，不再把 Width/Height 永久强制至少 1。 |
+| ⬜ | P0 / Control-02a | 批次 008 首范围：标准 bool Focus() 与 Focused/ContainsFocus/CanFocus，先固定参考检查无句柄/禁用/隐藏/释放与真实 HWND 状态，不因查询创建句柄。Select/CanSelect、键盘/验证事件、零尺寸/布局与完整重建竞态另列。 |
 | 🟡 | P0 / Control-03 | 批次 003 完成现有 HWND/创建线程与父级句柄查找（Control-03a）；标准 Parent/Form 继承链、未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
 | ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
 | 🟡 | P0 / Control-04 | 批次 003 完成 Action/Delegate/args/Func 同步及 BeginInvoke/EndInvoke 首范围（Control-04a）；完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
 | ✅ | P0 / Control-04a | 批次 003：真实 PostMessage 队列、同线程 FIFO/EndInvoke、跨线程返回与异常、ExecutionContext、IAsyncResult 和销毁待执行项唤醒；69 条指定观测在固定 WinForms 10.0.11、JIT、AOT 相同。null Delegate 保护与默认异常 UI 的明确差异见修改历史，不等于父任务完整验收。 |
-| 🟡 | P0 / Control-05 | 批次 004/005 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队；批次 006 补显式 context/await 检查。默认安装下的 callback await 恢复、完整关闭竞态仍待实现，不随显式类型关闭。 |
+| 🟡 | P0 / Control-05 | 批次 004～007 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队、显式/default context 与 callback await 恢复首范围；完整关闭/重建/退出及多 UI/模态竞态仍保留，不随子范围关闭。 |
 | ✅ | P0 / Control-05a | 批次 004：标准 Action/Func<T> 在自身 HWND 线程排队，返回值、原异常及取消保留；旧单 Action/Task 回调也排队。固定 WinForms 10.0.11、JIT、AOT 59 条观测相同，另有旧 Task 路径专项检查；ValueTask/同步上下文与完整关闭竞态未关闭。 |
 | ✅ | P0 / Control-05b | 批次 005：标准 Func<CancellationToken,ValueTask> / ValueTask<T> 在 UI 队列首次调用并单次消费，90 条固定参考/JIT/AOT 观测相同；原异常/结果/token、取消后继续消费及 async lambda 选择已检。同步上下文安装、callback 内 await 后 UI 恢复和完整关闭竞态另列，不代表完整异步兼容。 |
 | ⬜ | P0 / Control-06 | 实现 Control.ControlCollection、Parent 可设、Controls.Add/AddRange/Remove/Clear/SetChildIndex/Find；Form 直接子项的 Parent 必须是 Form，Owner 不能替代 Parent。 |
@@ -57,6 +58,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - 2026-10-16 · 批次 004：Action/Func<T> 的标准 InvokeAsync 与取消及既有两条直接调用路径统一复用真实队列；59 条固定参考/JIT/AOT 观测相同，旧 Task 路径另检初始 UI 线程、等待内层 Task、原异常身份与取消。按参考端保留 null 校验先于句柄、无自身句柄返回 Faulted Task、预取消成功并跳过回调（Func 返回 default）、排队后/回调内取消及原 token；任务异常不报告 ThreadException。Dispose 前已排队而未执行的 Task 等待后续 token 取消，与参考端相同；无 token 的关闭/重建/退出竞态、ValueTask 与标准同步上下文仍待后续。
 
 - 2026-10-16 · 批次 005：Control/Form 补标准 ValueTask 两族并共用真实 HWND 队列；IValueTaskSource 同步/延迟/取消后单次消费，原异常（含 wrapper/OCE 身份）与结果/token 保留。固定 WinForms 10.0.11、JIT、实际 Native AOT 的 90 条观测相同；旧 Task 虚方法保留，用 OverloadResolutionPriority(-1) 使未强转 async token lambda 选择标准 ValueTask，显式 Task 委托和派生 override 专项通过。预取消/无自身句柄/释放后边界按独立参考观测保留；同步上下文/await 后 UI 恢复及关闭竞态未关闭。
+
+- 2026-10-16 · 批次 007：Control 构造接入默认 context 安装，保留已有 custom Current 与禁用策略；dispatcher 将目的 UI Current 用于回调的 ExecutionContext 并 finally 还原。默认直接/BeginInvoke/ValueTask/带结果/工作线程投递 await UI 恢复有固定三端对照，旧 Task 专项保留；完整构造、继承、Controls/Parent 与竞态不关闭，见 [批次 007](../batches/007.md)。
 
 ## 原始资料
 
