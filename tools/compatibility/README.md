@@ -36,3 +36,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 008：`./tools/compatibility/Test-ControlFocus.ps1 -Variant both -PublishAot` 比较标准 bool Focus、Focused/ContainsFocus/CanFocus 的 157 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取参考。覆盖标准元数据、无 HWND 不创建、真实 HWND/外部原生切换、原生 descendant、隐藏/禁用及释放；Select/CanSelect、完整键盘/验证事件、Form 继承和全部重建竞态仍待后续。
 
 `./tools/compatibility/Test-ListViewSubItemAdd.ps1` 比较三个 typed Add 的 74 条固定参考/JIT 观测，支持 `-ReferenceOnly`；覆盖标准返回、null/重复/其他 owner 对象、文字/样式/借用 Font、外部视图首次与 Clear 后添加、共享数据/主项 Text 和独立 key 缓存。保留历史泛型 ICollection<T>.Add 显式适配的独立回归；非泛型 IList、AddRange/Insert/完整所属和 native 同步未关闭，新增 Add 对照不声称实际 AOT 运行验收。日志/结果、293 项全线测试 TRX 和 PE/依赖证据在 artifacts/compatibility-batch008。
+
+批次 009：`./tools/compatibility/Test-ControlBounds.ps1 -Variant both -PublishAot` 比较零尺寸、负尺寸和首次创建的 756 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取参考。无自身 HWND 保留负尺寸且不创建句柄；已有 HWND 负数归零、实际零矩形可恢复，首次创建保留 USER32 对原始参数的解释并在 HandleCreated 前回读。构造默认、派生全部限制、Form.ScaleSize、完整布局/Min/Max/事件仍另列。
+
+`./tools/compatibility/Test-ListViewSubItemAddRange.ps1` 比较三个 typed AddRange 的 151 条固定参考/JIT 观测，支持 `-ReferenceOnly`；null 数组拒绝且不改状态，null 元素三重载均跳过，非 null 空 Text 对象仍添加。覆盖顺序/身份/输入复制、重复/其他 owner、颜色/借用 Font、首次/Clear 后外部视图/主项 Text 和各视图独立 key 缓存。新 AddRange 未计为实际 AOT 运行验收，完整 IList/Insert/Remove/所属/native 仍缺；447 项全线回归与日志/PE/项目/依赖证据在 artifacts/compatibility-batch009。

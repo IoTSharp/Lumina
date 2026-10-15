@@ -534,15 +534,23 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         ThrowIfDisposed();
 
+        // WinForms preserves requested negative dimensions before a control has its own
+        // HWND. Once created, native window dimensions normalize them to zero.
+        if (Handle != 0)
+        {
+            width = Math.Max(0, width);
+            height = Math.Max(0, height);
+        }
+
         bool boundsChanged = _left != left
             || _top != top
-            || _width != Math.Max(1, width)
-            || _height != Math.Max(1, height);
+            || _width != width
+            || _height != height;
 
         _left = left;
         _top = top;
-        _width = Math.Max(1, width);
-        _height = Math.Max(1, height);
+        _width = width;
+        _height = height;
 
         if (Handle != 0)
         {
@@ -893,6 +901,24 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (Handle == 0)
         {
             throw new InvalidOperationException($"Failed to create control '{ClassName}'.");
+        }
+
+        if (_width < 0 || _height < 0)
+        {
+            // Let USER32 interpret the original creation dimensions, including
+            // CW_USEDEFAULT, before updating the cached bounds for HandleCreated.
+            if (!Win32.GetWindowRect(Handle, out Win32.RECT bounds))
+            {
+                int error = Marshal.GetLastWin32Error();
+                _ = Win32.DestroyWindow(Handle);
+                Handle = 0;
+                throw new Win32Exception(error);
+            }
+
+            _width = bounds.Right - bounds.Left;
+            // A derived control may expand its HWND height (for example, a combo
+            // box's drop-down area) without changing its positive logical height.
+            _height = nativeHeight == _height ? bounds.Bottom - bounds.Top : Math.Max(0, _height);
         }
 
         RegisterSubclass();

@@ -180,6 +180,26 @@ Select/CanSelect、完整键盘/验证/布局/继承与重建竞态，非泛型 
 
 复现：`./tools/compatibility/Test-ControlFocus.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemAdd.ps1`；日志、TRX 与 PE/依赖证据在 artifacts/compatibility-batch008。旧驱动继续保留，完整 Demo 发布仍使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。
 
+## 批次 009 · 2026-10-16 实施结果
+
+本批为 Control 零尺寸/句柄相关负尺寸和三个 typed AddRange 的明确子范围，详见 [批次 009](batches/009.md)。代码完成不关闭完整类型、布局、集合所属或 native 同步验收。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，最后成功增量构建 45 警告；13 项目/17 目标仅 .NET 10；原始 Designer/resx 无改动 |
+| 全线回归 | ✅ | 447 项通过，0 失败/跳过；新增尺寸 33 项和 AddRange 121 项，原生矩形测试使用独立 STA/禁止并行 collection |
+| 尺寸差分 | ✅ 指定轻量范围 | 756 条固定 WinForms 10.0.11/JIT/实际 AOT 相同。无自身 HWND 保留零/负值且不创建；有 HWND 负数归零、实际零矩形可恢复；首次创建回读原生结果、HandleCreated 时机及 int.MinValue/CW_USEDEFAULT 已检 |
+| typed AddRange 差分 | ✅ 指定轻量范围 | 三重载 151 条参考/JIT 相同；null 数组拒绝且不改变状态，三者均跳过 null 元素，保留非 null 空 Text 对象。顺序/对象身份/输入复制/重复/其他 owner、样式/借用 Font、共享视图/主项 Text/独立 key 缓存均保留 |
+| 既有差分回归 | ✅ | 组件5、线程69、Action59/旧Task、ValueTask90、显式context57、默认安装204、焦点157、Item41、子项基础/样式各37、key209、集合72及Add74参考/JIT通过 |
+| 尺寸探针 AOT | ✅ 发布/运行/PE | 实际运行 756 条与 JIT 相同；EXE 2,562,048 字节，CLR Header 为 0，无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,105,728 字节，CLR Header 为 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留。完整主窗操作/关闭后置；新 AddRange 未计为实际 AOT 运行验收 |
+| 依赖与 API | ✅ 指定图/形状 | 官方 Drawing；net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing；按固定基线重新导出 1,095 类型/61,240 行，运行状态仍 unverified |
+| 文档与任务索引 | ✅ 结构 | 398 份 Markdown、187 组控件/API 页、2,019 项任务，0 结构错误；父任务保持部分完成，下一批两个子范围待实施 |
+
+构造默认大小、全部派生尺寸约束、Form.ScaleSize、Min/Max、指定边界/完整布局及位置尺寸事件仍未关闭。非泛型 IList、Insert/Remove 全契约、完整所属/已挂接样式/native 同步仍缺；ApplicationContext/多 UI/模态/关闭重建与 Form 全局 OpenForms 退出缺口继续保留。复杂 UI/设备/设计器和 Linux/macOS 验收后置，不从任务数量或构建成功推算 98%。
+
+复现：`./tools/compatibility/Test-ControlBounds.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemAddRange.ps1`；两者支持先单独记录固定参考。既有差分驱动保留，完整 Demo 发布继续使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。日志、TRX 和 PE/项目/依赖证据见 artifacts/compatibility-batch009。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

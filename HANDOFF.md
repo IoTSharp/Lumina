@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 008 两个明确子范围代码完成，集成检查及实现提交推送完成；批次 009 本地接续聊天已创建只读准备。本次归属交接提交成功推送并核对远端后，旧主聊天发送“开始接管”；新聊天自检并确认实际接管后旧主立即归档。
+- 调度状态：批次 009 两个明确子范围代码完成，集成检查通过；当前主聊天更新台账、提交推送并准备批次 010 只读接续。批次 008 实现与归属交接均已成功推送。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a140bf-ab23-7d33-a438-241ef1cdf44d`（批次 009，本地 Lumina 项目；已创建，只读准备，待“开始接管”后自检并实际接管）。批次 008 主会话 `01a140ae-7c4d-7543-ba97-971ce31c8aec` 仅完成本次交接提交、推送、启动与接管确认；新聊天实际接管后立即停止全部写入/构建/Git并归档，不等待批次 009 完成。批次 007 主会话 `01a14097-615e-7523-8a15-e70e6a2da8e6` 已通过应用归档列表确认归档，更早主会话均已交接。
+- 当前编码主会话：`01a140bf-ab23-7d33-a438-241ef1cdf44d`（批次 009，本地 Lumina 项目；已实际接管）。批次 008 主会话 `01a140ae-7c4d-7543-ba97-971ce31c8aec` 已停止全部写入/构建/Git；发送实际接管确认时应用返回该聊天已归档，不等待批次 009 完成。批次 007 主会话 `01a14097-615e-7523-8a15-e70e6a2da8e6` 已通过应用归档列表确认归档，更早主会话均已交接。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[009 · 零尺寸边界与子项批量添加首范围](docs/roadmap/batches/009.md)，新主聊天只读准备，交接推送后接管；[008](docs/roadmap/batches/008.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`d7b1db1c0193460b46a7d5abfc385ee73b619d3a`（批次 008），已成功推送 `origin/main`，HEAD/origin/main/远端 refs/heads/main 已核对一致，推送后工作区干净。本记录随后单独提交并推送归属交接，新主聊天实际接管时记录并核对其 SHA。批次 007 实现 `db29dce02f1af525513e2b8817eb16ae0319f732` 与交接 `017d04d7eeeb9174af2fb73a199948114fe49555` 同样已验证；原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[009 · 零尺寸边界与子项批量添加首范围](docs/roadmap/batches/009.md)明确范围代码完成；下一批已划定 [010 · 指定边界与子项插入移除首范围](docs/roadmap/batches/010.md)，交接后领取；[008](docs/roadmap/batches/008.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`d7b1db1c0193460b46a7d5abfc385ee73b619d3a`（批次 008），已成功推送并核对。归属交接提交 `8b31de112a8b4c538aad87cfd2a8dc50ad2bd59e` 已成功推送，批次 009 接管时 HEAD/origin/main/远端 refs/heads/main 核对一致，工作区干净。批次 007 实现 `db29dce02f1af525513e2b8817eb16ae0319f732` 与交接 `017d04d7eeeb9174af2fb73a199948114fe49555` 同样已验证；原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
@@ -66,6 +66,10 @@
 - 批次 008：标准 bool Focus、virtual Focused、ContainsFocus/CanFocus 与标准元数据完成，157 条固定参考/JIT/实际 AOT 相同；三个 typed Add 的 74 条参考/JIT 相同，历史泛型 void 显式适配保留。真实 HWND 状态/无句柄不创建、重复/其他 owner 对象、共享视图/独立 key 缓存和借用 Font 寿命有对照；完整 Select/键盘/布局、IList/AddRange/所属/native 仍缺。
 - 批次 008 集成：主线双目标 Release 0 错误/本次增量 312 警告；293 项全线测试通过，新增 17 焦点 + 40 Add。旧线程69/Action59/旧Task/ValueTask90/context57/默认安装204、Item41/子项基础样式各37/key209/集合72 参考/JIT 回归保留。焦点 AOT 2,552,320 字节、Demo AOT 4,105,216 字节，二者无 CLR Header；焦点实际运行通过且无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13 项目/17 目标仅 .NET 10，原始 Designer/resx 与 net10.0 依赖满足约束；API 分母 1,095/61,240 与运行 unverified 状态不变。
 - 批次 009 文件责任：Control-02b 子智能体负责 Control.cs 与独立零尺寸/负尺寸归一/真实 HWND 矩形检查；ListViewSubItem-02c 子智能体负责 ListViewItem.cs 与三个 typed AddRange 的 null 数组/元素、顺序/身份、样式/借用 Font 和共享视图/key 缓存检查。Win32 必要衔接、文档/API/索引、集成/Git 由主会话协调；先固定参考，构造默认大小/全部派生约束/完整布局与 IList/Insert/所属/native 仍另列。
+- 批次 009 尺寸：无自身 HWND 时保留零/负尺寸且不创建句柄；有 HWND 时负数归零，实际零矩形可恢复。首次创建保留 USER32 原参数解释后 GetWindowRect 回读，HandleCreated 已见归一，int.MinValue 宽度对应 0×0。756 条固定参考/JIT/实际 AOT 相同，33 项新增回归；未改构造默认、全部派生尺寸限制、Form.ScaleSize、Min/Max、完整布局/事件。
+- 批次 009 子项：三个 typed void AddRange 完成，null 数组抛 items 且不改状态，三个重载均跳过 null 元素，包括文字数组；非 null 空 Text 对象/空字符串保留。151 条参考/JIT 相同，121 项新增回归；原构造 null 归空、单项 Add、身份/复制/重复/其他 owner、借用 Font、共享视图/主项 Text/各视图 key 缓存均保留，完整 IList/Insert/Remove/所属/挂接样式/native 仍缺，新 AddRange 未提前计实际 AOT 运行验收。
+- 批次 009 集成：最终 447 项测试全通过，主线双目标 Release 0 错误/最后成功增量 45 警告；旧组件5/线程69/Action59/旧Task/ValueTask90/context57/默认安装204/焦点157/Item41/子项基础样式各37/key209/集合72/Add74 参考JIT全部保留。尺寸 AOT 实际运行 756 条通过，EXE 2,562,048 字节，Demo AOT 4,105,728 字节，二者无 CLR Header；尺寸无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13项目/17目标仅.NET10，原始Designer/resx及net10.0依赖满足约束，API运行状态仍unverified。
+- 批次 010 文件责任：Control-02c 子智能体负责 Control.cs、新 BoundsSpecified.cs 和独立指定边界/派生调用探针；ListViewSubItem-02d 子智能体负责 ListViewItem.cs 与独立 typed Insert/void Remove/RemoveAt/Clear 检查。Win32必要衔接、现有测试必要适配、文档/API/索引、集成/Git由主聊天协调；先固定参考，不扩完整布局/事件与非泛型IList/所属/native。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
 - 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。

@@ -294,6 +294,58 @@ public class ListViewItem
             return Add(new ListViewSubItem(_owner, text, foreColor, backColor, font));
         }
 
+        /// <summary>
+        /// Adds the non-null subitems from the specified array in their original order.
+        /// </summary>
+        /// <param name="items">The subitems to add. Null entries are skipped.</param>
+        public void AddRange(ListViewSubItem?[] items)
+        {
+            ArgumentNullException.ThrowIfNull(items);
+            foreach (ListViewSubItem? item in items)
+            {
+                if (item is not null)
+                {
+                    Add(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds new subitems for the non-null text entries in the specified array.
+        /// </summary>
+        /// <param name="items">The text entries to add. Null entries are skipped.</param>
+        public void AddRange(string?[] items)
+        {
+            ArgumentNullException.ThrowIfNull(items);
+            foreach (string? text in items)
+            {
+                // Unlike Add(null), the WinForms bulk overload omits null text entries.
+                if (text is not null)
+                {
+                    Add(text);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds new subitems with the specified style for non-null text entries.
+        /// </summary>
+        /// <param name="items">The text entries to add. Null entries are skipped.</param>
+        /// <param name="foreColor">The text color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="backColor">The background color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="font">The borrowed text font, or <see langword="null"/> to use the default.</param>
+        public void AddRange(string?[] items, Color foreColor, Color backColor, Font? font)
+        {
+            ArgumentNullException.ThrowIfNull(items);
+            foreach (string? text in items)
+            {
+                if (text is not null)
+                {
+                    Add(text, foreColor, backColor, font);
+                }
+            }
+        }
+
         public void Clear()
         {
             _items.Clear();

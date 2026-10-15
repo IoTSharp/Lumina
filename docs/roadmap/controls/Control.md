@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～008 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；批次 008 完成标准 bool Focus() 与 Focused/ContainsFocus/CanFocus 首范围，157 条固定参考/JIT/实际 AOT 观测相同。Select/CanSelect、完整键盘事件、零尺寸/布局、完整构造、Controls/Parent 和关闭竞态仍待后续范围。
+🟡 **现状：**批次 002～009 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点首范围有 157 条固定参考/JIT/实际 AOT 观测。批次 009 完成零尺寸、句柄相关负尺寸与首次创建归一，756 条三端相同。Select/CanSelect、完整键盘事件、指定边界/完整布局、构造、Controls/Parent 和关闭竞态仍待后续范围。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -13,9 +13,10 @@
 | --- | --- | --- |
 | 🟡 | P0 / Control-01 | 批次 002 已完成 Component/IWin32Window（Control-01a），批次 003 已实现真实 UI 投递的 ISynchronizeInvoke；IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
-| 🟡 | P0 / Control-02 | 批次 008 完成标准 bool Focus() 与 CanFocus/Focused/ContainsFocus（02a）；Select/CanSelect、零尺寸与完整键盘/布局仍待后续，不随首范围关闭。 |
+| 🟡 | P0 / Control-02 | 批次 008/009 完成标准焦点查询（02a）与零尺寸/句柄相关负尺寸首范围（02b）；Select/CanSelect、指定边界与完整键盘/布局仍待后续，不随子范围关闭。 |
 | ✅ | P0 / Control-02a | 批次 008：标准 bool Focus() 与 virtual Focused、ContainsFocus/CanFocus 使用真实 GetFocus/IsChild/IsWindowVisible/IsWindowEnabled；无自身 HWND 不创建句柄，隐藏/禁用/释放与外部原生状态有对照。157 条固定参考/JIT/实际 AOT 相同，17 项新增 STA/元数据回归通过。完整选择、键盘/验证及重建竞态另列。 |
-| ⬜ | P0 / Control-02b | 批次 009 首范围：SetBounds 及 Width/Height/Size/Bounds 的零尺寸与负尺寸归一，查询/无 HWND 设值不创建句柄，已有 HWND 实际矩形允许零尺寸；先固定参考。默认构造大小、所有派生控件约束、完整布局/最小最大尺寸与事件另列。 |
+| ✅ | P0 / Control-02b | 批次 009：SetBounds 及 Width/Height/Size/Bounds 无自身 HWND 时保留零/负尺寸、不创建句柄；已有 HWND 时负数归零，实际零宽高可恢复。首次创建回读原生矩形，HandleCreated 已见归一结果。756 条固定参考/JIT/实际 AOT 相同，33 项新增回归通过。构造默认大小、全部派生约束、完整布局/Min/Max/事件另列。 |
+| ⬜ | P0 / Control-02c | 批次 010 首范围：标准 BoundsSpecified、五参数 SetBounds 与 protected virtual SetBoundsCore，先固定参考检查掩码/保留值、重复赋值与派生调用轨迹，现有入口及属性 setter 实际接入。保留 02b 的句柄相关尺寸语义；完整布局/Min/Max/事件与全部派生约束另列。 |
 | 🟡 | P0 / Control-03 | 批次 003 完成现有 HWND/创建线程与父级句柄查找（Control-03a）；标准 Parent/Form 继承链、未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
 | ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
 | 🟡 | P0 / Control-04 | 批次 003 完成 Action/Delegate/args/Func 同步及 BeginInvoke/EndInvoke 首范围（Control-04a）；完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
@@ -63,6 +64,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - 2026-10-16 · 批次 007：Control 构造接入默认 context 安装，保留已有 custom Current 与禁用策略；dispatcher 将目的 UI Current 用于回调的 ExecutionContext 并 finally 还原。默认直接/BeginInvoke/ValueTask/带结果/工作线程投递 await UI 恢复有固定三端对照，旧 Task 专项保留；完整构造、继承、Controls/Parent 与竞态不关闭，见 [批次 007](../batches/007.md)。
 
 - 2026-10-16 · 批次 008：先固定 WinForms 10.0.11 参考，补标准 Focus 返回及三个查询属性和 Advanced/Browsable/Hidden 元数据。真实 HWND 程序切换、重复请求、外部原生切换/清空、原生 descendant、隐藏/禁用及释放后均按原生状态返回；不因查询或无自身句柄 Focus 创建窗口，也不回退 owner HWND。157 条参考/JIT/实际 AOT 相同，新增 17 项测试；未修改同步上下文/投递与现有 setter。禁用原生父窗口时 CanFocus 为 true 而实际 Focus 返回 false 的差异也按固定参考保留。Select、键盘/验证、Form 继承与广泛重建竞态仍待后续，见 [批次 008](../batches/008.md)。
+
+- 2026-10-16 · 批次 009：先固定参考再改尺寸链。未创建自身 HWND 时 WinForms 保留负尺寸，不能统一钳制到零；已有 HWND 时负数归零且零宽高真实应用到 MoveWindow。首次创建保留原始参数，负尺寸通过 GetWindowRect 回读；int.MinValue 宽度按 USER32 的 CW_USEDEFAULT 结果得到 0×0，HandleCreated 前完成缓存更新。已有 GetNativeHeight 的正逻辑高度扩展不写回为下拉区高度。756 条固定参考/JIT/实际 AOT 相同，新增 33 项独立 STA/原生矩形回归，AOT EXE 2,562,048 字节、无 CLR Header 和 IL2xxx/IL3xxx。构造默认、全部派生限制、Form.ScaleSize、完整布局/事件与 Min/Max 未关闭，见 [批次 009](../batches/009.md)。
 
 ## 原始资料
 
