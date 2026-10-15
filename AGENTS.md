@@ -90,3 +90,13 @@ All agents working in this repository must treat the following rules as hard con
 - `net10.0` stays on LuminaForms and must remain AOT-capable.
 - Do not invent replacement APIs when WinForms already has the answer.
 - Aim for drop-in migration with the same control names, methods, properties, events, defaults, and behavior.
+
+## Continuous Roadmap Implementation (user direction, 2026-10-15)
+
+- Start by reading `HANDOFF.md` and its current batch. Continue implementation rather than restarting assessment.
+- The user explicitly requests multiple internal subagents, one roadmap task per subagent, with disjoint file ownership. Keep one coding lead per workspace; the lead owns shared docs, integration builds, commits and pushes.
+- The user authorizes batch-by-batch implementation, committing/pushing completed work, new local continuation chats after each batch, and 30-minute supervision. Preserve this authorization in continuation prompts; later user pauses/stops take precedence.
+- During the implementation phase, mark a defined task scope code-complete after implementation and appropriate compilation/lightweight checks. Defer complex device/UI tests, designer round-trips and broad stress tests. Consolidate Windows device validation later, then Linux; record macOS validation separately when available.
+- Keep code completion separate from verified compatibility. Do not claim the 98% target from compilation or task counts. Never replace missing behavior with empty methods, swallowed exceptions or unconditional success.
+- At each batch boundary update task pages and change history, regenerate the task index, record deferred checks, update `HANDOFF.md`, commit/push, and hand ownership to a fresh continuation chat before stopping the old coding lead.
+- Avoid new scheduling frameworks or extra architecture. The handoff, existing roadmap/task index, batch notes and app heartbeat are sufficient.

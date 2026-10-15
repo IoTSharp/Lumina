@@ -1,0 +1,18 @@
+{
+  "uiThread": 2,
+  "threadProbe": {
+    "workerThread": 4,
+    "InvokeRequired": false,
+    "invokedThread": 4
+  },
+  "treeManagedNodes": 1,
+  "treeNativeNodes": 0,
+  "listItemConstructionFailure": "NullReferenceException: Object reference not set to an instance of an object.",
+  "listManagedItems": 0,
+  "listNativeItems": 0,
+  "richTextBoxNativeClass": "Edit",
+  "maskAcceptsInvalidCharacters": "abcd",
+  "numericValueAboveMaximum": 20,
+  "topLevelControlParentIsNull": true,
+  "formHandleCreated": true
+}

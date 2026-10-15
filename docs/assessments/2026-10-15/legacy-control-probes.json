@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-15",
+  "referenceRuntime": "Microsoft.WindowsDesktop.App 10.0.11",
+  "scope": "JIT官方WinForms参考端；反射构造用来避开Obsolete警告；未验证Lumina实现",
+  "command": "dotnet run --project artifacts/reassessment-2026-10-15/data-review/DataReview.csproj -c Release",
+  "projectSource": "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Reference Include=\"System.Reflection.MetadataLoadContext\"><HintPath>$(MSBuildToolsPath)/System.Reflection.MetadataLoadContext.dll</HintPath></Reference></ItemGroup></Project>\n",
+  "probeSource": "using System.Reflection;\nusing System.Text.Json;\nusing System.Windows.Forms;\nclass Program {\n [STAThread] static void Main() {\n  var asm=new[]{typeof(Control).Assembly,typeof(IWin32Window).Assembly}.Distinct();\n  var controls=asm.SelectMany(a=>a.GetExportedTypes()).Where(t=>!t.IsAbstract&&!t.IsNested&&typeof(Control).IsAssignableFrom(t)).OrderBy(t=>t.FullName).Select(t=>new {Type=t.FullName,t.Name,Base=t.BaseType?.FullName,HasControlDoc=File.Exists(\"docs/roadmap/controls/\"+t.Name+\".md\"),HasApiDoc=File.Exists(\"docs/roadmap/api/\"+t.Name+\".md\")}).ToArray();\n  var cases=new[]{typeof(BindingSource),typeof(BindingContext),typeof(TreeNodeCollection),typeof(ComboBox.ObjectCollection),typeof(ListView.ListViewItemCollection),typeof(IBindableComponent),typeof(DataObject)};\n  var explicitCases=cases.Select(t=>new{Type=t.FullName,InheritedInterfaces=t.GetInterfaces().Select(x=>x.FullName),Explicit=t.IsInterface?[]:t.GetInterfaces().SelectMany(i=>{var map=t.GetInterfaceMap(i);return map.TargetMethods.Select((m,j)=>new{Interface=i.FullName,Member=map.InterfaceMethods[j].ToString(),Target=m.ToString(),Name=m.Name,m.IsPrivate,m.IsPublic});}).Where(x=>x.IsPrivate).ToArray(),DeclaredPublic=t.GetMembers(BindingFlags.DeclaredOnly|BindingFlags.Public|BindingFlags.Instance|BindingFlags.Static).Select(x=>x.Name).Distinct().ToArray()});\n  var contracts=typeof(Control).GetInterfaces().Select(i=>new{i.FullName,i.IsVisible,i.IsPublic}).ToArray();\n  string dotnetRoot=Directory.GetParent(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory().TrimEnd(Path.DirectorySeparatorChar))!.Parent!.Parent!.FullName;\n  string desktop=Path.Combine(dotnetRoot,\"packs/Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0\"), core=Path.Combine(dotnetRoot,\"packs/Microsoft.NETCore.App.Ref/10.0.11/ref/net10.0\");\n  using var mlc=new MetadataLoadContext(new PathAssemblyResolver(Directory.GetFiles(desktop,\"*.dll\").Concat(Directory.GetFiles(core,\"*.dll\"))),\"System.Runtime\");\n  var refForms=mlc.LoadFromAssemblyPath(Path.Combine(desktop,\"System.Windows.Forms.dll\"));\n  var refControl=refForms.GetType(\"System.Windows.Forms.Control\")!;\n  var refControls=refForms.GetExportedTypes().Where(t=>!t.IsAbstract&&!t.IsNested&&refControl.IsAssignableFrom(t)).OrderBy(t=>t.FullName).Select(t=>t.FullName).ToArray();\n  string imageInsertRule;\n  using(var images=new ImageList())using(var image=new System.Drawing.Bitmap(16,16)){try{((System.Collections.IList)images.Images).Insert(0,image);imageInsertRule=\"succeeded\";}catch(Exception ex){imageInsertRule=ex.GetType().Name;}}\n  var legacy=new[]{\"Menu\",\"MainMenu\",\"ContextMenu\",\"MenuItem\",\"DataGrid\",\"DataGridTextBox\",\"DataGridBoolColumn\",\"DataGridTextBoxColumn\",\"DataGridTableStyle\",\"ToolBar\",\"StatusBar\",\"ToolBarButton\",\"StatusBarPanel\"}.Select(n=>{var ty=typeof(Control).Assembly.GetType(\"System.Windows.Forms.\"+n)!;object? instance=null;string result;try{if(ty.IsAbstract)result=\"abstract\";else{instance=Activator.CreateInstance(ty);result=\"constructed\";}}catch(Exception ex){result=(ex is TargetInvocationException te?te.InnerException:ex)?.GetType().Name+\": \"+(ex is TargetInvocationException te2?te2.InnerException:ex)?.Message;}finally{(instance as IDisposable)?.Dispose();}return new{Type=ty.FullName,Obsolete=ty.GetCustomAttribute<ObsoleteAttribute>()?.Message,ObsoleteError=ty.GetCustomAttribute<ObsoleteAttribute>()?.IsError,Construction=result};});\n  Console.WriteLine(JsonSerializer.Serialize(new{Count=controls.Length,ReferenceCount=refControls.Length,ReferenceControls=refControls,Controls=controls,ExplicitCases=explicitCases,ControlContracts=contracts,ImageInsertRule=imageInsertRule,Legacy=legacy},new JsonSerializerOptions{WriteIndented=true}));\n }\n}\n",
+  "observations": [
+    {
+      "Type": "System.Windows.Forms.Menu",
+      "Obsolete": "`Menu` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `ToolStripDropDown` and `ToolStripDropDownMenu` instead.",
+      "ObsoleteError": false,
+      "Construction": "abstract"
+    },
+    {
+      "Type": "System.Windows.Forms.MainMenu",
+      "Obsolete": "`MainMenu` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `MenuStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.ContextMenu",
+      "Obsolete": "`ContextMenu` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `ContextMenuStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.MenuItem",
+      "Obsolete": "`Menu` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `ToolStripDropDown` and `ToolStripDropDownMenu` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.DataGrid",
+      "Obsolete": "`DataGrid` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `DataGridView` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.DataGridTextBox",
+      "Obsolete": "`DataGrid` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `DataGridView` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.DataGridBoolColumn",
+      "Obsolete": "`DataGrid` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `DataGridView` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.DataGridTextBoxColumn",
+      "Obsolete": "`DataGrid` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `DataGridView` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.DataGridTableStyle",
+      "Obsolete": "`DataGrid` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `DataGridView` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.ToolBar",
+      "Obsolete": "`ToolBar` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `ToolStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.StatusBar",
+      "Obsolete": "`StatusBar` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `StatusStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.ToolBarButton",
+      "Obsolete": "`ToolBar` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `ToolStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    },
+    {
+      "Type": "System.Windows.Forms.StatusBarPanel",
+      "Obsolete": "`StatusBar` is provided for binary compatibility with .NET Framework and is not intended to be used directly from your code. Use `StatusStrip` instead.",
+      "ObsoleteError": false,
+      "Construction": "PlatformNotSupportedException: Operation is not supported on this platform."
+    }
+  ]
+}

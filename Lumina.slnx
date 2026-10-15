@@ -6,24 +6,13 @@
   <Folder Name="/Demos/">
     <Project Path="NativeFormsDemo/NativeFormsDemo.csproj" />
     <Project Path="Lumina.NotepadDemo/Lumina.NotepadDemo.csproj" />
-    <Project Path="Lumina.GlassMorphDemo/Lumina.GlassMorphDemo.csproj" />
   </Folder>
-  <Project Path="Lumina.App/Lumina.App.csproj">
-    <Platform Solution="*|x64" Project="x64" />
-  </Project>
   <Project Path="Lumina.Core/Lumina.Core.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="Lumina.Ext.WinForms/Lumina.Ext.WinForms.csproj">
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="Release|Any CPU" Project="x64" />
-  </Project>
-  <Project Path="Lumina.Ext.Wpf/Lumina.Ext.Wpf.csproj">
-    <Platform Solution="*|x64" Project="x64" />
-    <Platform Solution="Release|Any CPU" Project="x64" />
-  </Project>
-  <Project Path="Lumina.Ext/Lumina.Ext.csproj">
-    <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="Lumina.Forms.Analyzers/Lumina.Forms.Analyzers.csproj">
     <Platform Solution="*|x64" Project="x64" />

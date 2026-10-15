@@ -1,0 +1,6 @@
+# Keep generated compatibility snapshots stable across Windows and Unix.
+docs/roadmap/** text eol=lf
+docs/assessments/** text eol=lf
+tools/compatibility/** text eol=lf
+HANDOFF.md text eol=lf
+Lumina.Effects.slnx text eol=lf

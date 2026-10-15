@@ -1,0 +1,29 @@
+{
+  "referencePackVersion": "10.0.11",
+  "date": "2026-10-15",
+  "baseline": [
+    {
+      "file": "System.Windows.Forms.dll",
+      "sha256": "322768ace840b3ef877afd6eafaa9b1d63b159a6ffcebb41d9861e47a9162f72",
+      "assembly": "System.Windows.Forms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+    },
+    {
+      "file": "System.Windows.Forms.Primitives.dll",
+      "sha256": "8b1bbe4652f2d3ab71dddb8df13ee194605b94e2e1508bc50421a0a6085db768",
+      "assembly": "System.Windows.Forms.Primitives, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+    },
+    {
+      "file": "System.Drawing.Common.dll",
+      "sha256": "985edee1a5a9defa240e28c662599c881f0fd9714180dc0dfd823a502c053cc3",
+      "assembly": "System.Drawing.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51"
+    }
+  ],
+  "candidate": {
+    "path": "Lumina.Forms/bin/Release/net10.0/Lumina.Forms.dll",
+    "sha256": "aa614e00ef1734ff7b8b8eddf695887776f25f0accc1bbca5a0019d4ff6662cf"
+  },
+  "baselineTypeCount": 1095,
+  "effectiveMemberRows": 61240,
+  "interfaceMemberRows": 9047,
+  "note": "Inherited APIs repeated per type. Shape matches are not supported API. No runtime behavior or platform verification performed by this exporter."
+}

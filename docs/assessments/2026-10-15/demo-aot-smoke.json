@@ -1,0 +1,28 @@
+{
+  "idle": true,
+  "exitedBeforeClose": false,
+  "windows": [
+    {
+      "handle": 9375438,
+      "nativeClass": "LuminaFormsNotifyIconHost",
+      "title": "LuminaFormsNotifyIconHost"
+    },
+    {
+      "handle": 5181902,
+      "nativeClass": "GDI\u002B Hook Window Class",
+      "title": "GDI\u002B Window (NativeFormsDemo.exe)"
+    },
+    {
+      "handle": 6558040,
+      "nativeClass": "IME",
+      "title": "Default IME"
+    },
+    {
+      "handle": 16388282,
+      "nativeClass": "IME",
+      "title": "Default IME"
+    }
+  ],
+  "closedGracefully": false,
+  "forcedTermination": true
+}

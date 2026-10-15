@@ -36,7 +36,6 @@ nav_key: "docs"
 | 框架 | NuGet 包 | 说明 |
 | --- | --- | --- |
 | WinForms | `Lumina.WinForms` | 扩展方法：`form.SetMica()` 等 |
-| WPF | `Lumina.Wpf` | 附加属性 + 代码后置 |
 | Win32 原生 | `Lumina` | `LuminaWindow.SetEffect(hwnd, ...)` |
 | 无边框窗口 | `Lumina` | 同 Win32，需手动传入 hwnd |
 

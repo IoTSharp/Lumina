@@ -1,0 +1,42 @@
+# MessageBox：逐成员待办
+
+自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。
+
+[控件任务](../controls/MessageBox.md) · [计量规则](../coverage.md) · [全量机器清单](members.csv) · [接口契约（含显式实现）](interfaces.csv) · [基线指纹](baseline.json)
+
+类型：`System.Windows.Forms.MessageBox`；基类：`System.Object`。Lumina 同名类型：🟡 存在；基类及基线接口形状：🟡 初步匹配，待源码消费验证。
+
+公开属性 **0**，公开事件 **0**，公开方法 **21**；受保护扩展成员 **0**。构造、字段和常量另列，均不能忽略。继承同一成员在每个具体控件上都要验收，但全库统计使用不同口径，见计量规则。
+
+`🟡签名匹配` 仅指规范化命名空间后的元数据形状，**不是实现完成**。所有运行支持状态均为 `⬜未验收`；实际支持须补源码消费、默认值、运行与 AOT 证据。默认值栏是特性元数据，缺少特性不代表默认值不存在。
+
+## 公开成员
+
+| ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
+| --- | --- | --- | --- | --- | --- |
+| API-FD4249956A12A4C6 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text)` | `System.Windows.Forms.MessageBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-0C794367C389F3F6 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption)` | `System.Windows.Forms.MessageBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-8E1D9FA06C3FD379 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons)` | `System.Windows.Forms.MessageBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-752331F6904AC139 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon)` | `System.Windows.Forms.MessageBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-BB3EF0FC79613654 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-FD4CB9F7FD666787 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-1DDD78543917514A | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.Boolean displayHelpButton)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-8885BF63028353BC | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-BCD1BACC6CFFA728 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.String keyword)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-CDA062E6555F48D8 | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.Windows.Forms.HelpNavigator navigator)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-13D004D2A287B4DF | Method | `public static System.Windows.Forms.DialogResult Show(System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.Windows.Forms.HelpNavigator navigator, System.Object param)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-BF086837F4704E13 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-022FF239503C6567 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-C8DE84D4623B5802 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-ACF3688E6DE50FE8 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-27DC567AA58CA7C3 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-EB3A118864DE2026 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-51FD6B5B80B9C62D | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-0F6F6B2408B93172 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.String keyword)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-0198A4421ED337D4 | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.Windows.Forms.HelpNavigator navigator)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-CCA1E5448E2625EF | Method | `public static System.Windows.Forms.DialogResult Show(System.Windows.Forms.IWin32Window owner, System.String text, System.String caption, System.Windows.Forms.MessageBoxButtons buttons, System.Windows.Forms.MessageBoxIcon icon, System.Windows.Forms.MessageBoxDefaultButton defaultButton, System.Windows.Forms.MessageBoxOptions options, System.String helpFilePath, System.Windows.Forms.HelpNavigator navigator, System.Object param)` | `System.Windows.Forms.MessageBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+
+## 受保护扩展成员（独立验收，不稀释公开 API 指标）
+
+| ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
+| --- | --- | --- | --- | --- | --- |

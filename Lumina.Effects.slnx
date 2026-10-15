@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Effects/">
+    <Project Path="Lumina.App/Lumina.App.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+    <Project Path="Lumina.Ext/Lumina.Ext.csproj" />
+    <Project Path="Lumina.Advanced/Lumina.Advanced.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+    <Project Path="Lumina.GlassMorphDemo/Lumina.GlassMorphDemo.csproj" />
+  </Folder>
+  <Project Path="Lumina.Core/Lumina.Core.csproj" />
+  <Project Path="Lumina.Forms/Lumina.Forms.csproj" />
+  <Project Path="Lumina.Forms.Analyzers/Lumina.Forms.Analyzers.csproj" />
+</Solution>

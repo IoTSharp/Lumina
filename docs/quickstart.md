@@ -5,7 +5,6 @@
 ```powershell
 dotnet add package Lumina.Core
 dotnet add package Lumina.WinForms
-dotnet add package Lumina.Wpf
 dotnet add package Lumina.Forms
 ```
 
@@ -22,14 +21,6 @@ public partial class MainForm : Form
         this.SetMica();
     }
 }
-```
-
-## WPF
-
-```xml
-<Window xmlns:lumina="clr-namespace:Lumina.Wpf;assembly=Lumina.Wpf"
-        lumina:Effect.Kind="Mica">
-</Window>
 ```
 
 ## LuminaForms

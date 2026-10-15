@@ -1,0 +1,45 @@
+# 执行顺序与发布门槛
+
+2026-10-15 用户确定实施方式：先逐批完成代码，复杂 UI/真机验证集中后置。每批由新的编码主会话带 2～3 个无文件冲突的内部子智能体推进，一人一任务；根目录 [HANDOFF.md](../../HANDOFF.md) 是接续入口。以下里程碑中的“验收/发布门槛”是后期兼容验收要求，不用来阻塞可独立推进的代码任务；FND-004 等纯真机项继续保留，转入 Windows 集中验收阶段。Linux 后期统一测试，macOS 的真机结果单独记录。
+
+任务按依赖和真实迁移阻塞排序。P0 先做；P1 是共同基础及常见场景；P2 是业务/高级能力；P3 是历史专属和低频补齐。P3 代表后做，不代表从全量兼容目标删除。跨平台不等待每个历史 Windows 控件完成，但必须先通过资源与基础原型。
+
+| 顺序 | 里程碑 | 优先级/状态 | 具体任务入口 | 完成门槛 |
+| --- | --- | --- | --- | --- |
+| 00 | 基线可追踪 | P0 🟡 | [计量](coverage.md)、[类型/成员](api/types.json)、[全控件索引](README.md) | 清单已生成；行为场景和证据映射仍需建立 |
+| 01 | M0 阻塞 | P0 ⬜ | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程、构造、AOT主窗、签名与警告闭环；无需先修所有美化 |
+| 02 | M1 控件/窗体骨架 | P1 ⬜ | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 标准继承/Parent/Controls/布局/生命周期/键盘/验证/模态/设计器场景可对照 |
+| 03 | M2a 高频简单控件 | P1 ⬜ | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
+| 04 | M2b 已有确定性薄弱控件 | P1 ⬜ | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
+| 05 | M2c 容器/列表/菜单 | P1 ⬜ | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
+| 06 | M3 业务链路 | P2 ⬜ | Binding/BindingSource/BindingContext/CurrencyManager → ErrorProvider → DataGridView基础/行列/样式/六种单元格/集合 → 编辑控件 → BindingNavigator；ImageList/Timer等 | 真实对象列表编辑、校验、排序、虚拟模式可用且AOT；列模板/Clone/共享行/编辑提交不遗漏 |
+| 07 | M3 补常用缺项 | P2 ⬜ | CheckedListBox、DomainUpDown、TrackBar、ScrollBar/H/VScrollBar、ToolStrip容器和下拉 | 所有控件有独立验收，不只看Demo能编译 |
+| 08 | M4 深度兼容 | P2/P3 ⬜ | PropertyGrid及GridItem/PropertyTab、Printing、派生/自绘、UIA、OLE/拖放、WebBrowser、MDI；DataGrid/旧Menu/ToolBar/StatusBar占位契约 | 全量未评估项归零；历史项先匹配固定.NET10标准异常，恢复旧版UI作为可选扩展；剩余项公开 |
+| 09 | XPL 平台进入闸门 | P1研究 🔎 | [XPL-001～015](platforms.md) | 可在M1之后并行一个平台原型；资源契约未解决不承诺全量后端 |
+| 10 | M5 平台推广 | P2 ⬜ | 各控件Linux/macOS任务，按03～08的相同业务依赖顺序 | 各平台可移植属性/事件/行为逐控件 ≥98%，专属能力清楚披露 |
+
+完整控件列表与逐项任务见 [索引](README.md)。同一里程碑内部先修被多个控件共用的基础；不按控件名称字母顺序分配开发。
+
+控件范围按 [补漏审计](scope-audit.md) 的继承闭包检查：Control含抽象基类，ToolStripItem、CommonDialog、Menu、非可视Component及TaskDialog另外核查。不能只完成62个具体Control就宣称所有交互对象已覆盖。
+
+控件页的 P0 表示“开始该控件前先做的工作”，不是把M4历史控件的P0插到M0线程修复之前。全局按本页里程碑与依赖先后，再按控件内P0→P3执行。[tasks.csv](tasks.csv)按阶段/优先级/类型提供筛选索引，不是自动排程，也不是API支持率分母。
+
+## 第一个 90 天
+
+按 2～3 名熟悉 C#/.NET/Win32 的全职工程师的工作顺序估计，不是交付整个框架的承诺：
+
+1. 第1～2周：M0；补齐行为场景模板；选择3个真实迁移候选，记录窗体/控件/第三方/Windows互操作。
+2. 第3～6周：M1；首个真实配置/设备工具迁移，开始M2a；对照实际API附件修正优先级。
+3. 第7～10周：集中M2b集合/输入缺口及M2c容器/菜单；不并行铺所有高级控件。
+4. 第11～12周：稳定首批迁移、AOT分发、设计器往返；有真实平台设备和需求时完成一个有时限的平台原型。
+5. 第90天：按已关闭缺口、每控件验收率、真实迁移改动量和资源原型结果重估M3～M5。完整DataGridView/PropertyGrid、完整Windows98%以及两个原生后端不承诺90天完成。
+
+## 每个控件的完成定义
+
+开发完成与兼容验收分开：明确范围的代码实现加必要编译/轻量检查后记 ✅ 代码完成，并立即推进下一任务；未完成子项保留，父任务不得跟着自动关闭。各控件页记录真实实现历史与检查结果。复杂真机/UI、设计器和平台运行检查记为后期待验收，不为这些检查先搭大型测试框架。
+
+最终兼容验收仍要求：固定成员清单、继承关系、默认值/异常差分、程序与用户触发事件轨迹、运行时状态回读、平台实现、AOT运行、设计器序列化（适用时）、键盘与辅助技术、释放验证。指定范围附可复现证据后才记 🧪 验收通过并计入98%；规划文档完成只写在修改历史。
+
+每次发布报告每控件属性/事件/方法/行为四项、各平台状态、剩余缺项。运行时未支持功能不得以空方法/吞异常伪装兼容。关键业务与生命周期阻塞必须为零；其余按 [98%规则](coverage.md)。
+
+没有必要在此阶段引入插件后端系统、独立抽象包、每控件项目、分布式验收平台或全量自动UI录制系统。先在现有Lumina.Forms、Lumina.Tests和固定双目标Demo完成最小有效验证。

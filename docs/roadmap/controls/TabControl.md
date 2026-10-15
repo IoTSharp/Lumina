@@ -1,0 +1,51 @@
+# TabControl
+
+🟡 **当前状态：**已有 SysTabControl32、选中页同步、TCM_INSERTITEMW/GETCURSEL/ADJUSTRECT 和 SelectedIndexChanged；缺完整 TabPages 标准集合及可取消选择事件链。
+
+基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
+
+- 完整成员及继承成员：[TabControl API](../api/TabControl.md)。本文展开高影响工作，API 清单中未展开的成员仍全部进入验收。
+- 共同要求：[基础契约与验收](../foundations.md)。
+- 源码：[TabControl.cs](../../../Lumina.Forms/TabControl.cs)
+- 前置与排序：Control/父子集合、TabPage；容器可见性/焦点与图像支持。
+
+## 顺序任务
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ⬜ | P0 / TabControl-01 | 补齐 TabPageCollection/TabPages、Controls 的类型约束、SelectedIndex/SelectedTab；加入/移除选中页、空集合、索引越界与句柄创建前赋值按基线。 |
+| ⬜ | P0 / TabControl-02 | 补齐 Alignment、Appearance、DrawMode、HotTrack、ImageList、ItemSize、Multiline、Padding、SizeMode、ShowToolTips、RightToLeftLayout 和事件参数类型。 |
+| ⬜ | P1 / TabControl-03 | 实现 Deselecting/Deselected/Selecting/Selected 的可取消事件链，记录 SelectedIndexChanged 的准确相对顺序；鼠标、键盘、程序赋值三条路径一致。 |
+| ⬜ | P1 / TabControl-04 | 原生选项卡点击时在 TCN_SELCHANGING 阶段允许 Cancel；取消后原页 Visible、焦点、SelectedIndex 和原生索引不能分叉。 |
+| ⬜ | P1 / TabControl-05 | 实现 GetTabRect、SelectTab/DeselectTab 重载、焦点页导航与 Ctrl+Tab/Ctrl+Shift+Tab、方向键行为；TabPage.GetTabPageOfComponent 的静态查询在页类型另行验收。 |
+| ⬜ | P1 / TabControl-06 | 支持 ImageIndex/ImageKey、文字运行时变更、页工具提示和 DrawItem；绘制扩展是兼容能力，非跨平台全自绘默认路线。 |
+| ⬜ | P1 / TabControl-07 | 对齐 DisplayRectangle、页边界、RTL、多行/垂直标签、DPI、隐藏和重建句柄；切换页面不重复创建/销毁业务控件。 |
+| ⬜ | P2 / TabControl-08 | Windows 复用 SysTabControl32，TCM_* 与 TCN_* 双向同步；保存 native item/lParam 归属，删除 item 不悬挂托管页引用。 |
+| ⬜ | P2 / TabControl-09 | Linux 使用 GtkNotebook + 每页原生容器；switch-page 默认非 WinForms 全套可取消链，需在动作提交前路由选择与取消。OwnerDraw/多行标签无完整原生等价项，单列。 |
+| ⬜ | P3 / TabControl-10 | macOS 使用 NSTabView/NSTabViewItem 与 delegate shouldSelectTabViewItem；多行/垂直排列、OwnerDraw 标签和工具提示差异逐项记录，禁止假称全量等价。 |
+| ⬜ | P1 / TabControl-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
+| ⬜ | P1 / TabControl-V2 | NativeFormsDemo 保持 net10.0-windows 真 WinForms + net10.0 Lumina 双目标；静态 UI 写入 .Designer.cs/.resx；完成 VS 设计器打开/保存/再打开、本地化资源和发布后实际操作验收。 |
+| ⬜ | P1 / TabControl-V3 | 发布 win-x64 Native AOT，检查实际窗口与本控件交互、裁剪告警、可访问性名称/角色/键盘与释放；句柄重建、父级 Dispose、重复 Dispose 后无回调和 native 资源泄漏。Linux/macOS 分别原生发布与同场景测试，不能用 Windows 结果代替。 |
+
+## 三平台实现边界
+
+| 平台 | 原生实现和差异 |
+| --- | --- |
+| Windows | 已用 SysTabControl32；重点补 TCN_SELCHANGING、完整样式/图像和集合生命周期。 |
+| Linux | GtkNotebook 原生页签；不支持的外观或自定义绘制契约必须列例外，而非把支持 switch-page 当支持全部事件。 |
+| macOS | NSTabView 与 delegate；NSView 页面承载原生 children，native selection 的 veto 和托管取消链统一。 |
+
+System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
+
+## 修改历史
+
+- `9d5165f`（2026-04-09）：扩展 TabControl 兼容功能。
+- `f666aa6`（2026-04-08）：UI 和发布改进提交涉及本文件。
+- `cb090bc`（2026-04-08）：记事本/UI 改进提交涉及本文件。
+- 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
+
+## 原始资料
+
+- [WinForms TabControl 固定 API](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.tabcontrol?view=windowsdesktop-10.0)
+- [GTK4 Notebook](https://docs.gtk.org/gtk4/class.Notebook.html)
+- [AppKit nstabview](https://developer.apple.com/documentation/appkit/nstabview)

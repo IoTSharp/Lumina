@@ -1,0 +1,267 @@
+# 逐控件任务索引
+
+更新：2026-10-15。正文按控件族组织，实施按 [执行顺序](execution.md) 的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在 API 附件。
+
+[简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
+
+✅=代码完成；🧪=指定范围验收通过；🚧=正在编码；🟡=存在代码/局部实现，未完整验收；⬜=缺失/待验收；🔎=待验证；🚫=平台不等价，不能算完成。下表“存在”只指同名类型。**目前没有控件经完整逐项证据证明达到98%**，两套原生平台也尚未实现。
+
+本轮有187份独立类型文档，覆盖全部69个公开Control类型（62个非抽象、7个抽象，含Design命名空间），以及ToolStripItem、CommonDialog、Menu、非可视Component、TaskDialog与表格附属对象。ComponentEditorPage为抽象，不算第63个具体控件。全1095个类型含附属枚举/委托/接口等，由[责任映射](api/ownership.csv)归属；不能把187页当作已实现187个控件。
+
+## 基础与继承链
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ |
+| [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ |
+| [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ |
+| [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ |
+| [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | ⬜ 缺失 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ |
+| [ScrollableControl](controls/ScrollableControl.md) | M1 | ⬜ 缺失 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ |
+| [ContainerControl](controls/ContainerControl.md) | M1 | ⬜ 缺失 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ |
+| [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ |
+| [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ |
+| [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ |
+| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ |
+| [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ |
+| [UpDownBase](controls/UpDownBase.md) | M1 | ⬜ 缺失 | 103 / 74 / 84 | ⬜ / ⬜ / ⬜ |
+| [ScrollBar](controls/ScrollBar.md) | M1 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+
+## 输入与显示
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [Button](controls/Button.md) | M2 | 🟡 存在 | 101 / 75 / 76 | ⬜ / ⬜ / ⬜ |
+| [CheckBox](controls/CheckBox.md) | M2 | 🟡 存在 | 105 / 78 / 74 | ⬜ / ⬜ / ⬜ |
+| [RadioButton](controls/RadioButton.md) | M2 | 🟡 存在 | 103 / 77 / 75 | ⬜ / ⬜ / ⬜ |
+| [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ |
+| [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ |
+| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ |
+| [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ |
+| [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ |
+| [DomainUpDown](controls/DomainUpDown.md) | M2 | ⬜ 缺失 | 108 / 75 / 84 | ⬜ / ⬜ / ⬜ |
+| [DateTimePicker](controls/DateTimePicker.md) | M2 | 🟡 存在 | 103 / 77 / 74 | ⬜ / ⬜ / ⬜ |
+| [MonthCalendar](controls/MonthCalendar.md) | M2 | 🟡 存在 | 106 / 75 / 90 | ⬜ / ⬜ / ⬜ |
+| [ProgressBar](controls/ProgressBar.md) | M2 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ |
+| [TrackBar](controls/TrackBar.md) | M2 | ⬜ 缺失 | 93 / 75 / 77 | ⬜ / ⬜ / ⬜ |
+| [HScrollBar](controls/HScrollBar.md) | M2 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+| [VScrollBar](controls/VScrollBar.md) | M2 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+| [PictureBox](controls/PictureBox.md) | M2 | 🟡 存在 | 91 / 75 / 79 | ⬜ / ⬜ / ⬜ |
+
+## 容器与布局
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [Panel](controls/Panel.md) | M2 | 🟡 存在 | 93 / 73 / 76 | ⬜ / ⬜ / ⬜ |
+| [GroupBox](controls/GroupBox.md) | M2 | 🟡 存在 | 87 / 72 / 74 | ⬜ / ⬜ / ⬜ |
+| [FlowLayoutPanel](controls/FlowLayoutPanel.md) | M2 | 🟡 存在 | 95 / 73 / 78 | ⬜ / ⬜ / ⬜ |
+| [TableLayoutPanel](controls/TableLayoutPanel.md) | M2 | 🟡 存在 | 100 / 74 / 90 | ⬜ / ⬜ / ⬜ |
+| [TabControl](controls/TabControl.md) | M2 | 🟡 存在 | 99 / 79 / 82 | ⬜ / ⬜ / ⬜ |
+| [TabPage](controls/TabPage.md) | M2 | 🟡 存在 | 97 / 73 / 77 | ⬜ / ⬜ / ⬜ |
+| [SplitContainer](controls/SplitContainer.md) | M2 | 🟡 存在 | 111 / 76 / 85 | ⬜ / ⬜ / ⬜ |
+| [Splitter](controls/Splitter.md) | M2 | 🟡 存在 | 88 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+| [SplitterPanel](controls/SplitterPanel.md) | M2 | ⬜ 缺失 | 93 / 73 / 76 | ⬜ / ⬜ / ⬜ |
+
+## 列表、绑定与业务数据
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [ComboBox](controls/ComboBox.md) | M3 | 🟡 存在 | 112 / 88 / 84 | ⬜ / ⬜ / ⬜ |
+| [ListBox](controls/ListBox.md) | M3 | 🟡 存在 | 112 / 83 / 88 | ⬜ / ⬜ / ⬜ |
+| [CheckedListBox](controls/CheckedListBox.md) | M3 | ⬜ 缺失 | 117 / 84 / 92 | ⬜ / ⬜ / ⬜ |
+| [ListView](controls/ListView.md) | M2b | 🟡 存在 | 126 / 95 / 94 | ⬜ / ⬜ / ⬜ |
+| [TreeView](controls/TreeView.md) | M2b | 🟡 存在 | 113 / 88 / 84 | ⬜ / ⬜ / ⬜ |
+| [TreeNode](controls/TreeNode.md) | M3 | 🟡 存在 | 33 / 0 / 13 | ⬜ / ⬜ / ⬜ |
+| [TreeNodeCollection](controls/TreeNodeCollection.md) | M3 | 🟡 存在 | 4 / 0 / 26 | ⬜ / ⬜ / ⬜ |
+| [ListViewItem](controls/ListViewItem.md) | M0→M2b | 🟡 存在 | 22 / 0 / 8 | ⬜ / ⬜ / ⬜ |
+| [ColumnHeader](controls/ColumnHeader.md) | M3 | 🟡 存在 | 13 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [ListViewGroup](controls/ListViewGroup.md) | M3 | ⬜ 缺失 | 13 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [ListViewSubItem](controls/ListViewSubItem.md) | M3 | 🟡 存在 | 7 / 0 / 2 | ⬜ / ⬜ / ⬜ |
+| [Binding](controls/Binding.md) | M3 | ⬜ 缺失 | 14 / 3 / 2 | ⬜ / ⬜ / ⬜ |
+| [BindingSource](controls/BindingSource.md) | M3 | ⬜ 缺失 | 30 / 10 / 34 | ⬜ / ⬜ / ⬜ |
+| [BindingContext](controls/BindingContext.md) | M3 | ⬜ 缺失 | 3 / 1 / 3 | ⬜ / ⬜ / ⬜ |
+| [CurrencyManager](controls/CurrencyManager.md) | M3 | ⬜ 缺失 | 6 / 8 / 8 | ⬜ / ⬜ / ⬜ |
+| [DataGridView](controls/DataGridView.md) | M3 | ⬜ 缺失 | 157 / 190 / 116 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewComboBoxEditingControl](controls/DataGridViewComboBoxEditingControl.md) | M3 | ⬜ 缺失 | 118 / 88 / 88 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewTextBoxEditingControl](controls/DataGridViewTextBoxEditingControl.md) | M3 | ⬜ 缺失 | 116 / 79 / 96 | ⬜ / ⬜ / ⬜ |
+| [BindingNavigator](controls/BindingNavigator.md) | M3 | ⬜ 缺失 | 124 / 83 / 84 | ⬜ / ⬜ / ⬜ |
+| [ErrorProvider](controls/ErrorProvider.md) | M3 | ⬜ 缺失 | 11 / 2 / 12 | ⬜ / ⬜ / ⬜ |
+| [ImageList](controls/ImageList.md) | M3 | ⬜ 缺失 | 10 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [Timer](controls/Timer.md) | M3 | ⬜ 缺失 | 5 / 2 / 4 | ⬜ / ⬜ / ⬜ |
+| [PropertyGrid](controls/PropertyGrid.md) | M4 | ⬜ 缺失 | 131 / 79 / 85 | ⬜ / ⬜ / ⬜ |
+| [DataGrid](controls/DataGrid.md) | M4 | ⬜ 缺失 | 124 / 86 / 102 | ⬜ / ⬜ / ⬜ |
+| [DataGridTextBox](controls/DataGridTextBox.md) | M4 | ⬜ 缺失 | 111 / 79 / 93 | ⬜ / ⬜ / ⬜ |
+
+## 菜单、工具条与条目
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [ToolStrip](controls/ToolStrip.md) | M2 | 🟡 存在 | 114 / 82 / 80 | ⬜ / ⬜ / ⬜ |
+| [MenuStrip](controls/MenuStrip.md) | M2 | 🟡 存在 | 115 / 84 / 80 | ⬜ / ⬜ / ⬜ |
+| [StatusStrip](controls/StatusStrip.md) | M2 | 🟡 存在 | 116 / 82 / 80 | ⬜ / ⬜ / ⬜ |
+| [ContextMenuStrip](controls/ContextMenuStrip.md) | M2 | 🟡 存在 | 124 / 86 / 88 | ⬜ / ⬜ / ⬜ |
+| [ToolStripContainer](controls/ToolStripContainer.md) | M2 | ⬜ 缺失 | 106 / 74 / 81 | ⬜ / ⬜ / ⬜ |
+| [ToolStripContentPanel](controls/ToolStripContentPanel.md) | M2 | ⬜ 缺失 | 95 / 75 / 76 | ⬜ / ⬜ / ⬜ |
+| [ToolStripPanel](controls/ToolStripPanel.md) | M2 | ⬜ 缺失 | 103 / 75 / 88 | ⬜ / ⬜ / ⬜ |
+| [ToolStripDropDown](controls/ToolStripDropDown.md) | M2 | ⬜ 缺失 | 121 / 86 / 88 | ⬜ / ⬜ / ⬜ |
+| [ToolStripDropDownMenu](controls/ToolStripDropDownMenu.md) | M2 | ⬜ 缺失 | 123 / 86 / 88 | ⬜ / ⬜ / ⬜ |
+| [ToolStripOverflow](controls/ToolStripOverflow.md) | M2 | ⬜ 缺失 | 121 / 86 / 88 | ⬜ / ⬜ / ⬜ |
+| [ToolStripItem](controls/ToolStripItem.md) | M2 | 🟡 存在 | 61 / 32 / 19 | ⬜ / ⬜ / ⬜ |
+| [ToolStripItemCollection](controls/ToolStripItemCollection.md) | M2 | 🟡 存在 | 4 / 0 / 22 | ⬜ / ⬜ / ⬜ |
+| [ToolStripButton](controls/ToolStripButton.md) | M2 | 🟡 存在 | 64 / 34 / 19 | ⬜ / ⬜ / ⬜ |
+| [ToolStripLabel](controls/ToolStripLabel.md) | M2 | 🟡 存在 | 67 / 32 / 19 | ⬜ / ⬜ / ⬜ |
+| [ToolStripStatusLabel](controls/ToolStripStatusLabel.md) | M2 | 🟡 存在 | 71 / 32 / 19 | ⬜ / ⬜ / ⬜ |
+| [ToolStripSeparator](controls/ToolStripSeparator.md) | M2 | 🟡 存在 | 61 / 32 / 19 | ⬜ / ⬜ / ⬜ |
+| [ToolStripTextBox](controls/ToolStripTextBox.md) | M2 | 🟡 存在 | 87 / 48 / 37 | ⬜ / ⬜ / ⬜ |
+| [ToolStripComboBox](controls/ToolStripComboBox.md) | M2 | 🟡 存在 | 84 / 46 / 29 | ⬜ / ⬜ / ⬜ |
+| [ToolStripProgressBar](controls/ToolStripProgressBar.md) | M2 | 🟡 存在 | 73 / 42 / 22 | ⬜ / ⬜ / ⬜ |
+| [ToolStripMenuItem](controls/ToolStripMenuItem.md) | M2 | 🟡 存在 | 73 / 38 / 21 | ⬜ / ⬜ / ⬜ |
+| [ToolStripDropDownItem](controls/ToolStripDropDownItem.md) | M2 | 🟡 存在 | 66 / 36 / 21 | ⬜ / ⬜ / ⬜ |
+| [ToolStripDropDownButton](controls/ToolStripDropDownButton.md) | M2 | 🟡 存在 | 67 / 36 / 21 | ⬜ / ⬜ / ⬜ |
+| [ToolStripSplitButton](controls/ToolStripSplitButton.md) | M2 | 🟡 存在 | 75 / 39 / 24 | ⬜ / ⬜ / ⬜ |
+| [ToolStripControlHost](controls/ToolStripControlHost.md) | M2 | ⬜ 缺失 | 65 / 41 / 20 | ⬜ / ⬜ / ⬜ |
+| [ToolBar](controls/ToolBar.md) | M4 | ⬜ 缺失 | 95 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+| [StatusBar](controls/StatusBar.md) | M4 | ⬜ 缺失 | 87 / 74 / 74 | ⬜ / ⬜ / ⬜ |
+
+## 对话框与组件
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [MessageBox](controls/MessageBox.md) | M2 | 🟡 存在 | 0 / 0 / 21 | ⬜ / ⬜ / ⬜ |
+| [CommonDialog](controls/CommonDialog.md) | M2 | ⬜ 缺失 | 3 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [FileDialog](controls/FileDialog.md) | M2 | ⬜ 缺失 | 25 / 3 / 5 | ⬜ / ⬜ / ⬜ |
+| [OpenFileDialog](controls/OpenFileDialog.md) | M2 | 🟡 存在 | 32 / 3 / 6 | ⬜ / ⬜ / ⬜ |
+| [SaveFileDialog](controls/SaveFileDialog.md) | M2 | 🟡 存在 | 29 / 3 / 6 | ⬜ / ⬜ / ⬜ |
+| [FolderBrowserDialog](controls/FolderBrowserDialog.md) | M2 | 🟡 存在 | 17 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [ColorDialog](controls/ColorDialog.md) | M2 | 🟡 存在 | 10 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [FontDialog](controls/FontDialog.md) | M2 | 🟡 存在 | 18 / 3 / 5 | ⬜ / ⬜ / ⬜ |
+| [ToolTip](controls/ToolTip.md) | M2 | 🟡 存在 | 18 / 3 / 13 | ⬜ / ⬜ / ⬜ |
+| [NotifyIcon](controls/NotifyIcon.md) | M2 | 🟡 存在 | 10 / 11 / 4 | ⬜ / ⬜ / ⬜ |
+| [HelpProvider](controls/HelpProvider.md) | M4 | ⬜ 缺失 | 4 / 1 / 12 | ⬜ / ⬜ / ⬜ |
+
+## 打印与预览
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [PrintDocument](controls/PrintDocument.md) | M4 | ⬜ 缺失 | 7 / 5 / 3 | ⬜ / ⬜ / ⬜ |
+| [PrintDialog](controls/PrintDialog.md) | M4 | ⬜ 缺失 | 13 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [PageSetupDialog](controls/PageSetupDialog.md) | M4 | ⬜ 缺失 | 14 / 2 / 5 | ⬜ / ⬜ / ⬜ |
+| [PrintPreviewControl](controls/PrintPreviewControl.md) | M4 | ⬜ 缺失 | 91 / 73 / 75 | ⬜ / ⬜ / ⬜ |
+| [PrintPreviewDialog](controls/PrintPreviewDialog.md) | M4 | ⬜ 缺失 | 146 / 99 / 95 | ⬜ / ⬜ / ⬜ |
+
+## 系统、派生、历史与设计契约
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [NativeWindow](controls/NativeWindow.md) | M4 | ⬜ 缺失 | 1 / 0 / 6 | ⬜ / ⬜ / ⬜ |
+| [MdiClient](controls/MdiClient.md) | M4 | ⬜ 缺失 | 85 / 72 / 75 | ⬜ / ⬜ / ⬜ |
+| [WebBrowserBase](controls/WebBrowserBase.md) | M4 | ⬜ 缺失 | 85 / 72 / 74 | ⬜ / ⬜ / ⬜ |
+| [WebBrowser](controls/WebBrowser.md) | M4 | ⬜ 缺失 | 106 / 83 / 94 | ⬜ / ⬜ / ⬜ |
+| [AxHost](controls/AxHost.md) | M4 | ⬜ 缺失 | 88 / 72 / 84 | ⬜ / ⬜ / ⬜ |
+| [ThreadExceptionDialog](controls/ThreadExceptionDialog.md) | M4 | ⬜ 缺失 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ |
+| [Clipboard](controls/Clipboard.md) | M4 | ⬜ 缺失 | 0 / 0 / 28 | ⬜ / ⬜ / ⬜ |
+| [DataObject](controls/DataObject.md) | M4 | ⬜ 缺失 | 0 / 0 / 34 | ⬜ / ⬜ / ⬜ |
+| [DragEventArgs](controls/DragEventArgs.md) | M4 | ⬜ 缺失 | 9 / 0 / 0 | ⬜ / ⬜ / ⬜ |
+| [AccessibleObject](controls/AccessibleObject.md) | M4 | ⬜ 缺失 | 10 / 0 / 11 | ⬜ / ⬜ / ⬜ |
+| [ComponentEditorForm](controls/ComponentEditorForm.md) | M4 | ⬜ 缺失 | 143 / 99 / 99 | ⬜ / ⬜ / ⬜ |
+| [ComponentEditorPage](controls/ComponentEditorPage.md) | M4 | ⬜ 缺失 | 96 / 73 / 86 | ⬜ / ⬜ / ⬜ |
+
+## 补齐：绑定与基础契约
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [BindableComponent](controls/BindableComponent.md) | M1 | ⬜ 缺失 | 4 / 2 / 2 | ⬜ / ⬜ / ⬜ |
+| [BindingManagerBase](controls/BindingManagerBase.md) | M1→M3 | ⬜ 缺失 | 5 / 5 / 7 | ⬜ / ⬜ / ⬜ |
+| [BindingsCollection](controls/BindingsCollection.md) | M1→M3 | ⬜ 缺失 | 5 / 2 / 2 | ⬜ / ⬜ / ⬜ |
+| [ControlBindingsCollection](controls/ControlBindingsCollection.md) | M1→M3 | ⬜ 缺失 | 9 / 2 / 12 | ⬜ / ⬜ / ⬜ |
+| [PropertyManager](controls/PropertyManager.md) | M1→M3 | ⬜ 缺失 | 5 / 5 / 7 | ⬜ / ⬜ / ⬜ |
+
+## 补齐：DataGridView行列、单元格与样式
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [DataGridViewAdvancedBorderStyle](controls/DataGridViewAdvancedBorderStyle.md) | M3 | ⬜ 缺失 | 5 / 0 / 3 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewBand](controls/DataGridViewBand.md) | M3 | ⬜ 缺失 | 15 / 0 / 3 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewButtonCell](controls/DataGridViewButtonCell.md) | M3 | ⬜ 缺失 | 35 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewButtonColumn](controls/DataGridViewButtonColumn.md) | M3 | ⬜ 缺失 | 36 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewCell](controls/DataGridViewCell.md) | M3 | ⬜ 缺失 | 33 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewCellCollection](controls/DataGridViewCellCollection.md) | M3 | ⬜ 缺失 | 6 / 1 / 11 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewCellStyle](controls/DataGridViewCellStyle.md) | M3 | ⬜ 缺失 | 16 / 0 / 5 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewCheckBoxCell](controls/DataGridViewCheckBoxCell.md) | M3 | ⬜ 缺失 | 40 / 0 / 22 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewCheckBoxColumn](controls/DataGridViewCheckBoxColumn.md) | M3 | ⬜ 缺失 | 38 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewColumn](controls/DataGridViewColumn.md) | M3 | ⬜ 缺失 | 33 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewColumnCollection](controls/DataGridViewColumnCollection.md) | M3 | ⬜ 缺失 | 6 / 1 / 21 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewColumnHeaderCell](controls/DataGridViewColumnHeaderCell.md) | M3 | ⬜ 缺失 | 34 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewComboBoxCell](controls/DataGridViewComboBoxCell.md) | M3 | ⬜ 缺失 | 44 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewComboBoxColumn](controls/DataGridViewComboBoxColumn.md) | M3 | ⬜ 缺失 | 44 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewElement](controls/DataGridViewElement.md) | M3 | ⬜ 缺失 | 2 / 0 / 0 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewHeaderCell](controls/DataGridViewHeaderCell.md) | M3 | ⬜ 缺失 | 33 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewImageCell](controls/DataGridViewImageCell.md) | M3 | ⬜ 缺失 | 36 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewImageColumn](controls/DataGridViewImageColumn.md) | M3 | ⬜ 缺失 | 38 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewLinkCell](controls/DataGridViewLinkCell.md) | M3 | ⬜ 缺失 | 40 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewLinkColumn](controls/DataGridViewLinkColumn.md) | M3 | ⬜ 缺失 | 40 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewRow](controls/DataGridViewRow.md) | M3 | ⬜ 缺失 | 24 / 0 / 11 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewRowCollection](controls/DataGridViewRowCollection.md) | M3 | ⬜ 缺失 | 2 / 1 / 30 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewRowHeaderCell](controls/DataGridViewRowHeaderCell.md) | M3 | ⬜ 缺失 | 33 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewSelectedCellCollection](controls/DataGridViewSelectedCellCollection.md) | M3 | ⬜ 缺失 | 5 / 0 / 6 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewSelectedColumnCollection](controls/DataGridViewSelectedColumnCollection.md) | M3 | ⬜ 缺失 | 5 / 0 / 6 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewSelectedRowCollection](controls/DataGridViewSelectedRowCollection.md) | M3 | ⬜ 缺失 | 5 / 0 / 6 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewTextBoxCell](controls/DataGridViewTextBoxCell.md) | M3 | ⬜ 缺失 | 34 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewTextBoxColumn](controls/DataGridViewTextBoxColumn.md) | M3 | ⬜ 缺失 | 34 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [DataGridViewTopLeftHeaderCell](controls/DataGridViewTopLeftHeaderCell.md) | M3 | ⬜ 缺失 | 34 / 0 / 20 | ⬜ / ⬜ / ⬜ |
+
+## 补齐：TaskDialog原生任务对话框
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [TaskDialog](controls/TaskDialog.md) | M2 | ⬜ 缺失 | 1 / 0 / 7 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogButton](controls/TaskDialogButton.md) | M2 | ⬜ 缺失 | 18 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogButtonCollection](controls/TaskDialogButtonCollection.md) | M2 | ⬜ 缺失 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogCommandLinkButton](controls/TaskDialogCommandLinkButton.md) | M2 | ⬜ 缺失 | 19 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogControl](controls/TaskDialogControl.md) | M2 | ⬜ 缺失 | 2 / 0 / 0 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogExpander](controls/TaskDialogExpander.md) | M2 | ⬜ 缺失 | 7 / 1 / 1 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogFootnote](controls/TaskDialogFootnote.md) | M2 | ⬜ 缺失 | 4 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogIcon](controls/TaskDialogIcon.md) | M2 | ⬜ 缺失 | 1 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogLinkClickedEventArgs](controls/TaskDialogLinkClickedEventArgs.md) | M2 | ⬜ 缺失 | 1 / 0 / 0 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogPage](controls/TaskDialogPage.md) | M2 | ⬜ 缺失 | 17 / 4 / 1 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogProgressBar](controls/TaskDialogProgressBar.md) | M2 | ⬜ 缺失 | 7 / 0 / 0 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogRadioButton](controls/TaskDialogRadioButton.md) | M2 | ⬜ 缺失 | 5 / 1 / 1 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogRadioButtonCollection](controls/TaskDialogRadioButtonCollection.md) | M2 | ⬜ 缺失 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ |
+| [TaskDialogVerificationCheckBox](controls/TaskDialogVerificationCheckBox.md) | M2 | ⬜ 缺失 | 4 / 1 / 1 | ⬜ / ⬜ / ⬜ |
+
+## 补齐：旧菜单与历史占位契约
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [ContextMenu](controls/ContextMenu.md) | M4 | ⬜ 缺失 | 10 / 3 / 8 | ⬜ / ⬜ / ⬜ |
+| [DataGridBoolColumn](controls/DataGridBoolColumn.md) | M4 | ⬜ 缺失 | 15 / 12 / 3 | ⬜ / ⬜ / ⬜ |
+| [DataGridColumnStyle](controls/DataGridColumnStyle.md) | M4 | ⬜ 缺失 | 11 / 9 / 3 | ⬜ / ⬜ / ⬜ |
+| [DataGridTableStyle](controls/DataGridTableStyle.md) | M4 | ⬜ 缺失 | 24 / 21 / 15 | ⬜ / ⬜ / ⬜ |
+| [DataGridTextBoxColumn](controls/DataGridTextBoxColumn.md) | M4 | ⬜ 缺失 | 14 / 9 / 3 | ⬜ / ⬜ / ⬜ |
+| [GridColumnStylesCollection](controls/GridColumnStylesCollection.md) | M4 | ⬜ 缺失 | 7 / 1 / 12 | ⬜ / ⬜ / ⬜ |
+| [GridTableStylesCollection](controls/GridTableStylesCollection.md) | M4 | ⬜ 缺失 | 6 / 1 / 9 | ⬜ / ⬜ / ⬜ |
+| [MainMenu](controls/MainMenu.md) | M4 | ⬜ 缺失 | 9 / 2 / 8 | ⬜ / ⬜ / ⬜ |
+| [Menu](controls/Menu.md) | M4 | ⬜ 缺失 | 8 / 1 / 6 | ⬜ / ⬜ / ⬜ |
+| [MenuItem](controls/MenuItem.md) | M4 | ⬜ 缺失 | 25 / 6 / 11 | ⬜ / ⬜ / ⬜ |
+| [MenuItemCollection](controls/MenuItemCollection.md) | M4 | ⬜ 缺失 | 4 / 0 / 17 | ⬜ / ⬜ / ⬜ |
+| [StatusBarPanel](controls/StatusBarPanel.md) | M4 | ⬜ 缺失 | 14 / 1 / 4 | ⬜ / ⬜ / ⬜ |
+| [ToolBarButton](controls/ToolBarButton.md) | M4 | ⬜ 缺失 | 16 / 1 / 2 | ⬜ / ⬜ / ⬜ |
+
+## 补齐：列表、属性窗格与条带附属对象
+
+| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |
+| --- | --- | --- | --- | --- |
+| [ToolStripOverflowButton](controls/ToolStripOverflowButton.md) | M2 | ⬜ 缺失 | 67 / 36 / 21 | ⬜ / ⬜ / ⬜ |
+| [ToolStripPanelRow](controls/ToolStripPanelRow.md) | M2 | ⬜ 缺失 | 10 / 1 / 3 | ⬜ / ⬜ / ⬜ |
+| [ListViewGroupCollection](controls/ListViewGroupCollection.md) | M2b→M3 | ⬜ 缺失 | 3 / 0 / 12 | ⬜ / ⬜ / ⬜ |
+| [ListViewInsertionMark](controls/ListViewInsertionMark.md) | M2b→M3 | ⬜ 缺失 | 4 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [GridItem](controls/GridItem.md) | M4 | ⬜ 缺失 | 9 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [GridItemCollection](controls/GridItemCollection.md) | M4 | ⬜ 缺失 | 3 / 0 / 1 | ⬜ / ⬜ / ⬜ |
+| [PropertyTab](controls/PropertyTab.md) | M4 | ⬜ 缺失 | 4 / 0 / 6 | ⬜ / ⬜ / ⬜ |
+
+## 全量数据与维护
+
+[固定基线/指纹](api/baseline.json)、[全部类型](api/types.json)、[独立页完整类型映射](api/page-map.csv)、[成员](api/members.csv)、[接口契约](api/interfaces.csv)。表中成员数含每类型的继承面，不能相加当全库去重数，更不能当支持率。全部方法重载与字段/构造/受保护扩展见附件。
+
+实施时先更新对应类型文件的状态和修改历史，附实现提交、参考端/实现端场景及AOT证据；任务ID保持稳定。当前公开API、接口和平台适用性仍需逐条验收，不靠勾选大任务自动变绿。所有控件共性默认值/事件/异常场景按[行为目录](behavior-catalog.md)展开。

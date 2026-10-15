@@ -1,6 +1,6 @@
 ---
 title: "SDK 使用指南"
-description: "WinForms、WPF、Win32 与无边框窗口的完整 Lumina SDK 集成示例。"
+description: "WinForms、Win32 与无边框窗口的 Lumina SDK 集成示例。"
 permalink: /zh/blog/sdk-guide/
 lang: "zh-CN"
 nav_key: "blog"
@@ -45,25 +45,6 @@ this.SetEffect(EffectKind.Acrylic, new EffectOptions
     BlendColor = 0x60_10_10_30,
     Opacity    = 0.85f
 });
-```
-
-## WPF
-
-XAML：
-
-```xml
-<Window xmlns:lumina="clr-namespace:Lumina.Wpf;assembly=Lumina.Wpf"
-        lumina:LuminaWindow.Effect="Mica">
-```
-
-代码后置：
-
-```csharp
-using Lumina;
-using Lumina.Wpf;
-
-var hwnd = new WindowInteropHelper(this).Handle;
-LuminaWindow.SetEffect(hwnd, EffectKind.MicaAlt);
 ```
 
 ## Win32 原生

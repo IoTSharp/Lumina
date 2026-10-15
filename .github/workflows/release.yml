@@ -50,9 +50,6 @@ jobs:
       - name: Restore solution
         run: dotnet restore Lumina.slnx
 
-      - name: Restore package-only project
-        run: dotnet restore Lumina.Advanced/Lumina.Advanced.csproj
-
       - name: Restore demo publish graph
         run: dotnet restore Lumina.NotepadDemo/Lumina.NotepadDemo.csproj -r win-x64
 
@@ -68,9 +65,7 @@ jobs:
         run: |
           $packageProjects = @(
             'Lumina.Core/Lumina.Core.csproj',
-            'Lumina.Advanced/Lumina.Advanced.csproj',
             'Lumina.Ext.WinForms/Lumina.Ext.WinForms.csproj',
-            'Lumina.Ext.Wpf/Lumina.Ext.Wpf.csproj',
             'Lumina.Forms/Lumina.Forms.csproj',
             'Lumina.Forms.Analyzers/Lumina.Forms.Analyzers.csproj'
           )

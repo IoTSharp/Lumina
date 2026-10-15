@@ -27,15 +27,12 @@ stages:
           - rm -rf ./artifacts ./out
           - mkdir -p ./artifacts/nupkgs ./artifacts/demo ./out
           - dotnet restore Lumina.slnx -p:EnableWindowsTargeting=true
-          - dotnet restore Lumina.Advanced/Lumina.Advanced.csproj -p:EnableWindowsTargeting=true
           - dotnet restore Lumina.NotepadDemo/Lumina.NotepadDemo.csproj -r win-x64 -p:EnableWindowsTargeting=true
           - dotnet build Lumina.slnx -c Release --no-restore -p:ContinuousIntegrationBuild=true -p:EnableWindowsTargeting=true
           - |
             for project in \
               Lumina.Core/Lumina.Core.csproj \
-              Lumina.Advanced/Lumina.Advanced.csproj \
               Lumina.Ext.WinForms/Lumina.Ext.WinForms.csproj \
-              Lumina.Ext.Wpf/Lumina.Ext.Wpf.csproj \
               Lumina.Forms/Lumina.Forms.csproj \
               Lumina.Forms.Analyzers/Lumina.Forms.Analyzers.csproj
             do
