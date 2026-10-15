@@ -5,6 +5,72 @@ namespace Lumina.Tests;
 
 public class ListViewItemConstructionTests
 {
+    [Fact]
+    public void ParameterlessConstructor_InitializesEmptyTextAndPrimarySubItem()
+    {
+        var item = new ListViewItem();
+
+        Assert.Equal(string.Empty, item.Text);
+        Assert.Equal(string.Empty, Assert.Single(item.SubItems).Text);
+        Assert.Same(item.SubItems, item.SubItems);
+    }
+
+    public static TheoryData<string?[]?, string[]> ArrayConstructorData => new()
+    {
+        { null, [""] },
+        { [], [""] },
+        { ["row"], ["row"] },
+        { ["row", "detail", "last"], ["row", "detail", "last"] },
+        { [null], [""] },
+        { [null, "", null, "detail"], ["", "", "", "detail"] }
+    };
+
+    [Theory]
+    [MemberData(nameof(ArrayConstructorData))]
+    public void ArrayConstructor_InitializesSubItemsInOrder(string?[]? texts, string[] expected)
+    {
+        var item = new ListViewItem(texts);
+
+        Assert.Equal(expected[0], item.Text);
+        Assert.Equal(expected, item.SubItems.Select(subItem => subItem.Text));
+    }
+
+    [Fact]
+    public void ArrayConstructor_CopiesInputTextIntoIndependentSubItems()
+    {
+        string[] texts = ["row", "detail"];
+        var item = new ListViewItem(texts);
+
+        texts[0] = "changed source";
+        texts[1] = "changed detail";
+
+        Assert.Equal("row", item.Text);
+        Assert.Equal(["row", "detail"], item.SubItems.Select(subItem => subItem.Text));
+
+        item.SubItems[1].Text = "changed subitem";
+
+        Assert.Equal("changed detail", texts[1]);
+    }
+
+    [Fact]
+    public void ArrayConstructor_PrimaryTextStaysInSyncWithoutChangingOtherSubItems()
+    {
+        var item = new ListViewItem(new[] { "row", "detail" });
+        var primary = item.SubItems[0];
+        var detail = item.SubItems[1];
+
+        item.Text = "updated row";
+
+        Assert.Same(primary, item.SubItems[0]);
+        Assert.Equal("updated row", primary.Text);
+
+        primary.Text = null;
+
+        Assert.Equal(string.Empty, item.Text);
+        Assert.Same(detail, item.SubItems[1]);
+        Assert.Equal("detail", detail.Text);
+    }
+
     [Theory]
     [InlineData(null, "")]
     [InlineData("", "")]
@@ -68,6 +134,47 @@ public class ListViewItemConstructionTests
 
         Assert.Equal("restored", item.Text);
         Assert.Equal("restored", Assert.Single(item.SubItems).Text);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void EmptySubItems_TextReadDoesNotRecreatePrimaryUntilCollectionIsAccessed(bool removeOnlyItem)
+    {
+        var item = new ListViewItem();
+        var subItems = item.SubItems;
+        var previousPrimary = Assert.Single(subItems);
+        if (removeOnlyItem)
+        {
+            subItems.RemoveAt(0);
+        }
+        else
+        {
+            subItems.Clear();
+        }
+
+        Assert.Empty(subItems);
+        Assert.Equal(string.Empty, item.Text);
+        Assert.Empty(subItems);
+
+        var reopened = item.SubItems;
+
+        Assert.Same(subItems, reopened);
+        Assert.NotSame(previousPrimary, Assert.Single(reopened));
+        Assert.Equal(string.Empty, reopened[0].Text);
+    }
+
+    [Fact]
+    public void EmptySubItems_AddBeforeCollectionAccessBecomesPrimary()
+    {
+        var item = new ListViewItem(Array.Empty<string>());
+        var subItems = item.SubItems;
+        subItems.Clear();
+
+        var added = subItems.Add("manual first");
+
+        Assert.Equal("manual first", item.Text);
+        Assert.Same(added, Assert.Single(item.SubItems));
     }
 
     [Fact]

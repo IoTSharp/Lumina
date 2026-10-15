@@ -769,9 +769,15 @@ internal static class Win32
     [DllImport("user32.dll")]
     internal static extern void PostQuitMessage(int nExitCode);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool PostMessageW(nint hWnd, int msg, nint wParam, nint lParam);
+
+    [DllImport("user32.dll", EntryPoint = "RegisterWindowMessageW", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern uint RegisterWindowMessageW(string lpString);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern uint GetWindowThreadProcessId(nint hWnd, out uint processId);
 
     [DllImport("user32.dll", EntryPoint = "LoadCursorW", SetLastError = true)]
     internal static extern nint LoadCursorW(nint hInstance, nint lpCursorName);

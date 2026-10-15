@@ -9,14 +9,38 @@ namespace Lumina.Forms;
 /// </summary>
 public class ListViewItem
 {
+    private ListViewSubItemCollection? _subItems;
+
+    /// <summary>
+    /// Initializes a new list view item with empty primary text.
+    /// </summary>
+    public ListViewItem()
+    {
+    }
+
     /// <summary>
     /// Initializes a new list view item with the specified main text.
     /// </summary>
     /// <param name="text">The primary item text.</param>
     public ListViewItem(string? text)
     {
-        SubItems = new ListViewSubItemCollection(this);
         Text = text;
+    }
+
+    /// <summary>
+    /// Initializes a new list view item with the specified subitem text.
+    /// </summary>
+    /// <param name="items">The primary item text followed by any additional subitem text.</param>
+    public ListViewItem(string?[]? items)
+    {
+        if (items is { Length: > 0 })
+        {
+            _subItems = new ListViewSubItemCollection(this);
+            foreach (string? text in items)
+            {
+                _subItems.Add(text);
+            }
+        }
     }
 
     /// <summary>
@@ -25,25 +49,29 @@ public class ListViewItem
     [AllowNull]
     public string Text
     {
-        get => SubItems.Count == 0 ? string.Empty : SubItems[0].Text;
+        get => _subItems is null || _subItems.Count == 0 ? string.Empty : _subItems[0].Text;
         set
         {
-            string normalized = value ?? string.Empty;
-            if (SubItems.Count == 0)
-            {
-                SubItems.Add(normalized);
-            }
-            else
-            {
-                SubItems[0].Text = normalized;
-            }
+            SubItems[0].Text = value;
         }
     }
 
     /// <summary>
     /// Gets the subitems belonging to the item.
     /// </summary>
-    public ListViewSubItemCollection SubItems { get; }
+    public ListViewSubItemCollection SubItems
+    {
+        get
+        {
+            _subItems ??= new ListViewSubItemCollection(this);
+            if (_subItems.Count == 0)
+            {
+                _subItems.Add(string.Empty);
+            }
+
+            return _subItems;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the item foreground color.

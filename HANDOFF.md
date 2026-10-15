@@ -1,14 +1,14 @@
 # LuminaForms 实施交接
 
-更新：2026-10-15。先读本文件，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
+更新：2026-10-16。先读本文件、[项目需求](PROJECT_REQUIREMENTS.md)，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
 
 ## 当前接续点
 
-- 调度状态：批次 002 明确子范围已完成并推送；批次 003 接续会话已创建并只读准备。本次交接提交推送后，旧主会话发送“开始接管”并停止写入，新会话开始实施。
+- 调度状态：批次 003 的真实 UI 投递/基础构造明确子范围代码完成；主会话正更新台账、提交推送并准备批次 004 只读接续。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14045-e2d1-7811-a8cf-d2f9e80ef689`（批次 003，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14025-ea87-7223-b17b-33b40a0276e2` 仅完成本次交接提交与启动消息后停止写入。
+- 当前编码主会话：`01a14045-e2d1-7811-a8cf-d2f9e80ef689`（批次 003，本地 Lumina 项目；已收到“开始接管”并核实归属）。旧主会话 `01a14025-ea87-7223-b17b-33b40a0276e2` 已停止写入。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[003 · UI 投递与基础项构造](docs/roadmap/batches/003.md)，由新主会话按文件责任领取；[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 当前批次：[003 · UI 投递与基础项构造](docs/roadmap/batches/003.md)明确范围代码完成；下一批已划定 [004 · 基础异步投递与子项契约](docs/roadmap/batches/004.md)，交接后领取；[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
 - 最近实现提交：`4107568`（批次 002），已推送 `origin/main`。接续交接提交以 `git log` 为准，原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
@@ -18,6 +18,8 @@
 用户于 2026-10-15 要求：提交推送后，在新会话用多个子智能体逐任务实现；每个子智能体负责一个任务，无文件冲突才并行；每批完成后新建会话接续；每半小时巡检；专注代码，不扩散、不做额外架构。用户授权该实施循环及每批必要的提交、推送、创建接续会话和监督消息；后续用户的暂停/停止指令优先。
 
 固定 .NET 10.0.11 WinForms 基线。用户于本批进一步明确：所有项目（包括分析器和构建工具）只支持 .NET 10，使用 `net10.0` / `net10.0-windows`，不支持 `netstandard2.0` 或旧 .NET 目标。保留 `Lumina.Forms` 包/命名空间与 NativeFormsDemo 双目标：`net10.0-windows` 真实 WinForms/VS 设计器，`net10.0` Lumina.Forms/Native AOT。不引入替代 UI 栈。
+
+2026-10-16 的 PROJECT_REQUIREMENTS.md 修订已读取（提交 f424523）：Windows 两目标均继续使用官方 System.Drawing.Common；Linux 的自有 Drawing/身份验证按 XPL 任务推进，不阻塞当前 Windows 兼容批次，也不把 net10.0 等同 Linux。
 
 前期 **✅ 代码完成即关闭开发部分**：实现任务明确的范围，并通过必要编译/轻量检查即可。复杂 UI 自动化、真机、压力、设计器往返集中后置；后期先 Windows，再统一 Linux；macOS 尚无真机证据时如实留待验收。不得用空实现、常量成功或吞异常冒充完成。**🧪 验收通过**是另一状态，只有逐成员/场景证据才计入 98%。
 
@@ -40,7 +42,10 @@
 - 批次 002：可实例化 Control : Component/IWin32Window，Component Site/Container/Disposed/Disposing 与派生清理衔接；101 项纯托管测试、1 项基础 HWND 测试、5 项真实端生命周期观测通过。父 FND-001/Control-01/Control-08/FND-012 仍保留未完范围。
 - 批次 002 资源：五张真实 Demo Bitmap 的 WinForms/Lumina JIT/Native AOT 像素、文化、身份、重载/GC/错误语义相同，IL2026 消除；资源脚本仍因 IL3050 严格失败。原 IL3053 已展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type)，未改标准容器、未全局抑制。原始 Designer/resx 不变，资源转接在库内 Lumina.Forms.Resources，obj 生成副本仅供 net10.0。
 - 批次 002 最终主线双目标构建 0 错误；完整 Demo AOT 发布通过（4,085,248 字节），资源探针 AOT 已运行，两者无 CLR Header。13 项目/17 个目标仅 .NET 10；net10.0 Demo deps 无 WinForms/Resources.Extensions；完整主窗、设计器、Icon/Font/其他转换仍未验收。
-- 批次 003 文件责任：FND-002 子智能体负责 Control.cs/Form.cs 与必要独立投递辅助文件/线程检查；ListViewItem-01b 子智能体负责 ListViewItem.cs 与该类型独立构造检查。共享 Win32、全部文档/集成/Git 保留主会话协调；子智能体不构建、不提交。
+- 批次 003：Control/Form 接入真实 HWND 投递、ISynchronizeInvoke、标准同步 Action/Delegate/args/Func 与 BeginInvoke/EndInvoke；69 条观测在 WinForms/JIT/Native AOT 三端相同。Application 新增线程局部 ThreadException/OnThreadException，未 EndInvoke 的异步错误也会报告；完整 InvokeAsync、同步上下文/Form 继承及广泛关闭竞态仍待实现。
+- 批次 003 构造：ListViewItem 无参/string[]、null/空数组/null 元素、输入复制与延迟首项已完成，41 条差分相同。118 项测试全通过（117 托管 + 1 基础 HWND），主线双目标 Release 0 错误；13 项目/17 目标仅 .NET 10。Demo AOT 发布 4,094,464 字节，实际线程 AOT 探针 2,615,808 字节且运行对照通过，均无 CLR Header；Demo 的 IL3050 保留，线程探针无 IL2xxx/IL3xxx。原始 Designer/resx 无修改。
+- 批次 003 明确差异：有 HWND 的 null Delegate 用 ArgumentNullException 防止复制参考端挂起；默认线程错误仅原生 OK 提示，缺标准 Quit/Details/Help/异常模式，错误事件处理器再抛时在 native 边界前 FailFast。完整类型兼容未验收，不能据此算 98%。
+- 批次 004 文件责任：Control-05a 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立异步检查；ListViewSubItem-01a 子智能体负责 ListViewItem.cs 及独立子项构造/现有构造回归。共享 Application.cs/Win32.cs、全部文档/集成/Git 由主会话协调；子智能体不构建、不提交。
 - 187 组独立类型任务页、固定基线/API/接口/类型责任清单；遗漏审计与三平台逐控件方案已落盘。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。

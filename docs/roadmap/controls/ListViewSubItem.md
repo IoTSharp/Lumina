@@ -23,6 +23,7 @@
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
 | ⬜ | P0 | `ListViewSubItem-01` | 公共构造（无参、owner/text、owner/text/foreColor/backColor/font）、可继承性、嵌套类型身份及默认 Text/Name/Tag；不让 internal 构造阻止标准设计器代码。 |
+| ⬜ | P0 | `ListViewSubItem-01a` | 批次 004 明确子范围：无参和 owner/text 公共构造、可继承性及 Text/Name/Tag 初值/null 行为；保持嵌套类型和首子项同步。样式构造、完整所属/集合/native 同步另列，不新增公开 Owner。 |
 | ⬜ | P1 | `ListViewSubItem-02` | 所属项与 SubItems 集合索引规则、Text 与第0子项/ListViewItem.Text 同步；Add/Insert/Remove/替换/清空更新原生对应列；不新增公开 Owner 属性。 |
 | ⬜ | P1 | `ListViewSubItem-03` | Name/Tag、按 key 查找、ContainsKey/IndexOfKey/RemoveByKey、重复 key 和改 Name 后缓存失效，整数索引错误与官方一致。 |
 | ⬜ | P1 | `ListViewSubItem-04` | BackColor/ForeColor/Font、ListViewItem.UseItemStyleForSubItems 与父控件继承优先级；显式空颜色/字体恢复默认。 |

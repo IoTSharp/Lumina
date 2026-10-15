@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前只有 string 构造、Text/SubItems 和 ForeColor。批次 001 修复构造初始化空引用，保证唯一首子项、Text 与首子项双向一致及 null 归一；9 项托管回归通过。完整构造族、全部所属、选择、勾选、图像、分组和多数集合语义仍待实现。
+当前支持无参、string、string[] 基础构造、Text/SubItems 和 ForeColor。批次 003 补齐 null/空数组/null 元素、文本复制和首项延迟创建；41 条构造与清空后访问观测与固定 WinForms 10.0.11 相同。图像/分组/颜色字体等其余构造、全部所属、选择、勾选和多数集合语义仍待实现。
 
 - 标准继承/契约：`ListViewItem : ICloneable, ISerializable`；不是 Control/Component。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -22,8 +22,9 @@
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| 🟡 | P0 | `ListViewItem-01` | string 构造初始化顺序及 Text/首子项一致性已完成；全部标准构造仍待补齐，无参构造默认和 string[]/image/group 重载不随子项完成而关闭。 |
+| 🟡 | P0 | `ListViewItem-01` | string、无参和 string[] 基础构造及 Text/首子项一致性已完成；imageIndex/imageKey/group/颜色字体等其余构造不随子项完成而关闭。 |
 | ✅ | P0 | `ListViewItem-01a` | 批次 001：先初始化 SubItems，再由 Text setter 创建唯一首项；null 归一，Text/首子项双向更新、清空/移除/替换首项后的托管行为通过 9 项回归。原生同步与完整构造族不在本子项范围，兼容验收后置。 |
+| ✅ | P0 | `ListViewItem-01b` | 批次 003：无参/string[] 构造、null/空数组/null 元素、独立文本复制、Text 读取不重建空集合及 SubItems 访问在原集合中恢复首项；固定参考端 41 条观测相同。完整集合所属与原生同步另列，兼容验收后置。 |
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
 | ⬜ | P1 | `ListViewItem-04` | ImageIndex/ImageKey/ImageList、IndentCount/Group、Name/Tag/ToolTipText；key/index 互斥、组替换、图像列表重建同步。 |
@@ -61,6 +62,7 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 - `b8a98eb` · 2026-04-09：加入 ListViewItem 与基础子项模型；当前初始化次序仍需修复。
 - 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
 - 2026-10-15 · 批次 001：修复 string 构造空引用、首子项初始化及 null 文本归一；新增 9 项无界面回归且全部通过。父任务及原生集合未完成，完整兼容验收待后期集中进行。
+- 2026-10-16 · 批次 003：补无参和 string[] 基础构造；保留输入数组独立性、null 文本归一及 Text/首子项同步。Clear 后读 Text 保持集合为空，重新访问 SubItems 才在同一集合创建新首项；与 WinForms 10.0.11 的 41 条观测相同。父任务其余构造和完整集合/native 同步未关闭。
 
 历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
 

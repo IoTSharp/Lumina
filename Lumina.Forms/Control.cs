@@ -9,7 +9,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Provides the common WinForms-like surface for all LuminaForms controls backed by Win32 child windows.
 /// </summary>
-public class Control : Component, IWin32Window
+public class Control : Component, IWin32Window, ISynchronizeInvoke
 {
     private static readonly Lock s_subclassLock = new();
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
@@ -38,6 +38,7 @@ public class Control : Component, IWin32Window
     private nint _backgroundBrush;
     private bool _ownsBackgroundBrush;
     private nint _originalWindowProc;
+    private volatile WindowThreadDispatcher? _threadDispatcher;
     private long _lastContextMenuShownTick = long.MinValue;
     private Point _lastContextMenuScreenLocation = new(int.MinValue, int.MinValue);
 
@@ -58,7 +59,11 @@ public class Control : Component, IWin32Window
 
     public virtual bool IsHandleCreated => Handle != 0;
 
-    public virtual bool InvokeRequired => false;
+    /// <summary>
+    /// Gets whether the calling thread differs from the thread that created the control's
+    /// native window, or an available parent window when this control has no handle.
+    /// </summary>
+    public virtual bool InvokeRequired => FindMarshalingDispatcher()?.InvokeRequired ?? false;
 
     /// <summary>
     /// Gets or sets the context menu associated with the control.
@@ -572,17 +577,54 @@ public class Control : Component, IWin32Window
     }
 
     public virtual object? Invoke(Delegate method)
+        => Invoke(method, args: null);
+
+    /// <summary>
+    /// Executes a delegate on the thread that owns this control's native window.
+    /// </summary>
+    public object? Invoke(Delegate method, params object?[]? args)
+    {
+        WindowThreadDispatcher dispatcher = FindMarshalingDispatcher() ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        return dispatcher.Invoke(this, method, args);
+    }
+
+    /// <summary>
+    /// Executes an action on the thread that owns this control's native window.
+    /// </summary>
+    public void Invoke(Action method) => Invoke((Delegate)method);
+
+    /// <summary>
+    /// Executes a function on the thread that owns this control's native window and returns its result.
+    /// </summary>
+    public T Invoke<T>(Func<T> method)
     {
         ArgumentNullException.ThrowIfNull(method);
-        return method.DynamicInvoke();
+        T result = default!;
+        Invoke((Delegate)(Action)(() => result = method()));
+        return result;
     }
 
     public virtual IAsyncResult BeginInvoke(Delegate method)
+        => BeginInvoke(method, args: null);
+
+    /// <summary>
+    /// Queues a delegate for the thread that owns this control's native window.
+    /// </summary>
+    public IAsyncResult BeginInvoke(Delegate method, params object?[]? args)
     {
-        ArgumentNullException.ThrowIfNull(method);
-        Task<object?> task = Task.Run(() => method.DynamicInvoke());
-        return task;
+        WindowThreadDispatcher dispatcher = FindMarshalingDispatcher() ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        return dispatcher.BeginInvoke(this, method, args);
     }
+
+    /// <summary>
+    /// Queues an action for the thread that owns this control's native window.
+    /// </summary>
+    public IAsyncResult BeginInvoke(Action method) => BeginInvoke((Delegate)method);
+
+    /// <summary>
+    /// Waits for a callback queued with BeginInvoke and returns its result.
+    /// </summary>
+    public object? EndInvoke(IAsyncResult asyncResult) => WindowThreadDispatcher.EndInvoke(asyncResult);
 
     public virtual Task InvokeAsync(Action action)
     {
@@ -681,6 +723,8 @@ public class Control : Component, IWin32Window
             }
         }
 
+        _threadDispatcher?.Close();
+        _threadDispatcher = null;
         ReleaseBackgroundBrush();
         Handle = 0;
     }
@@ -1040,6 +1084,7 @@ public class Control : Component, IWin32Window
     {
         try
         {
+            _threadDispatcher?.Close();
             if (Handle != 0)
             {
                 _ = Win32.DestroyWindow(Handle);
@@ -1054,6 +1099,7 @@ public class Control : Component, IWin32Window
             else
             {
                 // Component's finalizer calls Dispose(false); leave managed ownership untouched.
+                _threadDispatcher = null;
                 Handle = 0;
                 ReleaseBackgroundBrush();
             }
@@ -1074,7 +1120,7 @@ public class Control : Component, IWin32Window
         nint previousWindowProc = Win32.SetWindowLongPtrW(Handle, Win32.GWLP_WNDPROC, subclassPointer);
         if (previousWindowProc == 0)
         {
-            return;
+            throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
         _originalWindowProc = previousWindowProc;
@@ -1082,6 +1128,8 @@ public class Control : Component, IWin32Window
         {
             s_controlsByHandle[Handle] = this;
         }
+
+        _threadDispatcher = new WindowThreadDispatcher(Handle, this);
     }
 
     private static nint SubclassWindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
@@ -1099,6 +1147,11 @@ public class Control : Component, IWin32Window
 
     private nint SubclassWindowProc(nint hwnd, uint message, nint wParam, nint lParam)
     {
+        if (_threadDispatcher?.TryDispatch(message) == true)
+        {
+            return 0;
+        }
+
         if (HandleWindowMessage(message, wParam, lParam, out nint interceptedResult))
         {
             return interceptedResult;
@@ -1126,9 +1179,25 @@ public class Control : Component, IWin32Window
             }
 
             _originalWindowProc = 0;
+            _threadDispatcher?.Close();
+            _threadDispatcher = null;
+            Handle = 0;
         }
 
         return result;
+    }
+
+    private WindowThreadDispatcher? FindMarshalingDispatcher()
+    {
+        for (Control? control = this; control is not null; control = control.Parent)
+        {
+            if (control.Handle != 0 && control._threadDispatcher is { } dispatcher)
+            {
+                return dispatcher;
+            }
+        }
+
+        return Owner?.ThreadDispatcher;
     }
 
     internal bool TryShowAttachedContextMenu(nint hwnd, nint lParam)

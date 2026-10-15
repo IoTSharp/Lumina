@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002 已实现可实例化 Control : Component、IWin32Window，以及组件 Site/Container/Disposed/Disposing 与既有释放钩子的衔接。Focus() 返回 void，InvokeRequired 恒 false，Invoke 直接 DynamicInvoke，BeginInvoke 用 Task.Run，InvokeAsync 直接执行；SuspendLayout/基础 PerformLayout 为空，完整构造、Controls/Parent 和线程契约仍待后续范围。
+🟡 **现状：**批次 002 已接入 Component/IWin32Window 和组件释放；批次 003 接入真实 HWND 的 InvokeRequired、Invoke/BeginInvoke/EndInvoke 及 ISynchronizeInvoke，69 条线程/委托/异常/释放观测在 WinForms、Lumina JIT 与 Native AOT 三端相同。Focus() 仍返回 void，既有 InvokeAsync 两条路径仍直接执行；SuspendLayout/基础 PerformLayout、完整构造、Controls/Parent、异步全族及关闭竞态仍待后续范围。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,12 +11,15 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| 🟡 | P0 / Control-01 | 批次 002 已完成可实例化 Control : Component 和 IWin32Window（Control-01a）；ISynchronizeInvoke、IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
+| 🟡 | P0 / Control-01 | 批次 002 已完成 Component/IWin32Window（Control-01a），批次 003 已实现真实 UI 投递的 ISynchronizeInvoke；IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
 | ⬜ | P0 / Control-02 | 把 Focus() 改为标准 bool，补 Select/CanSelect/CanFocus/Focused/ContainsFocus；默认大小允许零尺寸，不再把 Width/Height 永久强制至少 1。 |
-| ⬜ | P0 / Control-03 | InvokeRequired 使用创建线程且沿父句柄寻找有效调度器；无句柄与未创建主循环的结果单独对照，不能由恒 false 掩盖跨线程访问。 |
-| ⬜ | P0 / Control-04 | 实现 Invoke/BeginInvoke/EndInvoke 全部 Action/Delegate/args 重载，投递到 UI 线程；返回值、异常、同步等待、同线程调用、队列顺序与关闭期间行为与官方一致。 |
+| 🟡 | P0 / Control-03 | 批次 003 完成现有 HWND/创建线程与父级句柄查找（Control-03a）；标准 Parent/Form 继承链、未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
+| ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
+| 🟡 | P0 / Control-04 | 批次 003 完成 Action/Delegate/args/Func 同步及 BeginInvoke/EndInvoke 首范围（Control-04a）；完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
+| ✅ | P0 / Control-04a | 批次 003：真实 PostMessage 队列、同线程 FIFO/EndInvoke、跨线程返回与异常、ExecutionContext、IAsyncResult 和销毁待执行项唤醒；69 条指定观测在固定 WinForms 10.0.11、JIT、AOT 相同。null Delegate 保护与默认异常 UI 的明确差异见修改历史，不等于父任务完整验收。 |
 | ⬜ | P0 / Control-05 | 实现四类 InvokeAsync 标准 Action、Func<T>、Func<CancellationToken,ValueTask>、带结果 ValueTask<T> 重载和 CancellationToken；区分排队前取消、执行中取消与抛出异常，不把 Task 回调自创为唯一接口。 |
+| ⬜ | P0 / Control-05a | 批次 004 明确子范围：先实现 Action/Func<T> 的标准 CancellationToken 异步投递、结果与异常，修正现有两条直接调用的旧路径；ValueTask/标准同步上下文与完整关闭竞态不随此项关闭。 |
 | ⬜ | P0 / Control-06 | 实现 Control.ControlCollection、Parent 可设、Controls.Add/AddRange/Remove/Clear/SetChildIndex/Find；Form 直接子项的 Parent 必须是 Form，Owner 不能替代 Parent。 |
 | ⬜ | P1 / Control-07 | Handle 延迟创建、CreateControl/CreateHandle/RecreateHandle/DestroyHandle、FromHandle/FromChildHandle 与映射表一致；HandleCreated/HandleDestroyed、重建后属性恢复和 GCHandle 寿命逐项测。 |
 | 🟡 | P1 / Control-08 | 批次 002 完成 Component 释放子范围（Control-08a）；UI 父子级联 Dispose、借用 Font/Image/菜单资源所有权和完整事件解绑仍待后续实现。 |
@@ -49,6 +52,7 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - `9d5165f`（2026-04-09）：扩展基础属性与控件功能。
 - 2026-10-15：增加评估和待办；本轮未实现运行库功能。
 - 2026-10-15 · 批次 002：Control 接入 Component/IWin32Window 并可实例化；新增标准 Disposing，资源清理幂等且重复 Dispose 继续触发 Disposed；终结器分支不遍历托管子树。新增 9 项纯托管测试及 1 项基础 HWND 测试通过，`Test-ControlComponent.ps1` 的 5 项观测与真实 WinForms 10.0.11 一致。Form 继承链、UI 子控件级联、构造族、UI 投递及复杂设备/设计器验收保留。
+- 2026-10-16 · 批次 003：接入真实窗口队列、ISynchronizeInvoke 和 Action/Delegate/args/Func 的同步调用、BeginInvoke/EndInvoke。对照无句柄、UI/工作线程、父级回退、FIFO、ExecutionContext、特殊委托参数及释放唤醒；69 条三端观测相同。已有 HWND 的 null Delegate 在参考端会挂起，本实现以 ArgumentNullException 明确拒绝；无 HWND 的 null 仍按参考端抛 InvalidOperationException。异步异常报 ThreadException；无订阅者仅显示原生 OK 提示继续，完整标准异常对话框/模式和广泛关闭竞态待后续。
 
 ## 原始资料
 

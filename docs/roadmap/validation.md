@@ -56,6 +56,26 @@
 
 复现：`./tools/compatibility/Test-ControlComponent.ps1`、`./tools/compatibility/Test-BitmapResources.ps1`；后者保留剩余 IL3050 的严格失败。日志在本机忽略目录 artifacts/compatibility-batch002。Windows 复杂 UI、设计器往返、完整资源/所有权/线程、设备/压力与 Linux/macOS 仍待后期，未从上述结果推算 98%。
 
+## 批次 003 · 2026-10-16 实施结果
+
+本批完成首个真实 UI 投递与基础构造范围，详见 [批次 003](batches/003.md)。FND-001/002/003、Control-03/04、Form-04、Application-08 和 ListViewItem-01 等父任务继续部分完成；以下不是完整兼容验收。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 最终 0 错误、本次增量 322 警告；13 项目/17 个目标仍只声明 .NET 10；原始 Demo Designer/resx 未改 |
+| 现有与新增回归 | ✅ | 118 项全通过、0 失败/跳过；117 项纯托管 + 1 项基础 HWND 检查，其中新增 12 项 ListViewItem 基础构造和 4 项线程异常事件回归 |
+| UI 投递差分 | ✅ 指定轻量范围 | 固定 WinForms 10.0.11、Lumina JIT、Lumina Native AOT 各 69 条观测一致；含 UI/工作线程、Parent/Owner 句柄回退、Action/Delegate/args/Func、IAsyncResult、EndInvoke/FIFO、ExecutionContext、错误及 Dispose 后等待唤醒 |
+| 基础构造差分 | ✅ 指定轻量范围 | 41 条两端观测一致；无参/string/string[]、null/空数组/null 元素、输入复制、Text/首子项同步及 Clear 后延迟恢复；完整集合/native 同步未覆盖 |
+| 异步错误报告 | ✅ 首范围 | BeginInvoke 有/无 EndInvoke 都触发 UI 线程 ThreadException；线程局部订阅、对象身份、重入与 handler 失败后状态有回归。标准错误对话框/SetUnhandledExceptionMode 及所有 native 事件仍待后续 |
+| 线程探针 Native AOT | ✅ 发布/运行/PE | 实际运行 EXE 并与 JIT 69 条结果相同；2,615,808 字节、无 CLR Header，发布日志无 IL2xxx/IL3xxx 告警 |
+| 完整 Demo Native AOT | ✅ 仅发布/PE | 4,094,464 字节、无 CLR Header；仍有批次 002 已定位的 Container/InheritanceAttribute IL3050，资源严格门禁未通过；完整主窗操作与正常退出仍待后期 |
+| net10.0 依赖 | ✅ 指定依赖图 | Demo deps 无 System.Windows.Forms 与 System.Resources.Extensions；Windows 仍使用官方 Drawing，未引入自有 Drawing 包 |
+| API/任务索引 | ✅ 结构/元数据 | 重新导出公共签名/接口，固定 1,095 类型/61,240 行基线不变、行为仍 unverified；392 份 Markdown、187 组控件/API 页及 2,007 项任务检查 0 结构错误 |
+
+明确差异：固定参考端在已有 HWND 时 Invoke((Delegate)null) 挂起，本实现保留 ArgumentNullException 守卫；无 HWND 时仍按基线抛 InvalidOperationException。默认无人订阅的 ThreadException 仅使用原生 OK 提示后继续，未复刻标准 Quit/Details/Help；投递错误 handler 再抛时 FailFast，防止异常越过 native ABI。完整 InvokeAsync/同步上下文、关闭/重建/退出竞态和全量界面/设备验证仍待后续，不能把指定观测计为整个类型验收。
+
+复现：`./tools/compatibility/Test-ControlThreadDispatch.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemConstruction.ps1`；结果、逐步诊断和发布/测试日志在忽略目录 artifacts/compatibility-batch003。参考端固定 10.0.11；线程探针有 30 秒外部进程超时，超时/失败不记成功。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

@@ -18,7 +18,7 @@
 | API-AC0C81056DFD3233 | Event | `public static event System.EventHandler EnterThreadModal` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-93B7F3F6A96F46EF | Event | `public static event System.EventHandler Idle` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-EFF9AF35E3A1F084 | Event | `public static event System.EventHandler LeaveThreadModal` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-50C6D9F8B4C5C5F2 | Event | `public static event System.Threading.ThreadExceptionEventHandler ThreadException` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-50C6D9F8B4C5C5F2 | Event | `public static event System.Threading.ThreadExceptionEventHandler ThreadException` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-5652CC89CE11C6E6 | Event | `public static event System.EventHandler ThreadExit` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-F84AD7057C02D8EE | Method | `public static System.Void AddMessageFilter(System.Windows.Forms.IMessageFilter value)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-613285524458FFCF | Method | `public static System.Void DoEvents()` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -28,7 +28,7 @@
 | API-2DC802E31F60A2C7 | Method | `public static System.Void ExitThread()` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-A98B2E95A56F1EAD | Method | `public static System.Boolean FilterMessage(ref System.Windows.Forms.Message message)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7E6D19022D11292E | Method | `public static System.Threading.ApartmentState OleRequired()` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-AB443B553ED0E6D1 | Method | `public static System.Void OnThreadException(System.Exception t)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-AB443B553ED0E6D1 | Method | `public static System.Void OnThreadException(System.Exception t)` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-096B337437504840 | Method | `public static System.Void RaiseIdle(System.EventArgs e)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-9E8C735E1BEF40A0 | Method | `public static System.Void RegisterMessageLoop(System.Windows.Forms.Application+MessageLoopCallback callback)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-95FFED7E0CFF30C0 | Method | `public static System.Void RemoveMessageFilter(System.Windows.Forms.IMessageFilter value)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

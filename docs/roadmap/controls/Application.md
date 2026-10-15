@@ -1,6 +1,6 @@
 # Application
 
-🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪。批次 001 已对齐 Run(Form mainForm) 的 void 与 null 主窗路径，SetHighDpiMode 返回 bool 并连接真实系统 DPI 设置/失败路径、HighDpiMode 回读与永久建窗门禁；缺 Run()/Run(ApplicationContext)、完整消息过滤/退出与异常事件。
+🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪。批次 001 已对齐启动/DPI；批次 003 补线程局部 ThreadException/OnThreadException，异步投递异常不静默丢失。缺 Run()/Run(ApplicationContext)、完整消息过滤/退出、标准异常对话框与异常模式。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Application.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -19,7 +19,8 @@
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
 | ⬜ | P1 / Application-06 | 实现 AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、消息预处理/快捷键/IsDialogMessage；WM_QUIT/GetMessage=-1 处理明确，不能只做 Translate/Dispatch。 |
 | ⬜ | P1 / Application-07 | 实现 Idle/RaiseIdle、DoEvents、EnterThreadModal/LeaveThreadModal、MessageLoop/AllowQuit；DoEvents 的重入遵循标准，不用 Task.Run 代替消息泵。 |
-| ⬜ | P1 / Application-08 | 实现 SetUnhandledExceptionMode/ThreadException/OnThreadException，与 AppDomain 未处理异常分工明确；异常不穿越 native callback，也不能全部吞掉假装成功。 |
+| 🟡 | P1 / Application-08 | 批次 003 完成线程局部 ThreadException/OnThreadException 与异步投递错误报告（Application-08a）；SetUnhandledExceptionMode、标准 ThreadExceptionDialog、其余消息回调的完整异常策略仍待实现。 |
+| ✅ | P1 / Application-08a | 批次 003：线程局部订阅、当前 Thread sender、原始异常对象、重入保护和处理器异常后的状态恢复；4 项托管回归及实际 UI 投递事件观测通过。无处理器的 Windows 原生 OK 提示保留可见/继续行为，完整 Quit/Details UI 后置；投递事件处理器再抛在 native 边界前显式终止，区别于 public OnThreadException 的直接传播。 |
 | ⬜ | P1 / Application-09 | EnableVisualStyles、RenderWithVisualStyles/UseVisualStyles/VisualStyleState、SetCompatibleTextRenderingDefault 调用时机和实际控件影响对照；初始化后重复/过晚设置行为一致。 |
 | ⬜ | P1 / Application-10 | 实现 SetDefaultFont、SetColorMode、ColorMode/SystemColorMode/IsDarkModeEnabled 的 .NET10 契约，与现有 Lumina theme 的可选覆盖关系清楚；默认字体/系统颜色消息变化实际传播。 |
 | ⬜ | P1 / Application-11 | 实现 CurrentCulture/CurrentInputLanguage、UseWaitCursor，影响现有窗口和新窗口；输入语言事件与控件 IME 路径联动。 |
@@ -45,6 +46,7 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - `2e8431f`（2026-04-01）：主题和 Demo UI 改进涉及启动层。
 - 2026-10-15：增加评估和待办；本轮未实现运行库功能。
 - 2026-10-15 · 批次 001：修复启动签名、命名参数/null 主窗路径；新增 AOT 友好的 DPI interop、真实状态回读及建窗门禁；6 项无副作用回归、14 组独立进程 DPI 对照通过。Run 的其他重载及完整生命周期未关闭，Windows/Linux/macOS 的完整兼容验收仍待后续。
+- 2026-10-16 · 批次 003：新增标准 ThreadException/OnThreadException 的首个可观察范围；4 项托管测试覆盖对象身份/线程隔离/重入/异常恢复，线程探针证明未调用 EndInvoke 的错误也在 UI 线程上报。默认原生 OK 提示不等同标准 ThreadExceptionDialog，SetUnhandledExceptionMode 及原生回调全族仍未完成；错误事件处理器再抛时显式 FailFast 防止越过 native ABI。
 
 ## 原始资料
 

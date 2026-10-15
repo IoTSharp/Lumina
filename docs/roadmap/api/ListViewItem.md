@@ -14,14 +14,14 @@
 
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
-| API-7D1CB325582E7DB5 | Constructor | `public ListViewItem()` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-7D1CB325582E7DB5 | Constructor | `public ListViewItem()` | `System.Windows.Forms.ListViewItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-FFCF1D21F2C817AE | Constructor | `public ListViewItem(System.String text)` | `System.Windows.Forms.ListViewItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-BA1B63D0CD25A2DA | Constructor | `public ListViewItem(System.String text, System.Int32 imageIndex)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-2093F9A715A7667E | Constructor | `public ListViewItem(System.String text, System.Int32 imageIndex, System.Windows.Forms.ListViewGroup group)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-6D3196770AD1CEDD | Constructor | `public ListViewItem(System.String text, System.String imageKey)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-B56F181EDAECDAE2 | Constructor | `public ListViewItem(System.String text, System.String imageKey, System.Windows.Forms.ListViewGroup group)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-8C14F6A12E6121CF | Constructor | `public ListViewItem(System.String text, System.Windows.Forms.ListViewGroup group)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-405EB46AC0D127BE | Constructor | `public ListViewItem(System.String[] items)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-405EB46AC0D127BE | Constructor | `public ListViewItem(System.String[] items)` | `System.Windows.Forms.ListViewItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-DDBC9847F0010C58 | Constructor | `public ListViewItem(System.String[] items, System.Int32 imageIndex)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-08C1CBA149319CF3 | Constructor | `public ListViewItem(System.String[] items, System.Int32 imageIndex, System.Drawing.Color foreColor, System.Drawing.Color backColor, System.Drawing.Font font)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-97C4F5747803DFAC | Constructor | `public ListViewItem(System.String[] items, System.Int32 imageIndex, System.Drawing.Color foreColor, System.Drawing.Color backColor, System.Drawing.Font font, System.Windows.Forms.ListViewGroup group)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

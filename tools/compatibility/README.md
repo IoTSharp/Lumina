@@ -18,3 +18,5 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 `tasks.csv` 同时覆盖控件页与 FND/REP/CNS/XPL 公共任务。任务表是状态来源，不手工编辑生成的 CSV；导出保留 `Status`（代码开发）与 `Verification`（兼容验收）两个独立字段。✅ 代码完成导出为 code-complete，只有状态栏明确写 🧪 验收通过才导出 verified。前期真机后置不影响关闭开发部分。当前批次/子智能体文件责任见根目录 [HANDOFF.md](../../HANDOFF.md)，不另建调度框架。
 
 批次 002 的轻量检查：`./tools/compatibility/Test-ControlComponent.ps1` 比较真实 WinForms 与 Lumina 的 5 项组件释放观测；`./tools/compatibility/Test-BitmapResources.ps1` 编译真实 Demo 的两条资源路径，再执行无界面的 win-x64 Native AOT 五图逐像素、身份、文化和错误语义对照。后者的 `-SkipPublish` 仅做托管对照；默认先运行 AOT EXE、保存结果，再严格检查全部详细 IL2xxx/IL3xxx 告警，剩余标准 Container/InheritanceAttribute 的 IL3050 会令脚本失败，不能把运行结果相同等同于告警清零。两者日志写入忽略的 artifacts/compatibility-batch002；资源探针仅支持 .NET 10，不加入主线解决方案或发布物。
+
+批次 003：`./tools/compatibility/Test-ControlThreadDispatch.ps1 -Variant both -PublishAot` 比较固定 WinForms 10.0.11、Lumina JIT 和实际 Native AOT 的 69 条 UI 投递观测；`-Variant reference` 可先取得参考结果，进程有 30 秒外部超时。`./tools/compatibility/Test-ListViewItemConstruction.ps1` 比较 41 条基础构造观测，`-ReferenceOnly` 用于先记录固定基线再实现。临时项目、日志与结果只写 artifacts/compatibility-batch003。检查只覆盖明确轻量范围；已有 HWND 的 null Delegate 基线挂起未放入共享主流程，本实现防挂起守卫、标准异常 UI 与完整 InvokeAsync 缺口见批次记录。

@@ -1,6 +1,6 @@
 # WindowsFormsSynchronizationContext
 
-⬜ **现状：**无标准同步上下文；Control/Form 当前 Invoke 线程错误，await 恢复到正确 UI 线程尚无可靠基础。
+⬜ **现状：**无标准同步上下文；批次 003 已修正 Control/Form 的首个真实 HWND 投递范围，但尚未安装标准 context，await 恢复到正确 UI 线程仍待实现。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/WindowsFormsSynchronizationContext.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。

@@ -42,6 +42,64 @@ public static class Application
     private static bool s_compatibleTextRenderingDefault;
     private static bool s_nativeWindowCreated;
 
+    [ThreadStatic]
+    private static ThreadExceptionEventHandler? t_threadException;
+
+    [ThreadStatic]
+    private static bool t_handlingThreadException;
+
+    /// <summary>
+    /// Occurs on the UI thread when an asynchronous window callback throws an exception.
+    /// </summary>
+    public static event ThreadExceptionEventHandler ThreadException
+    {
+        add => t_threadException += value;
+        remove => t_threadException -= value;
+    }
+
+    /// <summary>
+    /// Raises <see cref="ThreadException"/> on the current thread, or displays the exception.
+    /// </summary>
+    /// <param name="t">The exception to report.</param>
+    /// <remarks>
+    /// The default Windows prompt currently provides acknowledgement and continuation.
+    /// The full WinForms ThreadExceptionDialog and unhandled-exception modes remain unsupported.
+    /// </remarks>
+    public static void OnThreadException(Exception t)
+    {
+        ArgumentNullException.ThrowIfNull(t);
+        if (t_handlingThreadException)
+        {
+            return;
+        }
+
+        t_handlingThreadException = true;
+        try
+        {
+            if (t_threadException is { } handler)
+            {
+                handler(Thread.CurrentThread, new ThreadExceptionEventArgs(t));
+                return;
+            }
+
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new PlatformNotSupportedException("The default thread exception dialog requires Windows.");
+            }
+
+            // Keep error reporting independent of application themes, managed forms and
+            // nested framework initialization. Closing this prompt continues the UI loop.
+            if (Win32.MessageBoxW(0, t.ToString(), "Unhandled thread exception", Win32.MB_ICONERROR) == 0)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+        }
+        finally
+        {
+            t_handlingThreadException = false;
+        }
+    }
+
     /// <summary>
     /// Gets the mutable application-wide visual style settings used for new LuminaForms windows.
     /// </summary>

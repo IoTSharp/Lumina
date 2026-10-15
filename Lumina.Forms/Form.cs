@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -7,7 +8,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a top-level LuminaForms window backed by a native Win32 overlapped window.
 /// </summary>
-public class Form : IDisposable
+public class Form : IDisposable, ISynchronizeInvoke
 {
     private const string WindowClassName = "LuminaFormsWindow";
     private static bool s_registered;
@@ -17,6 +18,7 @@ public class Form : IDisposable
     private readonly ControlCollection _controls;
     private GCHandle _selfHandle;
     private bool _disposed;
+    private volatile WindowThreadDispatcher? _threadDispatcher;
     private bool _shown;
     private int _nextControlId = 1000;
     private bool _effectExplicitlySet;
@@ -243,6 +245,13 @@ public class Form : IDisposable
     /// </summary>
     public bool IsDisposed { get; private set; }
 
+    /// <summary>
+    /// Gets whether the calling thread differs from the thread that created the native window.
+    /// </summary>
+    public bool InvokeRequired => _threadDispatcher?.InvokeRequired ?? false;
+
+    internal WindowThreadDispatcher? ThreadDispatcher => Handle != 0 ? _threadDispatcher : null;
+
     internal nint InstanceHandle { get; private set; }
 
     internal nint UiFontHandle { get; private set; }
@@ -346,6 +355,7 @@ public class Form : IDisposable
         }
 
         Handle = hwnd;
+        _threadDispatcher = new WindowThreadDispatcher(hwnd, this);
         ApplyWindowIcon();
         Application.EnsureVisualStylesInitialized();
         ApplyApplicationDefaults();
@@ -454,22 +464,59 @@ public class Form : IDisposable
     /// <param name="method">The delegate to invoke.</param>
     /// <returns>The return value produced by the delegate, if any.</returns>
     public object? Invoke(Delegate method)
+        => Invoke(method, args: null);
+
+    /// <summary>
+    /// Executes a delegate and its arguments on the native window's creating thread.
+    /// </summary>
+    public object? Invoke(Delegate method, params object?[]? args)
     {
-        ArgumentNullException.ThrowIfNull(method);
-        return method.DynamicInvoke();
+        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        return dispatcher.Invoke(this, method, args);
     }
 
     /// <summary>
-    /// Executes the specified delegate asynchronously on a worker task for compatibility.
+    /// Executes an action on the native window's creating thread.
+    /// </summary>
+    public void Invoke(Action method) => Invoke((Delegate)method);
+
+    /// <summary>
+    /// Executes a function on the native window's creating thread and returns its result.
+    /// </summary>
+    public T Invoke<T>(Func<T> method)
+    {
+        ArgumentNullException.ThrowIfNull(method);
+        T result = default!;
+        Invoke((Delegate)(Action)(() => result = method()));
+        return result;
+    }
+
+    /// <summary>
+    /// Queues the specified delegate on the native window's creating thread.
     /// </summary>
     /// <param name="method">The delegate to invoke.</param>
     /// <returns>An async handle representing the queued invocation.</returns>
     public IAsyncResult BeginInvoke(Delegate method)
+        => BeginInvoke(method, args: null);
+
+    /// <summary>
+    /// Queues a delegate and its arguments on the native window's creating thread.
+    /// </summary>
+    public IAsyncResult BeginInvoke(Delegate method, params object?[]? args)
     {
-        ArgumentNullException.ThrowIfNull(method);
-        Task<object?> task = Task.Run(() => method.DynamicInvoke());
-        return task;
+        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        return dispatcher.BeginInvoke(this, method, args);
     }
+
+    /// <summary>
+    /// Queues an action on the native window's creating thread.
+    /// </summary>
+    public IAsyncResult BeginInvoke(Action method) => BeginInvoke((Delegate)method);
+
+    /// <summary>
+    /// Waits for a callback queued with BeginInvoke and returns its result.
+    /// </summary>
+    public object? EndInvoke(IAsyncResult asyncResult) => WindowThreadDispatcher.EndInvoke(asyncResult);
 
     /// <summary>
     /// Performs layout for compatibility with designer-generated code.
@@ -847,6 +894,7 @@ public class Form : IDisposable
 
         _disposed = true;
         IsDisposed = true;
+        _threadDispatcher?.Close();
 
         ReleaseMainMenuStrip();
 
@@ -874,6 +922,7 @@ public class Form : IDisposable
         }
 
         Handle = 0;
+        _threadDispatcher = null;
         UiFontHandle = 0;
         OwnsUiFontHandle = false;
     }
@@ -1274,6 +1323,11 @@ public class Form : IDisposable
 
     private nint WindowProc(nint hwnd, uint message, nint wParam, nint lParam)
     {
+        if (_threadDispatcher?.TryDispatch(message) == true)
+        {
+            return 0;
+        }
+
         switch (message)
         {
             case Win32.WM_SIZE:
@@ -1409,6 +1463,8 @@ public class Form : IDisposable
                 return 0;
 
             case Win32.WM_NCDESTROY:
+                _threadDispatcher?.Close();
+                _threadDispatcher = null;
                 ReleaseMainMenuStrip();
                 ReleasePaletteResources();
                 ReleaseControlHandles();
