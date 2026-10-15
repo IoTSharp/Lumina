@@ -185,4 +185,4 @@ DocumentType,Type,Source,CandidatePresent,RelationshipsMatch,PublicProperties,Pu
 "VScrollBar","System.Windows.Forms.VScrollBar","reference-assembly","False","False","90","74","74","169"
 "WebBrowser","System.Windows.Forms.WebBrowser","reference-assembly","False","False","106","83","94","182"
 "WebBrowserBase","System.Windows.Forms.WebBrowserBase","reference-assembly","False","False","85","72","74","171"
-"WindowsFormsSynchronizationContext","System.Windows.Forms.WindowsFormsSynchronizationContext","reference-assembly","False","False","2","0","10","2"
+"WindowsFormsSynchronizationContext","System.Windows.Forms.WindowsFormsSynchronizationContext","reference-assembly","True","True","2","0","10","2"

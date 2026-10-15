@@ -24,3 +24,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 004/005：`./tools/compatibility/Test-ControlInvokeAsync.ps1 -Variant both -PublishAot` 保留 Action/Func<T> 的 59 条参考/JIT/AOT 观测及旧 Task 专项；`./tools/compatibility/Test-ControlInvokeValueTask.ps1 -Variant both -PublishAot` 比较 ValueTask 两族的 90 条观测，包括自定义 IValueTaskSource 单次消费、取消后继续消费、原异常/token/结果身份及 async lambda 重载选择。两者支持 `-Variant reference` 先记录固定参考端。标准同步上下文/await 后 UI 恢复及完整关闭竞态未覆盖，不据此宣称完整异步兼容。
 
 `./tools/compatibility/Test-ListViewSubItemConstruction.ps1` 保留基础构造的 37 条观测；`./tools/compatibility/Test-ListViewSubItemStyle.ps1` 比较五参构造、颜色/字体/ResetStyle 的另 37 条观测，两者支持 `-ReferenceOnly`。样式只覆盖独立/未挂接 owner，未接全局默认字体配置、已挂接继承或 native 刷新。原始 Designer/resx 保持不变；批次 005 日志/结果在 artifacts/compatibility-batch005，现有回归脚本仍写原批次忽略目录。
+
+批次 006：`./tools/compatibility/Test-WindowsFormsSynchronizationContext.ps1 -Variant both -PublishAot` 比较显式标准 context 的 57 条固定参考/JIT/实际 Native AOT 观测，包含无 Form 投递、FIFO/state/ExecutionContext/原异常、复制/共享释放与显式安装后的 await 恢复。null Send/Post 在各自独立进程以 3 秒超时记录：参考 null Send 挂起，Lumina 明确抛 ArgumentNullException（d），null Post 两端均接受无回调；这两项不混进相等计数。`-Variant reference` 先取基线，`-SkipIsolated` 可跳过独立边界进程；默认安装/还原、完整线程退出/跨线程释放/多 UI/模态仍待后续。
+
+`./tools/compatibility/Test-ListViewSubItemKeys.ps1` 比较四个标准 virtual key 成员的 209 条参考/JIT 观测，支持 `-ReferenceOnly`；保留上次索引缓存与等长 InvariantCultureIgnoreCase，覆盖 Name/集合修改、重复 key、null/空、两文化的 Unicode/嵌入 NUL 及首项延迟恢复。完整 IList/公开集合构造/所属/native 仍缺。两个新驱动日志写 artifacts/compatibility-batch006；共享文档、任务索引与运行验收状态继续分开记录。

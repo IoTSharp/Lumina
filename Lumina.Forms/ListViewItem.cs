@@ -204,10 +204,11 @@ public class ListViewItem
     /// <summary>
     /// Represents the subitem collection for a <see cref="ListViewItem"/>.
     /// </summary>
-    public sealed class ListViewSubItemCollection : IList<ListViewSubItem>
+    public class ListViewSubItemCollection : IList<ListViewSubItem>
     {
         private readonly List<ListViewSubItem> _items = [];
         private readonly ListViewItem _owner;
+        private int _lastAccessedIndex = -1;
 
         internal ListViewSubItemCollection(ListViewItem owner)
         {
@@ -218,6 +219,18 @@ public class ListViewItem
         {
             get => _items[index];
             set => _items[index] = value;
+        }
+
+        /// <summary>
+        /// Gets the subitem whose name matches the specified key, or <see langword="null"/>.
+        /// </summary>
+        public virtual ListViewSubItem? this[string? key]
+        {
+            get
+            {
+                int index = IndexOfKey(key);
+                return index < 0 ? null : _items[index];
+            }
         }
 
         public int Count => _items.Count;
@@ -246,6 +259,14 @@ public class ListViewItem
             return _items.Contains(item);
         }
 
+        /// <summary>
+        /// Determines whether a subitem has the specified name, ignoring case.
+        /// </summary>
+        public virtual bool ContainsKey(string? key)
+        {
+            return IndexOfKey(key) >= 0;
+        }
+
         public void CopyTo(ListViewSubItem[] array, int arrayIndex)
         {
             _items.CopyTo(array, arrayIndex);
@@ -261,6 +282,37 @@ public class ListViewItem
             return _items.IndexOf(item);
         }
 
+        /// <summary>
+        /// Gets the index of a subitem with the specified name, or -1 if no name matches.
+        /// </summary>
+        public virtual int IndexOfKey(string? key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return -1;
+            }
+
+            // WinForms reuses the last matching position, even after names or contents change.
+            // Preserve that observable duplicate-key behavior without keeping a separate map.
+            if ((uint)_lastAccessedIndex < (uint)_items.Count &&
+                KeyMatches(_items[_lastAccessedIndex].Name, key))
+            {
+                return _lastAccessedIndex;
+            }
+
+            for (int index = 0; index < _items.Count; index++)
+            {
+                if (KeyMatches(_items[index].Name, key))
+                {
+                    _lastAccessedIndex = index;
+                    return index;
+                }
+            }
+
+            _lastAccessedIndex = -1;
+            return -1;
+        }
+
         public void Insert(int index, ListViewSubItem item)
         {
             _items.Insert(index, item);
@@ -271,9 +323,28 @@ public class ListViewItem
             return _items.Remove(item);
         }
 
+        /// <summary>
+        /// Removes the subitem found by the specified name, if one exists.
+        /// </summary>
+        public virtual void RemoveByKey(string? key)
+        {
+            int index = IndexOfKey(key);
+            if (index >= 0)
+            {
+                RemoveAt(index);
+            }
+        }
+
         public void RemoveAt(int index)
         {
             _items.RemoveAt(index);
+        }
+
+        private static bool KeyMatches(string name, string key)
+        {
+            // WinForms checks UTF-16 lengths before comparing names with the invariant culture.
+            return name.Length == key.Length &&
+                string.Equals(name, key, StringComparison.InvariantCultureIgnoreCase);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

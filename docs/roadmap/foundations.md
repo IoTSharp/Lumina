@@ -7,8 +7,8 @@
 | ID | 状态 | 工作与验收 | 对应文档 |
 | --- | --- | --- | --- |
 | FND-001 | 🟡 | 批次 002 完成 Control : Component/IWin32Window 及组件生命周期，批次 003 接入有真实 UI 投递的 ISynchronizeInvoke；Form 标准继承链、完整构造族及 Controls/Parent 仍待实现 | [Control](controls/Control.md)、[Form](controls/Form.md) |
-| FND-002 | 🟡 | 批次 003/004 完成同步及 Action/Func<T> 异步投递；批次 005 补标准 ValueTask 两族入口，90 条固定参考/JIT/AOT 观测相同，包含 source 单次消费与取消。标准同步上下文、callback 内 await 后 UI 恢复及完整关闭竞态仍保留；null Delegate 与默认错误 UI 差异见批次记录 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次 005](batches/005.md) |
-| FND-003 | 🟡 | 批次 001/003 完成 ListViewItem 基础构造（41 条观测）；批次 004/005 完成 ListViewSubItem 基础公共构造和五参样式构造（分别 37 条观测）。已挂接资源继承、其余构造及 Items/SubItems/Columns/Nodes 托管与原生同步仍待实现 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
+| FND-002 | 🟡 | 批次 003～005 完成同步/Action/Func/ValueTask 投递；批次 006 补显式标准同步上下文，57 条固定参考/JIT/实际 AOT 观测一致，含显式 await 恢复、复制与共享释放。AutoInstall/Uninstall、默认 callback await 恢复、完整退出/关闭竞态仍保留；null Delegate/Send 与默认错误 UI 差异见批次记录 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次 006](batches/006.md) |
+| FND-003 | 🟡 | 批次 001～005 完成 ListViewItem 基础构造和 ListViewSubItem 基础/样式构造；批次 006 补子项集合 key，209 条参考/Lumina 观测相同。已挂接资源继承、其余构造、完整集合/IList/所属及 Items/SubItems/Columns/Nodes 原生同步仍待实现 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | ⬜ | 完整 Demo 的 AOT 可见主窗、一次操作、模态/关闭/正常退出验收；原隐藏短探针未完成，不直接归咎 AOT | [已有证据](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |

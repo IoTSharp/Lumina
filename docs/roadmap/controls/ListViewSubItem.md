@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-标准完整类型名为 `System.Windows.Forms.ListViewItem.ListViewSubItem`（反射名含 `+`），本页使用短文件名。批次 004 完成基础公共构造、继承及 Text/Name/Tag；批次 005 完成五参样式构造、颜色/字体与 ResetStyle 的独立和未挂接 owner 子范围，新增 37 条样式观测与固定 WinForms 10.0.11 相同。已挂接控件样式继承、全局默认字体、Bounds、完整所属与 key 集合及 native 同步仍缺。
+标准完整类型名为 `System.Windows.Forms.ListViewItem.ListViewSubItem`（反射名含 `+`），本页使用短文件名。批次 004/005 完成基础公共构造、继承、Text/Name/Tag 与独立和未挂接 owner 的样式；批次 006 完成集合 key 子范围，209 条固定参考/Lumina 观测相同。已挂接控件样式继承、全局默认字体、Bounds、完整所属、IList/集合构造及 native 同步仍缺。
 
 - 标准继承/契约：`ListViewItem.ListViewSubItem`，非视觉普通对象；嵌套 ListViewSubItemCollection 管理归属。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -26,8 +26,9 @@
 | ✅ | P0 | `ListViewSubItem-01a` | 批次 004：公共无参/owner-text、可继承性、Text/Name/Tag 的默认/null/引用身份及首子项同步；37 条两端观测与 13 项新增回归通过，原 21 项构造/41 条观测保留。不新增公开 Owner；样式/完整所属/native 仍待后续。 |
 | ✅ | P0 | `ListViewSubItem-01b` | 批次 005：五参样式构造、ForeColor/BackColor/Font、ResetStyle 的独立/未挂接 owner 行为；37 条两端样式观测与 15 项新增测试通过。空颜色/null Font 恢复、引用身份及共享借用 Font 寿命已检；已挂接继承、UseItemStyleForSubItems、全局默认字体和 native 刷新另列。 |
 | ⬜ | P1 | `ListViewSubItem-02` | 所属项与 SubItems 集合索引规则、Text 与第0子项/ListViewItem.Text 同步；Add/Insert/Remove/替换/清空更新原生对应列；不新增公开 Owner 属性。 |
-| 🟡 | P1 | `ListViewSubItem-03` | 批次 004 已有基础 Name/Tag 与 null/身份语义；按 key 查找、ContainsKey/IndexOfKey/RemoveByKey、重复 key 和改 Name 后缓存失效及整数索引错误仍待实现。 |
-| ⬜ | P1 | `ListViewSubItem-03a` | 批次 006 首范围：集合 string key 索引器、ContainsKey/IndexOfKey/RemoveByKey，固定参考端比较 null/空/大小写/重复项、修改 Name 后查找和首次匹配移除；保留完整所属转移、IList/构造/整数索引规则及 native 同步缺口。 |
+| ⬜ | P1 | `ListViewSubItem-02a` | 批次 007 首范围：标准公共 ListViewSubItemCollection(owner) 构造、多集合视图共享 owner 数据与整数索引 get/set 的参数/null/首项语义。先固定参考端观察构造副作用、空 owner、视图身份及 key 缓存的实例边界；保留非泛型 IList、全部 AddRange/所属转移和 native 同步。 |
+| 🟡 | P1 | `ListViewSubItem-03` | 批次 004/006 已有 Name/Tag、string key 索引器与 ContainsKey/IndexOfKey/RemoveByKey；保留固定参考端的重复 key/Name 修改/缓存位置语义。完整整数索引边界、IList/构造及 native 仍待实现。 |
+| ✅ | P1 | `ListViewSubItem-03a` | 批次 006：四个标准 virtual key 成员，209 条固定参考/Lumina 观测相同，新增 38 项回归。null/空不匹配且保留缓存，等长+InvariantCultureIgnoreCase、重复 key 的上次位置、Name/集合修改及单项移除、身份与首项延迟恢复已检。完整所属/IList/构造/整数索引及 native 不随此关闭。 |
 | 🟡 | P1 | `ListViewSubItem-04` | 批次 005 完成独立/未挂接的颜色字体及空值恢复；ListViewItem.UseItemStyleForSubItems、父控件继承优先级及全局默认字体仍待后续。 |
 | ⬜ | P1 | `ListViewSubItem-05` | Bounds、文本/图像对齐、列重排、水平滚动、非 Details 模式/未挂载的结果；不能以固定矩形占位。 |
 | 🟡 | P2 | `ListViewSubItem-06` | 批次 005 完成独立/未挂接 ResetStyle；ToString、样式序列化/设计器 .resx 及 Clone 由 owner 执行的复制语义、AOT 静态资源路径仍待后续。 |
@@ -65,7 +66,9 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 
 - 2026-10-16 · 批次 005：先运行固定 WinForms 10.0.11 参考端，再补五参构造、ForeColor/BackColor/Font 与 ResetStyle；37 条两端样式观测相同，新增 15 项测试。默认使用 WindowText/Window 与惰性共享的官方 SystemFonts.MessageBoxFont（本机为 Microsoft YaHei UI 9，不能代以 SystemFonts.DefaultFont）；显式 Font 保留借用身份，不因置空/替换/Reset 而释放。保留 owner/文字/首项语义。未接 Control.DefaultFont/Application 自定义默认字体与 item→ListView 回链，不能据此宣称已挂接继承/native 或完整样式兼容。
 
-历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
+- 2026-10-16 · 批次 006：先运行固定参考端的 209 条观测，再补集合 string key 索引器、ContainsKey/IndexOfKey/RemoveByKey，新增 38 项回归。解除历史集合 sealed 以提供四个标准 virtual 成员；不改变现有泛型接口和内部构造形状。只保存一个最后命中索引，按参考端保留 Name 修改、Insert/Remove/Clear 后槽位的可观察选择，非空 miss 清除、null/空查询不清除；RemoveByKey 使用同一次查找结果只移除一项。比较先检 UTF-16 长度，再用不变文化忽略大小写，保留等长软连字符/NUL、Angstrom/Kelvin 等边界；不能以 OrdinalIgnoreCase 代替。完整集合构造、IList、所属和 native 缺口保留。
+
+历史按对应源码路径的相关内容摘要，不把提交标题当成功能验收证明。
 
 ## 官方资料
 

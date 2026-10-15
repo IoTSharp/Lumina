@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002 已接入 Component/IWin32Window 和组件释放；批次 003 接入真实 HWND 的同步投递及 ISynchronizeInvoke。批次 004 完成 Action/Func<T> 的 InvokeAsync，批次 005 补标准 ValueTask/ValueTask<T> 入口，90 条指定观测在固定参考端、JIT 与 Native AOT 相同。Focus() 仍返回 void；布局、完整构造、Controls/Parent、标准同步上下文及关闭竞态仍待后续范围。
+🟡 **现状：**批次 002～005 已接入 Component/IWin32Window、组件释放、真实 HWND 同步及 Action/Func/ValueTask 投递。批次 006 补独立显式同步上下文类型及显式 await 恢复，旧投递检查保持通过。Focus() 仍返回 void；布局、完整构造、Controls/Parent、同步上下文默认安装及关闭竞态仍待后续范围。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -18,7 +18,7 @@
 | ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
 | 🟡 | P0 / Control-04 | 批次 003 完成 Action/Delegate/args/Func 同步及 BeginInvoke/EndInvoke 首范围（Control-04a）；完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
 | ✅ | P0 / Control-04a | 批次 003：真实 PostMessage 队列、同线程 FIFO/EndInvoke、跨线程返回与异常、ExecutionContext、IAsyncResult 和销毁待执行项唤醒；69 条指定观测在固定 WinForms 10.0.11、JIT、AOT 相同。null Delegate 保护与默认异常 UI 的明确差异见修改历史，不等于父任务完整验收。 |
-| 🟡 | P0 / Control-05 | 批次 004/005 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队（Control-05a/b）；标准同步上下文、callback 内 await 后 UI 恢复与完整关闭竞态继续待实现。 |
+| 🟡 | P0 / Control-05 | 批次 004/005 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队；批次 006 补显式 context/await 检查。默认安装下的 callback await 恢复、完整关闭竞态仍待实现，不随显式类型关闭。 |
 | ✅ | P0 / Control-05a | 批次 004：标准 Action/Func<T> 在自身 HWND 线程排队，返回值、原异常及取消保留；旧单 Action/Task 回调也排队。固定 WinForms 10.0.11、JIT、AOT 59 条观测相同，另有旧 Task 路径专项检查；ValueTask/同步上下文与完整关闭竞态未关闭。 |
 | ✅ | P0 / Control-05b | 批次 005：标准 Func<CancellationToken,ValueTask> / ValueTask<T> 在 UI 队列首次调用并单次消费，90 条固定参考/JIT/AOT 观测相同；原异常/结果/token、取消后继续消费及 async lambda 选择已检。同步上下文安装、callback 内 await 后 UI 恢复和完整关闭竞态另列，不代表完整异步兼容。 |
 | ⬜ | P0 / Control-06 | 实现 Control.ControlCollection、Parent 可设、Controls.Add/AddRange/Remove/Clear/SetChildIndex/Find；Form 直接子项的 Parent 必须是 Form，Owner 不能替代 Parent。 |

@@ -16,7 +16,7 @@
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ |
-| [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | ⬜ 缺失 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ |
+| [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | 🟡 存在 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ |
 | [ScrollableControl](controls/ScrollableControl.md) | M1 | ⬜ 缺失 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ |
 | [ContainerControl](controls/ContainerControl.md) | M1 | ⬜ 缺失 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ |
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ |

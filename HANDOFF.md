@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 005 明确子范围已完成并成功推送，远端分支已核对；批次 006 接续会话已创建，只读准备后等待。旧主会话完成本次交接提交推送后发送“开始接管”，确认实际接管后归档。
+- 调度状态：批次 006 两个明确子范围代码完成，集成检查通过；主会话正在更新台账、提交推送并准备批次 007 只读接续。批次 005 实现与交接均已成功推送。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14084-801a-7cd2-9c4b-859b309261bd`（批次 006，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14075-71ec-74e3-ac51-cedae735f4fb` 仅完成本次交接提交/推送和启动消息，随后停止写入，确认实际接管后归档；更早的主会话均已交接。
+- 当前编码主会话：`01a14084-801a-7cd2-9c4b-859b309261bd`（批次 006，本地 Lumina 项目；已实际接管）。旧主会话 `01a14075-71ec-74e3-ac51-cedae735f4fb` 已归档（接管后通过应用工具确认），不再写入/构建/Git；更早的主会话均已交接。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[006 · 显式同步上下文与子项 key 查找](docs/roadmap/batches/006.md)，由新主会话在交接后领取；[005](docs/roadmap/batches/005.md)、[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`b5aad5299b735fbe7007553b83c22e29bf604c2f`（批次 005），已成功推送 `origin/main`；`git ls-remote origin refs/heads/main` 返回同 SHA，本地 HEAD/origin/main 相同且推送后工作区干净（交接文档更新前）。接续交接提交以 `git log` 与启动消息中的远端核对为准，原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[006 · 显式同步上下文与子项 key 查找](docs/roadmap/batches/006.md)明确范围代码完成；下一批已划定 [007 · 默认同步上下文与集合视图基础](docs/roadmap/batches/007.md)，交接后领取；[005](docs/roadmap/batches/005.md)、[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`b5aad5299b735fbe7007553b83c22e29bf604c2f`（批次 005），已成功推送 `origin/main`；归属交接提交 `f37c9c5f4032123fc63c0a520e1cd95d3346e532` 已核对 HEAD/origin/main/远端 refs/heads/main 一致，批次 006 接管时工作区干净。原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
@@ -55,6 +55,10 @@
 - 批次 005 子项：五参样式构造、ForeColor/BackColor/Font 与 ResetStyle 的独立/未挂接 owner 子范围完成，另 37 条样式观测相同，15 项新增测试；全线 146 项通过。默认 WindowText/Window 与惰性共享官方 MessageBoxFont，保留借用 Font 身份/寿命；全局默认字体、已挂接样式/完整所属/native 仍缺。原基础子项 37 条、ListViewItem 41 条回归保留。
 - 批次 005 集成：主线双目标 Release 0 错误/本次增量 318 警告；ValueTask AOT 探针实际运行通过，EXE 2,794,496 字节；完整 Demo AOT 发布 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 保留既有 InheritanceAttribute/Enum.GetValues(Type) IL3050。13 项目/17 目标仍仅 .NET 10，Demo 原始 Designer/resx 未改，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing。
 - 批次 006 文件责任：WindowsFormsSynchronizationContext-01a 子智能体负责标准显式 context 类型/投递辅助、Control/Form/dispatcher 与独立探针；ListViewSubItem-03a 子智能体负责 ListViewItem.cs 与独立 key 检查。Application/Win32、文档/API/索引、集成构建和 Git 由主会话协调。先固定参考端，再实现；AutoInstall/Uninstall/默认 await 恢复与完整线程/关闭/模态竞态留后续，不造空方法。key 子范围不关闭完整集合所属/native。
+- 批次 006：显式标准 context 类型、无参构造/Post/Send/CreateCopy/Dispose 已实现；57 条固定参考/JIT/实际 AOT 观测相同，新增 7 项独立 STA 检查。message-only HWND 与既有 dispatcher 复用，创建登记 DPI，销毁释放 GCHandle；普通 Form 释放不影响目的地。同线程共享 Dispose 失效与重新构造仍失效按参考保留；null Post 接受、null Send 明确防挂差异（参考隔离超时，本实现 ArgumentNullException d）。AutoInstall/Uninstall/default await 恢复仍缺。
+- 批次 006 子项：四个标准 virtual key 成员与 209 条参考/JIT 观测相同，新增 38 项回归。用一个最后命中索引保留 Name/集合修改后重复 key 选择；null/空保留缓存、非空 miss 清除；先 UTF-16 等长再 InvariantCultureIgnoreCase，含 Unicode/嵌入 NUL。集合已解除 sealed，完整公共构造/IList/整数索引/所属/native 仍缺。
+- 批次 006 集成：191 项测试全部通过，主线双目标 Release 0 错误/本次增量 318 警告；旧线程69/Action59/旧Task/ValueTask90、Item41与子项基础/样式各37回归通过。context AOT 实际运行 EXE 2,688,512 字节，Demo AOT 4,094,464 字节，两者无 CLR Header；探针无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13 项目/17 目标仍仅 .NET 10，net10.0 deps 与原始 Designer/resx 保持要求，API 分母仍 1,095/61,240 且运行状态 unverified。
+- 批次 007 文件责任：WindowsFormsSynchronizationContext-01b 子智能体负责 context/Control/Form/Application/dispatcher 与独立默认安装探针；ListViewSubItem-02a 子智能体负责 ListViewItem.cs 与独立集合构造/整数索引/共享视图检查。Win32 必要衔接、文档/API/索引、集成/Git 由主会话协调；先固定参考。默认安装必须实际接入，不能只存 AutoInstall 或空 Uninstall；集合必须处理真实共享 owner 数据，不能只开放构造可见性。完整多线程/模态/退出与 IList/native 仍保留。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
 - 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。

@@ -118,6 +118,27 @@
 
 复现：`./tools/compatibility/Test-ControlInvokeValueTask.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemStyle.ps1`；旧 Action/Func、线程及两组构造驱动继续执行。统一构建/测试、API 导出、完整 Demo 发布及结果记录在 artifacts/compatibility-batch005，现有脚本仍写原批次忽略目录。完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。
 
+## 批次 006 · 2026-10-16 实施结果
+
+本批完成显式同步上下文和子项 key 的明确子范围，详见 [批次 006](batches/006.md)。FND-002/003、Control-05、Form-04 和完整 context/集合父任务继续部分完成；默认安装与完整所属/native 未由本批关闭。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误、本次增量 318 警告；13 项目/17 目标仅 .NET 10；原始 Designer/resx 未改 |
+| 全线回归测试 | ✅ | 191 项通过，0 失败/跳过；新增 38 项 key 与 7 项独立 STA 原生投递检查 |
+| 显式 context 差分 | ✅ 指定轻量范围 | 固定 WinForms 10.0.11、Lumina JIT、实际 Native AOT 的 57 条相同；无 Form 建窗/Post、Send FIFO/跨线程/原异常、state/ExecutionContext、ThreadException、复制目的地、普通 Form 释放、共享 Dispose 与显式 await 恢复 |
+| null callback 隔离检查 | ✅ 差异明确 | null Post 两端接受且无回调；参考活跃 null Send 在隔离进程 3 秒超时，Lumina 抛 ArgumentNullException（d）防挂，不把该项算相同 |
+| 子项 key 差分 | ✅ 指定轻量范围 | 209 条参考/JIT 观测一致，四个 virtual 成员；上次索引缓存、Name/Insert/Remove/Clear、null/空/重复 key、等长不变文化与 Unicode/NUL、身份及首项延迟恢复 |
+| 既有路径回归 | ✅ | 同步投递 69、Action/Func 59 与旧 Task、ValueTask 90、Item 构造 41、子项基础/样式各 37 条参考/JIT 继续相同 |
+| context 探针 AOT | ✅ 发布/运行/PE | 2,688,512 字节，CLR Header 为 0；实际运行 57 条与 JIT 相同，发布无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | 4,094,464 字节，CLR Header 为 0；仍有标准 Container/InheritanceAttribute/Enum.GetValues(Type) IL3050，未全局抑制；可见操作与正常退出未重记通过 |
+| 依赖与 API | ✅ 指定图/形状 | net10.0 Demo deps 无 WinForms/Resources.Extensions/自有 Drawing；1,095 类型/61,240 行 API 分母不变，运行验收状态继续 unverified |
+| 任务索引与文档 | ✅ 结构 | 395 份 Markdown、187 组控件/API 页、2,013 项任务检查 0 结构错误；新增批次 007 两个待实现子范围，不按任务数计算兼容率 |
+
+显式 context 真实持有 message-only HWND，成功创建后登记 DPI 门禁，WM_NCDESTROY 关闭 dispatcher 并释放 GCHandle；不改 Demo 或引入新调度架构。按固定参考保留每线程共享目的地与释放失效：本实例 Dispose 后投递无动作，其他 copy/同线程实例仍指向失效窗口，重新构造也不修复，未执行排队项丢弃。完整线程退出、跨线程释放、多 UI 线程、模态、默认安装与 callback await 恢复仍待后续。
+
+复现：`./tools/compatibility/Test-WindowsFormsSynchronizationContext.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemKeys.ps1`；旧驱动继续保留。日志、TRX、项目目标和 PE 证据写 artifacts/compatibility-batch006，完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。下一批范围见 [007](batches/007.md)，代码完成与兼容验收分开，不推算 98%。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**
