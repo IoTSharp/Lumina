@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 004 两个明确子范围代码完成，集成检查通过；主会话正在更新台账、提交推送并准备批次 005 只读接续。
+- 调度状态：批次 004 明确子范围已完成并成功推送，远端分支已核对；批次 005 接续会话已创建，只读准备后等待。旧主会话完成本次交接提交推送后发送“开始接管”，确认实际接管后归档。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14062-0945-79c1-bfe9-655ad7f6fffb`（批次 004，本地 Lumina 项目；已接管）。旧主会话 `01a14045-e2d1-7811-a8cf-d2f9e80ef689` 已停止写入；更早的主会话均已交接。
+- 当前编码主会话：`01a14075-71ec-74e3-ac51-cedae735f4fb`（批次 005，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14062-0945-79c1-bfe9-655ad7f6fffb` 仅完成本次交接提交/推送和启动消息，随后停止写入，确认实际接管后归档；更早的主会话均已交接。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[004 · 基础异步投递与子项契约](docs/roadmap/batches/004.md)明确范围代码完成；下一批已划定 [005 · ValueTask 入口与子项样式基础](docs/roadmap/batches/005.md)，交接后领取；[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`53294b5`（批次 003），已推送 `origin/main`。接续交接提交以 `git log` 为准，原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[005 · ValueTask 入口与子项样式基础](docs/roadmap/batches/005.md)，由新主会话在交接后领取；[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`cb3692d4bdca36aaabf57fabe04c6cdc9bf2eeb7`（批次 004），已成功推送 `origin/main`；`git ls-remote origin refs/heads/main` 返回同 SHA，本地 HEAD/origin/main 相同且工作区干净（交接文档更新前）。接续交接提交以 `git log` 与启动消息中的远端核对为准，原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
