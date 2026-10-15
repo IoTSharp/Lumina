@@ -303,6 +303,25 @@ SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换
 
 完整布局/派生约束/DPI/外部自主通知/Form、完整所属/已挂接 Tooltip/native/Clone/序列化与多线程压力及复杂 UI/设备/设计器、Linux/macOS 继续另列。日志/TRX/PE/项目/依赖及差异摘要见 artifacts/compatibility-batch014，复现入口见 tools/compatibility/README.md；下一批见 [015](batches/015.md)。
 
+## 2026-10-16 · 批次 015
+
+本批按 [015](batches/015.md) 完成 Control-01b 基础构造默认尺寸，以及 ListViewItem-01c 字符串首范围。两个实现子任务文件互斥，先准备固定参考、主聊天顺序运行后授权实施；只读辅助审查确认无须修改旧测试或派生构造，旧主已由应用工具确认立即归档。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线双目标 Release | ✅ 编译 | 0 错误，本次集成增量 300 警告；13 项目/17 目标仅 .NET 10，原始静态 Designer/resx 未改 |
+| 全线测试 | ✅ 指定范围 | 2,713 通过，0 失败/跳过；旧 2,228 + 新构造 387 + 新列表字符串 98 |
+| DefaultSize/基础无参构造 | ✅ 指定差分 | 2,677 条固定 10.0.11/JIT/实际 AOT 全同；初始 0×0、四有限边框、正零负极值/约束 profile、重复虚读取/公共 setter、默认尺寸直接提交、零轴重入缓存、原异常与 context 安装时序 |
+| ListViewItem.ToString | ✅ 英文指定差分 | 96 条固定 en-US 参考/JIT 全同；Object 虚槽、原样 Text、隐藏/override/原异常、元数据/样式、首项/空表/共享 view/三枚举/key 缓存；不消费 Tag/Font，新范围未计实际 AOT 运行验收 |
+| 既有差分回归 | ✅ 指定范围 | 25 个驱动通过，含批次 014 的运行期约束/列表元数据和全部旧投递/context/焦点/边界/通知/客户区/子项消费；旧测试和探针未改 |
+| 构造 AOT | ✅ 发布/实际运行/PE | EXE 2,020,864 字节，2,677 条与 JIT/参考全同，CLR Header 0，无 IL2xxx/IL3xxx；仅精确保留 get_DefaultSize |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,108,288 字节，CLR Header 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留，主窗交互/正常关闭后置 |
+| 全部派生默认/完整构造 | ⬜ 未扩面 | 现有派生构造显式尺寸未改；无自有默认尺寸的具体控件继承基础 0×0，专属默认值仍缺。无 parent 文本构造为下一批 01c，含 parent 构造/Controls/Form 继承另列 |
+| 依赖与 API | ✅ 指定图/形状 | net10.0 Demo deps 无 WinForms/Resources.Extensions/自有 Drawing，官方 Drawing 10.0.0；公共签名重新导出，1,095 类型/61,240 行、运行 unverified 保持 |
+| 文档与任务索引 | ✅ 结构 | 404 份 Markdown、187 组控件/API 页、2,031 项任务，0 结构错误；父任务、具体派生默认及下一批范围独立保留 |
+
+中文 Designer 分类/描述与 AOT 动态 AmbientValue.Value/TypeDescriptor 转换、完整布局/DPI/外部自主通知、完整所属/已挂接样式/native/Clone/序列化、复杂 UI/设备/设计器及 Linux/macOS 保持待实现/待验收，代码完成不计为 98%。复现：`./tools/compatibility/Test-ControlDefaultSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemToString.ps1`；日志与摘要见 artifacts/compatibility-batch015，下一批见 [016](batches/016.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

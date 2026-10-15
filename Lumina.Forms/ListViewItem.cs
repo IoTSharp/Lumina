@@ -119,6 +119,11 @@ public class ListViewItem
     public Color ForeColor { get; set; } = Color.Empty;
 
     /// <summary>
+    /// Returns a string containing the item's primary text.
+    /// </summary>
+    public override string ToString() => $"ListViewItem: {{{Text}}}";
+
+    /// <summary>
     /// Represents a single list view subitem.
     /// </summary>
     public class ListViewSubItem

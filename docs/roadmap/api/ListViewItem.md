@@ -43,7 +43,7 @@
 | API-88468EA83D1F8B6F | Method | `public System.Drawing.Rectangle GetBounds(System.Windows.Forms.ItemBoundsPortion portion)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-15C789A43F553CFB | Method | `public System.Windows.Forms.ListViewItem+ListViewSubItem GetSubItemAt(System.Int32 x, System.Int32 y)` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-4789C4BF263BAA21 | Method | `public virtual System.Void Remove()` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-3FB2846495B929DE | Method | `public virtual System.String ToString()` | `System.Windows.Forms.ListViewItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-3FB2846495B929DE | Method | `public virtual System.String ToString()` | `System.Windows.Forms.ListViewItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-EFA2B3ECD0D94E6A | Property | `System.Drawing.Color BackColor { public get; public set; }` | `System.Windows.Forms.ListViewItem` DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-A724888CD778CEF5 | Property | `System.Drawing.Rectangle Bounds { public get; }` | `System.Windows.Forms.ListViewItem` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-1F59284D73BCFD70 | Property | `System.Boolean Checked { public get; public set; }` | `System.Windows.Forms.ListViewItem` DefaultValueAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

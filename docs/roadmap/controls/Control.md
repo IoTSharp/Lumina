@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～014 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点、旧边界/通知/客户区与 SizeFromClientSize 的既有固定参考/JIT/实际 AOT 观测保留。批次 014 完成明确初始化后的基础 Min/Max 运行期约束，33,408 条固定参考/JIT/实际 AOT 相同，394 项新增回归通过。构造期默认约束与 DefaultSize 留批次 015；中文 Designer 分类/描述、AOT 动态属性元数据转换、全部派生约束、外部自主通知、Select/CanSelect、完整键盘/布局、Controls/Parent 和关闭竞态仍待后续。
+🟡 **现状：**批次 002～015 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点、旧边界/通知/客户区、SizeFromClientSize 与运行期 Min/Max 的固定参考保留。批次 015 完成基础 0×0 构造、DefaultSize 与构造期默认 Min/Max 的真实虚消费，2,677 条固定参考/JIT/实际 AOT 相同，387 项新增回归通过。无 parent 的两个文本构造留批次 016；全部具体派生默认值、中文 Designer 分类/描述、AOT 动态属性元数据转换、外部自主通知、Select/CanSelect、完整键盘/布局、Controls/Parent 和关闭竞态仍待后续。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,9 +11,10 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| 🟡 | P0 / Control-01 | 批次 002 已完成 Component/IWin32Window（Control-01a），批次 003 已实现真实 UI 投递的 ISynchronizeInvoke；批次 015 的基础 DefaultSize/构造期默认约束为 01b。IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
+| 🟡 | P0 / Control-01 | 批次 002 已完成 Component/IWin32Window（Control-01a），批次 003 已实现真实 UI 投递的 ISynchronizeInvoke，批次 015 完成基础 DefaultSize/构造期默认约束（01b）。无 parent 文本构造（01c）、IDropTarget、含 parent 构造、Controls 与全部派生默认/扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
-| ⬜ | P0 / Control-01b | 批次 015 首范围：固定参考补 DefaultSize 和基础无参构造初始矩形/客户区，核对构造期 DefaultMinimumSize/DefaultMaximumSize 的调用次序、状态、公共 setter 消费及原异常。014 的运行期默认扩展不等同构造期已支持；其余构造/全部派生默认/DPI/Form 另列。 |
+| ✅ | P0 / Control-01b | 批次 015：基础无参 0×0 与 protected virtual DefaultSize 完成；构造期 DefaultMin/Max 在原始状态按参考重复读取并消费公共虚 setter，随后直接初始化 DefaultSize 和条件客户区，再安装同步上下文。2,677 条固定 10.0.11/JIT/实际 AOT 相同，387 项新增回归，覆盖四边框/正零负极值、冲突/重复读取、不调 base/重入/原异常及构造异常 Current 时序。其余构造、所有具体派生默认/DPI/Form/完整布局与兼容验收另列。 |
+| ⬜ | P0 / Control-01c | 批次 016 首范围：固定参考补无 parent 的 text 与 text/left/top/width/height 两个公共构造，核对参数、默认扩展/文本/边界/通知/同步上下文的真实次序、派生虚消费、正零负极值、重入/原异常；含 parent 构造、完整 Text/native/布局与 Form 继承另列。 |
 | 🟡 | P0 / Control-02 | 批次 008～010 完成标准焦点查询（02a）、零尺寸/句柄相关负尺寸（02b）与指定边界/虚 core 入口（02c）；Select/CanSelect、完整键盘/布局仍待后续，不随子范围关闭。 |
 | ✅ | P0 / Control-02a | 批次 008：标准 bool Focus() 与 virtual Focused、ContainsFocus/CanFocus 使用真实 GetFocus/IsChild/IsWindowVisible/IsWindowEnabled；无自身 HWND 不创建句柄，隐藏/禁用/释放与外部原生状态有对照。157 条固定参考/JIT/实际 AOT 相同，17 项新增 STA/元数据回归通过。完整选择、键盘/验证及重建竞态另列。 |
 | ✅ | P0 / Control-02b | 批次 009：SetBounds 及 Width/Height/Size/Bounds 无自身 HWND 时保留零/负尺寸、不创建句柄；已有 HWND 时负数归零，实际零宽高可恢复。首次创建回读原生矩形，HandleCreated 已见归一结果。756 条固定参考/JIT/实际 AOT 相同，33 项新增回归通过。构造默认大小、全部派生约束、完整布局/Min/Max/事件另列。 |
@@ -55,6 +56,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次 015：基础无参构造由固定 120×24 改为标准初始 0×0，新增 protected virtual DefaultSize。构造按参考重复读取非空默认 Min/Max 并调用公共虚 setter，再直接提交 DefaultSize 的宽高；双轴非零才计算边框客户区，否则保留构造重入留下的缓存，位置不被默认尺寸覆盖。默认扩展原异常发生时 context 尚未安装，成功后才安装、派生构造体可见。2,677 条固定 10.0.11/JIT/实际 AOT 全同，387 项新增回归；25 个旧差分驱动和全线 2,713 项测试通过，无旧测试或派生构造修改。AOT EXE 2,020,864 字节，无 CLR Header/IL2xxx/IL3xxx。已有派生构造显式尺寸保留；尚未自设默认尺寸的具体控件现在继承基础 0×0，其专属默认值仍待后续。其余公共构造、Parent/Controls、完整布局/DPI/Form 与全语言元数据另列，见 [015](../batches/015.md)。
 
 - `70a08e7`（2026-04-09）：补 ResumeLayout/IsDisposed 等设计器兼容表面。
 - `2fb513a`（2026-04-09）：加入异步调用相关实现。

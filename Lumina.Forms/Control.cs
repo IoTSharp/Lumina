@@ -19,10 +19,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private string _text = string.Empty;
     private int _left;
     private int _top;
-    private int _width = 120;
-    private int _height = 24;
-    private int _clientWidth = 120;
-    private int _clientHeight = 24;
+    private int _width;
+    private int _height;
+    private int _clientWidth;
+    private int _clientHeight;
     private bool _enabled = true;
     private bool _visible = true;
     private bool _disposed;
@@ -51,6 +51,31 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public Control()
     {
+        // These extensions and setters are virtual. Preserve their construction
+        // order and repeated reads while the initial bounds are still empty.
+        if (DefaultMinimumSize != Size.Empty)
+        {
+            MinimumSize = DefaultMinimumSize;
+        }
+
+        if (DefaultMaximumSize != Size.Empty)
+        {
+            MaximumSize = DefaultMaximumSize;
+        }
+
+        // Construction assigns the default directly instead of routing through
+        // bounds constraints or notifications. Reentrant defaults may already
+        // have changed the location or client cache, so keep those values.
+        Size defaultSize = DefaultSize;
+        _width = defaultSize.Width;
+        _height = defaultSize.Height;
+        if (_width != 0 && _height != 0)
+        {
+            Size nonClient = GetNonClientSize();
+            _clientWidth = unchecked(_width - nonClient.Width);
+            _clientHeight = unchecked(_height - nonClient.Height);
+        }
+
         WindowsFormsSynchronizationContext.InstallIfNeeded();
     }
 
@@ -239,6 +264,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Gets the default maximum size of the control.
     /// </summary>
     protected virtual Size DefaultMaximumSize => Size.Empty;
+
+    /// <summary>
+    /// Gets the default size of the control.
+    /// </summary>
+    protected virtual Size DefaultSize => Size.Empty;
 
     /// <summary>
     /// Gets or sets the interior spacing between the control border and its content area.
