@@ -13,6 +13,7 @@ public class ListViewItem
     // Collection instances are views over the item's data; each view keeps its own key cache.
     private List<ListViewSubItem> _subItemData = [];
     private ListViewSubItemCollection? _subItems;
+    private string _toolTipText = string.Empty;
 
     /// <summary>
     /// Initializes a new list view item with empty primary text.
@@ -57,6 +58,39 @@ public class ListViewItem
         {
             SubItems[0].Text = value;
         }
+    }
+
+    /// <summary>
+    /// Gets or sets the name of the item's primary subitem.
+    /// </summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Localizable(true)]
+    public string Name
+    {
+        get => _subItemData.Count == 0 ? string.Empty : _subItemData[0].Name;
+        set => SubItems[0].Name = value;
+    }
+
+    /// <summary>
+    /// Gets or sets application data associated with the item.
+    /// </summary>
+    [Bindable(true)]
+    [Category("Data")]
+    [DefaultValue(null)]
+    [Localizable(false)]
+    [TypeConverter(typeof(StringConverter))]
+    public object? Tag { get; set; }
+
+    /// <summary>
+    /// Gets or sets the text displayed in the item's tooltip.
+    /// </summary>
+    [Category("Appearance")]
+    [DefaultValue("")]
+    public string ToolTipText
+    {
+        get => _toolTipText;
+        set => _toolTipText = value ?? string.Empty;
     }
 
     /// <summary>

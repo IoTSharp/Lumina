@@ -37,7 +37,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private Color _backColor = Color.Empty;
     private Color _foreColor = Color.Empty;
     private Font? _font;
-    private Size _maximumSize;
+    private Size? _minimumSize;
+    private Size? _maximumSize;
     private nint _backgroundBrush;
     private bool _ownsBackgroundBrush;
     private nint _originalWindowProc;
@@ -164,11 +165,80 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         set => _font = value;
     }
 
-    public Size MaximumSize
+    /// <summary>
+    /// Gets or sets the minimum size of the control.
+    /// </summary>
+    [Localizable(true)]
+    [Category("Layout")]
+    [Description("Specifies the minimum size of the control.")]
+    public virtual Size MinimumSize
     {
-        get => _maximumSize;
-        set => _maximumSize = value;
+        get
+        {
+            // The default extension is evaluated even when an explicit value is
+            // present. Derived controls can observe its calls and exceptions.
+            Size defaultSize = DefaultMinimumSize;
+            return _minimumSize ?? defaultSize;
+        }
+        set
+        {
+            if (MinimumSize == value)
+            {
+                return;
+            }
+
+            _minimumSize = value;
+            Size currentSize = Size;
+            SetBoundsCore(_left, _top, Math.Max(currentSize.Width, value.Width),
+                Math.Max(currentSize.Height, value.Height), BoundsSpecified.Size);
+        }
     }
+
+    /// <summary>
+    /// Gets or sets the maximum size of the control. A zero dimension leaves that axis unbounded.
+    /// </summary>
+    [Localizable(true)]
+    [Category("Layout")]
+    [Description("Specifies the maximum size of the control.")]
+    [AmbientValue(typeof(Size), "0, 0")]
+    public virtual Size MaximumSize
+    {
+        get
+        {
+            Size defaultSize = DefaultMaximumSize;
+            return _maximumSize ?? defaultSize;
+        }
+        set
+        {
+            // Clearing the maximum removes the stored override without consuming
+            // its getter or resizing. MinimumSize explicitly stores Size.Empty.
+            if (value == Size.Empty)
+            {
+                _maximumSize = null;
+                return;
+            }
+
+            if (MaximumSize == value)
+            {
+                return;
+            }
+
+            _maximumSize = value;
+            Size currentSize = Size;
+            SetBoundsCore(_left, _top, Math.Min(currentSize.Width, value.Width),
+                Math.Min(currentSize.Height, value.Height), BoundsSpecified.Size);
+        }
+    }
+
+    /// <summary>
+    /// Gets the default minimum size of the control.
+    /// </summary>
+    protected virtual Size DefaultMinimumSize => Size.Empty;
+
+    /// <summary>
+    /// Gets the default maximum size of the control.
+    /// </summary>
+    protected virtual Size DefaultMaximumSize => Size.Empty;
 
     /// <summary>
     /// Gets or sets the interior spacing between the control border and its content area.
@@ -616,6 +686,27 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         ThrowIfDisposed();
 
+        // Compare the raw request before consuming virtual constraint getters.
+        // A direct core call with the current rectangle is an observable no-op.
+        if (_left == x && _top == y && _width == width && _height == height)
+        {
+            return;
+        }
+
+        if (MaximumSize != Size.Empty || MinimumSize != Size.Empty)
+        {
+            // Preserve WinForms' short circuit and repeated virtual reads. A
+            // getter can reenter sizing, change constraints, or throw here.
+            Size maximumSize = MaximumSize;
+            int maximumWidth = maximumSize.Width == 0 ? int.MaxValue : maximumSize.Width;
+            int maximumHeight = maximumSize.Height == 0 ? int.MaxValue : maximumSize.Height;
+            width = Math.Min(width, maximumWidth);
+            height = Math.Min(height, maximumHeight);
+            Size minimumSize = MinimumSize;
+            width = Math.Max(width, minimumSize.Width);
+            height = Math.Max(height, minimumSize.Height);
+        }
+
         // WinForms preserves requested negative dimensions before a control has its own
         // HWND. Once created, native window dimensions normalize them to zero.
         bool hasHandle = Handle != 0;
@@ -628,7 +719,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         bool locationChanged = _left != x || _top != y;
         bool sizeChanged = _width != width || _height != height;
 
-        if (!locationChanged && !sizeChanged)
+        if (hasHandle && !locationChanged && !sizeChanged)
         {
             return;
         }
@@ -649,6 +740,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         int previousClientHeight = _clientHeight;
         UpdateClientSize();
         sizeChanged |= previousClientWidth != _clientWidth || previousClientHeight != _clientHeight;
+
+        if (!locationChanged && !sizeChanged)
+        {
+            return;
+        }
 
         OnBoundsChanged();
 

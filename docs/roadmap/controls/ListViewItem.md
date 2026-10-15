@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前支持无参、string、string[] 基础构造、Text/SubItems 和 ForeColor。批次 007 补集合公共构造、共享 owner 数据及整数索引首范围，72 条固定参考对照相同，原 41 条构造和 209 条 key 对照保留。图像/分组/颜色字体等其余构造、全部所属、选择、勾选及完整集合契约仍待实现。
+当前支持无参、string、string[] 基础构造、Text/SubItems 和 ForeColor。批次 007 补集合公共构造、共享 owner 数据及整数索引；批次 014 补 Name/Tag/ToolTipText 首范围，151 条固定英文参考/JIT 对照相同，新增 101 项回归通过，中文 Designer 分类本地化仍有明确差异。图像/分组/颜色字体等其余构造、全部所属、选择、勾选及完整集合契约仍待实现。
 
 - 标准继承/契约：`ListViewItem : ICloneable, ISerializable`；不是 Control/Component。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -25,10 +25,11 @@
 | 🟡 | P0 | `ListViewItem-01` | string、无参和 string[] 基础构造及 Text/首子项一致性已完成；imageIndex/imageKey/group/颜色字体等其余构造不随子项完成而关闭。 |
 | ✅ | P0 | `ListViewItem-01a` | 批次 001：先初始化 SubItems，再由 Text setter 创建唯一首项；null 归一，Text/首子项双向更新、清空/移除/替换首项后的托管行为通过 9 项回归。原生同步与完整构造族不在本子项范围，兼容验收后置。 |
 | ✅ | P0 | `ListViewItem-01b` | 批次 003：无参/string[] 构造、null/空数组/null 元素、独立文本复制、Text 读取不重建空集合及 SubItems 访问在原集合中恢复首项；固定参考端 41 条观测相同。完整集合所属与原生同步另列，兼容验收后置。 |
+| ⬜ | P0 | `ListViewItem-01c` | 批次 015 首范围：固定参考补标准 ToString override 的元数据/虚槽、原样 Text 与派生分派，覆盖空值/Unicode/换行/NUL、首项/共享 view/枚举/key 缓存及元数据变化；完整所属/native/Clone/序列化另列。 |
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
-| ⬜ | P1 | `ListViewItem-04` | ImageIndex/ImageKey/ImageList、IndentCount/Group、Name/Tag/ToolTipText；key/index 互斥、组替换、图像列表重建同步。 |
-| ⬜ | P1 | `ListViewItem-04a` | 批次 014 首范围：固定参考补 Name/Tag/ToolTipText 元数据、默认/null/字符串与 Tag 引用身份，以及 Name 与首子项和共享 view/清空恢复/枚举/key 缓存的实际关系。完整所属/已挂接 ToolTip/native、图像/分组、Clone/序列化另列。 |
+| 🟡 | P1 | `ListViewItem-04` | 批次 014 完成 Name/Tag/ToolTipText 未挂接首范围（04a）；中文 Designer 分类本地化、完整所属/已挂接 Tooltip/native、ImageIndex/ImageKey/ImageList、IndentCount/Group、key/index 互斥及组/图像列表重建同步仍缺。 |
+| ✅ | P1 | `ListViewItem-04a` | 批次 014：Name 为首子项 Name 代理，空表 getter 不恢复，setter 对 null/空也经 SubItems 换表恢复；Tag/ToolTipText 独立保存。151 条固定 10.0.11 英文参考/JIT 相同，101 项独立回归通过，覆盖引用身份、共享 view/三枚举/独立 key 缓存、隐藏成员及毒丸 Tag。中文 Designer 分类、完整所属/已挂接 ToolTip/native、图像/分组/Clone/序列化另列；未计实际 AOT 运行验收。 |
 | 🟡 | P1 | `ListViewItem-05` | 批次 006～012 完成 key 四成员、公共集合/共享视图/整数索引、typed 添加/变更、非泛型 IList/ICollection、引用查询/数组复制及枚举首范围（ListViewSubItem-03a/02a～f）；真正多线程/压力、完整所属与 native 同步仍缺。批次 013 的子项字符串读取保留上述集合/缓存行为。 |
 | ⬜ | P2 | `ListViewItem-06` | BackColor/ForeColor/Font/UseItemStyleForSubItems，父 ListView 继承值与每子项独立样式，变更实时更新对应 native item/subitem。 |
 | ⬜ | P2 | `ListViewItem-07` | Clone 深浅拷贝边界、SubItems 和 Group/Tag/Font 引用规则；序列化与设计器 .resx 常见项资源往返，AOT 不走任意类型反序列化。 |
@@ -71,6 +72,8 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 历史按对应源码路径的相关内容摘要，不把提交标题当成功能验收证明。
 
 - 2026-10-16 · 批次 007：owner 持有唯一子项数据，公共集合视图共享该数据但保留独立 key 缓存，Text 在外部视图添加/替换/清空后保持一致；整数索引首范围、对象身份与延迟首项恢复有 72 条固定参考对照，原 41 条基础构造回归保留。完整集合/所属/native 不随此关闭，见 [批次 007](../batches/007.md)。
+
+- 2026-10-16 · 批次 014：补 Name/Tag/ToolTipText 标准非虚属性。Name 不独立存储；读空表不恢复，写 null/空也恢复首项且旧空枚举器继续观察旧表。Tag 与 ToolTipText 独立，引用/文本原样保存，均不消费或释放外部资源。151 条固定英文参考/JIT 全同，新增 101 项测试；三种枚举/共享 view/独立 key 缓存及全部旧差分保持。中文 Designer 分类实测仍为 Data/Appearance，对参考“数据/外观”有差异；完整所属/已挂接 Tooltip/native、图像/分组/Clone/序列化和压力另列，新范围未记实际 AOT 运行验收，父任务 04 仅部分完成。见 [014](../batches/014.md)。
 
 ## 官方资料
 

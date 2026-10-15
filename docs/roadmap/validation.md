@@ -282,6 +282,27 @@ SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换
 
 复现：`./tools/compatibility/Test-ControlSizeFromClientSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemToString.ps1`，均可先只跑参考；日志/TRX/PE/项目/依赖证据在 artifacts/compatibility-batch013。下一批见 [014](batches/014.md)。
 
+## 2026-10-16 · 批次 014
+
+本批按 [014](batches/014.md) 完成 Control-09c 的明确初始化后运行期约束，以及 ListViewItem-04a 未挂接元数据首范围。子智能体先准备固定参考，主聊天顺序运行并授权实现，统一集成；只读审查补查构造边界，未以任务数量推算兼容率。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线双目标 Release | ✅ 编译 | 0 错误，本次集成增量 300 警告；13 项目/17 目标仅 .NET 10，原始静态 Designer/resx 未改 |
+| 全线测试 | ✅ 指定范围 | 2,228 通过，0 失败/跳过；旧 1,733 + 新约束 394 + 新列表元数据 101 |
+| 基础运行期 Min/Max | ✅ 指定差分 | 33,408 条固定 10.0.11/JIT/实际 AOT 相同；四有限边框、无/有 HWND、负零/冲突/重复/取消、12 入口、派生虚消费/重入/原异常、原始客户区缓存与通知 |
+| Name/Tag/ToolTipText | ✅ 英文指定差分 | 151 条固定 en-US 参考/JIT 相同；Name 首项代理与空表读写差异、独立 Tag/Tooltip、引用身份、共享 view/三枚举/key 缓存、隐藏成员及毒丸；未计新范围实际 AOT 运行验收 |
+| 既有差分回归 | ✅ 指定范围 | 23 个既有驱动通过，包含批次 013 换算/子项字符串及更早组件/投递/context/焦点/边界/通知/客户区与全部子项消费 |
+| 尺寸约束 AOT | ✅ 发布/实际运行/PE | EXE 2,641,920 字节，33,408 条与 JIT/参考全同，CLR Header 0，无 IL2xxx/IL3xxx；六个实际反射 accessor 精确保留 |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,107,776 字节，CLR Header 0；仍有既有 InheritanceAttribute/Enum.GetValues(Type) IL3050，主窗操作/正常关闭后置 |
+| 动态 AmbientValue 转换 | ⬜ 已知 AOT 缺口 | 初次 AOT 读取 AmbientValueAttribute.Value 抛原 ArgumentException；最终仅检查 CustomAttributeData 的标准 Size/string 构造元数据，不等同 TypeDescriptor 动态转换可用，未全局根化或抑制裁剪 |
+| 中文 Designer 分类/描述 | ⬜ 已知本地化缺口 | 中文列表对照 149/151 相同，Data/Appearance 对“数据/外观”不同；英文 151 全同。尺寸约束描述当前为英文；全语言元数据未验收 |
+| 构造期默认约束 | ⬜ 转批次 015 | --constructors 独立参考记录原始 0×0 状态和 default min→max 消费/原异常；候选仍未消费，与 DefaultSize 统一由 Control-01b 实现，不混入运行期全同组 |
+| 依赖与 API | ✅ 指定图/形状 | Demo net10.0/win-x64 deps 无 WinForms/Resources.Extensions/自有 Drawing，官方 System.Drawing.Common 10.0.0；重新导出 1,095 类型/61,240 行，运行状态 unverified |
+| 文档与任务索引 | ✅ 结构 | 403 份 Markdown、187 组控件/API 页、2,029 项任务，结构校验无错误；父任务、下一批与未验收范围独立保留 |
+
+完整布局/派生约束/DPI/外部自主通知/Form、完整所属/已挂接 Tooltip/native/Clone/序列化与多线程压力及复杂 UI/设备/设计器、Linux/macOS 继续另列。日志/TRX/PE/项目/依赖及差异摘要见 artifacts/compatibility-batch014，复现入口见 tools/compatibility/README.md；下一批见 [015](batches/015.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**
