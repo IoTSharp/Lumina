@@ -8,6 +8,15 @@ LuminaForms is the WinForms replacement track in this repository. Its goal is no
 
 All agents working in this repository must treat the following rules as hard constraints.
 
+## Project Requirements
+
+- Read [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md) before planning, implementation, packaging, or compatibility review. It records the product requirements, including the Drawing platform strategy confirmed on 2026-10-15.
+- Windows must use official `System.Drawing.Common` on both `net10.0-windows` and the `net10.0` Native AOT path; do not introduce a custom Drawing package, wrapper, or facade on Windows.
+- Linux uses the custom package `Lumina.Drawing.Common` and preserves `System.Drawing` source consumption. The preferred assembly name is `System.Drawing.Common`; freeze its full identity and publishing strategy only after the XPL-002 checks. Validate inheritance, interfaces, dependencies, resources, and AOT behavior; matching names alone is not compatibility.
+- Select the Drawing provider for the deployment OS/RID, not merely the TFM or build-host OS. Preserve the fixed Demo targets and native-control direction.
+- Keep confirmed requirements separate from implementation and acceptance status. A requirement document or identity stub does not close a roadmap task or establish 98% compatibility.
+- Scope the Drawing implementation to real Lumina.Forms and application requirements first, with explicit gaps against the full API inventory. Do not require a complete Drawing rewrite before the first native Linux resource/control prototype.
+
 ## Canonical Direction
 
 - Treat `LuminaForms` as the product direction for the WinForms-compatible UI layer in this repository.

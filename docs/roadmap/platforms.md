@@ -2,6 +2,25 @@
 
 Windows 兼容优先推进；Linux/macOS 先做受限原型，确认可行再扩展全部控件。原型不是另一套产品 API。用户接受的“可移植 ≥98%”仍要求真实事件、属性和行为，不能靠平台空实现通过。
 
+产品约束以根目录 [PROJECT_REQUIREMENTS.md](../../PROJECT_REQUIREMENTS.md) 为准；本文把这些要求落实到现有 XPL 规划，不改变当前编码批次归属。
+
+## 已确定的 Drawing 依赖策略
+
+用户于 2026-10-15 确定：Windows 不引入自有 Drawing 包、wrapper 或 facade，直接使用官方 `System.Drawing.Common`；Linux 才使用自有实现。Linux 的 PackageId 为 `Lumina.Drawing.Common`，公共命名空间保留 `System.Drawing`；AssemblyName 优先验证 `System.Drawing.Common`，完整身份与发布方案通过 XPL-002 后冻结。包名与程序集名分别管理，同名不等于完整二进制兼容。
+
+| 目标 | Drawing 选择 | 规划要求 |
+| --- | --- | --- |
+| Windows / net10.0-windows | 官方 Common | 真实 WinForms 与 VS 设计器 |
+| Windows / net10.0 | 官方 Common，不引入自有 Drawing | Lumina.Forms / Native AOT；不能将此 TFM 判作 Linux |
+| Linux / net10.0 | 自有 Common | 完整身份、传递依赖、资源、GTK4 原生消费及本机 AOT 验证 |
+| macOS / net10.0 | 后续验证自有提供者与系统框架适配 | AppKit 原型与 Mac 运行证据独立记录 |
+
+按部署 OS/RID 和明确的无 RID 策略选择提供者，不能依据构建宿主 OS。应用、Lumina.Forms、扩展库、资源生成与发布须形成同一依赖图；Linux 需要排除传递官方资产并检查 SystemEvents 等子依赖。类型身份还涉及版本、公钥标记、BCL forwarder 和消费方 TypeRef，不能仅以同名 DLL 或 using 判断兼容，也不能依赖 `runtimes/{rid}/ref` 自动切换编译引用。
+
+XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：保留官方 Primitives 身份、原始 Designer/resx，验证转换器、旧类型名、Font/Bitmap/Icon/ImageList 和裁剪。Windows 的最小官方 AOT、资产选择和身份 stub 探针不代表 Linux Drawing 或 GTK/AppKit 后端已实现；现有任务状态保持独立。
+
+首个 Drawing 交付按真实 Lumina.Forms、应用与 Designer 需求冻结必需子集；完整清单用于缺口披露和后续分批实施，不要求先实现全部 Drawing 类型再接原生控件。真实依赖/身份通过后确定程序集方案，资源及 Linux 原生控件消费、本机 AOT 通过后才扩面；若同身份路线不能形成可维护闭环，明确修订身份与迁移方案，不能用空行为保住透明替换的称呼。
+
 | 领域 | Windows | Linux | macOS |
 | --- | --- | --- | --- |
 | 窗口/基础控件 | HWND、USER32、COMCTL32 | GTK4 的 GtkWindow/GtkWidget，GMainContext | AppKit NSWindow/NSView/NSControl，NSApplication |

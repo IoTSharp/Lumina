@@ -6,6 +6,7 @@ A WinForms compatibility layer for .NET 10 and Native AOT. The package and names
 
 The current implementation uses native Windows controls. Common controls and AOT publishing have initial validation; **full WinForms compatibility is still in progress**. Native Linux GTK4 and macOS AppKit backends are planned and require prototypes.
 
+- [Project requirements](PROJECT_REQUIREMENTS.md): product goals, compatibility principles, and the Windows official / Linux custom Drawing strategy.
 - [Roadmap](ROADMAP.md): priorities and milestones.
 - [Per-control plans](docs/roadmap/README.md): tasks, three-platform analysis, and actual change history.
 - [98% acceptance criteria](docs/roadmap/coverage.md): properties, events, and behavior measured separately.

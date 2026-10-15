@@ -6,6 +6,7 @@
 
 当前以 Windows / Win32 原生控件为实现基础。已有常用控件和 AOT 发布验证，**尚未达到全量 WinForms 兼容**；Linux GTK4、macOS AppKit 原生实现处于规划和原型阶段。
 
+- [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)：兼容约束、Windows 官方 / Linux 自有 Drawing 策略及验收边界。
 - [路线图](ROADMAP.md)：下一步与里程碑。
 - [逐控件任务](docs/roadmap/README.md)：每个控件的任务、三平台分析和修改历史。
 - [98% 验收口径](docs/roadmap/coverage.md)：属性、事件、行为分别统计。
