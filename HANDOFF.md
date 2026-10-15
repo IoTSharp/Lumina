@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 004 明确子范围已完成并成功推送，远端分支已核对；批次 005 接续会话已创建，只读准备后等待。旧主会话完成本次交接提交推送后发送“开始接管”，确认实际接管后归档。
+- 调度状态：批次 005 两个明确子范围代码完成，集成检查通过；主会话正在更新台账、提交推送并准备批次 006 只读接续。批次 004 实现及交接均已成功推送。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14075-71ec-74e3-ac51-cedae735f4fb`（批次 005，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14062-0945-79c1-bfe9-655ad7f6fffb` 仅完成本次交接提交/推送和启动消息，随后停止写入，确认实际接管后归档；更早的主会话均已交接。
+- 当前编码主会话：`01a14075-71ec-74e3-ac51-cedae735f4fb`（批次 005，本地 Lumina 项目；已接管）。已向旧主会话 `01a14062-0945-79c1-bfe9-655ad7f6fffb` 确认实际接管，请其停止写入并归档；更早的主会话均已交接。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[005 · ValueTask 入口与子项样式基础](docs/roadmap/batches/005.md)，由新主会话在交接后领取；[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`cb3692d4bdca36aaabf57fabe04c6cdc9bf2eeb7`（批次 004），已成功推送 `origin/main`；`git ls-remote origin refs/heads/main` 返回同 SHA，本地 HEAD/origin/main 相同且工作区干净（交接文档更新前）。接续交接提交以 `git log` 与启动消息中的远端核对为准，原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[005 · ValueTask 入口与子项样式基础](docs/roadmap/batches/005.md)明确范围代码完成；下一批已划定 [006 · 显式同步上下文与子项 key 查找](docs/roadmap/batches/006.md)，交接后领取；[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`cb3692d4bdca36aaabf57fabe04c6cdc9bf2eeb7`（批次 004），已成功推送 `origin/main`；交接提交 `45beb98523c10408fa855c916b9c9d40845bd478` 已核对 HEAD/origin/main/远端 refs/heads/main 一致，接管时工作区干净。原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
@@ -51,6 +51,10 @@
 - 批次 004 AOT：新异步探针实际运行三端对照，EXE 2,736,128 字节；完整 Demo 发布通过，EXE 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 详细告警仍为已定位 InheritanceAttribute/Enum.GetValues(Type) 的 IL3050。13 项目/17 目标仍仅 .NET 10，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，原始 Designer/resx 无修改。
 - 批次 005 文件责任：Control-05b 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立 ValueTask 检查；ListViewSubItem-01b 子智能体负责 ListViewItem.cs 与独立样式构造/未挂接样式检查。共享 Application.cs/Win32.cs、全部文档/API/索引、集成构建与 Git 由主会话协调，子智能体不构建、不提交；先跑固定 WinForms 10.0.11 参考端。ValueTask 初始 UI 调用与单次消费不等于 await 后 UI 恢复；已挂接 ListView 的样式继承/native/完整所属也继续保留。
 - 187 组独立类型任务页、固定基线/API/接口/类型责任清单；遗漏审计与三平台逐控件方案已落盘。
+- 批次 005：Control/Form 标准 ValueTask 两族在 UI 队列首次调用，固定参考/JIT/实际 AOT 的 90 条观测相同，含 IValueTaskSource 同步/延迟/取消后单次消费及结果/原异常/token；旧 Task 虚方法以 OverloadResolutionPriority(-1) 保留显式消费和派生 override，async token lambda 不歧义。旧 Action/Func 59 条三端、旧 Task 专项与同步投递 69 条回归通过。
+- 批次 005 子项：五参样式构造、ForeColor/BackColor/Font 与 ResetStyle 的独立/未挂接 owner 子范围完成，另 37 条样式观测相同，15 项新增测试；全线 146 项通过。默认 WindowText/Window 与惰性共享官方 MessageBoxFont，保留借用 Font 身份/寿命；全局默认字体、已挂接样式/完整所属/native 仍缺。原基础子项 37 条、ListViewItem 41 条回归保留。
+- 批次 005 集成：主线双目标 Release 0 错误/本次增量 318 警告；ValueTask AOT 探针实际运行通过，EXE 2,794,496 字节；完整 Demo AOT 发布 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 保留既有 InheritanceAttribute/Enum.GetValues(Type) IL3050。13 项目/17 目标仍仅 .NET 10，Demo 原始 Designer/resx 未改，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing。
+- 批次 006 文件责任：WindowsFormsSynchronizationContext-01a 子智能体负责标准显式 context 类型/投递辅助、Control/Form/dispatcher 与独立探针；ListViewSubItem-03a 子智能体负责 ListViewItem.cs 与独立 key 检查。Application/Win32、文档/API/索引、集成构建和 Git 由主会话协调。先固定参考端，再实现；AutoInstall/Uninstall/默认 await 恢复与完整线程/关闭/模态竞态留后续，不造空方法。key 子范围不关闭完整集合所属/native。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
 - 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。

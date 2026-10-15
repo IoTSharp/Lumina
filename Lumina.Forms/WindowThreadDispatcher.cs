@@ -94,6 +94,62 @@ internal sealed class WindowThreadDispatcher
         }
     }
 
+    internal async Task InvokeAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken)
+    {
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
+        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        await completion.Task.ConfigureAwait(false);
+
+        async Task CompleteCallbackAsync()
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            try
+            {
+                // Await the returned ValueTask exactly once, even if cancellation has
+                // already completed the caller's Task while the callback was running.
+                await callback(cancellationToken).ConfigureAwait(false);
+                completion.TrySetResult();
+            }
+            catch (Exception exception)
+            {
+                completion.TrySetException(exception);
+            }
+        }
+    }
+
+    internal async Task<T> InvokeAsync<T>(Func<CancellationToken, ValueTask<T>> callback, CancellationToken cancellationToken)
+    {
+        var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
+        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        return await completion.Task.ConfigureAwait(false);
+
+        async Task CompleteCallbackAsync()
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            try
+            {
+                T result = await callback(cancellationToken).ConfigureAwait(false);
+                completion.TrySetResult(result);
+            }
+            catch (Exception exception)
+            {
+                // Preserve the callback's original exception, including cancellation
+                // tokens and wrapper exceptions, without reporting ThreadException.
+                completion.TrySetException(exception);
+            }
+        }
+    }
+
     internal static object? EndInvoke(IAsyncResult asyncResult)
     {
         ArgumentNullException.ThrowIfNull(asyncResult);

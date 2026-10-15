@@ -84,8 +84,15 @@ public class ListViewItem
     /// </summary>
     public class ListViewSubItem
     {
+        // Keep the unattached default shared and lazy, as WinForms does through Control.DefaultFont.
+        // Control-wide font configuration and attached ListView inheritance are separate work.
+        private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
+
         private string _text = string.Empty;
         private string _name = string.Empty;
+        private Color _foreColor = Color.Empty;
+        private Color _backColor = Color.Empty;
+        private Font? _font;
 
         /// <summary>
         /// Initializes a new list view subitem with empty text.
@@ -105,7 +112,62 @@ public class ListViewItem
             Text = text;
         }
 
+        /// <summary>
+        /// Initializes a new list view subitem with the specified text and style.
+        /// </summary>
+        /// <param name="owner">The item associated with this subitem, or <see langword="null"/>.</param>
+        /// <param name="text">The displayed subitem text.</param>
+        /// <param name="foreColor">The text color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="backColor">The background color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="font">The borrowed text font, or <see langword="null"/> to use the default.</param>
+        public ListViewSubItem(ListViewItem? owner, string? text, Color foreColor, Color backColor, Font? font)
+            : this(owner, text)
+        {
+            _foreColor = foreColor;
+            _backColor = backColor;
+            _font = font;
+        }
+
         internal ListViewItem? Owner { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text color of the subitem.
+        /// </summary>
+        public Color ForeColor
+        {
+            get => _foreColor.IsEmpty ? SystemColors.WindowText : _foreColor;
+            set => _foreColor = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of the subitem.
+        /// </summary>
+        public Color BackColor
+        {
+            get => _backColor.IsEmpty ? SystemColors.Window : _backColor;
+            set => _backColor = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the borrowed font used to display the subitem text.
+        /// </summary>
+        [AllowNull]
+        [Localizable(true)]
+        public Font Font
+        {
+            get => _font ?? s_defaultFont.Value;
+            set => _font = value;
+        }
+
+        /// <summary>
+        /// Clears the subitem's explicit colors and font without disposing the font.
+        /// </summary>
+        public void ResetStyle()
+        {
+            _foreColor = Color.Empty;
+            _backColor = Color.Empty;
+            _font = null;
+        }
 
         /// <summary>
         /// Gets or sets the displayed subitem text.

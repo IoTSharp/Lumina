@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -664,8 +665,43 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     }
 
     /// <summary>
+    /// Queues an asynchronous callback on the native window's creating thread and observes its completion.
+    /// </summary>
+    public async Task InvokeAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+            ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Queues an asynchronous function on the native window's creating thread and returns its result.
+    /// </summary>
+    public async Task<T> InvokeAsync<T>(Func<CancellationToken, ValueTask<T>> callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+            ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return default!;
+        }
+
+        return await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Queues the existing Task-based callback on the native window's creating thread.
     /// </summary>
+    // Keep existing Task delegates callable while async token lambdas select the
+    // standard ValueTask callback overload instead of becoming ambiguous.
+    [OverloadResolutionPriority(-1)]
     public virtual async Task InvokeAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(action);

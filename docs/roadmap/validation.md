@@ -97,6 +97,27 @@
 
 复现：`./tools/compatibility/Test-ControlInvokeAsync.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemConstruction.ps1`，以及批次 003 的两个现有差分脚本。统一 `dotnet build Lumina.slnx -c Release`、`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build`；完整 Demo 发布使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。本批日志/结果在忽略目录 artifacts/compatibility-batch004；复杂 UI/设备/设计器仍后置，先 Windows 再 Linux，macOS 单列。
 
+## 批次 005 · 2026-10-16 实施结果
+
+本批完成标准 ValueTask 入口和子项样式的明确子范围，详见 [批次 005](batches/005.md)。FND-002/003、Control-05、Form-04、ListViewSubItem-01/03/04/06 保留部分完成；同步上下文与已挂接样式不由本批关闭。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，本次增量 318 警告；13 项目/17 个目标仅 .NET 10；原始 Designer/resx 无修改，设计器往返后置 |
+| 回归测试 | ✅ | 146 项全通过、0 失败/跳过；新增 15 项子项样式/共享 Font 寿命检查，保留既有基础 HWND 测试 |
+| ValueTask 差分 | ✅ 指定轻量范围 | 固定 WinForms 10.0.11、Lumina JIT、实际 Native AOT 各 90 条观测相同；初始 UI 调用、两族结果/异常身份/token、同步/延迟和取消后 IValueTaskSource 单次消费、参数/句柄边界及释放后状态 |
+| async lambda / 旧路径 | ✅ 指定回归 | 旧 Task 虚方法用 OverloadResolutionPriority(-1) 保留显式消费及派生 override；未强转 async token lambda 选择标准族。Action/Func<T> 59 条三端观测与旧 Task 专项继续通过；同步投递 69 条 WinForms/JIT 观测通过 |
+| 子项样式差分 | ✅ 指定轻量范围 | 37 条 WinForms/JIT 观测相同；三种公共构造、独立/未挂接 owner 的默认值/空值恢复/Reset/身份、借用 Font 寿命。全局默认字体与已挂接继承/native 未覆盖 |
+| 基础构造回归 | ✅ | 子项 37 条、ListViewItem 41 条两端观测保留 |
+| ValueTask 探针 AOT | ✅ 发布/运行/PE | 2,794,496 字节、CLR Header 为 0，90 条实际运行观测与 JIT 相同；发布无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | 4,094,464 字节、CLR Header 为 0；详细告警仍为标准 Container 根化的 InheritanceAttribute/Enum.GetValues(Type) IL3050；完整可见主窗操作/正常关闭未重记通过 |
+| Windows 依赖与 API | ✅ 指定图/形状 | net10.0 Demo deps 无 WinForms/Resources.Extensions/自有 Drawing；继续官方 Drawing。固定基线重新导出，1,095 类型/61,240 行不变，运行验收状态继续 unverified |
+| 任务索引与文档 | ✅ 结构 | 394 份 Markdown、187 组控件/API 页、2,011 项任务检查 0 结构错误；新增批次 006 的两个待实现子范围，不按任务数计算兼容率 |
+
+默认子项字体在本机为 Microsoft YaHei UI 9；SystemFonts.DefaultFont 为宋体 9，不能互代。库内惰性共享官方 MessageBoxFont，并保留显式 Font 的借用身份；尚无 Control.DefaultFont/Application 全局配置与 item→ListView 回链。ValueTask 首次 UI 调用和底层单次消费不代表 callback 内 await 后恢复 UI；默认同步上下文、完整关闭/重建/退出竞态及设备/设计器/跨平台验收继续待后续。
+
+复现：`./tools/compatibility/Test-ControlInvokeValueTask.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemStyle.ps1`；旧 Action/Func、线程及两组构造驱动继续执行。统一构建/测试、API 导出、完整 Demo 发布及结果记录在 artifacts/compatibility-batch005，现有脚本仍写原批次忽略目录。完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

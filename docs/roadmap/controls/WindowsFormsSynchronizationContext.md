@@ -12,6 +12,7 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | ⬜ | P0 / WindowsFormsSynchronizationContext-01 | 实现标准 SynchronizationContext 派生、Post、Send、CreateCopy、AutoInstall、Uninstall、Dispose；接口签名/异常路径以固定基线为准。 |
+| ⬜ | P0 / WindowsFormsSynchronizationContext-01a | 批次 006 首范围：标准类型、无参构造及显式 Post/Send/CreateCopy/Dispose，在创建线程保有真实投递目的地，复用库内 dispatcher；先固定参考端检查无现有 Form、状态/异常、复制与释放。AutoInstall/Uninstall、默认安装及线程退出/模态广泛竞态另列，不补空成员。 |
 | ⬜ | P0 / WindowsFormsSynchronizationContext-02 | Post 总是异步入正确 UI 队列；Send 同 UI 线程可直接执行，跨线程同步等待并转发异常，不使用 Task.Run。 |
 | ⬜ | P0 / WindowsFormsSynchronizationContext-03 | AutoInstall 随首次创建控件/开始消息循环安装，保留已有 context 的标准策略；Uninstall/线程退出还原先前 context。 |
 | ⬜ | P1 / WindowsFormsSynchronizationContext-04 | CreateCopy 指向相同 UI 调度目的地而非复制新 UI 线程；Dispose 后 Post/Send、UI 线程已退出和无句柄时行为逐项对照。 |

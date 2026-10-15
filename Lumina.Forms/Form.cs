@@ -549,6 +549,36 @@ public class Form : IDisposable, ISynchronizeInvoke
     }
 
     /// <summary>
+    /// Queues an asynchronous callback on the native window's creating thread and observes its completion.
+    /// </summary>
+    public async Task InvokeAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Queues an asynchronous function on the native window's creating thread and returns its result.
+    /// </summary>
+    public async Task<T> InvokeAsync<T>(Func<CancellationToken, ValueTask<T>> callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return default!;
+        }
+
+        return await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Performs layout for compatibility with designer-generated code.
     /// </summary>
     public void PerformLayout()
