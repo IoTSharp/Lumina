@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 016 两项明确范围代码完成，固定参考/JIT/实际 AOT、全线测试和旧驱动通过；正在整理受影响路线图及历史回标，随后提交推送实现并交接 017。代码完成不代表完整兼容或真机验收。
+- 调度状态：批次016明确范围代码完成并已成功推送，路线图/历史回标与逐类型索引整理完成。017本地只读准备聊天已创建；本记录单独提交并成功推送归属交接、核对远端后才发送“开始接管”。代码完成不代表完整兼容或真机验收。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14140-d125-7750-bce4-b827797c7413`（批次 016，本地 Lumina 项目，已实际接管）。接管时工作区干净，HEAD/origin/main/远端 refs/heads/main 均为交接提交 `79ccc4a9b4a177beccf6bdb79528906fc16b3f41`；已向旧主 `01a14130-7967-7533-8f63-432981847bfa` 回传证据，并由应用工具确认旧主已归档。批次 014 及更早旧主亦已确认归档；没有等待下一批完成。
+- 当前编码主会话：`01a14163-281b-7980-9fa1-558752cecf8b`（批次017，本地Lumina项目，现仅只读准备，等待本交接commit/push成功后的独立“开始接管”）。新主收到开始消息后必须核实本文件归属、干净工作区及HEAD/origin/main/远端refs/heads/main一致，记录交接SHA并向旧主回传实际接管证据。旧主`01a14140-d125-7750-bce4-b827797c7413`仅完成本次交接，发送开始后停止全部写入/构建/探针/Git；确认新主已实际接管便立即归档，不等待017完成。016接管时核对的交接SHA为`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`，015及更早旧主均已由应用工具确认归档。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[016 · 无父级控件构造与未挂接列表项样式首范围](docs/roadmap/batches/016.md)明确范围代码完成；下一批 [017 · 控件文本重置与列表项图像选择状态首范围](docs/roadmap/batches/017.md)待实现成功推送及归属交接。[015](docs/roadmap/batches/015.md)至[001](docs/roadmap/batches/001.md)的明确范围记录按历史证据复核回标，不关闭未完成父任务。
-- 最近实现提交：`21a71fc3646c736baa59132b39d5270a135e8688`（批次 015），已成功推送 origin/main；推送时 HEAD/origin/main/远端 refs/heads/main 均为该 SHA，工作区干净。本记录随后单独提交并推送归属交接，新主实际接管时记录并核对其 SHA。批次 014 实现 `3894f281a88ff00e806c14440ce5c332af974d6a` 和归属交接 `7f1d0709d32ff95340a2a0611a6cc603831f8d39`、批次 013 实现 `a0e2ec02e15cc92f7f337812bb22b13b17f0a691` 和归属交接 `2434d48bbecda25112951cb11f2962c9b7761634` 均已验证；原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[017 · 控件文本重置与列表项图像选择状态首范围](docs/roadmap/batches/017.md)，待交接推送/开始消息后实际领取；[016](docs/roadmap/batches/016.md)至[001](docs/roadmap/batches/001.md)明确子范围代码完成，当前历史状态已复核回标，未完成父项与验收仍保留。
+- 最近实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
@@ -107,7 +107,7 @@
 - 集成：3,352项全线通过，0失败/跳过，27个旧驱动通过；双目标Release0错误/本次增量301警告。构造实际AOT EXE2,075,648字节，无IL2xxx/IL3xxx；完整Demo AOT4,108,288字节，二者CLR Header0。Demo详细警告仍为既有InheritanceAttribute/Enum.GetValues(Type) IL3050，主窗交互/正常关闭未验收。
 - 13项目/17目标仅.NET10、官方Drawing10.0.0、原始静态Designer/resx和net10.0依赖图保持。API1,095类型/61,240行/运行unverified；405份Markdown/2,033项任务/187行逐类型实施索引校验0错误。已合并监督三组历史只读核对清单，修正当前总览/任务页的过时待办与引用，不改历史批次快照或固定分母；没有整控件代码完成/98%声明。
 - 下一批017文件责任：Control-11a独占Control.cs及独立无HWND Text/ResetText探针/新测试；ListViewItem-04b独占ListViewItem.cs及独立未挂接ImageIndex/ImageKey探针/新测试。先固定参考，主聊天统一顺序运行后授权实现；共享文档/API/索引、集成/Git仍由主聊天独占。Parent/Controls/Form及图像列表/native/完整所属不模拟关闭。
-- 本批完整证据：artifacts/compatibility-batch016/evidence.json。实现成功推送后在本文件头记录SHA及远端核对，再另提交推送归属交接。
+- 本批完整证据：artifacts/compatibility-batch016/evidence.json。实现已成功推送`10c106002acff0517bcb547f526fef446ec32871`并核对三SHA/干净状态；017只读接续聊天`01a14163-281b-7980-9fa1-558752cecf8b`已创建。本记录另提交推送归属交接，核对成功后才发送开始；新主实际接管后旧主立即归档。
 
 ## 接续提示
 
