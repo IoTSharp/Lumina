@@ -28,7 +28,7 @@
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
 | ⬜ | P1 | `ListViewItem-04` | ImageIndex/ImageKey/ImageList、IndentCount/Group、Name/Tag/ToolTipText；key/index 互斥、组替换、图像列表重建同步。 |
-| 🟡 | P1 | `ListViewItem-05` | 批次 006/007 完成 key 四个 virtual 成员及公共集合构造/共享视图/整数索引首范围（ListViewSubItem-03a/02a）；完整 Add/AddRange/Insert/Remove/Clear、非泛型 IList、所属与 native 同步仍缺。 |
+| 🟡 | P1 | `ListViewItem-05` | 批次 006～010 完成 key 四成员、公共集合构造/共享视图/整数索引、三个 typed Add/AddRange 与 typed Insert/void Remove/RemoveAt/Clear 首范围（ListViewSubItem-03a/02a～d）；非泛型 IList/ICollection、Contains/IndexOf/CopyTo 全契约、完整所属与 native 同步仍缺。 |
 | ⬜ | P2 | `ListViewItem-06` | BackColor/ForeColor/Font/UseItemStyleForSubItems，父 ListView 继承值与每子项独立样式，变更实时更新对应 native item/subitem。 |
 | ⬜ | P2 | `ListViewItem-07` | Clone 深浅拷贝边界、SubItems 和 Group/Tag/Font 引用规则；序列化与设计器 .resx 常见项资源往返，AOT 不走任意类型反序列化。 |
 | ⬜ | P2 | `ListViewItem-08` | VirtualMode 的 RetrieveVirtualItem 返回值及 item 所属关系、重复返回同一 item、模式切换；不把常规 Items 所有权强套到虚拟模式。 |

@@ -346,6 +346,9 @@ public class ListViewItem
             }
         }
 
+        /// <summary>
+        /// Removes all subitems without creating a replacement primary subitem.
+        /// </summary>
         public void Clear()
         {
             _items.Clear();
@@ -410,14 +413,31 @@ public class ListViewItem
             return -1;
         }
 
+        /// <summary>
+        /// Inserts the specified subitem at the specified position.
+        /// </summary>
+        /// <param name="index">The zero-based position, including the end of the collection.</param>
+        /// <param name="item">The subitem to insert.</param>
         public void Insert(int index, ListViewSubItem item)
         {
+            // WinForms validates the position first, including when item is null.
+            if ((uint)index > (uint)_items.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            ArgumentNullException.ThrowIfNull(item);
+            item.Owner = _owner;
             _items.Insert(index, item);
         }
 
-        public bool Remove(ListViewSubItem item)
+        /// <summary>
+        /// Removes the first occurrence of the specified subitem, if it exists.
+        /// </summary>
+        /// <param name="item">The subitem to remove, or <see langword="null"/>.</param>
+        public void Remove(ListViewSubItem? item)
         {
-            return _items.Remove(item);
+            RemoveItem(item);
         }
 
         /// <summary>
@@ -432,9 +452,30 @@ public class ListViewItem
             }
         }
 
+        /// <summary>
+        /// Removes the subitem at the specified position.
+        /// </summary>
+        /// <param name="index">The zero-based position of the subitem to remove.</param>
         public void RemoveAt(int index)
         {
             _items.RemoveAt(index);
+        }
+
+        private bool RemoveItem(ListViewSubItem? item)
+        {
+            // The typed WinForms collection matches object identity, even when a
+            // derived subitem overrides Equals. Removal also preserves each view's
+            // last key position and leaves the borrowed font alive.
+            for (int index = 0; index < _items.Count; index++)
+            {
+                if (ReferenceEquals(_items[index], item))
+                {
+                    RemoveAt(index);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static bool KeyMatches(string name, string key)
@@ -447,6 +488,16 @@ public class ListViewItem
         void ICollection<ListViewSubItem>.Add(ListViewSubItem item)
         {
             Add(item);
+        }
+
+        void IList<ListViewSubItem>.Insert(int index, ListViewSubItem item)
+        {
+            Insert(index, item);
+        }
+
+        bool ICollection<ListViewSubItem>.Remove(ListViewSubItem item)
+        {
+            return RemoveItem(item);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

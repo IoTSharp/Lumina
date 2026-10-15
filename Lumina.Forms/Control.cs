@@ -339,7 +339,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public int Left
     {
         get => _left;
-        set => SetBounds(value, _top, _width, _height);
+        set => SetBounds(value, _top, _width, _height, BoundsSpecified.X);
     }
 
     /// <summary>
@@ -348,7 +348,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public int Top
     {
         get => _top;
-        set => SetBounds(_left, value, _width, _height);
+        set => SetBounds(_left, value, _width, _height, BoundsSpecified.Y);
     }
 
     /// <summary>
@@ -357,7 +357,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public int Width
     {
         get => _width;
-        set => SetBounds(_left, _top, value, _height);
+        set => SetBounds(_left, _top, value, _height, BoundsSpecified.Width);
     }
 
     /// <summary>
@@ -366,7 +366,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public int Height
     {
         get => _height;
-        set => SetBounds(_left, _top, _width, value);
+        set => SetBounds(_left, _top, _width, value, BoundsSpecified.Height);
     }
 
     /// <summary>
@@ -425,7 +425,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public Point Location
     {
         get => new(_left, _top);
-        set => SetBounds(value.X, value.Y, _width, _height);
+        set => SetBounds(value.X, value.Y, _width, _height, BoundsSpecified.Location);
     }
 
     /// <summary>
@@ -434,7 +434,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public Size Size
     {
         get => new(_width, _height);
-        set => SetBounds(_left, _top, value.Width, value.Height);
+        set => SetBounds(_left, _top, value.Width, value.Height, BoundsSpecified.Size);
     }
 
     /// <summary>
@@ -526,11 +526,45 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Updates the control bounds using client coordinates.
     /// </summary>
-    /// <param name="left">The left position.</param>
-    /// <param name="top">The top position.</param>
+    /// <param name="x">The left position.</param>
+    /// <param name="y">The top position.</param>
     /// <param name="width">The desired width.</param>
     /// <param name="height">The desired height.</param>
-    public void SetBounds(int left, int top, int width, int height)
+    public void SetBounds(int x, int y, int width, int height)
+        => SetBounds(x, y, width, height, BoundsSpecified.All);
+
+    /// <summary>
+    /// Updates the specified parts of the control bounds using client coordinates.
+    /// </summary>
+    /// <param name="x">The left position.</param>
+    /// <param name="y">The top position.</param>
+    /// <param name="width">The desired width.</param>
+    /// <param name="height">The desired height.</param>
+    /// <param name="specified">The bounds supplied explicitly by the caller.</param>
+    public void SetBounds(int x, int y, int width, int height, BoundsSpecified specified)
+    {
+        ThrowIfDisposed();
+
+        if ((specified & BoundsSpecified.X) == 0) { x = _left; }
+        if ((specified & BoundsSpecified.Y) == 0) { y = _top; }
+        if ((specified & BoundsSpecified.Width) == 0) { width = _width; }
+        if ((specified & BoundsSpecified.Height) == 0) { height = _height; }
+
+        if (_left != x || _top != y || _width != width || _height != height)
+        {
+            SetBoundsCore(x, y, width, height, specified);
+        }
+    }
+
+    /// <summary>
+    /// Applies control bounds after unspecified components have been preserved by <see cref="SetBounds(int, int, int, int, BoundsSpecified)"/>.
+    /// </summary>
+    /// <param name="x">The left position.</param>
+    /// <param name="y">The top position.</param>
+    /// <param name="width">The desired width.</param>
+    /// <param name="height">The desired height.</param>
+    /// <param name="specified">The bounds supplied explicitly by the original caller.</param>
+    protected virtual void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
     {
         ThrowIfDisposed();
 
@@ -542,13 +576,20 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             height = Math.Max(0, height);
         }
 
-        bool boundsChanged = _left != left
-            || _top != top
+        bool boundsChanged = _left != x
+            || _top != y
             || _width != width
             || _height != height;
 
-        _left = left;
-        _top = top;
+        if (!boundsChanged)
+        {
+            return;
+        }
+
+        // The public entry point filters unspecified components. The virtual core
+        // accepts the resulting rectangle, including adjustments made by overrides.
+        _left = x;
+        _top = y;
         _width = width;
         _height = height;
 
@@ -557,10 +598,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             ApplyBounds();
         }
 
-        if (boundsChanged)
-        {
-            OnBoundsChanged();
-        }
+        OnBoundsChanged();
     }
 
     /// <summary>

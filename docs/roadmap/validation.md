@@ -200,6 +200,26 @@ Select/CanSelect、完整键盘/验证/布局/继承与重建竞态，非泛型 
 
 复现：`./tools/compatibility/Test-ControlBounds.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemAddRange.ps1`；两者支持先单独记录固定参考。既有差分驱动保留，完整 Demo 发布继续使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。日志、TRX 和 PE/项目/依赖证据见 artifacts/compatibility-batch009。
 
+## 批次 010 · 2026-10-16 实施结果
+
+本批为 Control 指定边界/虚 core 入口与子项 typed Insert/void Remove/RemoveAt/Clear 的明确范围，详见 [批次 010](batches/010.md)。代码完成不自动关闭完整布局、事件、集合接口、所属或 native 同步。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，本次增量 304 警告；13 项目/17 目标仅 .NET 10，原始 Designer/resx 无改动 |
+| 全线回归 | ✅ | 617 项通过，0 失败/跳过；新增指定边界 60 项与子项变更 110 项，真实 HWND 测试沿用独立 STA/禁止并行 collection |
+| 指定边界差分 | ✅ 指定轻量范围 | BoundsSpecified 八值/Flags、四/五参数 x/y、protected virtual core 与七个属性入口，共 2,034 条固定 WinForms 10.0.11/JIT/实际 AOT 相同；掩码/未知位、重复、直接 core、派生拒绝/调整/None/异常与真实矩形均对照 |
+| typed 插入移除差分 | ✅ 指定轻量范围 | 203 条参考/JIT 相同；Insert 先 index 后 item，公开非虚 void Remove 只按引用身份删首项，null/缺失无操作；Clear/RemoveAt 保持接口 virtual-final。共享视图/Text恢复/独立 key 缓存/借用 Font 保留，历史泛型 Insert/bool Remove 显式适配另有回归 |
+| 既有差分回归 | ✅ | 组件5、线程69、Action59/旧Task、ValueTask90、显式context57、默认安装204、焦点157、旧尺寸756、Item41、子项基础/样式各37、key209、集合72、Add74和AddRange151参考/JIT通过 |
+| 指定边界 AOT | ✅ 发布/运行/PE | 实际运行 2,034 条与 JIT 相同；EXE 2,576,896 字节，CLR Header 为 0，无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,105,728 字节，CLR Header 为 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留，完整主窗操作/正常关闭后置；新子项变更未提前计实际 AOT 运行验收 |
+| 依赖与 API | ✅ 指定图/形状 | net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，仅官方 System.Drawing.Common；固定基线重新导出 1,095 类型/61,240 行，全部运行状态仍 unverified |
+| 文档与任务索引 | ✅ 结构 | 399 份 Markdown、187 组控件/API 页、2,021 项任务，0 结构错误；父任务保留部分完成，下一批两个明确子范围待实施 |
+
+保留构造默认、全部派生尺寸约束、Min/Max、位置尺寸事件、完整 Layout/客户区和外部原生自主移动/尺寸通知缺口；非泛型 IList/ICollection、Contains/IndexOf/CopyTo 全契约、完整所属/已挂接样式/native 同步仍另列。ApplicationContext/多 UI/模态/关闭重建、Form 全局 OpenForms 退出、复杂 UI/设备/压力/设计器以及 Linux/macOS 验收继续后置，不从任务或构建数量推算 98%。
+
+复现：`./tools/compatibility/Test-ControlBoundsSpecified.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemMutation.ps1`；均支持先独立取得固定参考。既有差分驱动保持，完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。日志、TRX、PE/项目/依赖证据见 artifacts/compatibility-batch010。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

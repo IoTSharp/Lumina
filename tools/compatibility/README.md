@@ -40,3 +40,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 009：`./tools/compatibility/Test-ControlBounds.ps1 -Variant both -PublishAot` 比较零尺寸、负尺寸和首次创建的 756 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取参考。无自身 HWND 保留负尺寸且不创建句柄；已有 HWND 负数归零、实际零矩形可恢复，首次创建保留 USER32 对原始参数的解释并在 HandleCreated 前回读。构造默认、派生全部限制、Form.ScaleSize、完整布局/Min/Max/事件仍另列。
 
 `./tools/compatibility/Test-ListViewSubItemAddRange.ps1` 比较三个 typed AddRange 的 151 条固定参考/JIT 观测，支持 `-ReferenceOnly`；null 数组拒绝且不改状态，null 元素三重载均跳过，非 null 空 Text 对象仍添加。覆盖顺序/身份/输入复制、重复/其他 owner、颜色/借用 Font、首次/Clear 后外部视图/主项 Text 和各视图独立 key 缓存。新 AddRange 未计为实际 AOT 运行验收，完整 IList/Insert/Remove/所属/native 仍缺；447 项全线回归与日志/PE/项目/依赖证据在 artifacts/compatibility-batch009。
+
+批次 010：`./tools/compatibility/Test-ControlBoundsSpecified.ps1 -Variant both -PublishAot` 比较 BoundsSpecified、标准 SetBounds/SetBoundsCore 与七个属性入口的 2,034 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先记录。覆盖所有已知/未知位、保留值、重复、直接 core、派生拒绝/调整/None/异常与真实 HWND 矩形，保留 009 尺寸回归；完整布局/事件/MinMax/派生约束另列。
+
+`./tools/compatibility/Test-ListViewSubItemMutation.ps1` 比较 typed Insert/void Remove/RemoveAt/Clear 的 203 条参考/JIT 观测，支持 `-ReferenceOnly`；涵盖元数据 virtual-final、null/索引验证顺序、引用身份/重复/派生 Equals、首项/空/Text恢复、共享视图/独立 key 缓存和借用 Font。历史泛型 Insert/bool Remove 显式适配由独立测试保留，未提前记为新集合范围实际 AOT 运行验收；非泛型 IList、查询/复制全契约、完整所属/挂接样式/native 仍缺。617 项全线测试与日志/TRX/PE/项目/依赖证据在 artifacts/compatibility-batch010。
