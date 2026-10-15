@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-10-16。正文按控件族组织，实施按 [执行顺序](execution.md) 的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在 API 附件。批次 [016](batches/016.md) 的无 parent 文本构造与未挂接列表样式明确子范围代码完成，父任务及三平台整控件验收仍未关闭，下一批见 [017](batches/017.md)。每批提交前按真实证据整理受影响路线图并重生成 [任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-10-16。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在API附件。批次[017](batches/017.md)的无父级无自身HWND文本/重置和未挂接图像选择状态首范围代码完成；父任务、设计器转换器和三平台整控件验收仍未关闭。按用户要求本次017收尾后结束，不开启下一批。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -14,7 +14,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-08a、Control-09a、Control-09b、Control-09c、Control-10a；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-08a、Control-09a、Control-09b、Control-09c、Control-10a、Control-11a；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-08a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -76,7 +76,7 @@
 | [TreeView](controls/TreeView.md) | M2b | 🟡 存在 | 113 / 88 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [TreeNode](controls/TreeNode.md) | M3 | 🟡 存在 | 33 / 0 / 13 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [TreeNodeCollection](controls/TreeNodeCollection.md) | M3 | 🟡 存在 | 4 / 0 / 26 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [ListViewItem](controls/ListViewItem.md) | M0→M2b | 🟡 存在 | 22 / 0 / 8 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ListViewItem-01a、ListViewItem-01b、ListViewItem-01c、ListViewItem-04a、ListViewItem-06a；其余任务未完成 |
+| [ListViewItem](controls/ListViewItem.md) | M0→M2b | 🟡 存在 | 22 / 0 / 8 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ListViewItem-01a、ListViewItem-01b、ListViewItem-01c、ListViewItem-04a、ListViewItem-04b、ListViewItem-06a；其余任务未完成 |
 | [ColumnHeader](controls/ColumnHeader.md) | M3 | 🟡 存在 | 13 / 1 / 4 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ListViewGroup](controls/ListViewGroup.md) | M3 | ⬜ 缺失 | 13 / 0 / 1 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ListViewSubItem](controls/ListViewSubItem.md) | M3 | 🟡 存在 | 7 / 0 / 2 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ListViewSubItem-01a、ListViewSubItem-01b、ListViewSubItem-02a、ListViewSubItem-02b、ListViewSubItem-02c、ListViewSubItem-02d、ListViewSubItem-02e、ListViewSubItem-02f、ListViewSubItem-03a、ListViewSubItem-06a；其余任务未完成 |

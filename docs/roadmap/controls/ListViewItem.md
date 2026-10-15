@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前支持无参、string、string[] 基础构造、Text/SubItems 与未挂接 BackColor/ForeColor/Font/UseItemStyleForSubItems。批次 007 补集合公共构造、共享 owner 数据及整数索引；批次 014 补 Name/Tag/ToolTipText，中文 Designer 分类本地化仍有明确差异。批次 015 补标准 ToString override；批次 016 补首子项样式代理和共享默认 Font，541 条固定英文参考/JIT 相同，328 项新增回归通过。读取保留首项恢复时机、共享 view/三枚举/key 缓存。图像/分组/颜色字体等其余构造、全局字体与已挂接样式/native、全部所属、选择、勾选及完整集合契约仍待实现。
+当前支持无参、string、string[] 基础构造、Text/SubItems 与未挂接 BackColor/ForeColor/Font/UseItemStyleForSubItems。批次 007 补集合公共构造、共享 owner 数据及整数索引；批次 014 补 Name/Tag/ToolTipText，中文 Designer 分类本地化仍有明确差异。批次 015 补标准 ToString override；批次 016 补首子项样式代理和共享默认 Font，541 条固定英文参考/JIT 相同，328 项新增回归通过。读取保留首项恢复时机、共享 view/三枚举/key 缓存。批次017完成未挂接ImageIndex/ImageKey状态首范围，设计器转换器/编辑器仍缺。图像/分组/颜色字体等其余构造、全局字体与已挂接样式/native、全部所属、选择、勾选及完整集合契约仍待实现。
 
 - 标准继承/契约：`ListViewItem : ICloneable, ISerializable`；不是 Control/Component。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -28,9 +28,9 @@
 | ✅ | P0 | `ListViewItem-01c` | 批次 015：标准 ToString override 与 Object 虚槽、原样主项 Text 和派生分派完成，96 条固定英文参考/JIT 相同，98 项新增回归。空/null/Unicode/换行/NUL、元数据/样式变化、空表不恢复/不换表、共享 view/三枚举/独立 key 缓存、隐藏成员/原异常有证据；不消费 Tag 或借用 Font。完整所属/native/Clone/序列化及新范围实际 AOT 运行验收另列。 |
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
-| 🟡 | P1 | `ListViewItem-04` | 批次 014 完成 Name/Tag/ToolTipText 未挂接首范围（04a）；中文 Designer 分类本地化、完整所属/已挂接 Tooltip/native、ImageIndex/ImageKey/ImageList、IndentCount/Group、key/index 互斥及组/图像列表重建同步仍缺。 |
+| 🟡 | P1 | `ListViewItem-04` | 批次014完成Name/Tag/ToolTipText未挂接首范围（04a），017完成未挂接ImageIndex/ImageKey状态及互斥（04b）。ImageList解析/裁剪、已挂接native/Tooltip、完整所属、IndentCount/Group、组/图像列表重建同步、中文Designer及标准图像转换器/编辑器仍缺，不随04b关闭。 |
 | ✅ | P1 | `ListViewItem-04a` | 批次 014：Name 为首子项 Name 代理，空表 getter 不恢复，setter 对 null/空也经 SubItems 换表恢复；Tag/ToolTipText 独立保存。151 条固定 10.0.11 英文参考/JIT 相同，101 项独立回归通过，覆盖引用身份、共享 view/三枚举/独立 key 缓存、隐藏成员及毒丸 Tag。中文 Designer 分类、完整所属/已挂接 ToolTip/native、图像/分组/Clone/序列化另列；未计实际 AOT 运行验收。 |
-| ⬜ | P1 | `ListViewItem-04b` | 批次 017 首范围：固定参考补未挂接 ImageIndex/ImageKey 的默认、索引异常/失败后状态、key 文本与两属性互斥，保留首项/样式/三枚举/各 view key 缓存与借用资源；设计器转换器依赖单独协调，ImageList/构造族/已挂接 native、Group/完整所属与资源另列。 |
+| ✅ | P1 | `ListViewItem-04b` | 批次017：未挂接ImageIndex默认-1，拒绝小于-1且保留原状态/ActualValue；合法赋值（含重复-1）清key，ImageKey的null/空及等值新引用均按参考保存并清index。518条固定英文参考/JIT相同，363项新增回归通过；首项/样式/三枚举/独立key缓存/借用资源不被误消费。NoneExcludedImageIndexConverter、ImageKeyConverter和ImageIndexEditor明确缺失，未声明全部设计器元数据一致；ImageList/构造族/已挂接native、Group/完整所属/资源及此范围实际AOT运行另列。 |
 | 🟡 | P1 | `ListViewItem-05` | 批次 006～012 完成 key 四成员、公共集合/共享视图/整数索引、typed 添加/变更、非泛型 IList/ICollection、引用查询/数组复制及枚举首范围（ListViewSubItem-03a/02a～f）；真正多线程/压力、完整所属与 native 同步仍缺。批次 013 的子项字符串读取保留上述集合/缓存行为。 |
 | 🟡 | P2 | `ListViewItem-06` | 批次 016 完成 BackColor/ForeColor/Font/UseItemStyleForSubItems 未挂接首范围（06a）；父 ListView 继承值、全局默认字体与 native item/subitem 的实时样式更新仍缺。 |
 | ✅ | P2 | `ListViewItem-06a` | 批次 016：未挂接 BackColor/ForeColor/Font 代理当前首子项，空表 getter 不恢复、setter 对 Empty/null 也恢复换表；默认颜色和主项/子项共享惰性 Font、UseItemStyleForSubItems 默认 true 的独立状态完成。541 条固定英文参考/JIT 全同，328 项新增回归，含替换/移除/共享 view/三枚举/独立 key 缓存、ResetStyle、借用及已释放 Font 身份；不克隆或释放借用资源。新范围未计实际 AOT 运行验收，完整所属/已挂接继承/native/全局字体与资源另列。 |
@@ -62,6 +62,8 @@
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
 ## 修改历史
+
+- 2026-10-16 · 批次017：新增标准非虚ImageIndex/ImageKey及范围内英文元数据，独立保存未挂接图像选择，严格先验证再改状态；合法索引与key互斥，null key归空，等值字符串保留新引用。518条固定10.0.11参考/JIT相同、363项新测试通过；覆盖新建/空表/清空/替换/共享首项、三枚举/各view key缓存、Name/Tag/Tooltip/ToString、隐藏/毒丸与借用Font。原始设计器元数据单独记录：NoneExcludedImageIndexConverter、ImageKeyConverter和ImageIndexEditor未实现；参考这两属性没有RelatedImageListAttribute，不能把它记成当前不匹配。未计新范围实际AOT运行验收。父任务04/FND-003保持部分，图像构造、ImageList/native/Group/完整所属/Clone/序列化与资源仍缺，见[017](../batches/017.md)。
 
 - 2026-10-16 · 批次 016：BackColor/ForeColor/Font 改为当前首子项代理，空表 getter 不恢复、setter 对 Empty/null 也经既有 SubItems 换表恢复；移除/替换/ResetStyle 真实改变 item 的读取。默认 Window/WindowText，主项和子项共享同一惰性 MessageBoxFont；借用或已释放 Font 保持身份，不克隆/释放。UseItemStyleForSubItems 默认 true，未挂接时独立保存且不修改直接子项样式。541 条固定 en-US 参考/JIT 全同，328 项新增回归，三枚举/共享 view/独立 key 缓存、Name/Tag/Tooltip/两级 ToString 与既有样式构造保持；全线 3,352 项及 27 个旧驱动通过。标准非虚属性及英文元数据有证据；新范围未计实际 AOT 运行验收，已挂接继承/native/全局字体/完整所属/Clone/序列化/Designer 资源仍缺，见 [016](../batches/016.md)。
 

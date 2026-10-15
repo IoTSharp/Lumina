@@ -18,6 +18,8 @@ public class ListViewItem
     private List<ListViewSubItem> _subItemData = [];
     private ListViewSubItemCollection? _subItems;
     private string _toolTipText = string.Empty;
+    private int _imageIndex = -1;
+    private string _imageKey = string.Empty;
 
     /// <summary>
     /// Initializes a new list view item with empty primary text.
@@ -95,6 +97,49 @@ public class ListViewItem
     {
         get => _toolTipText;
         set => _toolTipText = value ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Gets or sets the image index selected by this unattached item.
+    /// </summary>
+    [Category("Behavior")]
+    [DefaultValue(-1)]
+    [Description("The ImageList index value of the image displayed when the list view item is in the unselected state.")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Localizable(true)]
+    [RefreshProperties(RefreshProperties.Repaint)]
+    public int ImageIndex
+    {
+        get => _imageIndex;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(value, -1);
+
+            // Selecting an index always clears the key, including selecting -1
+            // while the stored index is already -1. Invalid input changes neither.
+            _imageIndex = value;
+            _imageKey = string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the image key selected by this unattached item.
+    /// </summary>
+    [Category("Behavior")]
+    [DefaultValue("")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Localizable(true)]
+    [RefreshProperties(RefreshProperties.Repaint)]
+    public string ImageKey
+    {
+        get => _imageKey;
+        set
+        {
+            // A key, even null or empty, selects key mode. Preserve the supplied
+            // non-null string identity rather than skipping equal replacements.
+            _imageKey = value ?? string.Empty;
+            _imageIndex = -1;
+        }
     }
 
     /// <summary>

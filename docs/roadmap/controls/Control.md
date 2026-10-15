@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～016 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点、旧边界/通知/客户区、SizeFromClientSize 与运行期 Min/Max 的固定参考保留。批次 015 完成基础 0×0 构造、DefaultSize 与构造期默认 Min/Max 的真实虚消费；批次 016 补无 parent 的两个文本构造及所需 Text 虚槽，保留实际文本→Location→Size 路由。全部具体派生默认值、中文 Designer 分类/描述、AOT 动态属性元数据转换、外部自主通知、Select/CanSelect、完整键盘/布局、Controls/Parent 和关闭竞态仍待后续。
+🟡 **现状：**批次 002～017 已接入 Component/IWin32Window、组件释放、真实 HWND 投递、显式和默认同步上下文；焦点、旧边界/通知/客户区、SizeFromClientSize 与运行期 Min/Max 的固定参考保留。批次 015 完成基础 0×0 构造、DefaultSize 与构造期默认 Min/Max 的真实虚消费；批次 016 补无 parent 的两个文本构造及所需 Text 虚槽，保留实际文本→Location→Size 路由。批次017完成无父级无自身HWND的Text/ResetText首范围，AOT的DispId删除差异单列。全部具体派生默认值、中文 Designer 分类/描述、AOT 动态属性元数据转换、外部自主通知、Select/CanSelect、完整键盘/布局、Controls/Parent 和关闭竞态仍待后续。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -36,8 +36,8 @@
 | ✅ | P1 / Control-09c | 批次 014 运行期首范围：基础 virtual MinimumSize/MaximumSize 与 protected virtual 默认扩展接入真实尺寸 core；四有限边框、无/有 HWND、负零/冲突/重复/取消、12 入口、覆盖/重入/原异常/通知与缓存共 33,408 条固定参考/JIT/实际 AOT 相同，新增 394 项回归通过。构造期默认约束与 DefaultSize 由 01b 一起处理；本批元数据仅固定英文范围，中文 Designer 分类/描述、AOT 动态 AmbientValueAttribute.Value 转换、完整布局/全部派生约束/DPI/Form 生命周期另列。 |
 | 🟡 | P1 / Control-10 | 批次 011 完成位置尺寸通知（10a），批次 012 完成基础客户区通知（09a）；嵌套 SuspendLayout、ResumeLayout(false/true)、PerformLayout 重载/LayoutEventArgs 与完整 Layout 顺序仍待后续，不随子范围关闭。 |
 | ✅ | P1 / Control-10a | 批次 011：标准 LocationChanged/Move、SizeChanged/Resize 与四个 protected virtual On* 已接入七属性/两族 SetBounds/直接 core；重复、指定/未知位、零负尺寸、覆盖/不调 base、重入/原异常和参数轨迹共 2,280 条固定参考/JIT/实际 AOT 相同，99 项新增回归通过。OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数；旧OnBoundsChanged独立保留。基础ClientSizeChanged/客户区见已完成09a，外部原生自主移动/尺寸通知、完整Layout及全部派生约束仍缺。 |
-| 🟡 | P1 / Control-11 | 批次016已完成构造必需的Text虚槽、null/判等与通知消费（01c）；无HWND完整运行期Text/ResetText留017的11a，Enabled/Visible/Font/BackColor/ForeColor/RightToLeft/Cursor与Text有效值继承、其他Reset/ShouldSerialize/变更事件、已有句柄native及重新Parent仍待实现。 |
-| ⬜ | P1 / Control-11a | 批次 017 首范围：固定参考补标准 ResetText，核对无父级无 HWND 的 Text/通知/重置实际虚消费、默认与英文元数据、重复/null/Unicode/NUL、覆盖/隐藏/重入/原异常和释放后托管边界；已有 HWND/native、父级继承、完整布局/中文设计器和动态转换另列。 |
+| 🟡 | P1 / Control-11 | 批次016完成构造必需的Text虚槽（01c），017完成无父级无自身HWND的Text/ResetText/通知首范围（11a）。Enabled/Visible/Font/BackColor/ForeColor/RightToLeft/Cursor与Text有效值继承、其他Reset/ShouldSerialize/变更事件、已有句柄native及重新Parent仍待实现；不随11a关闭。 |
+| ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
 | ⬜ | P1 / Control-12 | 对齐 Tab/助记键、Enter/Leave/GotFocus/LostFocus、CausesValidation/Validating/Validated；KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress 与 IME 组合态。 |
 | ⬜ | P1 / Control-13 | 实现 MouseDown/Up/Click/DoubleClick/Wheel/Move/Enter/Leave/Hover、Capture/MouseCaptureChanged、坐标换算/PointToClient/PointToScreen；原生通知与反射消息去重。 |
 | ⬜ | P1 / Control-14 | 实现 Paint/OnPaint/OnPaintBackground、Invalidate 各重载、Update/Refresh、ControlStyles/DoubleBuffered、CreateParams/WndProc/DefWndProc；派生用户控件可用，不能以原生默认绘制排除这些契约。 |
@@ -57,6 +57,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次017：补ResetText标准虚槽、Text/TextChanged英文属性及OnTextChanged的Advanced，移除Text setter的释放后拒绝；维持虚getter判等、存值后通知和016构造顺序。固定参考/JIT 3,774条相同，实际AOT行为及其余元数据相同；内置COM关闭时CoreLib的RemoveAttributeInstances主动删除DispId=-517，保留原始差异，不改库AOT策略或全局根化。首轮一项新测试把setter退出回调中的嵌套Reset尾记录预期写错，已按参考改为完整16步断言并通过；219项新测试全部通过。父任务11保持部分完成；已有HWND/native、Parent/Form、布局、中文Designer和动态属性转换未关闭，见[017](../batches/017.md)。
 
 - 2026-10-16 · 批次016历史回标：任务11补构造必需的Text子范围为部分完成并引用01c，重置/完整运行期与native/继承仍缺；02b/c、09a、10a的后续基础构造/MinMax/客户区/通知/换算改为交叉引用已完成子任务，保留真实布局/派生/外部通知缺口。原批次快照和ID不变，不新增验收。
 

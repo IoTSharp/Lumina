@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**正在逐批编码，001～016 的明确子范围代码完成。** [当前交接](HANDOFF.md) · [本批结果](docs/roadmap/batches/016.md) · [下一批 017](docs/roadmap/batches/017.md) · [完整任务索引](docs/roadmap/tasks.csv)。✅ 代码完成和 🧪 兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查复核整理本批及受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。真机先 Windows、后统一 Linux 集中验收。
+**001～017的明确子范围代码完成，本次按用户要求在017收尾后结束。** [当前记录](HANDOFF.md) · [本批结果](docs/roadmap/batches/017.md) · [完整任务索引](docs/roadmap/tasks.csv)。不创建018或恢复巡检。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。真机先Windows、后统一Linux集中验收。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次 016 新增无 parent 文本构造及未挂接列表项样式：3,352 项测试通过，27 个旧差分驱动通过，双目标 Release 0 错误；构造 4,584 条固定参考/JIT/实际 AOT 指定观测和样式 541 条参考/JIT观测相同。完整 Demo 的 win-x64 AOT 仅发布/PE通过，既有 IL3050 保留；完整主窗交互/正常关闭、设计器、全量控件兼容和 Linux/macOS 运行仍待验收。API 分母保持 1,095 类型/61,240 行、运行状态 unverified，不能由这些数量推算98%，见 [验证证据](docs/roadmap/validation.md)。下一批按依赖补无 HWND Text/ResetText 与未挂接 ImageIndex/ImageKey，Parent/Controls 及完整所属另列。
+批次017完成无父级无自身HWND的Text/ResetText及未挂接ImageIndex/ImageKey：3,934项测试和29个旧差分驱动通过，双目标Release 0错误；文本3,774条固定参考/JIT相同，实际AOT仅DispId属性被工具链主动删除，其他3,773条原始记录相同；图像状态518条参考/JIT相同，未计此范围实际AOT运行验收。图像转换器/编辑器、完整Demo主窗交互/正常关闭、既有IL3050、设计器、全量控件及Linux/macOS运行仍保留缺口。API分母仍为1,095类型/61,240行、运行状态unverified，不由数量推算98%，见[验证证据](docs/roadmap/validation.md)。Parent/Controls/Form、已有HWND文本、ImageList/图像构造/native和完整所属继续在原任务下保留，本次未分派。
 
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 

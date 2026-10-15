@@ -4,14 +4,22 @@
 
 ## 当前接续点
 
-- 调度状态：批次016明确范围代码完成并已成功推送，路线图/历史回标与逐类型索引整理完成。017本地只读准备聊天已创建；本记录单独提交并成功推送归属交接、核对远端后才发送“开始接管”。代码完成不代表完整兼容或真机验收。
-- 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14163-281b-7980-9fa1-558752cecf8b`（批次017，本地Lumina项目，现仅只读准备，等待本交接commit/push成功后的独立“开始接管”）。新主收到开始消息后必须核实本文件归属、干净工作区及HEAD/origin/main/远端refs/heads/main一致，记录交接SHA并向旧主回传实际接管证据。旧主`01a14140-d125-7750-bce4-b827797c7413`仅完成本次交接，发送开始后停止全部写入/构建/探针/Git；确认新主已实际接管便立即归档，不等待017完成。016接管时核对的交接SHA为`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`，015及更早旧主均已由应用工具确认归档。
-- 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[017 · 控件文本重置与列表项图像选择状态首范围](docs/roadmap/batches/017.md)，待交接推送/开始消息后实际领取；[016](docs/roadmap/batches/016.md)至[001](docs/roadmap/batches/001.md)明确子范围代码完成，当前历史状态已复核回标，未完成父项与验收仍保留。
+- 调度状态：017两项明确范围代码完成，必要验证通过，正在完成路线图/索引及提交推送收尾。用户于2026-10-16直接要求“当然任务没有完成的我们要完成，完成后结束”；本次完成017后结束，不开启下一批、不创建接续聊天、不恢复巡检。本条覆盖下文历史连续接续规则；代码完成不代表完整兼容或真机验收。
+- 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，已确认本轮只完成017后结束，并确认旧主已归档。
+- 当前编码主会话：`01a14163-281b-7980-9fa1-558752cecf8b`（批次017，已按用户更新指令实际接管）。接管时工作区干净，HEAD/origin/main/远端refs/heads/main均为交接SHA `2b842071971245bf83a73136bbc269484a45daa7`；已向旧主`01a14140-d125-7750-bce4-b827797c7413`和监督回传证据，旧主保持停止写入。016实现SHA为`10c106002acff0517bcb547f526fef446ec32871`，不得与交接SHA混同。
+- 巡检：监督已确认自动化 `luminaforms` 为PAUSED，本轮不恢复；完成017后结束。
+- 当前批次：[017 · 控件文本重置与列表项图像选择状态首范围](docs/roadmap/batches/017.md)，两项代码与必要验证完成，提交推送收尾中；001～016历史子范围保留，未完成父项和验收仍单列。两个内部子任务均已完成并停止写入，不存在下一批编码主。
 - 最近实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
+- 当前边界：本批明确实现范围已完成。资源严格告警门禁仍有已定位IL3050（标准Container/InheritanceAttribute），FND-006保持部分完成；图像设计器转换器/编辑器和文本AOT的DispId删除差异保留，Windows/Linux/macOS真机后置。
+
+## 批次017完成证据与结束范围
+
+- Control-11a：virtual ResetText消费虚Text setter，保留虚getter判等、通知/原异常/重入、null/Unicode/NUL/引用和释放后托管边界，219项新增回归通过。3,774条固定10.0.11参考/JIT相同；实际AOT只有Text属性列表缺DispId=-517，另3,773条原始记录相同。实际编译参数及CoreLib内嵌RemoveAttributeInstances证实原因，原始差异/首次失败保留，strictMatches=false，不改库AOT策略。
+- ListViewItem-04b：未挂接ImageIndex/ImageKey默认、验证/失败状态、key-index互斥及重复/引用身份完成，518条固定英文参考/JIT相同，363项新增回归。首项恢复/三枚举/各view key缓存/样式/借用资源保持；NoneExcludedImageIndexConverter、ImageKeyConverter和ImageIndexEditor仍缺，新范围未计实际AOT运行验收。
+- 集成：3,934项测试全部通过，0失败/跳过；29个旧驱动通过；双目标Release 0错误/最终增量301警告。文本AOT EXE2,049,024字节实际运行，无IL2xxx/IL3xxx；完整Demo AOT4,108,288字节仅发布，二者CLR Header 0。Demo既有IL3050、主窗交互/正常关闭、设计器及三平台验收保持待完成。
+- 13项目/17目标仅.NET10，Windows官方Drawing10.0.0，原始静态Designer/resx和net10.0依赖满足要求。API固定分母1,095类型/61,240行、运行unverified；405份Markdown/187组类型/API页/2,033项任务及187行实施索引检查0错误。Control-11和ListViewItem-04/FND-003保持部分完成，整类型代码完成0，没有整控件或98%声明。证据artifacts/compatibility-batch017/evidence.json。
+- 本次按用户要求在017成功提交推送并核对远端后结束；不创建018、不发送接管指令、不恢复巡检。后续未完成任务保留原ID和优先级，继续工作须遵循后续用户指令。
 
 ## 用户已经确定的范围
 

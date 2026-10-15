@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | FND-001 | 🟡 | 批次 002 完成 Control : Component/IWin32Window 及组件生命周期，003 接入真实 ISynchronizeInvoke，015/016 完成基础默认初始化和无 parent 文本构造；Form 标准继承链、IDropTarget、含 parent 构造及 Controls/Parent/全部派生默认仍待实现，不随基础构造关闭 | [Control](controls/Control.md)、[Form](controls/Form.md)、[批次 016](batches/016.md) |
 | FND-002 | 🟡 | 批次 003～007 完成同步/Action/Func/ValueTask、显式及默认 context 首范围；204 条默认安装/还原/await/无 Form 退出观测在固定参考/JIT/实际 AOT 相同，旧显式 57 条保留。完整 ApplicationContext/模态、多 UI 退出、关闭/重建竞态仍缺；null Delegate/Send 与默认错误 UI 差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次 007](batches/007.md) |
-| FND-003 | 🟡 | 批次 001～016 完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串及主项元数据/未挂接样式首范围；016样式541条参考/JIT相同。其余构造、图像/分组、已挂接资源继承、完整所属/并发及 Items/SubItems/Columns/Nodes 原生同步仍待实现，不把局部集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
+| FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | ⬜ | 完整 Demo 的 AOT 可见主窗、一次操作、模态/关闭/正常退出验收；原隐藏短探针未完成，不直接归咎 AOT | [已有证据](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次017：FND-003补未挂接ImageIndex/ImageKey首范围，父任务仍为部分完成。按实际代码核对Control-11/11a及ListViewItem-04/04b，已完成子项单列，ImageList/native/转换器/编辑器与完整所属保留；不把旧“图像全部待办”继续当作当前未挂接状态缺口，也不关闭完整图像功能。保留001～016历史快照、ID及固定分母，无新整控件或平台验收。
 
 - 2026-10-16 · 批次 016：按实际代码与本批必要检查更新 FND-001/003 的已完成子范围，父任务仍 🟡；FND-014 原“待办”遗漏了 009～016 已完成的基础边界/客户区/约束子范围，纠正为 🟡 并保留布局等剩余项。没有把原父任务误标为 ✅，没有删除/重编号未完项，FND-004 真机主窗和 FND-006 既有 IL3050/完整资源仍待完成。此处为状态整理，不新增运行验收或98%声明。
 

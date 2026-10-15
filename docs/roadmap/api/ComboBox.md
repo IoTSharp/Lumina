@@ -169,7 +169,7 @@
 | API-98657628D91ECF98 | Method | `public virtual System.Void ResetForeColor()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7FA50EC51711FD6D | Method | `public System.Void ResetImeMode()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-5D2C695980999BDC | Method | `public virtual System.Void ResetRightToLeft()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-CCF99340FAF8562C | Method | `public virtual System.Void ResetText()` | `System.Windows.Forms.ComboBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-CCF99340FAF8562C | Method | `public virtual System.Void ResetText()` | `System.Windows.Forms.ComboBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-7475B7E29DBCC4C8 | Method | `public System.Void ResumeLayout()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7EF621803AF51C83 | Method | `public System.Void ResumeLayout(System.Boolean performLayout)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-06C0DF2C67D5378C | Method | `public System.Void Scale(System.Drawing.SizeF factor)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

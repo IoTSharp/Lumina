@@ -363,6 +363,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Occurs when the <see cref="Text"/> property changes.
     /// </summary>
+    [Category("Property Changed")]
+    [Description("Event raised when the value of the Text property is changed on Control.")]
     public event EventHandler? TextChanged;
     public event EventHandler? Enter;
     public event EventHandler? Leave;
@@ -407,6 +409,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets the text displayed by the control.
     /// </summary>
+    [Category("Appearance")]
+    [Localizable(true)]
+    [Bindable(true)]
+    [DispId(-517)]
+    [Description("The text associated with the control.")]
     [AllowNull]
     public virtual string Text
     {
@@ -421,8 +428,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
         set
         {
-            ThrowIfDisposed();
-
+            // Without a native window, text remains managed state even after
+            // disposal. Equality must still consume the virtual getter.
             string newText = value ?? string.Empty;
             string currentText = Text;
             if (string.Equals(currentText, newText, StringComparison.Ordinal))
@@ -439,6 +446,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             OnTextChanged(EventArgs.Empty);
         }
     }
+
+    /// <summary>
+    /// Resets the text through the control's virtual <see cref="Text"/> setter.
+    /// </summary>
+    public virtual void ResetText() => Text = string.Empty;
 
     /// <summary>
     /// Gets or sets the background color used by the control. Set <see cref="Color.Empty"/> to fall back to the active theme.
@@ -1414,6 +1426,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Raises the <see cref="TextChanged"/> event.
     /// </summary>
     /// <param name="e">The event arguments.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnTextChanged(EventArgs e)
     {
         TextChanged?.Invoke(this, e);

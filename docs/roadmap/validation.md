@@ -342,6 +342,28 @@ SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换
 
 Parent/Controls/Form链、含parent构造、无HWND完整Text/ResetText、native文本/有效值继承、全部具体派生默认/布局/DPI、中文Designer本地化/AOT动态属性转换、已挂接列表样式/native/全局字体/完整所属/Clone/序列化及复杂UI/设备/设计器、Linux/macOS仍待实现或验收。代码完成不计为98%。复现：`./tools/compatibility/Test-ControlTextConstruction.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemStyle.ps1`；日志/TRX/PE/项目/依赖与初次差异在artifacts/compatibility-batch016，下一批见[017](batches/017.md)。
 
+## 2026-10-16 · 批次017
+
+按[017](batches/017.md)完成Control-11a无父级无自身HWND文本/重置和ListViewItem-04b未挂接图像状态。两个内部子任务文件互斥，先准备固定参考，主聊天顺序运行并授权实现、统一集成。用户更新指令要求完成当前批次后结束；未恢复巡检或开启下一批。
+
+| 检查 | 结果 | 证据及边界 |
+| --- | --- | --- |
+| 全线测试 | ✅ 指定范围 | 3,934通过，0失败/跳过；新增Text/ResetText 219项、ImageIndex/ImageKey 363项，原3,352项保留 |
+| 双目标Release | ✅ 编译 | 0错误/最终增量301警告；静态Designer/resx保持，完整设计器往返后置 |
+| Text/ResetText | ✅ 固定英文参考/JIT | 3,774条原始记录相同；虚消费/通知、null/Unicode/NUL/引用身份、覆盖/隐藏/重入/原异常、释放后托管边界 |
+| 文本实际AOT | ✅ 行为与其余元数据 | 3,773条原始记录相同，1条Text属性列表仅少DispId=-517；strictMatches=false。实际ilc.rsp与CoreLib内嵌XML证实COM关闭时主动删除，原始差异未改写，不改库AOT配置；无IL2xxx/IL3xxx |
+| 图像未挂接状态 | ✅ 固定英文参考/JIT | 518条相同；默认/异常及失败状态、key-index互斥/重复、共享view/三枚举/key缓存/借用资源；未计新范围实际AOT运行 |
+| 图像设计器元数据 | ⬜ 未完成 | NoneExcludedImageIndexConverter、ImageKeyConverter和ImageIndexEditor缺失单列；不把缺省当元数据全同 |
+| 路线图/逐类型索引 | ✅ 结构与真实状态整理 | 405份Markdown、187组类型/API页、2,033项任务、187行实施状态，校验0错误；只有两个明确子范围新增代码完成，父任务仍部分，整类型完成0 |
+| 既有差分 | ✅ 指定范围 | 29个旧驱动全部通过，包含016构造/样式以及001～015已有路径 |
+| AOT发布及PE | ✅ 发布/指定实际运行 | 文本EXE 2,049,024字节并实际运行；Demo EXE 4,108,288字节仅发布；两者CLR Header 0 |
+| Demo分析警告 | ⬜ 既有缺口 | InheritanceAttribute.ToString/Enum.GetValues(Type) IL3050仍在，无全局抑制；主窗交互/正常关闭仍待验收 |
+| 项目/依赖 | ✅ 指定图 | 13项目/17目标仅.NET10，Windows官方Drawing10.0.0；net10.0 deps无WinForms/Resources.Extensions/自有Drawing，原始Designer/resx未改 |
+
+首次全线测试仅有一个新增重入断言预期错误：setter退出回调中的嵌套Reset以exit:reset结束，已按参考加强为完整16步断言；首次失败日志/TRX保留。AOT首次完整元数据比较失败也保留；最终驱动明确只接受实际工具链策略证实的DispId删除，其余原始记录严格比较。
+
+复现：`./tools/compatibility/Test-ControlTextReset.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemImage.ps1 -Variant both`。日志/TRX/PE/依赖/原始差异与摘要见artifacts/compatibility-batch017/evidence.json。Parent/Controls/Form、已有HWND/native文本、完整布局、ImageList/图像构造/挂接native/完整所属/资源、中文Designer/AOT动态转换及三平台真机继续待实现或验收，不由数量推出98%。公共签名分母仍为1,095类型/61,240行、运行unverified，路线图与逐类型索引同步复核。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**
