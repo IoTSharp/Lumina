@@ -69,6 +69,44 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public virtual bool IsHandleCreated => Handle != 0;
 
     /// <summary>
+    /// Gets whether the control's native window has the keyboard focus.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public virtual bool Focused => Handle != 0 && Win32.GetFocus() == Handle;
+
+    /// <summary>
+    /// Gets whether this control or one of its native child windows has the keyboard focus.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool ContainsFocus
+    {
+        get
+        {
+            nint handle = Handle;
+            if (handle == 0)
+            {
+                return false;
+            }
+
+            nint focusedHandle = Win32.GetFocus();
+            return focusedHandle != 0
+                && (focusedHandle == handle || Win32.IsChild(handle, focusedHandle));
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the control has a visible, enabled native window that can receive focus.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool CanFocus => Handle != 0 && Win32.IsWindowVisible(Handle) && Win32.IsWindowEnabled(Handle);
+
+    /// <summary>
     /// Gets whether the calling thread differs from the thread that created the control's
     /// native window, or an available parent window when this control has no handle.
     /// </summary>
@@ -543,12 +581,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Sets input focus to the control.
     /// </summary>
-    public void Focus()
+    /// <returns>Whether the control has the keyboard focus after the request.</returns>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public bool Focus()
     {
-        if (Handle != 0)
+        if (CanFocus)
         {
             _ = Win32.SetFocus(Handle);
         }
+
+        return Focused;
     }
 
     /// <summary>

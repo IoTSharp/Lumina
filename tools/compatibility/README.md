@@ -32,3 +32,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 007：`./tools/compatibility/Test-WindowsFormsSynchronizationContextInstall.ps1 -Variant both -PublishAot` 比较默认安装首范围的 204 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取得参考。独立 STA 覆盖线程局部 AutoInstall、null/base/custom/forms Current、Uninstall/重复/前驱缓存、构造异常、默认直接/BeginInvoke/ValueTask/工作线程 callback await UI 恢复、Run 还原和两个不同 STA 的无 Form ExitThread。旧显式投递 57 条继续由批次 006 驱动保留；默认安装不关闭完整模态/多 UI 退出与生命周期竞态。
 
 `./tools/compatibility/Test-ListViewSubItemCollection.ps1` 比较公共构造、同 owner 多集合视图、延迟首项、整数索引验证顺序/身份及独立 key 缓存的 72 条观测，支持 `-ReferenceOnly`；完整非泛型 IList、添加/插入/所属/native 仍缺。新日志/结果在 artifacts/compatibility-batch007；18 项独立 STA 和 27 项集合回归纳入 Lumina.Tests。完整 Demo 仍保持固定双目标和原始 Designer/resx，代码完成与兼容验收分开。
+
+批次 008：`./tools/compatibility/Test-ControlFocus.ps1 -Variant both -PublishAot` 比较标准 bool Focus、Focused/ContainsFocus/CanFocus 的 157 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先取参考。覆盖标准元数据、无 HWND 不创建、真实 HWND/外部原生切换、原生 descendant、隐藏/禁用及释放；Select/CanSelect、完整键盘/验证事件、Form 继承和全部重建竞态仍待后续。
+
+`./tools/compatibility/Test-ListViewSubItemAdd.ps1` 比较三个 typed Add 的 74 条固定参考/JIT 观测，支持 `-ReferenceOnly`；覆盖标准返回、null/重复/其他 owner 对象、文字/样式/借用 Font、外部视图首次与 Clear 后添加、共享数据/主项 Text 和独立 key 缓存。保留历史泛型 ICollection<T>.Add 显式适配的独立回归；非泛型 IList、AddRange/Insert/完整所属和 native 同步未关闭，新增 Add 对照不声称实际 AOT 运行验收。日志/结果、293 项全线测试 TRX 和 PE/依赖证据在 artifacts/compatibility-batch008。

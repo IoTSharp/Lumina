@@ -258,16 +258,40 @@ public class ListViewItem
 
         public bool IsReadOnly => false;
 
-        public void Add(ListViewSubItem item)
+        /// <summary>
+        /// Adds the specified subitem and returns the same object.
+        /// </summary>
+        /// <param name="item">The subitem to add.</param>
+        /// <returns>The subitem added to the collection.</returns>
+        public ListViewSubItem Add(ListViewSubItem item)
         {
-            _items.Add(item);
-        }
-
-        public ListViewSubItem Add(string? text)
-        {
-            var item = new ListViewSubItem(_owner, text);
+            ArgumentNullException.ThrowIfNull(item);
+            item.Owner = _owner;
             _items.Add(item);
             return item;
+        }
+
+        /// <summary>
+        /// Adds a new subitem with the specified text.
+        /// </summary>
+        /// <param name="text">The displayed subitem text.</param>
+        /// <returns>The new subitem added to the collection.</returns>
+        public ListViewSubItem Add(string? text)
+        {
+            return Add(new ListViewSubItem(_owner, text));
+        }
+
+        /// <summary>
+        /// Adds a new subitem with the specified text and style.
+        /// </summary>
+        /// <param name="text">The displayed subitem text.</param>
+        /// <param name="foreColor">The text color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="backColor">The background color, or <see cref="Color.Empty"/> to use the default.</param>
+        /// <param name="font">The borrowed text font, or <see langword="null"/> to use the default.</param>
+        /// <returns>The new subitem added to the collection.</returns>
+        public ListViewSubItem Add(string? text, Color foreColor, Color backColor, Font? font)
+        {
+            return Add(new ListViewSubItem(_owner, text, foreColor, backColor, font));
         }
 
         public void Clear()
@@ -366,6 +390,11 @@ public class ListViewItem
             // WinForms checks UTF-16 lengths before comparing names with the invariant culture.
             return name.Length == key.Length &&
                 string.Equals(name, key, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        void ICollection<ListViewSubItem>.Add(ListViewSubItem item)
+        {
+            Add(item);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
