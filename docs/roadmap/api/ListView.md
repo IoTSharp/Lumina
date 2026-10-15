@@ -317,7 +317,7 @@
 | API-7CA54346617582D3 | Property | `System.Int32 TabIndex { public get; public set; }` | `System.Windows.Forms.Control` LocalizableAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-61D66C836C96EA9C | Property | `System.Boolean TabStop { public get; public set; }` | `System.Windows.Forms.Control` DefaultValueAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-181B7B360AB6E191 | Property | `System.Object Tag { public get; public set; }` | `System.Windows.Forms.Control` LocalizableAttribute(false); BindableAttribute(true); DefaultValueAttribute(null); TypeConverterAttribute(System.ComponentModel.StringConverter) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-018ACB97E2632498 | Property | `virtual System.String Text { public get; public set; }` | `System.Windows.Forms.ListView` BrowsableAttribute(false); BindableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-018ACB97E2632498 | Property | `virtual System.String Text { public get; public set; }` | `System.Windows.Forms.ListView` BrowsableAttribute(false); BindableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-685AE513DB722B90 | Property | `System.Drawing.Size TileSize { public get; public set; }` | `System.Windows.Forms.ListView` BrowsableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-B4887DD2D3A9F5BE | Property | `System.Int32 Top { public get; public set; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-494DB8FCB7B46CAC | Property | `System.Windows.Forms.ListViewItem TopItem { public get; public set; }` | `System.Windows.Forms.ListView` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

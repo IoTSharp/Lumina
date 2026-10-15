@@ -181,9 +181,59 @@ foreach ($row in $ownership) {
 foreach ($type in $types) {
     if (-not $ownedTypes.Contains($type.Type)) { $errors.Add("Type without owner: $($type.Type)") }
 }
+
+# The index distinguishes a matching type name from completed roadmap work.
+# Source task pages remain authoritative; inherited/base work never closes a row.
+$implementationByType = @{}
+foreach ($page in $pageMap) {
+    $developmentTasks = @($tasks | Where-Object { $_.Type -eq $page.DocumentType -and $_.TaskId -notmatch '-V$' })
+    $completed = @($developmentTasks | Where-Object Status -eq 'code-complete' | Sort-Object TaskId)
+    $unfinished = @($developmentTasks | Where-Object Status -ne 'code-complete')
+    $assigned = @($developmentTasks | Where-Object Status -eq 'in-progress')
+    if ($developmentTasks.Count -gt 0 -and $unfinished.Count -eq 0) {
+        $summary = '✅ 全部开发任务代码完成；兼容验收另列'
+    }
+    elseif ($assigned.Count -gt 0) {
+        $summary = '🚧 已分配：' + (($assigned | ForEach-Object TaskId) -join '、')
+    }
+    elseif ($completed.Count -gt 0 -or @($developmentTasks | Where-Object Status -eq 'partial-unverified').Count -gt 0) {
+        $summary = '🟡 部分完成'
+    }
+    else {
+        $summary = if ($page.CandidatePresent -eq 'True' -or $page.Source -eq 'sdk-generated') { '⬜ 开发任务待实现；已有类型待逐项核实' } else { '⬜ 待实现' }
+    }
+    if ($completed.Count -gt 0 -and $unfinished.Count -gt 0) {
+        $summary += '；✅ ' + (($completed | ForEach-Object TaskId) -join '、') + '；其余任务未完成'
+    }
+    elseif ($completed.Count -eq 0) { $summary += '；暂无独立任务完成记录' }
+    $implementationByType[$page.DocumentType] = $summary
+}
+
+$indexPath = Join-Path $roadmapRoot 'README.md'
 if ($ExportTasks) {
     $rows = $tasks | Sort-Object Stage, Priority, Type, TaskId | ConvertTo-Csv -NoTypeInformation
     [IO.File]::WriteAllText((Join-Path $roadmapRoot 'tasks.csv'), ($rows -join "`n") + "`n", $utf8)
+    $indexLines = @(foreach ($line in [IO.File]::ReadAllLines($indexPath, $utf8)) {
+        if ($line -match '^\| \[(?<Type>[^]]+)\]\(controls/[^)]+\) \|') {
+            $documentName = $Matches.Type
+            $cells = @([regex]::Split($line.Trim().Trim('|'), '(?<!\\)\|') | ForEach-Object { $_.Trim() })
+            '| ' + (($cells[0..4] + $implementationByType[$documentName]) -join ' | ') + ' |'
+        }
+        elseif ($line -eq '| 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 |') {
+            $line.TrimEnd('|').TrimEnd() + ' | 代码实施与已完成子任务 |'
+        }
+        elseif ($line -eq '| --- | --- | --- | --- | --- |') { '| --- | --- | --- | --- | --- | --- |' }
+        else { $line }
+    })
+    [IO.File]::WriteAllText($indexPath, ($indexLines -join "`n") + "`n", $utf8)
+}
+foreach ($line in [IO.File]::ReadAllLines($indexPath, $utf8)) {
+    if ($line -notmatch '^\| \[(?<Type>[^]]+)\]\(controls/[^)]+\) \|') { continue }
+    $documentName = $Matches.Type
+    $cells = @([regex]::Split($line.Trim().Trim('|'), '(?<!\\)\|') | ForEach-Object { $_.Trim() })
+    if ($cells.Count -ne 6 -or $cells[5] -cne $implementationByType[$documentName]) {
+        $errors.Add("Stale index implementation state: $documentName (run -ExportTasks after reviewing its task page)")
+    }
 }
 $report = [ordered]@{
     baselineTypes = $types.Count
@@ -201,6 +251,8 @@ $report = [ordered]@{
     sharedTasks = $tasks.Count - $controlTaskCount
     detailedTasks = $tasks.Count
     markdownFilesChecked = $files.Count
+    indexImplementationRows = $implementationByType.Count
+    indexCodeCompleteTypes = @($implementationByType.Values | Where-Object { $_.StartsWith('✅') }).Count
     errors = @($errors)
 }
 $report | ConvertTo-Json -Depth 4

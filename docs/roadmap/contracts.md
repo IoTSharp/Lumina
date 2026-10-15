@@ -5,8 +5,8 @@
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
 | CNS-001 | P0 ⬜ | 事件参数/委托：准确EventHandler类型、泛型与命名委托区别；Cancel/Handled、旧新值、索引、鼠标键状态、CloseReason等；每个参数类型跟随所属控件任务 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
-| CNS-002 | P1 ⬜ | 枚举/Flags/常量：所有名称、数值、别名、组合、默认值、无效值异常；Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等逐项 | 不因同名枚举值个数大就稀释控件支持率 |
-| CNS-003 | P1 ⬜ | 条目/集合：ControlCollection、TabPageCollection、ObjectCollection、TreeNodeCollection、ListView各集合、ToolStripItemCollection；构造/Owner/索引/排序/Clone/枚举/异常 | 见 [集合场景](behavior-catalog.md)，父子关系与原生状态同步 |
+| CNS-002 | P1 🟡 | 批次001已对齐HighDpiMode五值及14组DPI观察（f2d694c），010补BoundsSpecified八值/Flags（Control-02c）；其他Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等名称/数值/别名/组合/默认/无效值仍待逐项核对 | 不因同名枚举值个数大就稀释控件支持率 |
+| CNS-003 | P1 🟡 | 批次006～012完成ListViewSubItem key与公共集合构造/共享view/整数索引/typed增删/非泛型IList/查询复制/枚举首范围（03a、02a～02f）；其他Control/TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/排序/Clone/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
 | CNS-006 | P3 ⬜ | System.Windows.Forms.VisualStyles：VisualStyleRenderer/Element/Information、TextRenderer、ControlPaint、绘制事件参数；Windows主题数据/GDI句柄与扩展点 | Windows完整基线保留；Linux/macOS逐成员判断，不能整个命名空间先全划平台豁免 |
@@ -15,7 +15,7 @@
 | CNS-009 | P2/P3 ⬜ | Automation、AccessibleObject派生及相关UIA类型；Com2Interop/ActiveX类型、HtmlDocument/HtmlElement集合、DOM事件；各归所属控件 | 可访问性、OLE/浏览器能力各自验收；没有对应原生能力时公开边界 |
 | CNS-010 | P2 ⬜ | Drawing.Printing：PrintDocument/PrintController/PreviewPrintController、PageSettings/PrinterSettings、PrintPage/QueryPage事件参数及所有集合/枚举 | [打印计划](controls/PrintDocument.md)，字体/Graphics身份、AOT与真实打印链路 |
 | CNS-011 | P3 ⬜ | 旧DataGrid/ToolBar/StatusBar及样式/条目、ContextMenu/MainMenu/MenuItem；历史格式化/帮助/系统对象 | 历史/Obsolete项在清单保留；先对齐.NET10标准异常占位，[探针](../assessments/2026-10-15/legacy-control-probes.json)；恢复旧版UI另列可选扩展，不稀释活跃控件比例 |
-| CNS-012 | P1/P2 ⬜ | 新版标准异步/命令等API：InvokeAsync/ShowAsync/ShowDialogAsync、ICommand及相关事件（以固定10.0.11实际清单为准）；资源/输入语言/屏幕/光标等辅助类型 | 不依赖印象筛掉“新版”成员；AOT、取消、线程和标准命名共同验证 |
+| CNS-012 | P1/P2 🟡 | 批次004/005完成标准Action/Func/ValueTask InvokeAsync首范围（cb3692d/b5aad529，Control-05a/b），007补默认callback await恢复（db29dce，context-01b）；ShowAsync/ShowDialogAsync、ICommand/相关事件、完整退出竞态及资源/输入语言/屏幕/光标辅助类型仍待实现 | 不依赖印象筛掉“新版”成员；既有AOT/取消/线程证据限明确首范围 |
 
 ## 每个附属类型的实际任务
 
@@ -26,3 +26,5 @@
 ## 修改历史
 
 2026-10-15：本次新增全类型责任入口和验收要求，未新增上述缺失实现；各已有源文件历史以Git为准。公共类型已有历史名称不重命名，实施时优先标准WinForms契约。
+
+2026-10-16 · 批次016历史回标：CNS-002补001的HighDpiMode与010的BoundsSpecified，CNS-003补006～012子项集合明确首范围，CNS-012补004/005标准InvokeAsync与007默认await恢复；从过时的全待办纠正为部分完成，其他枚举/集合/异步命令/完整所属/native及验收继续保留。仅整理已有实现和证据，不改变历史提交、任务ID或固定分母。

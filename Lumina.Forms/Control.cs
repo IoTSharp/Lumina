@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -77,6 +78,25 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
 
         WindowsFormsSynchronizationContext.InstallIfNeeded();
+    }
+
+    /// <summary>
+    /// Initializes a control with the specified text.
+    /// </summary>
+    public Control(string? text) : this()
+    {
+        Text = text;
+    }
+
+    /// <summary>
+    /// Initializes a control with the specified text, location, and size.
+    /// </summary>
+    public Control(string? text, int left, int top, int width, int height) : this(text)
+    {
+        // Location and size are separate observable operations. Each consumes
+        // the current bounds, virtual constraints, and standard notifications.
+        Location = new Point(left, top);
+        Size = new Size(width, height);
     }
 
     /// <summary>
@@ -387,7 +407,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets the text displayed by the control.
     /// </summary>
-    public string Text
+    [AllowNull]
+    public virtual string Text
     {
         get
         {
@@ -406,7 +427,6 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             string currentText = Text;
             if (string.Equals(currentText, newText, StringComparison.Ordinal))
             {
-                _text = newText;
                 return;
             }
 

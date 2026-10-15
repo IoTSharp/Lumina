@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-已有 SysListView32 与深色主题、Items/Columns 托管集合；没有插入原生项/列的实现。`ListViewItem(string)` 在初始化 SubItems 前设置 Text 导致 NullReferenceException，已由审计探针复现。View 默认 Details（标准 LargeIcon），FullRowSelect 属性默认 false 却无条件设置原生 FULLROWSELECT 样式。
+已有 SysListView32 与深色主题、Items/Columns 托管集合；没有插入原生项/列的实现。最初审计的 ListViewItem(string) 空引用已由001修复，003补无参/string[]，后续子项集合与未挂接样式等明确范围见对应任务页；这不关闭ListView的Items/Columns/完整所属/native。View默认Details（标准LargeIcon），FullRowSelect属性默认false却无条件设置原生FULLROWSELECT样式，仍待修正。
 
 - 标准继承/契约：`ListView : Control`；需要 ListViewItem、ColumnHeader、ListViewGroup、相关嵌套集合和事件参数类型。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListView.cs)。
@@ -22,7 +22,7 @@
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `ListView-01` | 修复 ListViewItem 构造和 Text/SubItems[0] 同步；Items.Add 返回值/重载、集合所有权和 ColumnHeader 继承/默认值匹配；不能靠 Demo 避开构造缺陷。 |
+| 🟡 | P0 | `ListView-01` | 基础ListViewItem(string)空引用与Text/首子项同步已由001/003完成（ListViewItem-01a/b，提交f2d694c/53294b5）；其余构造、Items.Add返回值/重载、完整集合所有权、ColumnHeader继承/默认与native同步仍待实现，父项不随条目构造关闭。 |
 | ⬜ | P0 | `ListView-02` | 默认 View=LargeIcon、MultiSelect=true、FullRowSelect=false、GridLines=false、HideSelection=false、LabelEdit=false、CheckBoxes=false、VirtualMode=false；原生样式读回与托管一致；HideSelection 按 .NET 10 实测，不能沿用旧版默认。 |
 | ⬜ | P1 | `ListView-03` | Items/Columns 的 Add/Insert/Remove/Clear/索引写入、Name 键查找、跨宿主归属；映射到 LVM_INSERTITEM/INSERTCOLUMN 等，分别检查句柄前后实际项列数量与文本。 |
 | ⬜ | P1 | `ListView-04` | SelectedItems/SelectedIndices、FocusedItem、TopItem、EnsureVisible/GetItemAt/HitTest/GetItemRect；鼠标、Ctrl/Shift、键盘、程序选择产生 SelectedIndexChanged/ItemSelectionChanged 的顺序和批量次数。 |
@@ -60,6 +60,8 @@ Details/List 用 NSTableView；LargeIcon/SmallIcon/Tile 用 NSCollectionView，�
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
 ## 修改历史
+
+- 2026-10-16 · 批次016历史回标：移除当前结论中已过时的ListViewItem(string)基础空引用阻塞，保留001/003的原始修复提交和证据；任务01只标部分完成，未改变ListView源码，Items/Columns/完整所属/native及默认值差异仍缺，不新增验收声明。
 
 - `2fb513a` · 2026-04-09：提交包含 ListView 功能和异步调用增强；现有集合仍未与原生内容同步。
 - `2545995` · 2026-04-08：主题应用优化。

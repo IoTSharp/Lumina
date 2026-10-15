@@ -17,6 +17,8 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 
 `tasks.csv` 同时覆盖控件页与 FND/REP/CNS/XPL 公共任务。任务表是状态来源，不手工编辑生成的 CSV；导出保留 `Status`（代码开发）与 `Verification`（兼容验收）两个独立字段。✅ 代码完成导出为 code-complete，只有状态栏明确写 🧪 验收通过才导出 verified。前期真机后置不影响关闭开发部分。当前批次/子智能体文件责任见根目录 [HANDOFF.md](../../HANDOFF.md)，不另建调度框架。
 
+按用户 2026-10-16 要求，`-ExportTasks` 同时更新现有逐控件索引 README 的“代码实施与已完成子任务”列；每行只汇总该控件任务页的状态，列出明确完成任务 ID，父项有剩余仍标部分完成，基类完成不自动转移到派生控件。类型身份/成员数/三平台验收列保持独立；不带开关的校验会拒绝陈旧状态列。先按真实代码和证据复核源任务页，再导出；工具只保证文档一致，不替代真实性审查或兼容验收。
+
 批次 002 的轻量检查：`./tools/compatibility/Test-ControlComponent.ps1` 比较真实 WinForms 与 Lumina 的 5 项组件释放观测；`./tools/compatibility/Test-BitmapResources.ps1` 编译真实 Demo 的两条资源路径，再执行无界面的 win-x64 Native AOT 五图逐像素、身份、文化和错误语义对照。后者的 `-SkipPublish` 仅做托管对照；默认先运行 AOT EXE、保存结果，再严格检查全部详细 IL2xxx/IL3xxx 告警，剩余标准 Container/InheritanceAttribute 的 IL3050 会令脚本失败，不能把运行结果相同等同于告警清零。两者日志写入忽略的 artifacts/compatibility-batch002；资源探针仅支持 .NET 10，不加入主线解决方案或发布物。
 
 批次 003：`./tools/compatibility/Test-ControlThreadDispatch.ps1 -Variant both -PublishAot` 比较固定 WinForms 10.0.11、Lumina JIT 和实际 Native AOT 的 69 条 UI 投递观测；`-Variant reference` 可先取得参考结果，进程有 30 秒外部超时。`./tools/compatibility/Test-ListViewItemConstruction.ps1` 比较 41 条基础构造观测，`-ReferenceOnly` 用于先记录固定基线再实现。临时项目、日志与结果只写 artifacts/compatibility-batch003。检查只覆盖明确轻量范围；已有 HWND 的 null Delegate 基线挂起未放入共享主流程，本实现防挂起守卫、标准异常 UI 与完整 InvokeAsync 缺口见批次记录。
@@ -64,3 +66,7 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 批次 015：`./tools/compatibility/Test-ControlDefaultSize.ps1 -Variant both -PublishAot` 比较基础无参构造/DefaultSize/构造期默认 Min/Max 的 2,677 条固定 WinForms 10.0.11/JIT/实际 AOT 观测，支持 `-Variant reference` 先固定参考。初始 0×0、四有限边框、正零负极值/约束 profile、公共虚 setter 与重复读取、不调 base/动态默认、构造重入/原异常和 context 安装时序均覆盖。DefaultSize 直接提交尺寸，双轴非零才计算客户区，零轴保留重入缓存；同步上下文在默认初始化成功后安装。实际反射仅精确保留 get_DefaultSize，AOT 无 IL2xxx/IL3xxx。已有派生构造显式尺寸保持，全部具体派生默认值和其余公共构造仍另列。
 
 `./tools/compatibility/Test-ListViewItemToString.ps1` 比较主项标准 ToString override 的 96 条固定 en-US 参考/JIT 观测，支持 `-ReferenceOnly`。覆盖 Object 虚槽、原样 Text/空值/Unicode/换行/NUL、元数据/样式、首项/空表/共享 view/三枚举/各 view key 缓存及派生隐藏/override/原异常；读取不恢复首项或换表，不调用 Tag.ToString 或消费/释放借用 Font。新增构造 387 项、列表字符串 98 项，全线 2,713 项通过，25 个旧差分驱动保持；新列表字符串未计实际 AOT 运行验收。日志/TRX/PE/项目/依赖摘要在 artifacts/compatibility-batch015，下一批见 [016](../../docs/roadmap/batches/016.md)。
+
+批次 016：`./tools/compatibility/Test-ControlTextConstruction.ps1 -Variant reference` 先记录固定 WinForms 10.0.11 无 parent 的两种文本构造参考，`-Variant both -PublishAot` 比较 4,584 条参考/JIT/实际 Native AOT 指定观测。覆盖构造/参数元数据、null/空/Unicode/换行/NUL、正零负极值几何、默认扩展/文本/边界/通知/context 的实际次序，以及隐藏/虚覆盖/不调 base、重入与原异常。有效 text 空值契约严格比较，构造 NullableContext 的编译器放置及调用约定原始编码保留 stderr；CoreCLR 的 Standard|HasThis 与 AOT 的 HasThis 只比较实际实例/变参/未知位契约，不给 AOT 补造 Standard。精确 #ctor/Text 根化只在探针，最终无 IL2xxx/IL3xxx；含 parent 构造须等待 Parent/Controls/Form 继承边界，不在该探针模拟。
+
+`./tools/compatibility/Test-ListViewItemStyle.ps1 -ReferenceOnly` 先记录固定 10.0.11/en-US 的未挂接样式参考，省略开关后比较候选，541 条观测全同。覆盖 BackColor/ForeColor/Font/UseItemStyleForSubItems 元数据、默认/Empty/null/透明、首子项代理、空表恢复换表、共享 view/三枚举/key 缓存、ResetStyle 与借用/已释放 Font 身份和寿命；已挂接继承/native、全局字体配置、Clone/序列化/Designer 资源与压力另列，新范围未计实际 AOT 运行验收。新增构造 311、列表样式 328 项，全线 3,352 项及 27 个旧驱动通过。两份探针仅向忽略的 artifacts/compatibility-batch016 写临时项目、日志与证据，不加入生产项目；初始空值/调用约定差异和探针 IL2037 日志保留，代码完成与完整兼容验收分开记录。下一批见 [017](../../docs/roadmap/batches/017.md)。

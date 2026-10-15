@@ -7,11 +7,11 @@
 | 顺序 | 里程碑 | 优先级/状态 | 具体任务入口 | 完成门槛 |
 | --- | --- | --- | --- | --- |
 | 00 | 基线可追踪 | P0 🟡 | [计量](coverage.md)、[类型/成员](api/types.json)、[全控件索引](README.md) | 清单已生成；行为场景和证据映射仍需建立 |
-| 01 | M0 阻塞 | P0 ⬜ | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程、构造、AOT主窗、签名与警告闭环；无需先修所有美化 |
-| 02 | M1 控件/窗体骨架 | P1 ⬜ | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 标准继承/Parent/Controls/布局/生命周期/键盘/验证/模态/设计器场景可对照 |
-| 03 | M2a 高频简单控件 | P1 ⬜ | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
-| 04 | M2b 已有确定性薄弱控件 | P1 ⬜ | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
-| 05 | M2c 容器/列表/菜单 | P1 ⬜ | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
+| 01 | M0 阻塞 | P0 🟡 | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程/基础构造/启动签名等子范围已实现；完整继承、AOT主窗与警告仍未闭环 |
+| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/组件释放等子范围完成；Parent/Controls/Form标准链、完整布局/键盘/验证/模态/设计器仍缺 |
+| 03 | M2a 高频简单控件 | P1 🟡 已有局部代码，开发/验收未完成 | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
+| 04 | M2b 已有确定性薄弱控件 | P1 🟡 已有局部代码，开发/验收未完成 | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
+| 05 | M2c 容器/列表/菜单 | P1 🟡 已有局部代码，开发/验收未完成 | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
 | 06 | M3 业务链路 | P2 ⬜ | Binding/BindingSource/BindingContext/CurrencyManager → ErrorProvider → DataGridView基础/行列/样式/六种单元格/集合 → 编辑控件 → BindingNavigator；ImageList/Timer等 | 真实对象列表编辑、校验、排序、虚拟模式可用且AOT；列模板/Clone/共享行/编辑提交不遗漏 |
 | 07 | M3 补常用缺项 | P2 ⬜ | CheckedListBox、DomainUpDown、TrackBar、ScrollBar/H/VScrollBar、ToolStrip容器和下拉 | 所有控件有独立验收，不只看Demo能编译 |
 | 08 | M4 深度兼容 | P2/P3 ⬜ | PropertyGrid及GridItem/PropertyTab、Printing、派生/自绘、UIA、OLE/拖放、WebBrowser、MDI；DataGrid/旧Menu/ToolBar/StatusBar占位契约 | 全量未评估项归零；历史项先匹配固定.NET10标准异常，恢复旧版UI作为可选扩展；剩余项公开 |
@@ -23,6 +23,14 @@
 控件范围按 [补漏审计](scope-audit.md) 的继承闭包检查：Control含抽象基类，ToolStripItem、CommonDialog、Menu、非可视Component及TaskDialog另外核查。不能只完成62个具体Control就宣称所有交互对象已覆盖。
 
 控件页的 P0 表示“开始该控件前先做的工作”，不是把M4历史控件的P0插到M0线程修复之前。全局按本页里程碑与依赖先后，再按控件内P0→P3执行。[tasks.csv](tasks.csv)按阶段/优先级/类型提供筛选索引，不是自动排程，也不是API支持率分母。
+
+## 当前接续与每批收尾
+
+2026-10-16：批次 [016](batches/016.md) 完成 Control-01c 无 parent 文本构造与 ListViewItem-06a 未挂接样式首范围，001～015 的既有明确子范围保留。Control-01/FND-001、ListViewItem-06/FND-003 仍为部分完成，Form/Parent/Controls、完整所属/native 与资源继承等未随基类/子项关闭。M0/M1 总览由过时的“待办”改为部分完成，不表示里程碑通过。
+
+下一批 [017](batches/017.md) 按剩余依赖先做无 HWND 的 Text/ResetText 及未挂接 ImageIndex/ImageKey，两项文件互斥；图像选择的设计器转换器独立协调，不能引入 WinForms 依赖。含 parent 构造等待真实 Parent/Controls/Form 链，已挂接样式等待所属/native，不能模拟关闭这些前置；整体 M0→M1→M2 的优先级保持，不重新展开全库评估或扩大本批测试。
+
+用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天
 

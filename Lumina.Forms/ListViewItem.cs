@@ -10,6 +10,10 @@ namespace Lumina.Forms;
 /// </summary>
 public class ListViewItem
 {
+    // Unattached items and subitems share WinForms' lazy default font identity.
+    // Global font configuration and attached ListView inheritance are separate work.
+    private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
+
     // Collection instances are views over the item's data; each view keeps its own key cache.
     private List<ListViewSubItem> _subItemData = [];
     private ListViewSubItemCollection? _subItems;
@@ -114,9 +118,45 @@ public class ListViewItem
     }
 
     /// <summary>
-    /// Gets or sets the item foreground color.
+    /// Gets or sets the background color of the item's primary subitem.
     /// </summary>
-    public Color ForeColor { get; set; } = Color.Empty;
+    [Category("Appearance")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Color BackColor
+    {
+        get => _subItemData.Count == 0 ? SystemColors.Window : _subItemData[0].BackColor;
+        set => SubItems[0].BackColor = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the foreground color of the item's primary subitem.
+    /// </summary>
+    [Category("Appearance")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Color ForeColor
+    {
+        get => _subItemData.Count == 0 ? SystemColors.WindowText : _subItemData[0].ForeColor;
+        set => SubItems[0].ForeColor = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the borrowed font of the item's primary subitem.
+    /// </summary>
+    [Category("Appearance")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Localizable(true)]
+    public Font Font
+    {
+        get => _subItemData.Count == 0 ? s_defaultFont.Value : _subItemData[0].Font;
+        set => SubItems[0].Font = value;
+    }
+
+    /// <summary>
+    /// Gets or sets whether the item's style is used when drawing its subitems.
+    /// </summary>
+    [Category("Appearance")]
+    [DefaultValue(true)]
+    public bool UseItemStyleForSubItems { get; set; } = true;
 
     /// <summary>
     /// Returns a string containing the item's primary text.
@@ -128,10 +168,6 @@ public class ListViewItem
     /// </summary>
     public class ListViewSubItem
     {
-        // Keep the unattached default shared and lazy, as WinForms does through Control.DefaultFont.
-        // Control-wide font configuration and attached ListView inheritance are separate work.
-        private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
-
         private string _text = string.Empty;
         private string _name = string.Empty;
         private Color _foreColor = Color.Empty;

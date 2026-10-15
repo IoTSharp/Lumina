@@ -253,7 +253,7 @@
 | API-5E70EB554850F24D | Property | `System.Int32 TabIndex { public get; public set; }` | `System.Windows.Forms.TabPage` BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-186F166F6FFC66A3 | Property | `System.Boolean TabStop { public get; public set; }` | `System.Windows.Forms.TabPage` BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-BEE7140591C8BDA4 | Property | `System.Object Tag { public get; public set; }` | `System.Windows.Forms.Control` LocalizableAttribute(false); BindableAttribute(true); DefaultValueAttribute(null); TypeConverterAttribute(System.ComponentModel.StringConverter) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-529B23716780545B | Property | `virtual System.String Text { public get; public set; }` | `System.Windows.Forms.TabPage` LocalizableAttribute(true); BrowsableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-529B23716780545B | Property | `virtual System.String Text { public get; public set; }` | `System.Windows.Forms.TabPage` LocalizableAttribute(true); BrowsableAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-1FF5204FE472E8A4 | Property | `System.String ToolTipText { public get; public set; }` | `System.Windows.Forms.TabPage` DefaultValueAttribute(""); LocalizableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-68D0C958E5211F26 | Property | `System.Int32 Top { public get; public set; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-37EBB4F887FA32DF | Property | `System.Windows.Forms.Control TopLevelControl { public get; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

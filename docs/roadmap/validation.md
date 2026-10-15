@@ -322,6 +322,26 @@ SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换
 
 中文 Designer 分类/描述与 AOT 动态 AmbientValue.Value/TypeDescriptor 转换、完整布局/DPI/外部自主通知、完整所属/已挂接样式/native/Clone/序列化、复杂 UI/设备/设计器及 Linux/macOS 保持待实现/待验收，代码完成不计为 98%。复现：`./tools/compatibility/Test-ControlDefaultSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemToString.ps1`；日志与摘要见 artifacts/compatibility-batch015，下一批见 [016](batches/016.md)。
 
+## 2026-10-16 · 批次 016
+
+本批按 [016](batches/016.md) 完成 Control-01c 两个无parent文本构造与 ListViewItem-06a 未挂接样式首范围。两个子智能体文件互斥，先固定10.0.11参考、主聊天顺序运行并授权实现；独立只读审查确认构造/元数据/样式边界。旧主已确认归档，旧测试/探针与原始静态Designer/resx未改。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线双目标Release | ✅ 编译 | 0错误，本次集成增量301警告；13项目/17目标仅.NET10，固定Demo目标/官方Drawing保持 |
+| 全线测试 | ✅ 指定范围 | 3,352通过，0失败/跳过；旧2,713 + 新构造311 + 新样式328，最终测试文件修订后已重跑 |
+| 文本构造 | ✅ 指定差分 | 4,584条固定10.0.11参考/JIT/实际AOT指定观测相同；text允许null，默认初始化/context→虚Text→Location→Size，含极值/约束/通知/隐藏/覆盖/重入/原异常和部分状态 |
+| 构造元数据 | ✅ 有效契约 | 真实nullable差异修正为string?，仍比较有效参数契约；NullableContext放置和CoreCLR Standard\|HasThis/AOT HasThis原始编码保留stderr，比较实例/HasThis/ExplicitThis/VarArgs/未知位，不补造Standard；初次差异保留 |
+| 未挂接列表项样式 | ✅ 英文指定差分 | 541条固定en-US参考/JIT相同，首子项代理/空表恢复换表/三枚举/key缓存/ResetStyle/借用及已释放Font身份，UseItemStyle默认true独立保存；新范围未计实际AOT运行验收 |
+| 既有差分 | ✅ 指定范围 | 27个驱动全部通过，含015默认构造/主项字符串和全部旧组件/投递/context/焦点/边界/通知/客户区/约束/子项消费 |
+| 构造AOT | ✅ 发布/实际运行/PE | EXE2,075,648字节、CLR Header0，无IL2xxx/IL3xxx；探针初始IL2037修正精确#ctor声明后消除，没有库全局根化 |
+| 完整Demo AOT | ✅ 仅发布/PE | EXE4,108,288字节、CLR Header0；本轮展开IL3053确认仍为既有InheritanceAttribute.ToString/Enum.GetValues(Type) IL3050，未抑制；主窗交互/正常关闭后置 |
+| 依赖与API | ✅ 指定图/形状 | net10.0 Demo deps无WinForms/Resources.Extensions/自有Drawing，官方Drawing10.0.0；公共签名重新导出，1,095类型/61,240行及运行unverified保持 |
+| 路线图收尾/历史回标 | ✅ 文档一致 | 合并三组只读历史核对的具体修正，更新总览/FND/CNS/REP及相关控件；父项部分、未开始/待验收独立。README全部187类型行列实施状态与完成ID，整类型代码完成0；现有工具同步索引/CSV并拒绝陈旧行 |
+| 文档/任务校验 | ✅ 结构 | 405份Markdown、187组控件/API页、2,033项任务、0错误；历史批次快照/提交/任务ID和固定分母不变 |
+
+Parent/Controls/Form链、含parent构造、无HWND完整Text/ResetText、native文本/有效值继承、全部具体派生默认/布局/DPI、中文Designer本地化/AOT动态属性转换、已挂接列表样式/native/全局字体/完整所属/Clone/序列化及复杂UI/设备/设计器、Linux/macOS仍待实现或验收。代码完成不计为98%。复现：`./tools/compatibility/Test-ControlTextConstruction.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemStyle.ps1`；日志/TRX/PE/项目/依赖与初次差异在artifacts/compatibility-batch016，下一批见[017](batches/017.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

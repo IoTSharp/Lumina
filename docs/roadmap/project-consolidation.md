@@ -31,10 +31,10 @@
 
 | ID | 优先级/状态 | 工作及验收 |
 | --- | --- | --- |
-| REP-001 | P0 ⬜ | 完整Demo双目标构建、win-x64 AOT发布/可见启动纳入主线CI；通过主窗、操作和退出记录，不复用Notepad成功来代替 |
+| REP-001 | P0 🟡 | 主线CI已构建含NativeFormsDemo双目标的Lumina.slnx；CI发布仍仅NotepadDemo，完整Demo的win-x64 AOT发布/可见启动/主窗操作/正常退出纳入CI仍未完成。本机AOT发布/PE证据另见各批，不冒充CI验收 |
 | REP-002 | P0 ✅ | 批次 001：分析器统一 net10.0，作为私有 Analyzer 引用注入；独立包与 Forms 包均在 analyzers/dotnet/cs 含唯一 DLL。两种真实 NuGet 消费各触发 LNF003，assets/deps/bin 无 Roslyn/MEF/分析器运行资产；隔离应用发布属性，Demo Native AOT 发布通过；IDE codefix 交互验收后置 |
 | REP-003 | P1 ⬜ | Forms/Core 的System.Drawing与DWM平台依赖清单，Windows条件隔离；公开类型不在没有迁移证据时搬迁 |
-| REP-004 | P1 ⬜ | 主包README改为兼容能力、当前限制与验证入口，主题/美化说明下沉；消费示例校验当前签名和已知差异 |
+| REP-004 | P1 🟡 | 根README已改兼容定位/当前限制/验证入口并区分效果线，主包打入根README；全部消费示例逐项核查当前签名/已知差异仍待完成，不因文档主旨更新关闭完整任务 |
 | REP-005 | P2 ⬜ | 若图标生成/安装器确实不再使用，再逐文件清理；每项以引用扫描和构建验证为准，不一次性大扫除 |
 
 ## 修改历史
@@ -43,5 +43,6 @@
 | --- | --- | --- |
 | 2026-10-15 | 完成本轮整合；对应提交见Git历史 | WPF移除、效果线隔离、文档和逐控件路线图；不代表控件实现被补齐 |
 | 2026-10-15 | 批次 001 分析器注入与分发完成 | 用户明确所有项目只支持 .NET 10；分析器改 net10.0，保留 codefix，工具依赖私有化；修复 NuGet 还原图继承应用 AOT 属性导致的 NETSDK1207。实际消费与发布证据见批次记录 |
+| 2026-10-16 | 批次016历史状态回标 | REP-001的CI双目标构建、REP-004的README定位已存在，原全待办状态纠正为部分完成；完整Demo AOT/可见操作纳入CI及完整消费示例仍未完成，未改CI或扩大测试 |
 
 实际验证结果写入 [本轮验证](validation.md)。引用关系检查命令：`rg -n 'ProjectReference' -g '*.csproj'`，并核对 Lumina.Forms/Form.cs、NativeTheme.cs、Application.cs 与 NativeFormsDemo.csproj。Git可查看移除前历史；不额外复制一份废弃WPF目录。

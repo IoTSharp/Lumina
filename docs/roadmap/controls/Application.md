@@ -15,7 +15,7 @@
 | ✅ | P0 / Application-01a | 批次 001：Run(Form mainForm) 返回 void，支持相同命名参数调用；null 主窗沿消息循环执行，移除不符基线的空值异常。无界面签名检查和双目标编译通过，消息循环生命周期属于父任务待办。 |
 | ✅ | P0 / Application-02 | SetHighDpiMode 返回真实系统 BOOL/HRESULT 的成功结果，校验枚举，按 OS 能力回退；HighDpiMode 读取当前线程实际 awareness。首次窗口/托盘窗口创建前永久关闭设置入口，manifest/宿主/重复调用失败不假报成功。14 组隔离进程对照通过；旧系统回退、建窗回调、跨屏及真实缩放验收后置。 |
 | 🟡 | P0 / Application-03 | 批次 007 完成现有 Run/RunMessageLoop 与控件/窗体构造的默认 context 安装/还原、默认 callback await UI 恢复；完整 ApplicationContext/模态、多 UI 线程与退出取消/竞态仍缺。 |
-| ⬜ | P1 / Application-04 | 实现 Exit()/Exit(CancelEventArgs)/ExitThread、ApplicationExit/ThreadExit；各 FormClosing 取消必须阻止不应发生的全局退出，多个 UI 线程和无主窗 Context 分别验收。 |
+| 🟡 | P1 / Application-04 | 批次007完成现有无Form循环的ExitThread请求退出、最外层finally按线程释放context activation，两个STA固定参考/JIT/AOT有证据（WindowsFormsSynchronizationContext-01b）；Exit()/Exit(CancelEventArgs)、ApplicationExit/ThreadExit、FormClosing取消、ApplicationContext/多个UI线程的完整退出与竞态仍待实现/验收。 |
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
 | ⬜ | P1 / Application-06 | 实现 AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、消息预处理/快捷键/IsDialogMessage；WM_QUIT/GetMessage=-1 处理明确，不能只做 Translate/Dispatch。 |
 | ⬜ | P1 / Application-07 | 实现 Idle/RaiseIdle、DoEvents、EnterThreadModal/LeaveThreadModal、MessageLoop/AllowQuit；DoEvents 的重入遵循标准，不用 Task.Run 代替消息泵。 |
@@ -40,6 +40,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次016历史回标：任务04从全待办纠正为部分完成，只补007已有的无Form ExitThread请求/最外层线程activation释放和两个STA证据；Exit取消/事件/ApplicationContext/完整多UI与竞态仍待完成，未改源码或历史批次记录。
 
 - `9d5165f`（2026-04-09）：新增启动兼容功能，含待修正 DPI 表面。
 - `1c89c0a`（2026-04-01）：增强主题与控件初始化。

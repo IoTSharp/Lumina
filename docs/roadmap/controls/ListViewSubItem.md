@@ -28,13 +28,13 @@
 | 🟡 | P1 | `ListViewSubItem-02` | 批次 007～012 完成公共集合构造、共享 owner 数据、整数索引/首项规则、typed Add/AddRange/Insert/void Remove/RemoveAt/Clear、非泛型 IList/ICollection、引用查询/数组复制及枚举首范围（02a～f）；真实多线程/压力、完整所属与原生对应列同步仍待实现，不新增公开 Owner。 |
 | ✅ | P1 | `ListViewSubItem-02a` | 批次 007：标准公共集合构造、同 owner 多视图共享数据、Count/Text/首项延迟恢复、整数索引先 index 后 value 校验与身份，72 条固定参考/Lumina 观测相同，新增 27 项回归。每集合实例的 key 缓存独立；非泛型 IList、其余集合/完整所属与 native 同步保留。 |
 | ✅ | P1 | `ListViewSubItem-02b` | 批次 008：三个标准 typed Add，Add(item) 返回同一对象并拒绝 null（item），接受重复/其他 owner 对象；text/样式重载返回新对象，保留文字、样式/借用 Font 身份与首项共享视图。历史泛型接口使用显式 void 适配；74 条参考/JIT 相同，40 项新增回归通过。非泛型 IList、AddRange/Insert/完整所属与 native 同步另列。 |
-| ✅ | P1 | `ListViewSubItem-02c` | 批次 009：三个标准 void AddRange，null 数组抛参数 items 且不修改状态，三重载均跳过 null 元素、保留非 null 空 Text 对象与空字符串。151 条固定参考/JIT 相同，121 项新增回归通过；顺序/身份/输入复制/重复/其他 owner、借用 Font、外部共享视图/主项 Text 和独立 key 缓存保留。非泛型 IList、Insert/Remove/完整所属/native 另列。 |
-| ✅ | P1 | `ListViewSubItem-02d` | 批次 010：typed Insert 先校验 index 后拒绝 null item；公开 Remove 为非虚 void，按引用身份只删首项，null/缺失无操作，历史泛型 bool 用显式适配保留。Clear/RemoveAt 的接口 virtual-final 形状不改。203 条固定参考/JIT 相同，新增 110 项回归通过；共享视图/首项恢复/独立 key 缓存、重复/其他 owner 与借用 Font 保留。非泛型 IList、完整所属/挂接样式/native 另列。 |
-| ✅ | P1 | `ListViewSubItem-02e` | 批次 011：非泛型 IList/ICollection 的对象索引/添加/插入/移除/查询、flags/SyncRoot 与显式数组 CopyTo 已实现，typed Contains/IndexOf 改标准引用身份，历史泛型/typed 复制保留。1,406 条固定参考/JIT 相同，270 项新增回归通过；类型先于位置、重复 Add 返回首次位置、空集合不验证数组/不恢复首项、非零下界/派生数组部分写入、独立 key 缓存/借用 Font 已检。完整枚举/并发、所属/挂接样式/native 另列。 |
+| ✅ | P1 | `ListViewSubItem-02c` | 批次009：三个标准void AddRange，null数组抛参数items且不修改状态，三重载均跳过null元素、保留非null空Text对象与空字符串。151条固定参考/JIT相同，121项新增回归；顺序/身份/输入复制/重复/其他owner、借用Font、共享view/主项Text和独立key缓存保留。后续非泛型IList、Insert/Remove及枚举首范围见已完成02d/e/f；真正并发/完整所属/挂接样式/native仍缺。 |
+| ✅ | P1 | `ListViewSubItem-02d` | 批次010：typed Insert先校验index后拒绝null item；公开Remove为非虚void，按引用身份只删首项，null/缺失无操作，历史泛型bool用显式适配保留。Clear/RemoveAt接口virtual-final形状不改。203条固定参考/JIT相同，新增110项回归；共享view/首项恢复/独立key缓存、重复/其他owner与借用Font保留。后续非泛型IList/枚举首范围见已完成02e/f，真正并发/完整所属/挂接样式/native仍缺。 |
+| ✅ | P1 | `ListViewSubItem-02e` | 批次011：非泛型IList/ICollection的对象索引/添加/插入/移除/查询、flags/SyncRoot与显式数组CopyTo已实现，typed Contains/IndexOf改标准引用身份，历史泛型/typed复制保留。1,406条固定参考/JIT相同，270项新增回归；类型先于位置、重复Add返回首次位置、空集合不验证数组/不恢复首项、非零下界/派生数组部分写入、独立key缓存/借用Font已检。后续枚举首范围见已完成02f，真正并发/完整所属/挂接样式/native仍缺。 |
 | ✅ | P1 | `ListViewSubItem-02f` | 批次 012：public IEnumerator GetEnumerator 直接实现 IEnumerable，标准 virtual-final 形状与 Current/MoveNext/Reset、开始前/中途/结束后的双 view 变更共 2,531 条固定参考/JIT 相同，347 项新增回归通过。结构变更使 MoveNext/Reset 失效但保留缓存 Current；空 Clear 不失效，owner.SubItems 恢复首项换数据表，旧空枚举器仍为空，全部 view 共享新数据。历史泛型顺序/身份及 typed 无效 Current=null 保留。真正多线程/压力、完整所属/挂接样式/native 另列。 |
 | 🟡 | P1 | `ListViewSubItem-03` | 批次 004～012 已有 Name/Tag、string key 四成员、公共集合/共享视图/整数索引、非泛型查询复制及枚举首范围；保留重复 key/Name 修改/缓存位置语义。真正多线程/压力、完整所属与 native 仍待实现。 |
 | ✅ | P1 | `ListViewSubItem-03a` | 批次 006：四个标准 virtual key 成员，209 条固定参考/Lumina 观测相同，新增 38 项回归。null/空不匹配且保留缓存，等长+InvariantCultureIgnoreCase、重复 key 的上次位置、Name/集合修改及单项移除、身份与首项延迟恢复已检。完整所属/IList/构造/整数索引及 native 不随此关闭。 |
-| 🟡 | P1 | `ListViewSubItem-04` | 批次 005 完成独立/未挂接的颜色字体及空值恢复；ListViewItem.UseItemStyleForSubItems、父控件继承优先级及全局默认字体仍待后续。 |
+| 🟡 | P1 | `ListViewSubItem-04` | 批次 005 完成独立/未挂接的颜色字体及空值恢复，016补主项样式首项代理、主/子项共享默认Font及UseItemStyleForSubItems未挂接状态（ListViewItem-06a）；已挂接绘制时UseItemStyle消费、父控件继承优先级及全局默认字体仍待后续。 |
 | ⬜ | P1 | `ListViewSubItem-05` | Bounds、文本/图像对齐、列重排、水平滚动、非 Details 模式/未挂载的结果；不能以固定矩形占位。 |
 | 🟡 | P2 | `ListViewSubItem-06` | 批次 005 完成独立/未挂接 ResetStyle，批次 013 完成 ToString 首范围；样式序列化/设计器 .resx 及 Clone 由 owner 执行的复制语义、AOT 静态资源路径仍待后续。 |
 | ✅ | P2 | `ListViewSubItem-06a` | 批次 013：标准 ToString override 的元数据、原样文本和空/null/Unicode/换行/Text 变更及独立/owner/共享 view/重复/派生分派完成；58 条固定参考/JIT 相同，63 项新增回归通过。读取不恢复首项、不改变集合/枚举/独立 key 缓存，不读取 Tag 或样式、不释放借用 Font。Clone/样式序列化/设计器资源、挂接样式/native 另列，新字符串未计实际 AOT 运行验收。 |
@@ -65,6 +65,10 @@ NSTableCellView/NSTextField 对应列单元格，按 owner 样式决定字体/�
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
 ## 修改历史
+
+- 2026-10-16 · 批次016历史回标：02c/d/e曾笼统写尚缺IList/Insert/Remove/枚举，现明确引用后续已完成02d/e/f首范围，真正并发/完整所属/已挂接样式/native仍未完成；保留原批次快照与任务ID，不把集合首范围扩大为完整所属验收。
+
+- 2026-10-16 · 批次 016：主项样式新增后，默认惰性 Font 从子项私有存储移到主项/子项共享存储；借用 Font 寿命及既有 ResetStyle/直接子项样式保持，541 条主项样式对照含三枚举与各 view key 缓存，全部旧子项驱动通过。任务04仍部分完成，明确区分 UseItemStyleForSubItems 未挂接存值与已挂接绘制消费，后者、全局字体及所属/native仍未完成，见 [016](../batches/016.md)。
 
 - `b8a98eb` · 2026-04-09：ListViewItem.cs 同时加入基础 Text 子项及集合；未覆盖公开构造和样式契约。
 - 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
