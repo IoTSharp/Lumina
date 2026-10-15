@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -8,7 +9,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Provides the common WinForms-like surface for all LuminaForms controls backed by Win32 child windows.
 /// </summary>
-public abstract class Control : IDisposable
+public class Control : Component, IWin32Window
 {
     private static readonly Lock s_subclassLock = new();
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
@@ -22,6 +23,7 @@ public abstract class Control : IDisposable
     private bool _enabled = true;
     private bool _visible = true;
     private bool _disposed;
+    private bool _disposing;
     private bool _autoScroll;
     private bool _autoEllipsis;
     private AutoSizeMode _autoSizeMode;
@@ -173,6 +175,11 @@ public abstract class Control : IDisposable
     /// Gets a value indicating whether the control has been disposed.
     /// </summary>
     public bool IsDisposed => _disposed;
+
+    /// <summary>
+    /// Gets a value indicating whether the control is releasing its managed resources.
+    /// </summary>
+    public bool Disposing => _disposing;
 
     /// <summary>
     /// Gets the parent control, if the control is currently hosted inside a container control.
@@ -403,12 +410,12 @@ public abstract class Control : IDisposable
     /// <summary>
     /// Gets the Win32 class name used to create the underlying child window.
     /// </summary>
-    protected abstract string ClassName { get; }
+    protected virtual string ClassName => "STATIC";
 
     /// <summary>
     /// Gets the Win32 style flags used when creating the underlying child window.
     /// </summary>
-    protected abstract uint Style { get; }
+    protected virtual uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_CLIPCHILDREN | Win32.WS_CLIPSIBLINGS;
 
     /// <summary>
     /// Gets optional Win32 extended style flags for the underlying child window.
@@ -591,48 +598,67 @@ public abstract class Control : IDisposable
     }
 
     /// <summary>
-    /// Releases the native child window and marks the control as disposed.
-    /// </summary>
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
     /// Releases managed and unmanaged resources used by the control.
     /// </summary>
     /// <param name="disposing"><see langword="true"/> when called from <see cref="Dispose()"/>; otherwise, <see langword="false"/>.</param>
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
-        if (_disposed)
+        if (!disposing)
+        {
+            try
+            {
+                ReleaseNativeResources(releaseChildHandles: false);
+            }
+            finally
+            {
+                base.Dispose(false);
+            }
+
+            return;
+        }
+
+        if (_disposing)
         {
             return;
         }
 
-        if (Parent is ContainerControlBase parentContainer)
+        _disposing = true;
+        try
         {
-            _ = parentContainer.Controls.Remove(this);
+            try
+            {
+                if (!_disposed)
+                {
+                    try
+                    {
+                        if (Parent is ContainerControlBase parentContainer)
+                        {
+                            _ = parentContainer.Controls.Remove(this);
+                        }
+                        else if (Owner is not null)
+                        {
+                            _ = Owner.Controls.Remove(this);
+                        }
+
+                        OnDisposing();
+                    }
+                    finally
+                    {
+                        ReleaseNativeResources(releaseChildHandles: true);
+                    }
+                }
+            }
+            finally
+            {
+                // Component removes the site before raising Disposed, including on repeated disposal.
+                base.Dispose(true);
+            }
         }
-        else if (Owner is not null)
+        finally
         {
-            _ = Owner.Controls.Remove(this);
+            _disposed = true;
+            _disposing = false;
         }
-
-        _disposed = true;
-
-        if (disposing)
-        {
-            OnDisposing();
-        }
-
-        if (Handle != 0)
-        {
-            _ = Win32.DestroyWindow(Handle);
-        }
-
-        ReleaseBackgroundBrush();
-        ReleaseHandleRecursive();
     }
 
     internal void CreateHandleRecursive()
@@ -1008,6 +1034,30 @@ public abstract class Control : IDisposable
 
         _backgroundBrush = 0;
         _ownsBackgroundBrush = false;
+    }
+
+    private void ReleaseNativeResources(bool releaseChildHandles)
+    {
+        try
+        {
+            if (Handle != 0)
+            {
+                _ = Win32.DestroyWindow(Handle);
+            }
+        }
+        finally
+        {
+            if (releaseChildHandles)
+            {
+                ReleaseHandleRecursive();
+            }
+            else
+            {
+                // Component's finalizer calls Dispose(false); leave managed ownership untouched.
+                Handle = 0;
+                ReleaseBackgroundBrush();
+            }
+        }
     }
 
     private static uint ToArgb(Color color)

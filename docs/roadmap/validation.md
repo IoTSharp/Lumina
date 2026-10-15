@@ -38,6 +38,24 @@
 
 复现脚本：`tools/compatibility/Test-ApplicationHighDpi.ps1`；先本地打包 Core/Forms/Analyzers，再运行 `tools/compatibility/Test-AnalyzerPackage.ps1 -PackageDirectory artifacts/compatibility-batch001/packages`。日志和探针结果位于本机忽略的 artifacts/compatibility-batch001 与 artifacts/compatibility-analyzers。未向包源发布。
 
+## 批次 002 · 2026-10-15 实施结果
+
+本批明确子范围为 Component/Control 契约与五张 Bitmap 读取，详见 [批次 002](batches/002.md)。父任务 FND-001/FND-006/Control-01/Control-08 保持部分完成；代码完成与兼容验收分别记录。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 最终主线 0 错误、本次增量 324 警告；13 个仓库项目（含新增无 UI 资源探针）、17 个目标声明全部为 net10.0/net10.0-windows。原始 Designer/resx 均无修改，未做设计器往返 |
+| 组件与现有回归 | ✅ | 101 项纯托管测试全通过（原 92 加新增 9），基础 HWND 消费/释放测试另 1 项通过；不覆盖复杂 UI 和完整父子级联 |
+| 组件生命周期差分 | ✅ 指定轻量范围 | Test-ControlComponent.ps1：相同源码的 WinForms 10.0.11/net10.0 Lumina 两端 5 项观测相同，包括重复 Disposed、事件状态、Site 移除和 Dispose(false) |
+| 五图托管/AOT 解码 | ✅ 指定读取范围 | 真实 Demo 的 4×16×16 工具栏位图、1×620×300 SplashScreen；WinForms/Lumina JIT/Native AOT 的像素哈希、强类型属性、文化回退、对象身份、普通 byte[]、重载/GC/错误语义一致；未构造主窗或启动 UI |
+| 资源告警严格门禁 | ⬜ 未通过 | IL2026 已消除；原 IL3053 详细展开的 IL3050 仍存在。资源脚本已先执行并对照 AOT EXE，再因该告警非零退出；不能将整套严格检查记为通过 |
+| 告警定位 | ✅ 仅根因证据 | 原交接 ba14332 隔离源码和最终产物均用 TrimmerSingleWarn=false；依赖图明确 Container.ValidateName 根化 InheritanceAttribute.Default，再经 ToString 调用 Enum.GetValues(Type)。保留标准组件容器，没有全局 suppress；Icon/Font/其他转换与完整反射路径未关闭 |
+| 完整 Demo AOT 发布/PE | ✅ 仅发布/PE | net10.0/win-x64 发布通过，EXE 4,085,248 字节、无 CLR Header；资源探针原生 EXE 4,203,008 字节、无 CLR Header。完整主窗操作和正常退出仍后置 |
+| 运行依赖/API | ✅ 结构/元数据 | net10.0 Demo deps 无 WinForms 和 System.Resources.Extensions；因 Control 公共继承/接口改变重新导出固定 API，所有平台验收仍 unverified |
+| 路线图/索引 | ✅ 结构 | 391 份 Markdown、187 组控件/API 页、2,001 项任务索引，重新生成后 0 结构错误；不计算兼容验收率 |
+
+复现：`./tools/compatibility/Test-ControlComponent.ps1`、`./tools/compatibility/Test-BitmapResources.ps1`；后者保留剩余 IL3050 的严格失败。日志在本机忽略目录 artifacts/compatibility-batch002。Windows 复杂 UI、设计器往返、完整资源/所有权/线程、设备/压力与 Linux/macOS 仍待后期，未从上述结果推算 98%。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

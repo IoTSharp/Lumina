@@ -4,14 +4,14 @@
 
 ## 当前接续点
 
-- 调度状态：批次 001 已完成并推送；批次 002 接续会话已创建并只读准备。本次交接提交推送后，旧主会话发送“开始接管”并停止写入，新会话开始实施。
+- 调度状态：批次 002 明确的组件契约/Bitmap 子范围代码完成，正在更新台账、提交推送及准备批次 003 的只读接续；当前主会话仍独占集成/交接写入。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14025-ea87-7223-b17b-33b40a0276e2`（批次 002，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a1400e-db15-7fb1-8747-5f344fec476e` 仅完成本次交接提交与启动消息后停止写入。
+- 当前编码主会话：`01a14025-ea87-7223-b17b-33b40a0276e2`（批次 002，本地 Lumina 项目，已接管）。旧主会话 `01a1400e-db15-7fb1-8747-5f344fec476e` 已交接并停止写入。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[002 · 标准基础与裁剪资源](docs/roadmap/batches/002.md)，由新主会话按文件责任领取；[001 · 基础修复](docs/roadmap/batches/001.md)已完成。
+- 当前批次：[002 · 标准基础与裁剪资源](docs/roadmap/batches/002.md)明确范围代码完成；下一批已划定 [003 · UI 投递与基础项构造](docs/roadmap/batches/003.md)，交接后领取。[001 · 基础修复](docs/roadmap/batches/001.md)已完成。
 - 最近实现提交：`f2d694c`，已推送 `origin/main`。接续交接提交以 `git log` 为准，原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前阻塞：无。Windows/Linux/macOS 真机验证后置，不作为前期编码阻塞。
+- 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
 ## 用户已经确定的范围
 
@@ -36,8 +36,11 @@
 ## 已有成果与检查
 
 - 批次 001：FND-005、REP-002 及 ListViewItem 构造子范围完成；父任务 FND-003/ListViewItem-01/Application-01 保留部分完成。分析器也统一 net10.0；12 个项目均只声明 .NET 10 目标。
-- 本批双目标 Release 构建 0 错误；92 项测试全通过；14 组 DPI 隔离对照与本机 WinForms 10.0.11 一致；两种真实 NuGet 消费各触发 LNF003 且无工具运行依赖；完整 Demo Native AOT 发布通过、EXE 无 CLR Header。IL2026/IL3053 仍留 FND-006；复杂 UI/真机/设计器/跨平台验收后置，不能从上述结果推算 98%。
-- 批次 002 文件责任：FND-001 子智能体负责 Control.cs/必要 IWin32Window.cs/独立组件测试；FND-006 子智能体负责 NativeFormsDemo 的资源配置及库内独立资源辅助文件/检查。Form.cs、共享 Win32、全部文档/集成/Git 保留主会话协调，不允许子任务抢写。
+- 批次 001 检查：双目标 Release 构建 0 错误；92 项测试全通过；14 组 DPI 隔离对照与本机 WinForms 10.0.11 一致；两种真实 NuGet 消费各触发 LNF003 且无工具运行依赖；完整 Demo Native AOT 发布通过、EXE 无 CLR Header。复杂 UI/真机/设计器/跨平台验收后置，不能从上述结果推算 98%。
+- 批次 002：可实例化 Control : Component/IWin32Window，Component Site/Container/Disposed/Disposing 与派生清理衔接；101 项纯托管测试、1 项基础 HWND 测试、5 项真实端生命周期观测通过。父 FND-001/Control-01/Control-08/FND-012 仍保留未完范围。
+- 批次 002 资源：五张真实 Demo Bitmap 的 WinForms/Lumina JIT/Native AOT 像素、文化、身份、重载/GC/错误语义相同，IL2026 消除；资源脚本仍因 IL3050 严格失败。原 IL3053 已展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type)，未改标准容器、未全局抑制。原始 Designer/resx 不变，资源转接在库内 Lumina.Forms.Resources，obj 生成副本仅供 net10.0。
+- 批次 002 最终主线双目标构建 0 错误；完整 Demo AOT 发布通过（4,085,248 字节），资源探针 AOT 已运行，两者无 CLR Header。13 项目/17 个目标仅 .NET 10；net10.0 Demo deps 无 WinForms/Resources.Extensions；完整主窗、设计器、Icon/Font/其他转换仍未验收。
+- 批次 003 文件责任：FND-002 子智能体负责 Control.cs/Form.cs 与必要独立投递辅助文件/线程检查；ListViewItem-01b 子智能体负责 ListViewItem.cs 与该类型独立构造检查。共享 Win32、全部文档/集成/Git 保留主会话协调；子智能体不构建、不提交。
 - 187 组独立类型任务页、固定基线/API/接口/类型责任清单；遗漏审计与三平台逐控件方案已落盘。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。

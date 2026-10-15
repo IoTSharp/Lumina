@@ -6,12 +6,12 @@
 
 | ID | 状态 | 工作与验收 | 对应文档 |
 | --- | --- | --- | --- |
-| FND-001 | ⬜ | 修正 Control 继承 Component、可实例化性、IWin32Window/ISynchronizeInvoke 等标准契约；Form 进入标准继承链；对照编译强制转换/派生/容器消费源码 | [Control](controls/Control.md)、[Form](controls/Form.md) |
+| FND-001 | 🟡 | 批次 002 已完成可实例化 Control : Component、IWin32Window、组件 Site/Container/Disposed/Disposing 与既有派生清理；10 项回归及 5 项真实端生命周期观测通过。Form 标准继承链、构造族、Controls/Parent 和 ISynchronizeInvoke/UI 投递仍待实现 | [Control](controls/Control.md)、[Form](controls/Form.md) |
 | FND-002 | ⬜ | InvokeRequired 判断创建线程并沿父句柄查找；Invoke/BeginInvoke/EndInvoke/InvokeAsync 投递到 UI 队列；返回、异常、取消、无句柄、释放行为与真实端对照 | [线程上下文](controls/WindowsFormsSynchronizationContext.md) |
 | FND-003 | 🟡 | 批次 001 已完成 string 构造空引用、唯一首子项和 Text/null 一致性（ListViewItem-01a）；完整构造族及 Items/SubItems/Columns/Nodes 托管与原生同步仍待实现 | [ListViewItem](controls/ListViewItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | ⬜ | 完整 Demo 的 AOT 可见主窗、一次操作、模态/关闭/正常退出验收；原隐藏短探针未完成，不直接归咎 AOT | [已有证据](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
-| FND-006 | ⬜ | IL2026/IL3053 追到具体资源/转换路径；图片、图标、Font、TypeConverter 在裁剪后的实际运行验证，不用全局 suppress 代替处理 | [跨平台资源](platforms.md) |
+| FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
 
 ## P1：所有控件共享的工作
 
@@ -19,7 +19,7 @@
 | --- | --- | --- |
 | FND-010 | ⬜ | ControlCollection：Add/AddRange/Insert/Remove/Clear/SetChildIndex/Find/索引器；ParentChanged、ControlAdded/Removed、重复添加、同名查找、循环父子、重设父级、所有者和销毁后的行为 |
 | FND-011 | ⬜ | Handle/CreateControl/CreateHandle/RecreateHandle/DestroyHandle：延迟创建、原生映射、HandleCreated/Destroyed 顺序、重建时恢复状态、窗口过程回调寿命；释放后不保留 GCHandle |
-| FND-012 | ⬜ | Dispose(bool)、Disposed、Site/Container、组件容器级联释放、事件解绑、图像/字体/菜单所有权；重复 Dispose 不重复销毁原生资源 |
+| FND-012 | 🟡 | 批次 002 完成 Component 释放契约、Site/Container、组件容器级联、重复/重入与异常回归（Control-08a）；UI 父子级联、事件解绑及图像/字体/菜单所有权仍待实现，父任务不关闭 |
 | FND-013 | ⬜ | Enabled/Visible/Font/BackColor/ForeColor/RightToLeft 的继承和变更事件、重设父级后有效值；设计器不序列化继承默认值 |
 | FND-014 | ⬜ | Bounds/ClientSize/ClientRectangle/MinimumSize/MaximumSize、Dock/Anchor/AutoSize/GetPreferredSize、Padding/Margin、Z-order；布局之前/之后可回读正确状态 |
 | FND-015 | ⬜ | SuspendLayout 计数、ResumeLayout(bool)、PerformLayout 重载和 LayoutEventArgs；嵌套暂停、请求合并、重入后收敛；禁止用空实现通过 Designer 编译 |

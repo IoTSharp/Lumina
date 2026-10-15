@@ -16,12 +16,21 @@
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
 		<PublishAot>true</PublishAot>
 		<UseLuminaForms>true</UseLuminaForms>
-		<!-- Allow ResourceManager.GetObject() for non-string types (Bitmap etc.) on the AOT path. -->
-		<CustomResourceTypesSupport>true</CustomResourceTypesSupport>
-		<!-- Pre-serialize custom resources at build time via TypeConverter so the AOT binary     -->
-		<!-- needs no runtime reflection. Requires System.Resources.Extensions (already listed). -->
-		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+		<!-- Bitmap resources become built-in byte[] resources in obj and decode directly in Lumina.Forms. -->
+		<CustomResourceTypesSupport>false</CustomResourceTypesSupport>
+		<GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
 	</PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <LuminaBitmapResource Include="frmMain.resx" ManifestResourceName="NativeFormsDemo.frmMain" BitmapCount="4" />
+    <LuminaBitmapResource Include="Properties\Resources.resx" ManifestResourceName="NativeFormsDemo.Properties.Resources" BitmapCount="1" />
+    <LuminaBitmapResourceDesigner Include="frmMain.Designer.cs" ComponentResourceManagerCount="2" ResourceManagerCount="0" />
+    <LuminaBitmapResourceDesigner Include="Properties\Resources.Designer.cs" ComponentResourceManagerCount="0" ResourceManagerCount="4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ResourceDecodingProbe" />
+  </ItemGroup>
 
   <ItemGroup Condition="'$(UseLuminaForms)' == 'true'">
     <ProjectReference Include="..\Lumina.Core\Lumina.Core.csproj" />
@@ -38,9 +47,11 @@
 		<Using Include="System.Drawing" />
   </ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
 	  <PackageReference Include="System.Resources.Extensions" Version="10.0.5" />
 	</ItemGroup>
+
+  <Import Project="Build\BitmapResources.targets" Condition="'$(TargetFramework)' == 'net10.0'" />
 
  
 

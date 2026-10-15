@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**当前是 abstract Control : IDisposable；不具备标准 Component/可实例化 Control 契约。Focus() 返回 void，InvokeRequired 恒 false，Invoke 直接 DynamicInvoke，BeginInvoke 用 Task.Run，InvokeAsync 直接执行；SuspendLayout/基础 PerformLayout 为空。
+🟡 **现状：**批次 002 已实现可实例化 Control : Component、IWin32Window，以及组件 Site/Container/Disposed/Disposing 与既有释放钩子的衔接。Focus() 返回 void，InvokeRequired 恒 false，Invoke 直接 DynamicInvoke，BeginInvoke 用 Task.Run，InvokeAsync 直接执行；SuspendLayout/基础 PerformLayout 为空，完整构造、Controls/Parent 和线程契约仍待后续范围。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,14 +11,16 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| ⬜ | P0 / Control-01 | 修为可实例化 Control : Component，并对齐 IWin32Window、ISynchronizeInvoke、IDropTarget 等固定基线的公开接口；构造重载、Controls、派生扩展和强制转换消费源码一起验收。 |
+| 🟡 | P0 / Control-01 | 批次 002 已完成可实例化 Control : Component 和 IWin32Window（Control-01a）；ISynchronizeInvoke、IDropTarget、完整构造、Controls 与派生扩展仍待实现，不随子项关闭。 |
+| ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
 | ⬜ | P0 / Control-02 | 把 Focus() 改为标准 bool，补 Select/CanSelect/CanFocus/Focused/ContainsFocus；默认大小允许零尺寸，不再把 Width/Height 永久强制至少 1。 |
 | ⬜ | P0 / Control-03 | InvokeRequired 使用创建线程且沿父句柄寻找有效调度器；无句柄与未创建主循环的结果单独对照，不能由恒 false 掩盖跨线程访问。 |
 | ⬜ | P0 / Control-04 | 实现 Invoke/BeginInvoke/EndInvoke 全部 Action/Delegate/args 重载，投递到 UI 线程；返回值、异常、同步等待、同线程调用、队列顺序与关闭期间行为与官方一致。 |
 | ⬜ | P0 / Control-05 | 实现四类 InvokeAsync 标准 Action、Func<T>、Func<CancellationToken,ValueTask>、带结果 ValueTask<T> 重载和 CancellationToken；区分排队前取消、执行中取消与抛出异常，不把 Task 回调自创为唯一接口。 |
 | ⬜ | P0 / Control-06 | 实现 Control.ControlCollection、Parent 可设、Controls.Add/AddRange/Remove/Clear/SetChildIndex/Find；Form 直接子项的 Parent 必须是 Form，Owner 不能替代 Parent。 |
 | ⬜ | P1 / Control-07 | Handle 延迟创建、CreateControl/CreateHandle/RecreateHandle/DestroyHandle、FromHandle/FromChildHandle 与映射表一致；HandleCreated/HandleDestroyed、重建后属性恢复和 GCHandle 寿命逐项测。 |
-| ⬜ | P1 / Control-08 | 实现 Dispose(bool)/Disposed、Site/Container、Disposing/IsDisposed；父级级联释放、单项移除、重复 Dispose、借用 Font/Image/菜单资源分别对照，杜绝只释放 HWND 不通知组件。 |
+| 🟡 | P1 / Control-08 | 批次 002 完成 Component 释放子范围（Control-08a）；UI 父子级联 Dispose、借用 Font/Image/菜单资源所有权和完整事件解绑仍待后续实现。 |
+| ✅ | P1 / Control-08a | 批次 002：继承 Component.Dispose 并覆盖 Dispose(bool)，保留派生 OnDisposing；Site 移除、组件容器级联、重复/重入、Dispose(false)、异常传播和状态退出均有回归。5 项生命周期观测与本机 WinForms 10.0.11 相同；不等同完整控件生命周期验收。 |
 | ⬜ | P1 / Control-09 | 校准 Bounds/ClientSize/ClientRectangle/PreferredSize、MinimumSize/MaximumSize、Dock/Anchor/AutoSize/GetPreferredSize、Padding/Margin、BringToFront/SendToBack 和 z-order。 |
 | ⬜ | P1 / Control-10 | 实现嵌套 SuspendLayout 计数、ResumeLayout(false/true)、PerformLayout 重载与 LayoutEventArgs；将 SizeChanged/ClientSizeChanged/Resize/LocationChanged 与 Layout 顺序固定为场景证据。 |
 | ⬜ | P1 / Control-11 | 实现 Enabled/Visible/Text/Font/BackColor/ForeColor/RightToLeft/Cursor 的有效值继承、Reset/ShouldSerialize 和变更事件；句柄前后赋值与重新 Parent 结果一致。 |
@@ -46,6 +48,7 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - `2fb513a`（2026-04-09）：加入异步调用相关实现。
 - `9d5165f`（2026-04-09）：扩展基础属性与控件功能。
 - 2026-10-15：增加评估和待办；本轮未实现运行库功能。
+- 2026-10-15 · 批次 002：Control 接入 Component/IWin32Window 并可实例化；新增标准 Disposing，资源清理幂等且重复 Dispose 继续触发 Disposed；终结器分支不遍历托管子树。新增 9 项纯托管测试及 1 项基础 HWND 测试通过，`Test-ControlComponent.ps1` 的 5 项观测与真实 WinForms 10.0.11 一致。Form 继承链、UI 子控件级联、构造族、UI 投递及复杂设备/设计器验收保留。
 
 ## 原始资料
 

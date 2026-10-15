@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net10.0-windows;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <CustomResourceTypesSupport>false</CustomResourceTypesSupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Read the actual Demo assembly resources, without constructing a Form or starting a UI. -->
+    <ProjectReference Include="..\..\..\NativeFormsDemo\NativeFormsDemo.csproj" />
+  </ItemGroup>
+</Project>

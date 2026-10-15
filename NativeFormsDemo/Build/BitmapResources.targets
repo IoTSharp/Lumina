@@ -1,0 +1,190 @@
+<Project>
+  <!-- Keep the checked-in Designer files and resx files as the WinForms/design-time source.
+       Only the LuminaForms target compiles these generated resource and source copies. -->
+  <UsingTask TaskName="LuminaConvertBitmapResources" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Resources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <DesignerSources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputDirectory ParameterType="System.String" Required="true" />
+      <ConvertedResources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+      <ConvertedSources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Xml" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        const string typeSuffix = ".__LuminaResourceType";
+        var convertedResources = new List<Microsoft.Build.Framework.ITaskItem>();
+        var convertedSources = new List<Microsoft.Build.Framework.ITaskItem>();
+        var primitiveTypes = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "System.String", "System.Byte[]", "System.Boolean", "System.Char",
+            "System.Byte", "System.SByte", "System.Int16", "System.UInt16",
+            "System.Int32", "System.UInt32", "System.Int64", "System.UInt64",
+            "System.Single", "System.Double", "System.Decimal", "System.DateTime",
+            "System.TimeSpan"
+        };
+        string resourceOutput = Path.GetFullPath(Path.Combine(OutputDirectory, "resources"));
+        string sourceOutput = Path.GetFullPath(Path.Combine(OutputDirectory, "sources"));
+        Directory.CreateDirectory(resourceOutput);
+        Directory.CreateDirectory(sourceOutput);
+        int bitmapCount = 0;
+        foreach (var item in Resources)
+        {
+            string sourcePath = Path.GetFullPath(item.ItemSpec);
+            if (!string.Equals(Path.GetExtension(sourcePath), ".resx", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException("The Bitmap resource input must be a resx file: " + sourcePath);
+            }
+            string manifestName = item.GetMetadata("ManifestResourceName");
+            if (string.IsNullOrEmpty(manifestName))
+            {
+                throw new InvalidDataException("An explicit ManifestResourceName is required for " + sourcePath);
+            }
+            var document = new XmlDocument();
+            document.PreserveWhitespace = true;
+            document.XmlResolver = null;
+            document.Load(sourcePath);
+            var dataNodes = document.SelectNodes("/root/data");
+            var markers = new List<XmlElement>();
+            int resourceBitmapCount = 0;
+            foreach (XmlElement data in dataNodes)
+            {
+                string name = data.GetAttribute("name");
+                if (name.EndsWith(typeSuffix, StringComparison.Ordinal))
+                {
+                    throw new InvalidDataException("The generated resource type suffix is reserved: " + name);
+                }
+                string type = data.GetAttribute("type").Split(',')[0].Trim();
+                string mimeType = data.GetAttribute("mimetype");
+                XmlElement value = data["value"];
+                if (value == null)
+                {
+                    throw new InvalidDataException("The resource has no value: " + name);
+                }
+                byte[] bytes = null;
+                if (type == "System.Resources.ResXFileRef")
+                {
+                    string[] fileReference = value.InnerText.Split(';');
+                    if (fileReference.Length != 2 || fileReference[1].Split(',')[0].Trim() != "System.Drawing.Bitmap")
+                    {
+                        throw new InvalidDataException("Only Bitmap file references are supported by this resource path: " + name);
+                    }
+                    string filePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath), fileReference[0]));
+                    bytes = File.ReadAllBytes(filePath);
+                }
+                else if (type == "System.Drawing.Bitmap")
+                {
+                    if (mimeType != "application/x-microsoft.net.object.bytearray.base64")
+                    {
+                        throw new InvalidDataException("Only byte-array serialized Bitmap resources are supported: " + name);
+                    }
+                    bytes = Convert.FromBase64String(value.InnerText);
+                }
+                else if ((!string.IsNullOrEmpty(type) && !primitiveTypes.Contains(type)) || !string.IsNullOrEmpty(mimeType))
+                {
+                    throw new InvalidDataException("Unsupported resource type or serialization: " + name + " (" + type + ", " + mimeType + ")");
+                }
+                if (bytes != null)
+                {
+                    // MSBuild's resx reader recognizes this historical resx type identity as
+                    // its built-in byte[] case; a CoreLib name is treated as a custom converter.
+                    data.SetAttribute("type", "System.Byte[], mscorlib");
+                    data.RemoveAttribute("mimetype");
+                    value.InnerText = Convert.ToBase64String(bytes);
+                    XmlElement marker = document.CreateElement("data");
+                    marker.SetAttribute("name", name + typeSuffix);
+                    XmlElement markerValue = document.CreateElement("value");
+                    markerValue.InnerText = "System.Drawing.Bitmap";
+                    marker.AppendChild(markerValue);
+                    markers.Add(marker);
+                    bitmapCount++;
+                    resourceBitmapCount++;
+                }
+            }
+            int expectedBitmapCount = int.Parse(item.GetMetadata("BitmapCount"), System.Globalization.CultureInfo.InvariantCulture);
+            if (resourceBitmapCount != expectedBitmapCount)
+            {
+                throw new InvalidDataException("Bitmap resource count changed in " + sourcePath + ": expected " + expectedBitmapCount + ", found " + resourceBitmapCount);
+            }
+            foreach (XmlElement marker in markers)
+            {
+                document.DocumentElement.AppendChild(marker);
+            }
+            string destination = Path.Combine(resourceOutput, manifestName + ".resx");
+            var settings = new XmlWriterSettings { Encoding = new UTF8Encoding(false), Indent = false };
+            using (XmlWriter writer = XmlWriter.Create(destination, settings))
+            {
+                document.Save(writer);
+            }
+            var converted = new Microsoft.Build.Utilities.TaskItem(item);
+            converted.ItemSpec = destination;
+            // Prevent convention-based discovery from changing the manifest name after relocation.
+            converted.SetMetadata("LogicalName", manifestName + ".resources");
+            converted.SetMetadata("DependentUpon", "");
+            convertedResources.Add(converted);
+        }
+        if (bitmapCount == 0)
+        {
+            throw new InvalidDataException("No Bitmap resources were found in the configured resource inputs.");
+        }
+        foreach (var item in DesignerSources)
+        {
+            string sourcePath = Path.GetFullPath(item.ItemSpec);
+            string source = File.ReadAllText(sourcePath, Encoding.UTF8);
+            string[] names = { "System.ComponentModel.ComponentResourceManager", "System.Resources.ResourceManager" };
+            string[] replacements = { "Lumina.Forms.Resources.ComponentResourceManager", "Lumina.Forms.Resources.ResourceManager" };
+            string[] counts = { "ComponentResourceManagerCount", "ResourceManagerCount" };
+            for (int i = 0; i != names.Length; i++)
+            {
+                int expected = int.Parse(item.GetMetadata(counts[i]), System.Globalization.CultureInfo.InvariantCulture);
+                int count = 0;
+                for (int start = 0; (start = source.IndexOf(names[i], start, StringComparison.Ordinal)) >= 0; start += names[i].Length)
+                {
+                    count++;
+                }
+                if (count != expected)
+                {
+                    throw new InvalidDataException("Designer resource manager count changed in " + sourcePath + ": " + names[i] + " expected " + expected + ", found " + count);
+                }
+                source = source.Replace(names[i], replacements[i]);
+            }
+            string destination = Path.Combine(sourceOutput, convertedSources.Count.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Path.GetFileName(sourcePath));
+            File.WriteAllText(destination, source, new UTF8Encoding(false));
+            var converted = new Microsoft.Build.Utilities.TaskItem(item);
+            converted.ItemSpec = destination;
+            convertedSources.Add(converted);
+        }
+        ConvertedResources = convertedResources.ToArray();
+        ConvertedSources = convertedSources.ToArray();
+        Log.LogMessage(Microsoft.Build.Framework.MessageImportance.Low, "Converted {0} Bitmap resources without TypeConverter; original Designer/resx files were preserved.", bitmapCount);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="PrepareLuminaBitmapResources" BeforeTargets="AssignTargetPaths"
+          Condition="'$(TargetFramework)' == 'net10.0' and '$(UseLuminaForms)' == 'true'">
+    <ItemGroup>
+      <_UnconfiguredLuminaBitmapResource Include="@(EmbeddedResource)" Exclude="@(LuminaBitmapResource)"
+                                        Condition="'%(EmbeddedResource.Extension)' == '.resx'" />
+    </ItemGroup>
+    <Error Condition="'@(_UnconfiguredLuminaBitmapResource)' != ''"
+           Text="Configure an explicit resource conversion scope before adding resx files to the LuminaForms target: @(_UnconfiguredLuminaBitmapResource)" />
+    <LuminaConvertBitmapResources Resources="@(LuminaBitmapResource)" DesignerSources="@(LuminaBitmapResourceDesigner)"
+                                  OutputDirectory="$(IntermediateOutputPath)LuminaBitmapResources">
+      <Output TaskParameter="ConvertedResources" ItemName="_LuminaConvertedBitmapResources" />
+      <Output TaskParameter="ConvertedSources" ItemName="_LuminaConvertedBitmapSources" />
+    </LuminaConvertBitmapResources>
+    <ItemGroup>
+      <EmbeddedResource Remove="@(LuminaBitmapResource)" />
+      <EmbeddedResource Include="@(_LuminaConvertedBitmapResources)" />
+      <Compile Remove="@(LuminaBitmapResourceDesigner)" />
+      <Compile Include="@(_LuminaConvertedBitmapSources)" />
+      <FileWrites Include="@(_LuminaConvertedBitmapResources);@(_LuminaConvertedBitmapSources)" />
+    </ItemGroup>
+  </Target>
+</Project>
