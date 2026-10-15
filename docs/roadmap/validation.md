@@ -262,6 +262,26 @@ SizeFromClientSize、构造默认、所有派生边框/尺寸约束、DPI 切换
 
 复现：`./tools/compatibility/Test-ControlClientSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemEnumeration.ps1`，均可先单独取固定参考；日志/TRX/PE/项目/依赖证据在 artifacts/compatibility-batch012。下一批见 [013](batches/013.md)。
 
+## 批次 013 · 2026-10-16 实施结果
+
+本批按 [013](batches/013.md) 继续 Control-09b 与 ListViewSubItem-06a，两个子智能体先准备固定参考，由主聊天顺序运行后实施并统一集成。实现与验证范围分开记录，父任务保留后续缺口。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线双目标 Release | ✅ 编译 | 0 错误，本次增量 302 警告；13 项目/17 目标仅 .NET 10，原始静态 Designer/resx 未改 |
+| 全线测试 | ✅ 指定范围 | 1,733 通过，0 失败/跳过；新增换算 257、字符串 63，旧 1,413 保留 |
+| SizeFromClientSize | ✅ 指定差分 | 10,086 条固定参考/JIT/实际 AOT 全同；四有限边框、无/有 HWND、正零负/int 溢出、覆盖/base 绕过/重入/原异常；ClientSize/SetClientSizeCore 不消费此虚扩展，直接 base 不改缓存/状态/通知或创建 HWND |
+| 子项 ToString | ✅ 指定差分 | 58 条参考/JIT 全同；标准 override/Object 槽、原样文本/空值/Unicode/换行/嵌入 NUL、owner/共享 view/重复/派生/原异常；集合/首项/枚举/key 缓存及借用 Font 保持，新字符串未计实际 AOT 运行验收 |
+| 既有差分回归 | ✅ 指定范围 | 21 个既有驱动通过，包含前 19 个驱动及批次 012 客户区/枚举 |
+| 换算探针 AOT | ✅ 发布/实际运行/PE | EXE 2,610,176 字节，10,086 条与 JIT 全同，CLR Header 0，无 IL2xxx/IL3xxx；仅精确保留实际反射的两个方法 |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,107,264 字节，CLR Header 0；TrimmerSingleWarn=false 展开后仍为既有 InheritanceAttribute/Enum.GetValues(Type) IL3050，完整主窗操作/正常关闭后置 |
+| 依赖与 API | ✅ 指定图/形状 | Demo net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，官方 System.Drawing.Common 10.0.0；重新导出 1,095 类型/61,240 行，运行状态 unverified |
+| 文档与任务索引 | ✅ 结构 | 402 份 Markdown、187 组控件/API 页、2,027 项任务；父任务及批次 014 未实现范围独立保留 |
+
+构造默认、基础及全部派生尺寸约束、DPI/外部原生自主通知、完整布局/滚动/Form 生命周期、真实多线程/压力、完整所属/挂接样式/native/Clone/序列化、复杂 UI/设备/设计器及 Linux/macOS 仍待后续；不从编译或任务数推算 98%。
+
+复现：`./tools/compatibility/Test-ControlSizeFromClientSize.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemToString.ps1`，均可先只跑参考；日志/TRX/PE/项目/依赖证据在 artifacts/compatibility-batch013。下一批见 [014](batches/014.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

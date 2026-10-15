@@ -20,7 +20,7 @@
   ],
   "candidate": {
     "path": "Lumina.Forms/bin/Release/net10.0/Lumina.Forms.dll",
-    "sha256": "11cd814ad8ef3fe4a231ed879473ae406b2664841c9c8c6bf676591e6fddf961"
+    "sha256": "73dc503edeec72736eaf93a406bc56cdb575da39cebb0f3fac227e14dcd187af"
   },
   "baselineTypeCount": 1095,
   "effectiveMemberRows": 61240,

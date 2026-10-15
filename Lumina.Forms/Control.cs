@@ -675,6 +675,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     }
 
     /// <summary>
+    /// Computes the control's outer size for the specified client size.
+    /// </summary>
+    /// <param name="clientSize">The desired client size.</param>
+    /// <returns>The client size plus the control's non-client border dimensions.</returns>
+    protected virtual Size SizeFromClientSize(Size clientSize)
+    {
+        Size nonClient = GetNonClientSize();
+        return new Size(unchecked(clientSize.Width + nonClient.Width), unchecked(clientSize.Height + nonClient.Height));
+    }
+
+    /// <summary>
     /// Sets the size of the client area and adjusts the control's outer size.
     /// </summary>
     /// <param name="x">The desired client width.</param>
@@ -683,6 +694,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         ThrowIfDisposed();
 
+        // WinForms does not dispatch through the protected SizeFromClientSize
+        // override here. Keep its independent client-size conversion route.
         Size nonClient = GetNonClientSize();
         Size = new Size(unchecked(x + nonClient.Width), unchecked(y + nonClient.Height));
 

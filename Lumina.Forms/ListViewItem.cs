@@ -204,6 +204,11 @@ public class ListViewItem
         [DefaultValue(null)]
         [TypeConverter(typeof(StringConverter))]
         public object? Tag { get; set; }
+
+        /// <summary>
+        /// Returns a string containing the subitem's displayed text.
+        /// </summary>
+        public override string ToString() => $"ListViewSubItem: {{{Text}}}";
     }
 
     /// <summary>

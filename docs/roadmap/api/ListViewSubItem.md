@@ -18,7 +18,7 @@
 | API-5B5E15D6AC1CF3C0 | Constructor | `public ListViewSubItem(System.Windows.Forms.ListViewItem owner, System.String text)` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-DE6B1F13CD855B90 | Constructor | `public ListViewSubItem(System.Windows.Forms.ListViewItem owner, System.String text, System.Drawing.Color foreColor, System.Drawing.Color backColor, System.Drawing.Font font)` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-81FFED0D673E83AE | Method | `public System.Void ResetStyle()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-033D2304C3701549 | Method | `public virtual System.String ToString()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-033D2304C3701549 | Method | `public virtual System.String ToString()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-8C57E8D5177797BE | Property | `System.Drawing.Color BackColor { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-C4EBF62201EC3185 | Property | `System.Drawing.Rectangle Bounds { public get; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7F0EAA948BD5FD37 | Property | `System.Drawing.Font Font { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |

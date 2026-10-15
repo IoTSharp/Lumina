@@ -4,11 +4,11 @@
 
 ## 当前接续点
 
-- 调度状态：批次 012 两个明确子范围代码完成，集成检查通过；实现已成功推送并核对远端。批次 013 新主聊天已完成只读准备并结束准备轮次，本记录单独提交并推送归属交接，核对成功后才发送“开始接管”。
+- 调度状态：批次 013 两个明确子范围代码完成，集成检查通过；当前主聊天更新台账、提交推送并准备批次 014 只读接续。批次 012 实现和归属交接均已分别成功推送并核对。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a1410b-2242-7650-942f-f5d067b0d3ea`（批次 013，本地 Lumina 项目；只读准备已完成，等待本次归属交接成功推送后的“开始接管”消息）。新主收到消息后核对本记录、工作区与 HEAD/origin/main/远端 refs/heads/main，明确确认实际接管并立即分配两个内部子任务。批次 012 旧主 `01a140f3-8a95-7880-b43e-9d87045f5954` 仅完成本次交接；开始消息发送后停止写入/构建/Git，确认新主实际接管后立即调用 set_thread_archived 归档，不等待批次 013 完成。批次 011 及更早旧主均已由应用工具确认归档。
+- 当前编码主会话：`01a1410b-2242-7650-942f-f5d067b0d3ea`（批次 013，本地 Lumina 项目；已实际接管）。接管时工作区干净，HEAD/origin/main/远端 refs/heads/main 均为归属交接 `27aaf98774337e79a1c37e7a12ada5f713fdb281`；已在 commentary 和向旧主消息中明确确认，立即分配 control_size_conversion/subitem_string 两个内部子任务。批次 012 旧主 `01a140f3-8a95-7880-b43e-9d87045f5954` 已停止全部写入/构建/Git，确认本次接管后立即归档，不等待批次 013 完成。批次 011 及更早旧主均已由应用工具确认归档。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[013 · 客户区换算扩展与子项字符串首范围](docs/roadmap/batches/013.md)，归属交接推送成功并收到“开始接管”后领取；[012 · 客户区与子项枚举首范围](docs/roadmap/batches/012.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 当前批次：[013 · 客户区换算扩展与子项字符串首范围](docs/roadmap/batches/013.md)明确范围代码完成；下一批已划定 [014 · 基础尺寸约束与列表项元数据首范围](docs/roadmap/batches/014.md)，交接后领取；[012](docs/roadmap/batches/012.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
 - 最近实现提交：`8b0a525422f7f069afd630c63eed3825bc874cc3`（批次 012），已成功推送 origin/main；推送时 HEAD/origin/main/远端 refs/heads/main 均为该 SHA，工作区干净。本记录随后单独提交并推送归属交接，新主实际接管时核对其 SHA。批次 011 实现 `cc7f4e42855fb186e92fa33a555a14e3f8035d96` 与归属交接 `c923160f9c70ae6cbd6e0824df5776a4f85e7fe9` 同样已验证；原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
@@ -82,6 +82,10 @@
 - 批次 012 枚举：public IEnumerator/直接 IEnumerable virtual-final 及历史泛型显式消费完成，2,531 条固定参考/JIT 全同，347 项新增回归。结构变化使 MoveNext/Reset 失效但 Current 缓存保留；空 Clear 不失效、owner.SubItems 恢复首项换表，全部 view 共享当前表、旧空枚举器仍为空。历史泛型 typed 无效 Current=null 另记；并发/完整所属/挂接样式/native 未关闭。
 - 批次 012 集成：1,413 项全线通过，双目标 Release 0 错误/最终增量298警告，19个既有差分驱动全部通过。客户区实际 AOT5,556条相同，EXE2,592,256字节、无IL2xxx/IL3xxx；Demo AOT4,107,264字节，两者CLR Header0。Demo既有IL3050和新枚举未计实际AOT运行验收的边界保留；13项目/17目标仅.NET10、原始Designer/resx/net10.0依赖满足要求，API1,095类型/61,240行与unverified不变。证据 artifacts/compatibility-batch012。
 - 批次 013 文件责任：Control-09b 子智能体负责 Control.cs 与独立 SizeFromClientSize 元数据/调用/换算探针测试；ListViewSubItem-06a 子智能体负责 ListViewItem.cs 与独立 ToString 探针测试。主聊天保留Win32必要interop、现有测试适配、全部共享文档/API/索引、集成与Git；先固定参考、主聊天统一顺序运行。
+- 批次 013 换算：标准 protected virtual SizeFromClientSize 完成，10,086 条固定参考/JIT/实际 AOT 全同，257 项新增独立回归。四有限边框/无有 HWND/正零负极值溢出/覆盖/base 绕过/重入/原异常均有证据；ClientSize/SetClientSizeCore 按参考不消费此虚扩展，原路由保留。直接 base 不创建句柄、不改外框/客户区缓存或发通知，009～012 边界/通知及旧 GetNativeHeight/OnBoundsChanged 保留。
+- 批次 013 字符串：标准子项 ToString override 完成，58 条固定参考/JIT 全同，63 项新增回归。原样文本/空值/Unicode/换行/嵌入 NUL、共享 view/重复/移除/跨 owner/三枚举与独立 key 缓存、派生分派/隐藏成员/原异常保留；读取不恢复首项/改集合/读 Tag/样式/消费或释放借用 Font。Clone/序列化/完整所属/已挂接样式/native 仍缺，新字符串未记实际 AOT 运行验收。
+- 批次 013 集成：1,733 项全线通过，双目标 Release 0 错误/本次增量 302 警告，21 个既有差分驱动全部通过。换算实际 AOT 10,086 条相同，EXE 2,610,176 字节、无 IL2xxx/IL3xxx；Demo AOT 4,107,264 字节，两者 CLR Header 0。Demo 既有分析警告、完整主窗操作/正常关闭及复杂 UI/设备/设计器后置。13 项目/17 目标仅 .NET 10，原始 Designer/resx/net10.0 依赖满足要求；API 1,095 类型/61,240 行与 unverified 不变。证据 artifacts/compatibility-batch013。应用工具已确认批次 012 旧主归档，没有等待本批结束。
+- 批次 014 文件责任：Control-09c 子智能体负责 Control.cs 与基础 MinimumSize/MaximumSize/必要默认扩展的独立参考/实现/测试；ListViewItem-04a 子智能体负责 ListViewItem.cs 与 Name/Tag/ToolTipText 及首子项/共享 view 的独立参考/实现/测试。主聊天保留必要 Win32 interop、现有测试适配、全部共享文档/API/索引、集成与 Git；仍先只准备参考，主聊天统一顺序运行后再授权实施，完整边界见批次 014。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
 - 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。
