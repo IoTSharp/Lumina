@@ -76,6 +76,27 @@
 
 复现：`./tools/compatibility/Test-ControlThreadDispatch.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewItemConstruction.ps1`；结果、逐步诊断和发布/测试日志在忽略目录 artifacts/compatibility-batch003。参考端固定 10.0.11；线程探针有 30 秒外部进程超时，超时/失败不记成功。
 
+## 批次 004 · 2026-10-16 实施结果
+
+本批明确子范围为标准 Action/Func<T> 异步投递及子项基础公共构造，详见 [批次 004](batches/004.md)。FND-002/003、Control-05、Form-04、ListViewSubItem-01/03 等父任务保留部分完成，以下证据不等于完整类型兼容验收。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，本次增量 318 警告；13 项目/17 个目标仅 .NET 10；原始 Demo Designer/resx 无修改，未做设计器往返 |
+| 现有与新增回归 | ✅ | 131 项全通过、0 失败/跳过；130 项纯托管 + 1 项既有基础 HWND；新增 13 项子项构造/继承/Text/Name/Tag 回归 |
+| 标准 InvokeAsync 差分 | ✅ 指定轻量范围 | 固定 WinForms 10.0.11、Lumina JIT、实际 Native AOT 各 59 条观测一致；Action/Func<T>、UI/工作线程、FIFO、结果身份、原异常、null/无自身句柄、取消顺序/token 与释放后状态 |
+| 旧异步路径 | ✅ 指定回归 | 单 Action 已排队；旧 Func<CancellationToken,Task> 专项在 JIT/AOT 验 UI 初始调用、token、等待内层 Task、异常身份、取消和 worker，不将旧签名计为标准 ValueTask |
+| 子项构造差分 | ✅ 指定轻量范围 | 37 条两端观测相同；公共无参/owner-text、派生、Text/Name/Tag 初值/null/身份、构造不插入 owner 集合、首项同步；样式及完整所属/native 未覆盖 |
+| 既有差分回归 | ✅ | 同步/BeginInvoke/EndInvoke 的 69 条 WinForms/JIT 观测相同；ListViewItem 基础构造的 41 条两端观测相同，原 21 项构造回归保留 |
+| 异步探针 Native AOT | ✅ 发布/运行/PE | 2,736,128 字节、CLR Header 为 0；实际运行并与 JIT 对照 59 条相同，旧 Task 专项通过；发布无 IL2xxx/IL3xxx |
+| 完整 Demo Native AOT | ✅ 仅发布/PE | 4,094,464 字节、CLR Header 为 0；首次发布摘要 IL3053，以 TrimmerSingleWarn=false 展开仍是 InheritanceAttribute.ToString→Enum.GetValues(Type) 的 IL3050。资源严格门禁未关闭，未重记完整主窗操作/正常退出 |
+| Windows 依赖 | ✅ 指定依赖图 | net10.0 Demo deps 无 WinForms/System.Resources.Extensions/Lumina.Drawing；继续官方 System.Drawing.Common，两目标和平台策略未改 |
+| API/任务索引 | ✅ 结构/元数据 | 因公共签名改变重新导出固定基线，1,095 类型/61,240 行不变；393 份 Markdown、187 组控件/API 页、2,009 项任务检查 0 结构错误；运行验收状态仍 unverified，不按任务计数推算 98% |
+
+参考端实测边界：null callback 校验优先，错误返回 Faulted Task；InvokeAsync 要求自身 HWND，不沿用 BeginInvoke 的父级句柄回退；预取消返回成功并跳过回调（Func 返回 default）；排队后/回调内取消保留 token，已进入回调继续执行。Task 错误不报告 ThreadException，也不经 GetBaseException 拆开回调异常。已排队而随 Dispose 丢弃的 Task 仍等待后续 token 取消，与参考端相同；无 token 的关闭等待、所有重建/退出竞态、ValueTask、标准同步上下文和 callback 内 await 恢复仍待后续，不宣称已覆盖。
+
+复现：`./tools/compatibility/Test-ControlInvokeAsync.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemConstruction.ps1`，以及批次 003 的两个现有差分脚本。统一 `dotnet build Lumina.slnx -c Release`、`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build`；完整 Demo 发布使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。本批日志/结果在忽略目录 artifacts/compatibility-batch004；复杂 UI/设备/设计器仍后置，先 Windows 再 Linux，macOS 单列。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

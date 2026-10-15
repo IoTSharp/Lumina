@@ -4,18 +4,18 @@
 
 ## 当前接续点
 
-- 调度状态：批次 003 明确子范围已完成并推送；批次 004 接续会话已创建，只读准备后等待。旧主会话完成本次交接提交推送，再发送“开始接管”并停止写入。
+- 调度状态：批次 004 两个明确子范围代码完成，集成检查通过；主会话正在更新台账、提交推送并准备批次 005 只读接续。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14062-0945-79c1-bfe9-655ad7f6fffb`（批次 004，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14045-e2d1-7811-a8cf-d2f9e80ef689` 仅完成本次交接提交与启动消息后停止写入；更早的主会话均已交接。
+- 当前编码主会话：`01a14062-0945-79c1-bfe9-655ad7f6fffb`（批次 004，本地 Lumina 项目；已接管）。旧主会话 `01a14045-e2d1-7811-a8cf-d2f9e80ef689` 已停止写入；更早的主会话均已交接。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[004 · 基础异步投递与子项契约](docs/roadmap/batches/004.md)，由新主会话按文件责任领取；[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 当前批次：[004 · 基础异步投递与子项契约](docs/roadmap/batches/004.md)明确范围代码完成；下一批已划定 [005 · ValueTask 入口与子项样式基础](docs/roadmap/batches/005.md)，交接后领取；[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
 - 最近实现提交：`53294b5`（批次 003），已推送 `origin/main`。接续交接提交以 `git log` 为准，原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
 ## 用户已经确定的范围
 
-用户于 2026-10-15 要求：提交推送后，在新会话用多个子智能体逐任务实现；每个子智能体负责一个任务，无文件冲突才并行；每批完成后新建会话接续；每半小时巡检；专注代码，不扩散、不做额外架构。用户授权该实施循环及每批必要的提交、推送、创建接续会话和监督消息；后续用户的暂停/停止指令优先。
+用户于 2026-10-15 要求：提交推送后，在新会话用多个子智能体逐任务实现；每个子智能体负责一个任务，无文件冲突才并行；每批完成后新建会话接续；每半小时巡检；专注代码，不扩散、不做额外架构。用户授权该实施循环及每批必要的提交、推送、创建接续会话和监督消息；后续用户的暂停/停止指令优先。2026-10-16 补充：实现和交接都必须 commit 并成功 push，记录实现 SHA 和远端分支核对结果；仅本地提交不算批次完成。新会话实际接管后旧主会话立即停止写入并归档，不等待下一批结束。
 
 固定 .NET 10.0.11 WinForms 基线。用户于本批进一步明确：所有项目（包括分析器和构建工具）只支持 .NET 10，使用 `net10.0` / `net10.0-windows`，不支持 `netstandard2.0` 或旧 .NET 目标。保留 `Lumina.Forms` 包/命名空间与 NativeFormsDemo 双目标：`net10.0-windows` 真实 WinForms/VS 设计器，`net10.0` Lumina.Forms/Native AOT。不引入替代 UI 栈。
 
@@ -28,8 +28,8 @@
 1. 先查当前编码主会话、`git status`、批次任务和文件责任范围。同一工作区同一时刻只有一个编码主会话。
 2. 主会话选 2～3 个有边界的任务，用内部子智能体分配，一人一任务；涉及 Control/Form/共享 interop 等同一文件的工作串行。主智能体保留共享文档、集成构建和 Git 操作。
 3. 子智能体不提交、不推送、不创建接续会话，不覆盖其他人的修改；需要越过文件责任范围时先向主智能体报依赖。由主智能体统一构建，避免争用 obj/bin。
-4. 主智能体集成后更新各控件修改历史、任务状态与本批记录，执行适当构建/轻量检查及路线图校验，提交推送。未实现的父任务保持部分完成；延期的真机验收单列。遇到局部阻塞先做其他可实施任务。
-5. 每批结束后创建一个新的项目本地会话。先让新会话只读等待，旧会话把本文件的编码主会话 ID、下一批、文件责任和检查结果更新并提交，再发送“开始接管”。旧会话随后停止写代码；新会话继续同一流程。不要让多个主会话同时领取任务。
+4. 主智能体集成后更新各控件修改历史、任务状态与本批记录，执行适当构建/轻量检查及路线图校验，commit 并成功 push。记录实现 SHA，用远端 refs/heads/main 核对推送结果；仅本地提交不算批次完成。未实现的父任务保持部分完成；延期的真机验收单列。遇到局部阻塞先做其他可实施任务。
+5. 每批结束后创建一个新的项目本地会话。先让新会话只读准备，旧会话把本文件的编码主会话 ID、下一批、文件责任、实现 SHA 和远端核对结果更新，commit 并成功 push 交接，再发送“开始接管”。新会话核实归属并实际接管后，旧会话停止所有写入/构建/Git，调用 set_thread_archived 归档（或由监督核对后归档），不能等待下一批全部结束。不要让多个主会话同时领取任务；接续提示保留全部授权、推送成功条件和归档规则。
 
 巡检先读本文件，再查编码主会话状态和最新批次记录。会话正常运行时不另起竞争主会话；空闲但未完成时，按已有授权给该会话发送继续消息。批次完成但尚未接续时才创建下一会话。出现错误先读取必要上下文恢复，不在活跃写入时 reset/clean/换分支。全部开发任务完成后转入集中的 Windows 验收；最终无剩余任务或用户停止时停用巡检。
 
@@ -46,6 +46,10 @@
 - 批次 003 构造：ListViewItem 无参/string[]、null/空数组/null 元素、输入复制与延迟首项已完成，41 条差分相同。118 项测试全通过（117 托管 + 1 基础 HWND），主线双目标 Release 0 错误；13 项目/17 目标仅 .NET 10。Demo AOT 发布 4,094,464 字节，实际线程 AOT 探针 2,615,808 字节且运行对照通过，均无 CLR Header；Demo 的 IL3050 保留，线程探针无 IL2xxx/IL3xxx。原始 Designer/resx 无修改。
 - 批次 003 明确差异：有 HWND 的 null Delegate 用 ArgumentNullException 防止复制参考端挂起；默认线程错误仅原生 OK 提示，缺标准 Quit/Details/Help/异常模式，错误事件处理器再抛时在 native 边界前 FailFast。完整类型兼容未验收，不能据此算 98%。
 - 批次 004 文件责任：Control-05a 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立异步检查；ListViewSubItem-01a 子智能体负责 ListViewItem.cs 及独立子项构造/现有构造回归。共享 Application.cs/Win32.cs、全部文档/集成/Git 由主会话协调；子智能体不构建、不提交。
+- 批次 004：标准 Action/Func<T> InvokeAsync + CancellationToken 已真实排队，旧单 Action/Task 回调同样排队。59 条固定 WinForms 10.0.11/JIT/AOT 观测相同，旧 Task 专项也在 JIT/AOT 通过。空 callback/无自身 HWND 返回 Faulted Task；预取消成功跳过回调且 Func 返回 default，排队后取消/token 与回调原异常按参考端保留；Task 错误不报告 ThreadException。Dispose 丢弃的排队 Task 等待后续 token 取消，与参考端相同，完整无 token 关闭/重建/退出竞态仍待后续。
+- 批次 004 子项：公共无参/owner-text、可继承性、Text/Name/Tag 与属性元数据已完成，37 条对照相同，新增 13 项无 UI 回归；原 21 项 ListViewItem 构造/41 条观测及旧投递 69 条回归继续通过。131 项测试全部通过（130 托管 + 1 既有基础 HWND），主线双目标 Release 0 错误/本次增量 318 警告。
+- 批次 004 AOT：新异步探针实际运行三端对照，EXE 2,736,128 字节；完整 Demo 发布通过，EXE 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 详细告警仍为已定位 InheritanceAttribute/Enum.GetValues(Type) 的 IL3050。13 项目/17 目标仍仅 .NET 10，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，原始 Designer/resx 无修改。
+- 批次 005 文件责任：Control-05b 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立 ValueTask 检查；ListViewSubItem-01b 子智能体负责 ListViewItem.cs 与独立样式构造/未挂接样式检查。共享 Application.cs/Win32.cs、全部文档/API/索引、集成构建与 Git 由主会话协调，子智能体不构建、不提交；先跑固定 WinForms 10.0.11 参考端。ValueTask 初始 UI 调用与单次消费不等于 await 后 UI 恢复；已挂接 ListView 的样式继承/native/完整所属也继续保留。
 - 187 组独立类型任务页、固定基线/API/接口/类型责任清单；遗漏审计与三平台逐控件方案已落盘。
 - WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
 - 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](docs/roadmap/validation.md)。
@@ -53,4 +57,4 @@
 
 ## 接续提示
 
-“继续 D:\source\Lumina 的 LuminaForms 路线图实施。先读 AGENTS.md、HANDOFF.md 和当前批次，确认自己是编码主会话后立即分配互不冲突的内部子任务。所有项目（含分析器/工具）只支持 .NET 10，不引入 netstandard 或旧目标。严格逐任务编码、保留双目标和 AOT、不重新扩展架构；真机验收后置；本批完成后更新台账、提交推送并创建下一会话接续。”
+“继续 D:\source\Lumina 的 LuminaForms 路线图实施。先读 AGENTS.md、PROJECT_REQUIREMENTS.md、HANDOFF.md 和当前批次，收到‘开始接管’并确认归属与 Git 状态后立即分配两个互不冲突的内部子任务。所有项目（含分析器/工具）只支持 .NET 10，保留固定双目标、原始 Designer/resx、Windows 官方 Drawing 与 Native AOT；不扩展架构，复杂真机验收后置且与代码完成分开。用户已授权逐批实施、必要提交推送、新建本地接续会话和每 30 分钟监督，后续暂停/停止优先。每批实现和交接都必须 commit 并成功 push，记录实现 SHA、核对远端 refs/heads/main，仅本地提交不算完成。先创建下一只读接续会话，再更新归属并提交推送，之后发送‘开始接管’；确认新会话实际接管后旧主会话停止所有写入/构建/Git并调用 set_thread_archived 归档（或由监督核对后归档），不等待下一批结束。所有新接续提示保留这些授权与规则；沿用 luminaforms 监督自动化。”

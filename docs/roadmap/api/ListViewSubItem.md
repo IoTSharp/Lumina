@@ -14,8 +14,8 @@
 
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
-| API-86B84D4F2AB94E7D | Constructor | `public ListViewSubItem()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-5B5E15D6AC1CF3C0 | Constructor | `public ListViewSubItem(System.Windows.Forms.ListViewItem owner, System.String text)` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-86B84D4F2AB94E7D | Constructor | `public ListViewSubItem()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-5B5E15D6AC1CF3C0 | Constructor | `public ListViewSubItem(System.Windows.Forms.ListViewItem owner, System.String text)` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-DE6B1F13CD855B90 | Constructor | `public ListViewSubItem(System.Windows.Forms.ListViewItem owner, System.String text, System.Drawing.Color foreColor, System.Drawing.Color backColor, System.Drawing.Font font)` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-81FFED0D673E83AE | Method | `public System.Void ResetStyle()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-033D2304C3701549 | Method | `public virtual System.String ToString()` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -23,8 +23,8 @@
 | API-C4EBF62201EC3185 | Property | `System.Drawing.Rectangle Bounds { public get; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7F0EAA948BD5FD37 | Property | `System.Drawing.Font Font { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-C9E39C9B2E2904C9 | Property | `System.Drawing.Color ForeColor { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-5EAD28D071388269 | Property | `System.String Name { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-83D607805F1614DA | Property | `System.Object Tag { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(false); BindableAttribute(true); DefaultValueAttribute(null); TypeConverterAttribute(System.ComponentModel.StringConverter) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-5EAD28D071388269 | Property | `System.String Name { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-83D607805F1614DA | Property | `System.Object Tag { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(false); BindableAttribute(true); DefaultValueAttribute(null); TypeConverterAttribute(System.ComponentModel.StringConverter) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-A47B45CDD438D937 | Property | `System.String Text { public get; public set; }` | `System.Windows.Forms.ListViewItem+ListViewSubItem` LocalizableAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 
 ## 受保护扩展成员（独立验收，不稀释公开 API 指标）

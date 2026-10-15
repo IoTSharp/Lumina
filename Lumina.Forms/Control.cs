@@ -626,17 +626,57 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public object? EndInvoke(IAsyncResult asyncResult) => WindowThreadDispatcher.EndInvoke(asyncResult);
 
-    public virtual Task InvokeAsync(Action action)
+    /// <summary>
+    /// Queues an action on the thread that owns this control's native window.
+    /// </summary>
+    public virtual Task InvokeAsync(Action action) => InvokeAsync(action, CancellationToken.None);
+
+    /// <summary>
+    /// Queues an action on the native window's creating thread and observes its completion.
+    /// </summary>
+    public async Task InvokeAsync(Action callback, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
-        action();
-        return Task.CompletedTask;
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+            ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await dispatcher.InvokeAsync(() => { callback(); return true; }, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual Task InvokeAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
+    /// <summary>
+    /// Queues a function on the native window's creating thread and returns its result.
+    /// </summary>
+    public async Task<T> InvokeAsync<T>(Func<T> callback, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+            ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return default!;
+        }
+
+        return await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Queues the existing Task-based callback on the native window's creating thread.
+    /// </summary>
+    public virtual async Task InvokeAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(action);
-        return action(cancellationToken);
+        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+            ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await dispatcher.InvokeAsync(action, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

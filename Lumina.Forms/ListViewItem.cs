@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
@@ -81,24 +82,61 @@ public class ListViewItem
     /// <summary>
     /// Represents a single list view subitem.
     /// </summary>
-    public sealed class ListViewSubItem
+    public class ListViewSubItem
     {
         private string _text = string.Empty;
+        private string _name = string.Empty;
 
-        internal ListViewSubItem(string? text)
+        /// <summary>
+        /// Initializes a new list view subitem with empty text.
+        /// </summary>
+        public ListViewSubItem()
         {
+        }
+
+        /// <summary>
+        /// Initializes a new list view subitem associated with the specified item.
+        /// </summary>
+        /// <param name="owner">The item associated with this subitem, or <see langword="null"/>.</param>
+        /// <param name="text">The displayed subitem text.</param>
+        public ListViewSubItem(ListViewItem? owner, string? text)
+        {
+            Owner = owner;
             Text = text;
         }
+
+        internal ListViewItem? Owner { get; set; }
 
         /// <summary>
         /// Gets or sets the displayed subitem text.
         /// </summary>
         [AllowNull]
+        [Localizable(true)]
         public string Text
         {
             get => _text;
             set => _text = value ?? string.Empty;
         }
+
+        /// <summary>
+        /// Gets or sets the name of the subitem.
+        /// </summary>
+        [AllowNull]
+        [Localizable(true)]
+        public string Name
+        {
+            get => _name;
+            set => _name = value ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Gets or sets application data associated with the subitem.
+        /// </summary>
+        [Localizable(false)]
+        [Bindable(true)]
+        [DefaultValue(null)]
+        [TypeConverter(typeof(StringConverter))]
+        public object? Tag { get; set; }
     }
 
     /// <summary>
@@ -131,7 +169,7 @@ public class ListViewItem
 
         public ListViewSubItem Add(string? text)
         {
-            var item = new ListViewSubItem(text);
+            var item = new ListViewSubItem(_owner, text);
             _items.Add(item);
             return item;
         }

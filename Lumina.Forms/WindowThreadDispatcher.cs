@@ -40,6 +40,60 @@ internal sealed class WindowThreadDispatcher
     internal IAsyncResult BeginInvoke(object caller, Delegate method, object?[]? args)
         => Enqueue(caller, method, args, synchronous: false);
 
+    internal async Task<T> InvokeAsync<T>(Func<T> callback, CancellationToken cancellationToken)
+    {
+        var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
+        _ = BeginInvoke(_owner, (Action)(() =>
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            try
+            {
+                completion.TrySetResult(callback());
+            }
+            catch (Exception exception)
+            {
+                // Task callbacks own their failures. The BeginInvoke wrapper must finish
+                // successfully so Drain does not also raise Application.ThreadException.
+                completion.TrySetException(exception);
+            }
+        }), args: null);
+
+        // Awaiting the original exception also preserves OperationCanceledException and
+        // its own token, rather than replacing it with a newly created canceled task.
+        return await completion.Task.ConfigureAwait(false);
+    }
+
+    internal async Task InvokeAsync(Func<CancellationToken, Task> callback, CancellationToken cancellationToken)
+    {
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
+        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        await completion.Task.ConfigureAwait(false);
+
+        async Task CompleteCallbackAsync()
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            try
+            {
+                await callback(cancellationToken).ConfigureAwait(false);
+                completion.TrySetResult();
+            }
+            catch (Exception exception)
+            {
+                completion.TrySetException(exception);
+            }
+        }
+    }
+
     internal static object? EndInvoke(IAsyncResult asyncResult)
     {
         ArgumentNullException.ThrowIfNull(asyncResult);
