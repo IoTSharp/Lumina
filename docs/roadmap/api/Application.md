@@ -35,11 +35,11 @@
 | API-8D72A7E333903B1A | Method | `public static System.Void Restart()` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-424B747AEBD15173 | Method | `public static System.Void Run()` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7A5E31DFFF1AD11A | Method | `public static System.Void Run(System.Windows.Forms.ApplicationContext context)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-90A7F4821637043A | Method | `public static System.Void Run(System.Windows.Forms.Form mainForm)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-90A7F4821637043A | Method | `public static System.Void Run(System.Windows.Forms.Form mainForm)` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-F1B1F3D31B4DAE24 | Method | `public static System.Void SetColorMode(System.Windows.Forms.SystemColorMode systemColorMode)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-FF428241DACD1A42 | Method | `public static System.Void SetCompatibleTextRenderingDefault(System.Boolean defaultValue)` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-71D32853C81F1CE9 | Method | `public static System.Void SetDefaultFont(System.Drawing.Font font)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-05A481074DE21DA6 | Method | `public static System.Boolean SetHighDpiMode(System.Windows.Forms.HighDpiMode highDpiMode)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-05A481074DE21DA6 | Method | `public static System.Boolean SetHighDpiMode(System.Windows.Forms.HighDpiMode highDpiMode)` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-E767946B1E300D53 | Method | `public static System.Boolean SetSuspendState(System.Windows.Forms.PowerState state, System.Boolean force, System.Boolean disableWakeEvent)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-A6194A344793A3B1 | Method | `public static System.Void SetUnhandledExceptionMode(System.Windows.Forms.UnhandledExceptionMode mode)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-9936842EF0020C1E | Method | `public static System.Void SetUnhandledExceptionMode(System.Windows.Forms.UnhandledExceptionMode mode, System.Boolean threadScope)` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -52,7 +52,7 @@
 | API-CA137592540C90CC | Property | `static System.Globalization.CultureInfo CurrentCulture { public get; public set; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-4E84E62458B7A5C9 | Property | `static System.Windows.Forms.InputLanguage CurrentInputLanguage { public get; public set; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-21D72D7EF1B1176D | Property | `static System.String ExecutablePath { public get; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-333BE319652550FA | Property | `static System.Windows.Forms.HighDpiMode HighDpiMode { public get; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-333BE319652550FA | Property | `static System.Windows.Forms.HighDpiMode HighDpiMode { public get; }` | `System.Windows.Forms.Application`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-544BD6933894EBF1 | Property | `static System.Boolean IsDarkModeEnabled { public get; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-5F166D9B7DA0E073 | Property | `static System.String LocalUserAppDataPath { public get; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-9E4B1D097B77B1A1 | Property | `static System.Boolean MessageLoop { public get; }` | `System.Windows.Forms.Application`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

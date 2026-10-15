@@ -48,10 +48,11 @@ public enum FormWindowState
 
 public enum HighDpiMode
 {
-    SystemAware = 0,
-    PerMonitor = 1,
-    PerMonitorV2 = 2,
-    DpiUnaware = 3
+    DpiUnaware = 0,
+    SystemAware = 1,
+    PerMonitor = 2,
+    PerMonitorV2 = 3,
+    DpiUnawareGdiScaled = 4
 }
 
 public enum HorizontalAlignment

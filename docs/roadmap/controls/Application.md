@@ -1,6 +1,6 @@
 # Application
 
-🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪；Run(Form) 返回 int、SetHighDpiMode 返回 void 且空实现，标准均不匹配。缺 Run()/Run(ApplicationContext)、完整消息过滤/退出与异常事件。
+🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪。批次 001 已对齐 Run(Form mainForm) 的 void 与 null 主窗路径，SetHighDpiMode 返回 bool 并连接真实系统 DPI 设置/失败路径、HighDpiMode 回读与永久建窗门禁；缺 Run()/Run(ApplicationContext)、完整消息过滤/退出与异常事件。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Application.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,8 +11,9 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| ⬜ | P0 / Application-01 | Run(Form) 改为 void，补 Run()/Run(ApplicationContext)；拒绝同线程非法嵌套 Run，模态循环与主循环分别管理，主窗结束与最后窗口结束不能混淆。 |
-| ⬜ | P0 / Application-02 | SetHighDpiMode(HighDpiMode) 返回 bool 并真正设置/读取进程 DPI awareness；首次建 HWND 前调用，manifest/宿主已设置或失败时返回值与官方一致。 |
+| 🟡 | P0 / Application-01 | Run(Form mainForm) 的 void/命名参数/null 主窗路径已修正；Run()/Run(ApplicationContext)、拒绝非法嵌套 Run、模态与主循环分别管理、主窗与最后窗口退出区分仍待实现。 |
+| ✅ | P0 / Application-01a | 批次 001：Run(Form mainForm) 返回 void，支持相同命名参数调用；null 主窗沿消息循环执行，移除不符基线的空值异常。无界面签名检查和双目标编译通过，消息循环生命周期属于父任务待办。 |
+| ✅ | P0 / Application-02 | SetHighDpiMode 返回真实系统 BOOL/HRESULT 的成功结果，校验枚举，按 OS 能力回退；HighDpiMode 读取当前线程实际 awareness。首次窗口/托盘窗口创建前永久关闭设置入口，manifest/宿主/重复调用失败不假报成功。14 组隔离进程对照通过；旧系统回退、建窗回调、跨屏及真实缩放验收后置。 |
 | ⬜ | P0 / Application-03 | 安装并卸载 WindowsFormsSynchronizationContext，确定 UI 创建线程与投递窗口；处理 InvokeAsync/await 回到 UI、退出期间取消和线程存活。 |
 | ⬜ | P1 / Application-04 | 实现 Exit()/Exit(CancelEventArgs)/ExitThread、ApplicationExit/ThreadExit；各 FormClosing 取消必须阻止不应发生的全局退出，多个 UI 线程和无主窗 Context 分别验收。 |
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
@@ -43,6 +44,7 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 - `1c89c0a`（2026-04-01）：增强主题与控件初始化。
 - `2e8431f`（2026-04-01）：主题和 Demo UI 改进涉及启动层。
 - 2026-10-15：增加评估和待办；本轮未实现运行库功能。
+- 2026-10-15 · 批次 001：修复启动签名、命名参数/null 主窗路径；新增 AOT 友好的 DPI interop、真实状态回读及建窗门禁；6 项无副作用回归、14 组独立进程 DPI 对照通过。Run 的其他重载及完整生命周期未关闭，Windows/Linux/macOS 的完整兼容验收仍待后续。
 
 ## 原始资料
 

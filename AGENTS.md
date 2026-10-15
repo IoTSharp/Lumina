@@ -19,6 +19,7 @@ All agents working in this repository must treat the following rules as hard con
 
 ## Non-Negotiable Product Rules
 
+- Target only .NET 10 across all repository projects, including analyzers and build tools: use `net10.0` or `net10.0-windows` as appropriate. Do not add `netstandard2.0` or earlier .NET targets (user direction, 2026-10-15).
 - LuminaForms must be able to act as a WinForms substitute for the `net10.0` target.
 - `NativeFormsDemo` is a fixed dual-target validation project.
 - `net10.0-windows` in `NativeFormsDemo` must stay on real WinForms.

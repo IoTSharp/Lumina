@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace Lumina.Forms;
@@ -12,16 +13,16 @@ public class ListViewItem
     /// Initializes a new list view item with the specified main text.
     /// </summary>
     /// <param name="text">The primary item text.</param>
-    public ListViewItem(string text)
+    public ListViewItem(string? text)
     {
-        Text = text ?? string.Empty;
         SubItems = new ListViewSubItemCollection(this);
-        SubItems.Add(Text);
+        Text = text;
     }
 
     /// <summary>
     /// Gets or sets the primary text of the item.
     /// </summary>
+    [AllowNull]
     public string Text
     {
         get => SubItems.Count == 0 ? string.Empty : SubItems[0].Text;
@@ -54,15 +55,22 @@ public class ListViewItem
     /// </summary>
     public sealed class ListViewSubItem
     {
-        internal ListViewSubItem(string text)
+        private string _text = string.Empty;
+
+        internal ListViewSubItem(string? text)
         {
-            Text = text ?? string.Empty;
+            Text = text;
         }
 
         /// <summary>
         /// Gets or sets the displayed subitem text.
         /// </summary>
-        public string Text { get; set; }
+        [AllowNull]
+        public string Text
+        {
+            get => _text;
+            set => _text = value ?? string.Empty;
+        }
     }
 
     /// <summary>
@@ -93,7 +101,7 @@ public class ListViewItem
             _items.Add(item);
         }
 
-        public ListViewSubItem Add(string text)
+        public ListViewSubItem Add(string? text)
         {
             var item = new ListViewSubItem(text);
             _items.Add(item);

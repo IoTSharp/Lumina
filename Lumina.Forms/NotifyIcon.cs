@@ -276,6 +276,7 @@ public class NotifyIcon : Component
             }
         }
 
+        Application.NotifyWindowCreated();
         _windowHandle = Win32.CreateWindowExW(
             0,
             "LuminaFormsNotifyIconHost",

@@ -32,7 +32,7 @@
 | ID | 优先级/状态 | 工作及验收 |
 | --- | --- | --- |
 | REP-001 | P0 ⬜ | 完整Demo双目标构建、win-x64 AOT发布/可见启动纳入主线CI；通过主窗、操作和退出记录，不复用Notepad成功来代替 |
-| REP-002 | P0 ⬜ | 分析器作为 Analyzer 注入并正确打包到 analyzers/dotnet/cs；NuGet消费方实际触发至少一条诊断；不把普通ProjectReference当分析器生效 |
+| REP-002 | P0 ✅ | 批次 001：分析器统一 net10.0，作为私有 Analyzer 引用注入；独立包与 Forms 包均在 analyzers/dotnet/cs 含唯一 DLL。两种真实 NuGet 消费各触发 LNF003，assets/deps/bin 无 Roslyn/MEF/分析器运行资产；隔离应用发布属性，Demo Native AOT 发布通过；IDE codefix 交互验收后置 |
 | REP-003 | P1 ⬜ | Forms/Core 的System.Drawing与DWM平台依赖清单，Windows条件隔离；公开类型不在没有迁移证据时搬迁 |
 | REP-004 | P1 ⬜ | 主包README改为兼容能力、当前限制与验证入口，主题/美化说明下沉；消费示例校验当前签名和已知差异 |
 | REP-005 | P2 ⬜ | 若图标生成/安装器确实不再使用，再逐文件清理；每项以引用扫描和构建验证为准，不一次性大扫除 |
@@ -42,5 +42,6 @@
 | 日期 | 记录 | 范围 |
 | --- | --- | --- |
 | 2026-10-15 | 完成本轮整合；对应提交见Git历史 | WPF移除、效果线隔离、文档和逐控件路线图；不代表控件实现被补齐 |
+| 2026-10-15 | 批次 001 分析器注入与分发完成 | 用户明确所有项目只支持 .NET 10；分析器改 net10.0，保留 codefix，工具依赖私有化；修复 NuGet 还原图继承应用 AOT 属性导致的 NETSDK1207。实际消费与发布证据见批次记录 |
 
 实际验证结果写入 [本轮验证](validation.md)。引用关系检查命令：`rg -n 'ProjectReference' -g '*.csproj'`，并核对 Lumina.Forms/Form.cs、NativeTheme.cs、Application.cs 与 NativeFormsDemo.csproj。Git可查看移除前历史；不额外复制一份废弃WPF目录。

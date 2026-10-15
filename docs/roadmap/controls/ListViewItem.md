@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前只有 string 构造、Text/SubItems 和 ForeColor；构造在 SubItems 赋值前调用 Text setter，审计已复现 NullReferenceException。缺全部所属、选择、勾选、图像、分组和多数集合语义。
+当前只有 string 构造、Text/SubItems 和 ForeColor。批次 001 修复构造初始化空引用，保证唯一首子项、Text 与首子项双向一致及 null 归一；9 项托管回归通过。完整构造族、全部所属、选择、勾选、图像、分组和多数集合语义仍待实现。
 
 - 标准继承/契约：`ListViewItem : ICloneable, ISerializable`；不是 Control/Component。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -22,7 +22,8 @@
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `ListViewItem-01` | 修复构造初始化顺序并补全部标准构造；Text 与 SubItems[0].Text 双向一致，无参构造默认和 string[]/image/group 重载均能工作。 |
+| 🟡 | P0 | `ListViewItem-01` | string 构造初始化顺序及 Text/首子项一致性已完成；全部标准构造仍待补齐，无参构造默认和 string[]/image/group 重载不随子项完成而关闭。 |
+| ✅ | P0 | `ListViewItem-01a` | 批次 001：先初始化 SubItems，再由 Text setter 创建唯一首项；null 归一，Text/首子项双向更新、清空/移除/替换首项后的托管行为通过 9 项回归。原生同步与完整构造族不在本子项范围，兼容验收后置。 |
 | ⬜ | P1 | `ListViewItem-02` | ListView/Index/Bounds/Position、Remove/EnsureVisible/FindNearestItem/GetBounds/GetSubItemAt/BeginEdit；无宿主/无句柄/不同 View 模式下结果和异常一致。 |
 | ⬜ | P1 | `ListViewItem-03` | Selected/Focused/Checked/StateImageIndex、对应 ListView 选择/复选事件和 native 状态；Items.Clear 后旧对象属性回落规则。 |
 | ⬜ | P1 | `ListViewItem-04` | ImageIndex/ImageKey/ImageList、IndentCount/Group、Name/Tag/ToolTipText；key/index 互斥、组替换、图像列表重建同步。 |
@@ -59,6 +60,7 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 
 - `b8a98eb` · 2026-04-09：加入 ListViewItem 与基础子项模型；当前初始化次序仍需修复。
 - 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
+- 2026-10-15 · 批次 001：修复 string 构造空引用、首子项初始化及 null 文本归一；新增 9 项无界面回归且全部通过。父任务及原生集合未完成，完整兼容验收待后期集中进行。
 
 历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
 

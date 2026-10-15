@@ -32,7 +32,7 @@ using System.Drawing;
 internal static class Program
 {
     [STAThread]
-    private static int Main()
+    private static void Main()
     {
         ApplicationConfiguration.Initialize();
         Application.ConfigureVisualStyles(settings =>
@@ -42,7 +42,7 @@ internal static class Program
             settings.PreferredVisualStyle = VisualStyleKind.System;
         });
 
-        return Application.Run(new DemoForm());
+        Application.Run(new DemoForm());
     }
 }
 ```
@@ -82,13 +82,16 @@ Sample theme files are included under `themes/nativeforms/` in the repository ro
 
 ## Analyzer Wiring
 
+All repository projects, including the analyzer, target .NET 10 only. The Forms NuGet package includes its analyzer under `analyzers/dotnet/cs`; installing a separate analyzer package is optional.
+
 Inside this repository, add the analyzer project as an analyzer reference for LuminaForms targets:
 
 ```xml
 <ItemGroup Condition="'$(UseLuminaForms)' == 'true'">
   <ProjectReference Include="..\Lumina.Forms.Analyzers\Lumina.Forms.Analyzers.csproj"
                     OutputItemType="Analyzer"
-                    ReferenceOutputAssembly="false" />
+                    ReferenceOutputAssembly="false"
+                    GlobalPropertiesToRemove="PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained;RuntimeIdentifier;RuntimeIdentifiers;PublishDir" />
 </ItemGroup>
 ```
 

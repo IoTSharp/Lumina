@@ -22,7 +22,23 @@
 
 实施接续已补根目录 [HANDOFF.md](../../HANDOFF.md)、首批任务及 AGENTS 接续规则；任务生成器分开输出代码状态与兼容验收状态。用户要求前期以代码完成推进，必要构建/轻量检查照常执行，复杂真机测试后期先 Windows、再统一 Linux，不据此提前宣称98%达标。
 
-## 沿用的前轮证据
+## 批次 001 · 2026-10-15 实施结果
+
+本批已实施运行库及分析器修复，完整记录见 [批次 001](batches/001.md)。用户进一步确认所有仓库项目仅支持 .NET 10；12 个项目、15 个目标声明已检查为 net10.0/net10.0-windows，分析器已改 net10.0。以下代码检查不等于完整兼容验收。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | SDK 10.0.400，0 错误；本次增量 319 警告，包含实际启用后的 LNF003 与既有平台/文档警告；未做设计器往返 |
+| GlassMorphDemo 引用集成 | ✅ | 该项目本批也修改 Analyzer 引用，单独 Release 编译 0 错误、1 条 LNF003；不代表效果运行验收 |
+| 现有与新增测试 | ✅ | 92 通过，0 失败/跳过；新增 9 项 ListViewItem 托管回归、6 项启动签名/DPI 无副作用检查 |
+| DPI 隔离对照 | ✅ 指定轻量范围 | 本机 WinForms 10.0.11，14 组 fresh/宿主已设 × 有效/无效枚举，比较首次/重复调用、回读和异常；首窗回调、跨屏/真实缩放、旧系统回退待设备验收 |
+| NuGet 分析器真实消费 | ✅ | Forms 内置和单独 Analyzers 包各触发 LNF003，analyzers/dotnet/cs 唯一 DLL；恢复图/输出/deps 无 Roslyn/MEF/分析器运行资产；IDE codefix 交互后置 |
+| 完整 Demo Native AOT 发布 | ✅ 仅发布/PE | net10.0/win-x64 发布通过，EXE 4,084,224 字节，无 CLR Header；应用发布属性不再污染分析器。未启动 UI，IL2026/IL3053 资源警告仍在 FND-006 待办 |
+| API 与台账 | ✅ 结构/元数据 | 更新启动/DPI/枚举签名及任务状态，成员平台验收仍 unverified；FND-003、ListViewItem-01、Application-01 父任务保留部分完成 |
+
+复现脚本：`tools/compatibility/Test-ApplicationHighDpi.ps1`；先本地打包 Core/Forms/Analyzers，再运行 `tools/compatibility/Test-AnalyzerPackage.ps1 -PackageDirectory artifacts/compatibility-batch001/packages`。日志和探针结果位于本机忽略的 artifacts/compatibility-batch001 与 artifacts/compatibility-analyzers。未向包源发布。
+
+## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**
 

@@ -8,9 +8,9 @@
 | --- | --- | --- | --- |
 | FND-001 | ⬜ | 修正 Control 继承 Component、可实例化性、IWin32Window/ISynchronizeInvoke 等标准契约；Form 进入标准继承链；对照编译强制转换/派生/容器消费源码 | [Control](controls/Control.md)、[Form](controls/Form.md) |
 | FND-002 | ⬜ | InvokeRequired 判断创建线程并沿父句柄查找；Invoke/BeginInvoke/EndInvoke/InvokeAsync 投递到 UI 队列；返回、异常、取消、无句柄、释放行为与真实端对照 | [线程上下文](controls/WindowsFormsSynchronizationContext.md) |
-| FND-003 | ⬜ | 修 ListViewItem 构造空引用；检查构造前后 Items/SubItems/Columns/Nodes 托管与原生状态 | [ListViewItem](controls/ListViewItem.md)、[TreeView](controls/TreeView.md) |
+| FND-003 | 🟡 | 批次 001 已完成 string 构造空引用、唯一首子项和 Text/null 一致性（ListViewItem-01a）；完整构造族及 Items/SubItems/Columns/Nodes 托管与原生同步仍待实现 | [ListViewItem](controls/ListViewItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | ⬜ | 完整 Demo 的 AOT 可见主窗、一次操作、模态/关闭/正常退出验收；原隐藏短探针未完成，不直接归咎 AOT | [已有证据](../assessments/2026-10-15/README.md) |
-| FND-005 | ⬜ | 对齐 Application.Run(Form) 的 void 返回、SetHighDpiMode 的 bool 返回；消费源码不为 Lumina 分支改写启动方式 | [Application](controls/Application.md) |
+| FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | ⬜ | IL2026/IL3053 追到具体资源/转换路径；图片、图标、Font、TypeConverter 在裁剪后的实际运行验证，不用全局 suppress 代替处理 | [跨平台资源](platforms.md) |
 
 ## P1：所有控件共享的工作

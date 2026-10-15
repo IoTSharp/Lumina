@@ -18,7 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../Lumina.Core/Lumina.Core.csproj" />
-    <ProjectReference Include="..\Lumina.Forms.Analyzers\Lumina.Forms.Analyzers.csproj" />
+    <ProjectReference Include="..\Lumina.Forms.Analyzers\Lumina.Forms.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
+                      GlobalPropertiesToRemove="PublishAot;PublishTrimmed;PublishReadyToRun;PublishSingleFile;SelfContained;RuntimeIdentifier;RuntimeIdentifiers;PublishDir" />
     <ProjectReference Include="..\Lumina.Forms\Lumina.Forms.csproj" />
   </ItemGroup>
 

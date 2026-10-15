@@ -1,5 +1,6 @@
 using Microsoft.Win32;
 using Lumina;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -39,6 +40,7 @@ public static class Application
     private static nuint s_visualStylesActivationCookie;
     private static bool s_visualStylesEnabled;
     private static bool s_compatibleTextRenderingDefault;
+    private static bool s_nativeWindowCreated;
 
     /// <summary>
     /// Gets the mutable application-wide visual style settings used for new LuminaForms windows.
@@ -70,8 +72,31 @@ public static class Application
         s_compatibleTextRenderingDefault = defaultValue;
     }
 
-    public static void SetHighDpiMode(HighDpiMode mode)
+    /// <summary>
+    /// Gets the DPI awareness mode currently applied to the calling thread.
+    /// </summary>
+    public static HighDpiMode HighDpiMode => ApplicationHighDpi.GetCurrentMode();
+
+    /// <summary>
+    /// Sets the DPI awareness mode for the process before LuminaForms creates a native window.
+    /// </summary>
+    /// <param name="highDpiMode">The requested process DPI awareness mode.</param>
+    /// <returns>
+    /// <see langword="true"/> if the operating system accepted the setting; otherwise,
+    /// <see langword="false"/>, including when a manifest or host already set process DPI awareness.
+    /// </returns>
+    /// <exception cref="InvalidEnumArgumentException">The requested mode is not defined.</exception>
+    public static bool SetHighDpiMode(HighDpiMode highDpiMode)
     {
+        if ((uint)highDpiMode > (uint)HighDpiMode.DpiUnawareGdiScaled)
+        {
+            throw new InvalidEnumArgumentException(nameof(highDpiMode), (int)highDpiMode, typeof(HighDpiMode));
+        }
+
+        lock (s_syncRoot)
+        {
+            return !s_nativeWindowCreated && ApplicationHighDpi.SetProcessMode(highDpiMode);
+        }
     }
 
     /// <summary>
@@ -104,15 +129,12 @@ public static class Application
     /// <summary>
     /// Starts the application message loop with the provided main form.
     /// </summary>
-    /// <param name="form">The main form to show and use as the message loop owner.</param>
-    /// <returns>The exit code returned by the thread message loop.</returns>
-    public static int Run(Form form)
+    /// <param name="mainForm">The main form to show and use as the message loop owner.</param>
+    public static void Run(Form mainForm)
     {
-        ArgumentNullException.ThrowIfNull(form);
-
         EnsureVisualStylesInitialized();
-        form.Show();
-        return RunMessageLoop();
+        mainForm?.Show();
+        _ = RunMessageLoop();
     }
 
     /// <summary>
@@ -467,12 +489,21 @@ public static class Application
         return ThemePalette.CreateSystem(themeMode, visualStyleKind);
     }
 
+    internal static void NotifyWindowCreated()
+    {
+        lock (s_syncRoot)
+        {
+            s_nativeWindowCreated = true;
+        }
+    }
+
     internal static void RegisterOpenForm(Form form)
     {
         ArgumentNullException.ThrowIfNull(form);
 
         lock (s_syncRoot)
         {
+            s_nativeWindowCreated = true;
             _ = s_openForms.Add(form);
         }
     }

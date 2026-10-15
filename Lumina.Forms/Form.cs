@@ -323,6 +323,7 @@ public class Form : IDisposable
         }
         _selfHandle = GCHandle.Alloc(this);
 
+        Application.NotifyWindowCreated();
         nint hwnd = Win32.CreateWindowExW(
             WindowExStyle,
             WindowClassName,
