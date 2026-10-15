@@ -220,6 +220,27 @@ Select/CanSelect、完整键盘/验证/布局/继承与重建竞态，非泛型 
 
 复现：`./tools/compatibility/Test-ControlBoundsSpecified.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemMutation.ps1`；均支持先独立取得固定参考。既有差分驱动保持，完整 Demo 使用 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。日志、TRX、PE/项目/依赖证据见 artifacts/compatibility-batch010。
 
+## 批次 011 · 2026-10-16 实施结果
+
+本批完成标准位置尺寸通知与非泛型子项接口的两个明确范围，详见 [批次 011](batches/011.md)。Control-09/10、ListViewSubItem-02 等父任务保留未完内容，代码完成与完整兼容验收分开。
+
+| 项目 | 结果 | 范围与限制 |
+| --- | --- | --- |
+| 主线 Release / Demo 双目标 | ✅ | 0 错误，本次增量 301 警告；13 项目/17 目标仅 .NET 10，原始 Designer/resx 无改动 |
+| 全线回归 | ✅ | 986 项通过，0 失败/跳过；新增通知 99 项与子项接口 270 项，原生检查沿用独立 STA/禁止并行 collection |
+| 标准通知差分 | ✅ 指定轻量范围 | 四事件/四 protected virtual On*、七属性/两族 SetBounds/直接 core 的 2,280 条固定 WinForms 10.0.11/JIT/实际 AOT 相同；重复/指定/未知位、零负归一、覆盖/不调 base/重入/异常、回调参数与矩形均取证 |
+| 参数与异常契约 | ✅ 指定场景 | OnLocationChanged 向 OnMove 透传参数；OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数。有 HWND setter 转交既有 ThreadException，无 HWND/直接 On* 同步传播；默认错误 UI/完整异常模式未关闭 |
+| 非泛型接口差分 | ✅ 指定轻量范围 | 1,406 条参考/JIT 相同；对象类型先于位置、null/错型/失败状态、重复 Add 首次位置、派生 Equals 引用身份、flags/各 view SyncRoot、显式数组 CopyTo 的 rank/类型/索引/容量/非零下界/部分写入、空集合不恢复首项、独立 key 缓存/借用 Font 均覆盖 |
+| 既有差分回归 | ✅ | 组件5、线程69、Action59/旧Task、ValueTask90、显式context57、默认安装204、焦点157、旧尺寸756、指定边界2034、Item41、子项基础/样式各37、key209、集合72、Add74、AddRange151、变更203参考/JIT通过 |
+| 通知探针 AOT | ✅ 发布/运行/PE | 实际运行 2,280 条与 JIT 相同；EXE 2,618,880 字节，CLR Header 为 0，无 IL2xxx/IL3xxx |
+| 完整 Demo AOT | ✅ 仅发布/PE | EXE 4,106,240 字节，CLR Header 为 0；既有 InheritanceAttribute/Enum.GetValues(Type) IL3050 保留。完整主窗操作/正常关闭后置；新子项接口未记实际 AOT 运行验收 |
+| 依赖与 API | ✅ 指定图/形状 | net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，继续官方 System.Drawing.Common；重新导出固定 1,095 类型/61,240 行，全部运行状态仍 unverified |
+| 文档与任务索引 | ✅ 结构 | 400 份 Markdown、187 组控件/API 页、2,023 项任务，0 结构错误；两个子范围代码完成，父任务保留部分完成和下一批待实施 |
+
+标准通知独立于旧 OnBoundsChanged，保留 ApplyBounds 后的派生布局衔接。ClientSize/ClientRectangle/ClientSizeChanged、外部原生自主移动/尺寸通知、完整 Layout/构造默认/所有派生约束与 Form 生命周期另列；完整枚举/并发、完整所属/挂接样式/native 未关闭。ApplicationContext/多 UI/模态/关闭重建、Form 全局 OpenForms 退出以及复杂 UI/设备/压力/设计器和 Linux/macOS 验收仍待后续，不从任务或编译数量推算 98%。
+
+复现：`./tools/compatibility/Test-ControlBoundsNotifications.ps1 -Variant both -PublishAot`、`./tools/compatibility/Test-ListViewSubItemInterfaces.ps1`，均支持先单独取得固定参考。旧驱动保留，完整 Demo 继续 `-f net10.0 -r win-x64 -p:PublishAot=true -p:TrimmerSingleWarn=false`。证据在 artifacts/compatibility-batch011；下一批见 [012](batches/012.md)。
+
 ## 沿用的前轮运行证据
 
 [首轮审计](../assessments/2026-10-15/README.md)：完整Demo的net10.0/win-x64 Native AOT发布成功，EXE 4,083,712字节、无CLR Header，仍有IL2026/IL3053。短时隐藏启动只看到辅助窗口，没有完成主窗交互与正常退出，后续需可见运行定位。**本轮没有将该项改为通过。**

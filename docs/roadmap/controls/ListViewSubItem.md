@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-标准完整类型名为 `System.Windows.Forms.ListViewItem.ListViewSubItem`（反射名含 `+`），本页使用短文件名。批次 004～010 完成基础构造/样式、集合 key、公共集合构造/共享 owner 视图/整数索引与三个 typed Add/AddRange、typed Insert/void Remove/RemoveAt/Clear 首范围；新插入移除的 203 条参考/JIT 相同，110 项新增回归通过。已挂接控件样式继承、全局默认字体、Bounds、完整所属、非泛型 IList/其余集合契约及 native 同步仍缺。
+标准完整类型名为 `System.Windows.Forms.ListViewItem.ListViewSubItem`（反射名含 `+`），本页使用短文件名。批次 004～011 完成基础构造/样式、集合 key、公共集合构造/共享 owner 视图/整数索引、typed Add/AddRange/Insert/void Remove/RemoveAt/Clear，以及非泛型 IList/ICollection、引用查询和数组复制首范围。新接口 1,406 条固定参考/JIT 相同、270 项新增回归通过。完整枚举/并发、已挂接样式继承、全局默认字体、Bounds、完整所属与 native 同步仍缺。
 
 - 标准继承/契约：`ListViewItem.ListViewSubItem`，非视觉普通对象；嵌套 ListViewSubItemCollection 管理归属。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListViewItem.cs)。
@@ -25,13 +25,14 @@
 | 🟡 | P0 | `ListViewSubItem-01` | 批次 004/005 已完成三种公共构造、继承、Text/Name/Tag 与独立/未挂接样式（01a/b）；已挂接控件及全局默认字体资源继承仍待后续。 |
 | ✅ | P0 | `ListViewSubItem-01a` | 批次 004：公共无参/owner-text、可继承性、Text/Name/Tag 的默认/null/引用身份及首子项同步；37 条两端观测与 13 项新增回归通过，原 21 项构造/41 条观测保留。不新增公开 Owner；样式/完整所属/native 仍待后续。 |
 | ✅ | P0 | `ListViewSubItem-01b` | 批次 005：五参样式构造、ForeColor/BackColor/Font、ResetStyle 的独立/未挂接 owner 行为；37 条两端样式观测与 15 项新增测试通过。空颜色/null Font 恢复、引用身份及共享借用 Font 寿命已检；已挂接继承、UseItemStyleForSubItems、全局默认字体和 native 刷新另列。 |
-| 🟡 | P1 | `ListViewSubItem-02` | 批次 007～010 完成公共集合构造、共享 owner 数据、整数索引/首项规则、三个 typed Add/AddRange 与 typed Insert/void Remove/RemoveAt/Clear（02a～d）；非泛型 IList/ICollection、Contains/IndexOf/CopyTo 全契约、完整所属与原生对应列同步仍待实现；不新增公开 Owner。 |
+| 🟡 | P1 | `ListViewSubItem-02` | 批次 007～011 完成公共集合构造、共享 owner 数据、整数索引/首项规则、typed Add/AddRange/Insert/void Remove/RemoveAt/Clear，以及非泛型 IList/ICollection、引用查询与数组复制（02a～e）；完整枚举/并发、所属与原生对应列同步仍待实现，不新增公开 Owner。 |
 | ✅ | P1 | `ListViewSubItem-02a` | 批次 007：标准公共集合构造、同 owner 多视图共享数据、Count/Text/首项延迟恢复、整数索引先 index 后 value 校验与身份，72 条固定参考/Lumina 观测相同，新增 27 项回归。每集合实例的 key 缓存独立；非泛型 IList、其余集合/完整所属与 native 同步保留。 |
 | ✅ | P1 | `ListViewSubItem-02b` | 批次 008：三个标准 typed Add，Add(item) 返回同一对象并拒绝 null（item），接受重复/其他 owner 对象；text/样式重载返回新对象，保留文字、样式/借用 Font 身份与首项共享视图。历史泛型接口使用显式 void 适配；74 条参考/JIT 相同，40 项新增回归通过。非泛型 IList、AddRange/Insert/完整所属与 native 同步另列。 |
 | ✅ | P1 | `ListViewSubItem-02c` | 批次 009：三个标准 void AddRange，null 数组抛参数 items 且不修改状态，三重载均跳过 null 元素、保留非 null 空 Text 对象与空字符串。151 条固定参考/JIT 相同，121 项新增回归通过；顺序/身份/输入复制/重复/其他 owner、借用 Font、外部共享视图/主项 Text 和独立 key 缓存保留。非泛型 IList、Insert/Remove/完整所属/native 另列。 |
 | ✅ | P1 | `ListViewSubItem-02d` | 批次 010：typed Insert 先校验 index 后拒绝 null item；公开 Remove 为非虚 void，按引用身份只删首项，null/缺失无操作，历史泛型 bool 用显式适配保留。Clear/RemoveAt 的接口 virtual-final 形状不改。203 条固定参考/JIT 相同，新增 110 项回归通过；共享视图/首项恢复/独立 key 缓存、重复/其他 owner 与借用 Font 保留。非泛型 IList、完整所属/挂接样式/native 另列。 |
-| ⬜ | P1 | `ListViewSubItem-02e` | 批次 011 首范围：固定参考补非泛型 IList/ICollection 的标准对象索引/Add/Insert/Remove/Contains/IndexOf、状态/同步属性与数组 CopyTo，连同 typed Contains/IndexOf/CopyTo 的必要契约。检查 null/错误类型/验证顺序/引用身份/共享视图及空集合不隐式生成首项；保留 typed 与历史泛型消费。完整枚举失效/并发、所属/挂接样式/native 另列。 |
-| 🟡 | P1 | `ListViewSubItem-03` | 批次 004～007 已有 Name/Tag、string key 四成员及公共集合构造/共享视图/整数索引首范围；保留重复 key/Name 修改/缓存位置语义。完整非泛型 IList、其余集合/所属与 native 仍待实现。 |
+| ✅ | P1 | `ListViewSubItem-02e` | 批次 011：非泛型 IList/ICollection 的对象索引/添加/插入/移除/查询、flags/SyncRoot 与显式数组 CopyTo 已实现，typed Contains/IndexOf 改标准引用身份，历史泛型/typed 复制保留。1,406 条固定参考/JIT 相同，270 项新增回归通过；类型先于位置、重复 Add 返回首次位置、空集合不验证数组/不恢复首项、非零下界/派生数组部分写入、独立 key 缓存/借用 Font 已检。完整枚举/并发、所属/挂接样式/native 另列。 |
+| ⬜ | P1 | `ListViewSubItem-02f` | 批次 012 首范围：固定参考补 GetEnumerator/IEnumerable/IEnumerator 的公开形状、Current/MoveNext/Reset、空集合不恢复首项及开始前/中途/结束后的修改轨迹，包含共享 view 替换/插入/移除/Clear 与首项惰性恢复。历史泛型消费保留，不假定 List<T> 失效规则；真正多线程并发/压力、完整所属/挂接样式/native 另列。 |
+| 🟡 | P1 | `ListViewSubItem-03` | 批次 004～011 已有 Name/Tag、string key 四成员、公共集合/共享视图/整数索引与非泛型查询复制首范围；保留重复 key/Name 修改/缓存位置语义。完整枚举/并发、所属与 native 仍待实现。 |
 | ✅ | P1 | `ListViewSubItem-03a` | 批次 006：四个标准 virtual key 成员，209 条固定参考/Lumina 观测相同，新增 38 项回归。null/空不匹配且保留缓存，等长+InvariantCultureIgnoreCase、重复 key 的上次位置、Name/集合修改及单项移除、身份与首项延迟恢复已检。完整所属/IList/构造/整数索引及 native 不随此关闭。 |
 | 🟡 | P1 | `ListViewSubItem-04` | 批次 005 完成独立/未挂接的颜色字体及空值恢复；ListViewItem.UseItemStyleForSubItems、父控件继承优先级及全局默认字体仍待后续。 |
 | ⬜ | P1 | `ListViewSubItem-05` | Bounds、文本/图像对齐、列重排、水平滚动、非 Details 模式/未挂载的结果；不能以固定矩形占位。 |
@@ -81,6 +82,8 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 - 2026-10-16 · 批次 009：先固定参考端，再补三个标准 typed AddRange。三重载 null 数组均抛 ArgumentNullException(items)，失败/空数组不改变共享数据或初始化首项；三者均跳过 null 元素，包括文本数组的 null 文字，与单项 Add(null) 归空不同。非 null 空 Text 对象与空字符串仍添加；原构造器的 null 元素归空行为保持，不改用 AddRange。顺序、原对象/派生/Tag/字符串身份、输入槽复制、重复/其他 owner、样式与借用 Font 寿命均有对照，外部首次/Clear 后视图、主项 Text 及各视图最后 key 索引保留。151 条固定参考/JIT 相同，121 项新增回归通过；未将本批新 AddRange 计为实际 AOT 运行验收，完整 IList/Insert/Remove/所属/native 仍缺，见 [批次 009](../batches/009.md)。
 
 - 2026-10-16 · 批次 010：先固定参考再实现 typed Insert/Remove 首范围。Insert 先校验 index（允许 Count），再拒绝 null item，原对象/文字/Tag/样式/其他 owner 数据及共享视图保留；公开非虚 void Remove 按 ReferenceEquals 查找首项，null/缺失不操作，派生 Equals 不参与。历史泛型 Insert 和 bool Remove 显式适配保留；Clear/RemoveAt 保持接口 virtual-final，不新增可覆盖 API。203 条固定参考/JIT 观测相同，110 项新增回归通过；首项移除、空集合惰性恢复、各视图独立 key 缓存与借用 Font 寿命均覆盖。未将新集合范围记为实际 AOT 运行验收，非泛型 IList、Contains/IndexOf/CopyTo 全契约、完整所属/挂接样式/native 仍缺，见 [批次 010](../batches/010.md)。
+
+- 2026-10-16 · 批次 011：固定参考后补非泛型 IList/ICollection 消费。对象 setter/Insert/Add 先验证类型，null/错型为 ArgumentException（value/item），typed 索引/Insert 的既有验证顺序保持；重复 Add 返回首次引用索引。Contains/IndexOf 标准 subItem 参数与非 virtual 形状、泛型显式适配均按引用身份，不调用派生 Equals。ICollection.CopyTo 为 private virtual-final 显式槽（dest/index），没有 public Array 重载；历史 typed CopyTo 通过同一路径保留。空集合跳过全部数组校验且不恢复首项，非空保留 rank/index/容量/类型顺序、非零下界和派生数组失败前写入；只把不兼容数组的 ArrayTypeMismatchException 转为标准 ArgumentException，保留 InvalidCastException。各 view 的 SyncRoot 是自身，IsSynchronized 按参考报告 true，不等于完整并发已验收。1,406 条固定参考/JIT 相同、270 项新增回归通过，共享数据/独立 key 缓存、借用 Font 与其他 owner 对象保持；新接口未提前计为实际 AOT 运行验收，完整枚举/并发、所属/挂接样式/native 另列，见 [批次 011](../batches/011.md)。
 
 ## 官方资料
 

@@ -7568,7 +7568,7 @@
     "Obsolete": false,
     "CandidatePresent": true,
     "CandidateBase": "System.Object",
-    "RelationshipsMatch": false,
+    "RelationshipsMatch": true,
     "PublicProperties": 4,
     "PublicEvents": 0,
     "PublicMethods": 16,

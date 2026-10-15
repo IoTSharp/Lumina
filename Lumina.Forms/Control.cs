@@ -247,6 +247,27 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? HandleCreated;
 
     /// <summary>
+    /// Occurs when the control location changes.
+    /// </summary>
+    public event EventHandler? LocationChanged;
+
+    /// <summary>
+    /// Occurs when the control moves.
+    /// </summary>
+    public event EventHandler? Move;
+
+    /// <summary>
+    /// Occurs when the control size changes.
+    /// </summary>
+    public event EventHandler? SizeChanged;
+
+    /// <summary>
+    /// Occurs when the control is resized.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public event EventHandler? Resize;
+
+    /// <summary>
     /// Occurs when the <see cref="BackColor"/> property changes.
     /// </summary>
     public event EventHandler? BackColorChanged;
@@ -570,18 +591,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         // WinForms preserves requested negative dimensions before a control has its own
         // HWND. Once created, native window dimensions normalize them to zero.
-        if (Handle != 0)
+        bool hasHandle = Handle != 0;
+        if (hasHandle)
         {
             width = Math.Max(0, width);
             height = Math.Max(0, height);
         }
 
-        bool boundsChanged = _left != x
-            || _top != y
-            || _width != width
-            || _height != height;
+        bool locationChanged = _left != x || _top != y;
+        bool sizeChanged = _width != width || _height != height;
 
-        if (!boundsChanged)
+        if (!locationChanged && !sizeChanged)
         {
             return;
         }
@@ -593,12 +613,29 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         _width = width;
         _height = height;
 
-        if (Handle != 0)
+        if (hasHandle)
         {
             ApplyBounds();
         }
 
         OnBoundsChanged();
+
+        // Keep the standard notification chain independent of the historical layout
+        // hook: existing derived controls need not call base.OnBoundsChanged().
+        // Snapshot both changes before callbacks so reentrant setters do not erase
+        // the outer operation's pending notification.
+        try
+        {
+            if (locationChanged) { OnLocationChanged(EventArgs.Empty); }
+            if (sizeChanged) { OnSizeChanged(EventArgs.Empty); }
+        }
+        catch (Exception exception) when (hasHandle)
+        {
+            // WinForms dispatches HWND-backed bounds notifications through its
+            // window procedure. Preserve its thread-exception route while keeping
+            // handleless setters and direct protected calls synchronous.
+            Application.OnThreadException(exception);
+        }
     }
 
     /// <summary>
@@ -1039,6 +1076,44 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void OnLeave(EventArgs e)
     {
         Leave?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="Move"/> and <see cref="LocationChanged"/> events.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    protected virtual void OnLocationChanged(EventArgs e)
+    {
+        OnMove(e);
+        LocationChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="Move"/> event.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    protected virtual void OnMove(EventArgs e)
+    {
+        Move?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="Resize"/> and <see cref="SizeChanged"/> events.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    protected virtual void OnSizeChanged(EventArgs e)
+    {
+        OnResize(EventArgs.Empty);
+        SizeChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="Resize"/> event.
+    /// </summary>
+    /// <param name="e">The event arguments.</param>
+    protected virtual void OnResize(EventArgs e)
+    {
+        Resize?.Invoke(this, e);
     }
 
     /// <summary>

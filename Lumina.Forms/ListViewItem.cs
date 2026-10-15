@@ -206,7 +206,7 @@ public class ListViewItem
     /// <summary>
     /// Represents the subitem collection for a <see cref="ListViewItem"/>.
     /// </summary>
-    public class ListViewSubItemCollection : IList<ListViewSubItem>
+    public class ListViewSubItemCollection : IList, IList<ListViewSubItem>
     {
         private readonly List<ListViewSubItem> _items;
         private readonly ListViewItem _owner;
@@ -257,6 +257,27 @@ public class ListViewItem
         public int Count => _items.Count;
 
         public bool IsReadOnly => false;
+
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => true;
+
+        object ICollection.SyncRoot => this;
+
+        object? IList.this[int index]
+        {
+            get => this[index];
+            set
+            {
+                // The object interface checks the value's type before the position.
+                if (value is not ListViewSubItem subItem)
+                {
+                    throw new ArgumentException("The value must be a ListViewSubItem.", nameof(value));
+                }
+
+                this[index] = subItem;
+            }
+        }
 
         /// <summary>
         /// Adds the specified subitem and returns the same object.
@@ -354,9 +375,12 @@ public class ListViewItem
             _items.Clear();
         }
 
-        public bool Contains(ListViewSubItem item)
+        /// <summary>
+        /// Determines whether the specified subitem occurs by reference in this collection.
+        /// </summary>
+        public bool Contains(ListViewSubItem? subItem)
         {
-            return _items.Contains(item);
+            return IndexOf(subItem) >= 0;
         }
 
         /// <summary>
@@ -369,7 +393,7 @@ public class ListViewItem
 
         public void CopyTo(ListViewSubItem[] array, int arrayIndex)
         {
-            _items.CopyTo(array, arrayIndex);
+            ((ICollection)this).CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<ListViewSubItem> GetEnumerator()
@@ -377,9 +401,20 @@ public class ListViewItem
             return _items.GetEnumerator();
         }
 
-        public int IndexOf(ListViewSubItem item)
+        /// <summary>
+        /// Gets the first position of the specified subitem, using reference identity.
+        /// </summary>
+        public int IndexOf(ListViewSubItem? subItem)
         {
-            return _items.IndexOf(item);
+            for (int index = 0; index < _items.Count; index++)
+            {
+                if (ReferenceEquals(_items[index], subItem))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -466,13 +501,11 @@ public class ListViewItem
             // The typed WinForms collection matches object identity, even when a
             // derived subitem overrides Equals. Removal also preserves each view's
             // last key position and leaves the borrowed font alive.
-            for (int index = 0; index < _items.Count; index++)
+            int index = IndexOf(item);
+            if (index >= 0)
             {
-                if (ReferenceEquals(_items[index], item))
-                {
-                    RemoveAt(index);
-                    return true;
-                }
+                RemoveAt(index);
+                return true;
             }
 
             return false;
@@ -488,6 +521,77 @@ public class ListViewItem
         void ICollection<ListViewSubItem>.Add(ListViewSubItem item)
         {
             Add(item);
+        }
+
+        int IList.Add(object? item)
+        {
+            if (item is not ListViewSubItem subItem)
+            {
+                throw new ArgumentException("The value must be a ListViewSubItem.", nameof(item));
+            }
+
+            Add(subItem);
+            // Re-adding an existing object returns its first position, not the appended one.
+            return IndexOf(subItem);
+        }
+
+        bool IList.Contains(object? value)
+        {
+            return value is ListViewSubItem subItem && Contains(subItem);
+        }
+
+        bool ICollection<ListViewSubItem>.Contains(ListViewSubItem item)
+        {
+            return Contains(item);
+        }
+
+        int IList.IndexOf(object? value)
+        {
+            return value is ListViewSubItem subItem ? IndexOf(subItem) : -1;
+        }
+
+        int IList<ListViewSubItem>.IndexOf(ListViewSubItem item)
+        {
+            return IndexOf(item);
+        }
+
+        void IList.Insert(int index, object? item)
+        {
+            if (item is not ListViewSubItem subItem)
+            {
+                throw new ArgumentException("The value must be a ListViewSubItem.", nameof(item));
+            }
+
+            Insert(index, subItem);
+        }
+
+        void IList.Remove(object? item)
+        {
+            if (item is ListViewSubItem subItem)
+            {
+                Remove(subItem);
+            }
+        }
+
+        void ICollection.CopyTo(Array dest, int index)
+        {
+            // Empty WinForms views do not validate the destination or restore a primary item.
+            // Array.CopyTo preserves the runtime's rank/lower-bound validation, exception
+            // parameters, and partial writes when a derived destination rejects an element.
+            if (_items.Count > 0)
+            {
+                try
+                {
+                    _items.ToArray().CopyTo(dest, index);
+                }
+                catch (ArrayTypeMismatchException exception)
+                {
+                    // WinForms translates incompatible element types after the runtime's
+                    // rank, index and capacity checks. InvalidCastException from a derived
+                    // destination is distinct and must keep its earlier element writes.
+                    throw new ArgumentException("The destination array cannot store list view subitems.", exception);
+                }
+            }
         }
 
         void IList<ListViewSubItem>.Insert(int index, ListViewSubItem item)
