@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 013 两个明确子范围代码完成，集成检查通过；当前主聊天更新台账、提交推送并准备批次 014 只读接续。批次 012 实现和归属交接均已分别成功推送并核对。
+- 调度状态：批次 013 两个明确子范围代码完成，集成检查通过；实现已成功推送并核对远端。已创建批次 014 本地只读准备聊天，本记录另行提交并推送归属交接，成功核对后才发送“开始接管”。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a1410b-2242-7650-942f-f5d067b0d3ea`（批次 013，本地 Lumina 项目；已实际接管）。接管时工作区干净，HEAD/origin/main/远端 refs/heads/main 均为归属交接 `27aaf98774337e79a1c37e7a12ada5f713fdb281`；已在 commentary 和向旧主消息中明确确认，立即分配 control_size_conversion/subitem_string 两个内部子任务。批次 012 旧主 `01a140f3-8a95-7880-b43e-9d87045f5954` 已停止全部写入/构建/Git，确认本次接管后立即归档，不等待批次 013 完成。批次 011 及更早旧主均已由应用工具确认归档。
+- 当前编码主会话：`01a1411a-d6ce-7751-950d-9abbd6319a0a`（批次 014，本地 Lumina 项目；只读准备，等待本次归属交接成功推送后的“开始接管”消息）。新主收到消息后核对本记录、工作区与 HEAD/origin/main/远端 refs/heads/main，明确确认实际接管并立即分配两个内部子任务。批次 013 旧主 `01a1410b-2242-7650-942f-f5d067b0d3ea` 仅完成本次交接；开始消息发送后停止全部写入/构建/Git，确认新主实际接管后立即调用 set_thread_archived 归档，不等待批次 014 完成。批次 012 及更早旧主均已由应用工具确认归档。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[013 · 客户区换算扩展与子项字符串首范围](docs/roadmap/batches/013.md)明确范围代码完成；下一批已划定 [014 · 基础尺寸约束与列表项元数据首范围](docs/roadmap/batches/014.md)，交接后领取；[012](docs/roadmap/batches/012.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`8b0a525422f7f069afd630c63eed3825bc874cc3`（批次 012），已成功推送 origin/main；推送时 HEAD/origin/main/远端 refs/heads/main 均为该 SHA，工作区干净。本记录随后单独提交并推送归属交接，新主实际接管时核对其 SHA。批次 011 实现 `cc7f4e42855fb186e92fa33a555a14e3f8035d96` 与归属交接 `c923160f9c70ae6cbd6e0824df5776a4f85e7fe9` 同样已验证；原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[014 · 基础尺寸约束与列表项元数据首范围](docs/roadmap/batches/014.md)，归属交接推送成功并收到“开始接管”后领取；[013 · 客户区换算扩展与子项字符串首范围](docs/roadmap/batches/013.md)至[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`（批次 013），已成功推送 origin/main；推送时 HEAD/origin/main/远端 refs/heads/main 均为该 SHA，工作区干净。本记录随后单独提交并推送归属交接，新主实际接管时记录并核对其 SHA。批次 012 实现 `8b0a525422f7f069afd630c63eed3825bc874cc3` 与归属交接 `27aaf98774337e79a1c37e7a12ada5f713fdb281` 同样已验证；原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
