@@ -4,12 +4,12 @@
 
 ## 当前接续点
 
-- 调度状态：批次 006 两个明确子范围代码完成，集成检查通过；主会话正在更新台账、提交推送并准备批次 007 只读接续。批次 005 实现与交接均已成功推送。
+- 调度状态：批次 006 两个明确子范围已完成并成功推送，远端已核对；批次 007 接续会话已创建，先只读准备。旧主会话完成本次交接 commit/push 后发送“开始接管”，确认实际接管后立即归档。
 - 监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`，只负责提交本轮成果、建立巡检与接续。
-- 当前编码主会话：`01a14084-801a-7cd2-9c4b-859b309261bd`（批次 006，本地 Lumina 项目；已实际接管）。旧主会话 `01a14075-71ec-74e3-ac51-cedae735f4fb` 已归档（接管后通过应用工具确认），不再写入/构建/Git；更早的主会话均已交接。
+- 当前编码主会话：`01a14097-615e-7523-8a15-e70e6a2da8e6`（批次 007，本地 Lumina 项目；等待“开始接管”）。旧主会话 `01a14084-801a-7cd2-9c4b-859b309261bd` 仅完成本次归属交接提交/推送和启动消息，随后停止写入，确认实际接管后立即归档；更早的主会话 `01a14075-71ec-74e3-ac51-cedae735f4fb` 已通过应用工具确认归档，不再写入/构建/Git。
 - 巡检：每 30 分钟，已启用；自动化 ID `luminaforms`，绑定监督会话并按本文件跟随最新编码主会话。
-- 当前批次：[006 · 显式同步上下文与子项 key 查找](docs/roadmap/batches/006.md)明确范围代码完成；下一批已划定 [007 · 默认同步上下文与集合视图基础](docs/roadmap/batches/007.md)，交接后领取；[005](docs/roadmap/batches/005.md)、[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
-- 最近实现提交：`b5aad5299b735fbe7007553b83c22e29bf604c2f`（批次 005），已成功推送 `origin/main`；归属交接提交 `f37c9c5f4032123fc63c0a520e1cd95d3346e532` 已核对 HEAD/origin/main/远端 refs/heads/main 一致，批次 006 接管时工作区干净。原代码基点 `b83f534` 不是回退要求。
+- 当前批次：[007 · 默认同步上下文与集合视图基础](docs/roadmap/batches/007.md)，由新主会话交接后领取；[006](docs/roadmap/batches/006.md)、[005](docs/roadmap/batches/005.md)、[004](docs/roadmap/batches/004.md)、[003](docs/roadmap/batches/003.md)、[002](docs/roadmap/batches/002.md)及[001](docs/roadmap/batches/001.md)明确范围代码完成。
+- 最近实现提交：`05b0c39bac5f65211b795ac83ff04638072498de`（批次 006），已成功推送 `origin/main`；HEAD/origin/main/远端 refs/heads/main 已核对同 SHA，推送后工作区干净（交接文档更新前）。归属交接提交以 git log 和启动消息中的远端核对为准。批次 005 交接 `f37c9c5f4032123fc63c0a520e1cd95d3346e532` 同样已验证；原代码基点 `b83f534` 不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
 - 当前阻塞：无阻塞下一批编码的事项。资源严格告警门禁仍有已定位 IL3050（标准 Container/InheritanceAttribute），FND-006 保持部分完成；Windows/Linux/macOS 真机验证后置。
 
