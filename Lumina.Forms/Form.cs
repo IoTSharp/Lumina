@@ -1054,6 +1054,8 @@ public class Form : ContainerControl
     private static nint WindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
     {
         Form? self = null;
+        nint result = 0;
+        Exception? callbackFailure = null;
         try
         {
             _ = TryGetControlByHandle(hwnd, out Control? control);
@@ -1069,53 +1071,76 @@ public class Form : ContainerControl
                 self.RegisterNativeHandle(hwnd);
             }
 
-            try
-            {
-                return self is null
-                    ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
-                    : self.DispatchWindowMessage(hwnd, message, wParam, lParam);
-            }
-            finally
-            {
-                // A derived WndProc may consume this message or throw. The
-                // native lifetime still ends and must release every root.
-                if (message == Win32.WM_NCDESTROY && self is not null)
-                {
-                    self.ReleaseDestroyedFormHandle(hwnd);
-                }
-            }
+            result = self is null
+                ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
+                : self.DispatchWindowMessage(hwnd, message, wParam, lParam);
         }
         catch (Exception exception)
         {
-            // Include association and final cleanup in the native exception
-            // boundary so no managed exception unwinds through USER32.
-            try { Application.OnThreadException(exception); }
-            catch (Exception reportingException)
+            // Keep callback and native cleanup failures independent. A
+            // cleanup failure must not replace the exception raised by a
+            // derived WndProc, and neither may unwind through USER32.
+            callbackFailure = exception;
+        }
+
+        List<Exception>? cleanupFailures = null;
+        if (message == Win32.WM_NCDESTROY && self is not null)
+        {
+            // A derived WndProc may consume this message or throw. The
+            // native lifetime still ends and must release every root. Report
+            // each cleanup failure separately; the reference does not wrap
+            // independent native cleanup failures in AggregateException.
+            cleanupFailures = self.ReleaseDestroyedFormHandle(hwnd);
+        }
+
+        if (callbackFailure is not null) { ReportNativeWindowException(callbackFailure); }
+        if (cleanupFailures is not null)
+        {
+            foreach (Exception cleanupFailure in cleanupFailures)
             {
-                Environment.FailFast("The application UI thread exception handler failed.", reportingException);
+                ReportNativeWindowException(cleanupFailure);
             }
-            return 0;
+        }
+
+        return callbackFailure is null ? result : 0;
+    }
+
+    private static void ReportNativeWindowException(Exception exception)
+    {
+        try { Application.OnThreadException(exception); }
+        catch (Exception reportingException)
+        {
+            Environment.FailFast("The application UI thread exception handler failed.", reportingException);
         }
     }
 
-    private void ReleaseDestroyedFormHandle(nint hwnd)
+    private List<Exception>? ReleaseDestroyedFormHandle(nint hwnd)
     {
-        if (NativeHandle != hwnd) { return; }
+        if (NativeHandle != hwnd) { return null; }
+        List<Exception>? failures = null;
+        try { ReleaseMainMenuStrip(); }
+        catch (Exception exception) { (failures ??= []).Add(exception); }
+
+        try { ReleasePaletteResources(); }
+        catch (Exception exception) { (failures ??= []).Add(exception); }
+
+        try { ClearNativeHandle(); }
+        catch (Exception exception) { (failures ??= []).Add(exception); }
+
         try
         {
-            try { ReleaseMainMenuStrip(); }
-            finally { ReleasePaletteResources(); }
+            if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
         }
-        finally
+        catch (Exception exception) { (failures ??= []).Add(exception); }
+
+        _formDefaultWindowProc = 0;
+        try
         {
-            try { ClearNativeHandle(); }
-            finally
-            {
-                if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
-                _formDefaultWindowProc = 0;
-                if (Disposing) { UnregisterOpenForm(); }
-            }
+            if (Disposing) { UnregisterOpenForm(); }
         }
+        catch (Exception exception) { (failures ??= []).Add(exception); }
+
+        return failures;
     }
 
     protected override void DefWndProc(ref Message m)

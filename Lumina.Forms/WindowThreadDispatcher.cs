@@ -301,6 +301,7 @@ internal sealed class WindowThreadDispatcher
 
     private void Drain()
     {
+        List<Exception>? completionFailures = null;
         while (true)
         {
             Invocation? invocation;
@@ -308,12 +309,27 @@ internal sealed class WindowThreadDispatcher
             {
                 if (!_callbacks.TryDequeue(out invocation))
                 {
-                    return;
+                    break;
                 }
             }
 
-            invocation.Execute();
-            if (!invocation.Synchronous && invocation.Exception is { } exception)
+            Exception? completionFailure = null;
+            try
+            {
+                invocation.Execute();
+            }
+            catch (Exception failure)
+            {
+                // Invocation.Execute records callback failures before signaling its
+                // completion. A caller may dispose the exposed wait handle, causing
+                // Complete.Set to throw after IsCompleted is already true. Keep
+                // draining accepted callbacks and surface every completion failure
+                // after their FIFO execution has finished.
+                completionFailure = failure;
+                (completionFailures ??= []).Add(failure);
+            }
+
+            if (completionFailure is null && !invocation.Synchronous && invocation.Exception is { } exception)
             {
                 try
                 {
@@ -326,6 +342,15 @@ internal sealed class WindowThreadDispatcher
                     Environment.FailFast("The application UI thread exception handler failed.", reportingException);
                 }
             }
+        }
+
+        if (completionFailures is { Count: 1 })
+        {
+            ExceptionDispatchInfo.Capture(completionFailures[0]).Throw();
+        }
+        if (completionFailures is { Count: > 1 })
+        {
+            throw new AggregateException("One or more queued callbacks could not signal completion.", completionFailures);
         }
     }
 

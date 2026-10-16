@@ -133,6 +133,15 @@ public sealed class WindowsFormsSynchronizationContext : SynchronizationContext,
         }
     }
 
+    private static void ReportNativeWindowException(Exception exception)
+    {
+        try { Application.OnThreadException(exception); }
+        catch (Exception reportingException)
+        {
+            Environment.FailFast("The application UI thread exception handler failed.", reportingException);
+        }
+    }
+
     /// <summary>
     /// Owns only the message HWND; all callback queuing remains in WindowThreadDispatcher.
     /// </summary>
@@ -245,31 +254,96 @@ public sealed class WindowsFormsSynchronizationContext : SynchronizationContext,
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
         private static unsafe nint WindowProc(nint window, uint message, nint wParam, nint lParam)
         {
-            if (message == Win32.WM_NCCREATE)
+            SynchronizationContextWindow? owner = null;
+            nint result = 0;
+            Exception? callbackFailure = null;
+            bool callDefaultAfterCleanup = false;
+            try
             {
-                _ = Win32.SetWindowLongPtrW(window, Win32.GWLP_USERDATA, ((Win32.CREATESTRUCTW*)lParam)->lpCreateParams);
-            }
-
-            nint userData = Win32.GetWindowLongPtrW(window, Win32.GWLP_USERDATA);
-            if (userData != 0 && GCHandle.FromIntPtr(userData).Target is SynchronizationContextWindow owner)
-            {
-                if (owner._dispatcher?.TryDispatch(message) == true) { return 0; }
-                if (message == Win32.WM_CLOSE)
+                if (message == Win32.WM_NCCREATE)
                 {
-                    _ = Win32.DestroyWindow(window);
-                    return 0;
+                    _ = Win32.SetWindowLongPtrW(window, Win32.GWLP_USERDATA, ((Win32.CREATESTRUCTW*)lParam)->lpCreateParams);
                 }
 
-                if (message == Win32.WM_NCDESTROY)
+                nint userData = Win32.GetWindowLongPtrW(window, Win32.GWLP_USERDATA);
+                if (userData != 0 && GCHandle.FromIntPtr(userData).Target is SynchronizationContextWindow resolved)
                 {
-                    owner._dispatcher?.Close();
-                    owner._handle = 0;
-                    _ = Win32.SetWindowLongPtrW(window, Win32.GWLP_USERDATA, 0);
+                    owner = resolved;
+                    if (owner._dispatcher?.TryDispatch(message) == true)
+                    {
+                        result = 0;
+                    }
+                    else if (message == Win32.WM_CLOSE)
+                    {
+                        _ = Win32.DestroyWindow(window);
+                        result = 0;
+                    }
+                    else if (message == Win32.WM_NCDESTROY)
+                    {
+                        // The reference releases its managed/native roots
+                        // before forwarding the final non-client message.
+                        callDefaultAfterCleanup = true;
+                    }
+                    else
+                    {
+                        result = Win32.DefWindowProcW(window, message, wParam, lParam);
+                    }
+                }
+                else
+                {
+                    result = Win32.DefWindowProcW(window, message, wParam, lParam);
+                }
+            }
+            catch (Exception exception)
+            {
+                // A managed callback or dispatch completion must never unwind
+                // through the unmanaged window procedure. The native teardown
+                // below still runs when this is WM_NCDESTROY.
+                callbackFailure = exception;
+            }
+
+            if (message == Win32.WM_NCDESTROY && owner is not null)
+            {
+                List<Exception>? cleanupFailures = null;
+                try { owner._dispatcher?.Close(); }
+                catch (Exception exception) { (cleanupFailures ??= []).Add(exception); }
+
+                owner._handle = 0;
+                try { _ = Win32.SetWindowLongPtrW(window, Win32.GWLP_USERDATA, 0); }
+                catch (Exception exception) { (cleanupFailures ??= []).Add(exception); }
+                try
+                {
                     if (owner._selfHandle.IsAllocated) { owner._selfHandle.Free(); }
                 }
+                catch (Exception exception) { (cleanupFailures ??= []).Add(exception); }
+
+                if (cleanupFailures is not null)
+                {
+                    foreach (Exception cleanupFailure in cleanupFailures)
+                    {
+                        ReportNativeWindowException(cleanupFailure);
+                    }
+                }
             }
 
-            return Win32.DefWindowProcW(window, message, wParam, lParam);
+            if (callDefaultAfterCleanup)
+            {
+                try
+                {
+                    result = Win32.DefWindowProcW(window, message, wParam, lParam);
+                }
+                catch (Exception exception)
+                {
+                    callbackFailure = exception;
+                }
+            }
+
+            if (callbackFailure is not null)
+            {
+                ReportNativeWindowException(callbackFailure);
+            }
+
+            return callbackFailure is null ? result : 0;
         }
     }
 }

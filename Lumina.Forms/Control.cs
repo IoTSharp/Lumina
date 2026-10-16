@@ -3523,38 +3523,64 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _ = s_controlsByHandle.TryGetValue(hwnd, out control);
         }
 
+        nint result = 0;
+        Exception? callbackFailure = null;
         try
         {
-            try
+            if (control is null && s_creatingControl is { NativeHandle: 0 } creating)
             {
-                if (control is null && s_creatingControl is { NativeHandle: 0 } creating)
-                {
-                    control = creating;
-                    control.RegisterNativeHandle(hwnd);
-                }
-                return control is null
-                    ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
-                    : control.DispatchWindowMessage(hwnd, message, wParam, lParam);
+                control = creating;
+                control.RegisterNativeHandle(hwnd);
             }
-            finally
-            {
-                // Native lifetime bookkeeping must run even when a derived
-                // message handler consumes WM_NCDESTROY or throws. Cleanup is
-                // also inside the exception boundary of this native callback.
-                if (message == Win32.WM_NCDESTROY && control is not null)
-                {
-                    lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
-                    if (control.NativeHandle == hwnd) { control.ClearNativeHandle(); }
-                }
-            }
+
+            result = control is null
+                ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
+                : control.DispatchWindowMessage(hwnd, message, wParam, lParam);
         }
         catch (Exception exception)
         {
-            // Exceptions cannot unwind across the unmanaged window callback.
-            // Use the same UI exception route as other native notifications.
-            ReportNativeWindowException(exception);
-            return 0;
+            // Keep the managed callback failure separate from a later native
+            // lifetime failure. Each native callback is reported independently
+            // so cleanup cannot replace the original exception.
+            callbackFailure = exception;
         }
+
+        List<Exception>? cleanupFailures = null;
+        if (message == Win32.WM_NCDESTROY && control is not null)
+        {
+            try
+            {
+                // Native lifetime bookkeeping must run even when a derived
+                // message handler consumes WM_NCDESTROY or throws.
+                lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
+            }
+            catch (Exception cleanupFailure)
+            {
+                (cleanupFailures ??= []).Add(cleanupFailure);
+            }
+
+            try
+            {
+                if (control.NativeHandle == hwnd) { control.ClearNativeHandle(); }
+            }
+            catch (Exception cleanupFailure)
+            {
+                // A failed dispatcher/resource release must not mask the
+                // callback failure or unwind through the unmanaged callback.
+                (cleanupFailures ??= []).Add(cleanupFailure);
+            }
+        }
+
+        if (callbackFailure is not null) { ReportNativeWindowException(callbackFailure); }
+        if (cleanupFailures is not null)
+        {
+            foreach (Exception cleanupFailure in cleanupFailures)
+            {
+                ReportNativeWindowException(cleanupFailure);
+            }
+        }
+
+        return callbackFailure is null ? result : 0;
     }
 
     internal nint DispatchWindowMessage(nint hwnd, uint message, nint wParam, nint lParam)
