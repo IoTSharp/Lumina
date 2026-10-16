@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～025明确子范围保留；026完成05c已接受InvokeAsync任务关闭/投递失败终止、08c实际HWND已销毁后的异常收尾。4,243测试通过；25标准场景对固定参考16同/9增强差异，另7个旧Task场景仅Lumina，全部32场景JIT/实际AOT全同。并发释放同一wait、完整退出/模态/多UI竞态、全部Dispose事务/派生资源、输入/绘制/资源、ambient/RTL/Cursor、DPI/派生布局、Designer和GTK4/AppKit仍缺，完整Control保持部分，见[026](../batches/026.md)。
+🟡 **当前状态：**002～026明确子范围保留；027完成13a坐标/捕获与13b基础鼠标事件、辅助入口及Windows消息跟踪。新增21项核心和25项必要消费回归，全部4,289测试通过；25场景参考/JIT有5项真实差异，JIT/AOT有1项异常文本差异。锁屏导致真实WindowFromPoint命中失败，物理点击未验收。完整键盘/验证、派生输入、绘制/资源、ambient/RTL/Cursor、DPI/派生布局、Designer、全部线程/释放竞态和GTK4/AppKit仍缺，完整Control保持部分，见[027](../batches/027.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -50,8 +50,10 @@
 | 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承；023实现基础ControlStyles及透明背景调用首范围。Application默认字体/Site/ActiveX ambient、RightToLeft/Cursor、可见透明合成、全部事件与完整native文本同步仍缺；主题默认值与WinForms视觉差异保留，不随子范围关闭。 |
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
-| ⬜ | P1 / Control-12 | 对齐 Tab/助记键、Enter/Leave/GotFocus/LostFocus、CausesValidation/Validating/Validated；KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress 与 IME 组合态。 |
-| ⬜ | P1 / Control-13 | 实现 MouseDown/Up/Click/DoubleClick/Wheel/Move/Enter/Leave/Hover、Capture/MouseCaptureChanged、坐标换算/PointToClient/PointToScreen；原生通知与反射消息去重。 |
+| 🟡 | P1 / Control-12 | 已有Enter/Leave及OnEnter/OnLeave入口、基础Focus查询和局部原生焦点活动链，原全待办遗漏现有代码，027收尾纠正；完整GotFocus/LostFocus/Enter/Leave顺序、Select/CanSelect/Tab/助记键、CausesValidation/Validating/Validated、KeyDown/KeyPress/KeyUp/PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress与IME仍缺。 |
+| 🟡 | P1 / Control-13 | 027完成13a坐标/捕获和13b基础鼠标消息/事件；必要消费者共享Click去重。验证取消与点击协作、全部派生反射/默认激活/AutoCheck/组同步、RTL/DPI/非客户区及完整捕获竞态仍待原任务。锁屏下10个参考、20个JIT/AOT命中观察失败，真实命中/物理设备交互未验收，不能由事件入口或消息注入关闭完整输入。 |
+| ✅ | P1 / Control-13a | 批次027：PointToClient/PointToScreen、RectangleToClient/RectangleToScreen按真实MapWindowPoints转换（矩形两点）；Capture查询/获取/转移/释放与MouseCaptureChanged，静态MouseButtons/MousePosition接原生状态。无/有句柄、负坐标、父子、释放与重建指定范围完成；RTL镜像/DPI/Wayland等完整语义与物理设备验收仍归父项。 |
+| ✅ | P1 / Control-13b | 批次027：标准Click/DoubleClick及鼠标事件共用Component.Events、对应虚On*、InvokeOnClick/RaiseMouseEvent/ResetMouseEventArgs；MouseEventArgs.Location/可继承、HandledMouseEventArgs与XButton1/2；五按钮/双击/有符号坐标/滚轮Handled及原生Enter/Hover/Leave跟踪。跟踪在虚WndProc之外，保留直接调用区别、重建pending-enter、有限销毁和Up后的捕获清理。范围限基础Control消息路径及上述契约；验证取消、所有派生路由与设备验收不计完成，原异常文本差异保留。 |
 | 🟡 | P1 / Control-14 | 023的14a、024的14b完成基础背景图像/真实HWND透明绘制；RTL/mirror、滚动viewport、TabPage主题透明、全部派生owner draw/消息反射/缓冲分配失败与资源压力仍缺。不能由基础Control/屏幕采样关闭完整绘制，022/023历史原始差异保留。 |
 | ✅ | P1 / Control-14b | 批次024：virtual BackgroundImage/Layout、ImageLayout五值、两事件/三个On*、通知传播及借用图像寿命；Tile/None/Center/Stretch/Zoom、基础真实父子HWND透明/alpha、父坐标/DC裁剪/Graphics状态、移动失效传播完成。20项回归、同源屏幕及PRINTCLIENT分列观测、非同比例Stretch/Zoom有JIT/实际AOT证据。无HWNDdirect场景仅证不建窗/状态寿命；高对比复用既有系统读取，未作设备切换验收，剩余见父项。 |
 | ✅ | P1 / Control-14a | 批次023明确首范围：ControlStyles默认/组合/未知位、GetStyle/SetStyle/UpdateStyles、DoubleBuffered/ResizeRedraw；Paint/Invalidated/StyleChanged及标准On*/InvokePaint/OnPrint、六个Invalidate重载、Update/Refresh/CreateGraphics，真实WM_PAINT/ERASEBKGND/PRINTCLIENT与缓冲/借用Graphics寿命。公共OnPrint借用Graphics并保留背景回调对其状态的修改，内部native绘制隔离背景状态；标准事件/重入/原异常和原生EDIT路径有指定对照。透明无句柄场景不计为可见合成验收，完整边界仍属14父项。 |
@@ -73,6 +75,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：Control-13由全待办改部分，只关闭13a/13b明确代码范围；核心21例、消费25例通过。固定参考25场景20同/5差异，JIT/AOT24同/1异常文本差异；LockScreenBackstopFrame阻止10/20次命中，成功Click命中与物理输入待解锁后验证。Control-12已有Enter/Leave/On*和局部焦点接入，纠正全待办但不关闭完整焦点/键盘。生命周期204、消息绘制558行参考/JIT回归同；旧AOT边界保留，见[027](../batches/027.md)。
 
 - 2026-10-16 · 批次026：05c/08c有限范围实现，48项新回归与全部4,243测试通过。25标准场景16同/9增强差异，另7旧Task仅Lumina；32场景JIT/实际AOT全同。旧Action59行/ValueTask90行各两条关闭差异首次出现并保留strict失败，其余观测不变；历史004/005原全同证据不删除。修正当前“所有InvokeAsync关闭均悬挂”“原生错后托管清理必需第二次Dispose”的过时描述，明确Parent/child/Site再失败仍需重试，未关闭完整父项/平台或98%。见[026](../batches/026.md)。
 

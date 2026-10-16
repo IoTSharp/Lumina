@@ -244,8 +244,6 @@ public class MenuStrip : ToolStrip
         private const int HoverCornerRadius = 6;
         private const int HighDpiOpticalLift = 1;
 
-        public event EventHandler? Click;
-
         private bool _hovered;
         private bool _popupOpen;
         private Image? _image;
@@ -331,7 +329,7 @@ public class MenuStrip : ToolStrip
                     return false;
 
                 case Win32.WM_LBUTTONUP:
-                    Click?.Invoke(this, EventArgs.Empty);
+                    OnClick(EventArgs.Empty);
                     result = 0;
                     return true;
             }

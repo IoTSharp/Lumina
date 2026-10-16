@@ -23,7 +23,8 @@
 | PictureBox-005 | P1 | ⬜ | LoadAsync各重载、CancelAsync、WaitOnLoad默认false；重复并发加载、过时结果覆盖、Dispose中取消、初始图/错误图、同步Load与异步互相影响。 |
 | PictureBox-006 | P1 | ⬜ | InitialImage、ErrorImage、ImageLocation URI/本地路径与资源；不使用运行时动态代码加载，网络路径功能按标准API分开验收。 |
 | PictureBox-007 | P2 | ⬜ | ISupportInitialize.BeginInit/EndInit 抑制中间加载和AutoSize，Designer静态Image/.resx反序列化与本地化；初始化结束的异常/事件顺序。 |
-| PictureBox-008 | P2 | ⬜ | BorderStyle、AutoSize/GetPreferredSize、BackColor/背景图、Enabled/Visible、Click与MouseClick/DoubleClick；主题刷新不把透明图背景强制变白。 |
+| PictureBox-008 | P2 | 🟡 | 027完成008a共享Click及基础鼠标路径去重；BorderStyle、AutoSize/GetPreferredSize、背景图/透明主题、完整Enabled/Visible和点击设备行为仍待对照。当前native UserPaint=false与参考默认差异保留。 |
+| PictureBox-008a | P2 | ✅ | 批次027：移除独立Click/OnClick和提前处理STN_CLICKED的路由，继承Control标准鼠标释放/点击链，typed与Control订阅共用事件槽。指定委托/消息去重回归通过，锁屏下WindowFromPoint未命中，成功实际Click/DoubleClick设备验收待补。 |
 | PictureBox-009 | P2 | ⬜ | 动态图像/动画、图像被外部释放、换图后缩放缓存与AOT解码器保留；基线支持的格式逐个验收，不以能显示PNG代表Image全部兼容。 |
 | PictureBox-010 | P2 | ⬜ | Linux/macOS先验证System.Drawing.Image/.resx迁移与原生解码通路；源代码只改命名空间的目标保持，无法兼容的公开类型不得从98%分母悄悄移除。 |
 | PictureBox-011 | P3 | ⬜ | 静态Designer双目标与AOT真实加载/取消/释放，原生辅助技术图像角色/替代名称、三平台布局和资源计数记录。 |
@@ -42,6 +43,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：移除独立Click/OnClick和提前处理STN_CLICKED的路由，继承Control标准鼠标释放/点击链，typed与Control订阅共用事件槽。指定委托/消息去重回归通过，锁屏下WindowFromPoint未命中，成功实际Click/DoubleClick设备验收待补。 027完成008a共享Click及基础鼠标路径去重；BorderStyle、AutoSize/GetPreferredSize、背景图/透明主题、完整Enabled/Visible和点击设备行为仍待对照。当前native UserPaint=false与参考默认差异保留。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 
 - 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
 

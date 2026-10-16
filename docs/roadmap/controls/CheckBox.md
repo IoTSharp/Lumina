@@ -19,7 +19,8 @@
 | CheckBox-001 | P0 | ⬜ | 继承恢复 CheckBox : ButtonBase；补齐 CheckState、Appearance 等关联枚举正确数值和公开签名，避免已有 bool 实现吞掉 Indeterminate。 |
 | CheckBox-002 | P1 | 🟡 | Checked=false、CheckState=Unchecked 默认状态；程序设同值不重复通知，CheckState=Indeterminate 时 Checked 的值按 WinForms 基线，含创建前后双向同步。 |
 | CheckBox-003 | P1 | ⬜ | ThreeState=false / AutoCheck=true；测试两态、三态点击循环，AutoCheck=false 时点击保留状态，键盘和辅助动作与鼠标相同。 |
-| CheckBox-004 | P1 | ⬜ | 补 CheckStateChanged、CheckedChanged、Click；逐态转换记录事件先后与次数，尤其 Checked↔Indeterminate 不能只比较 bool 就漏发/误发。 |
+| CheckBox-004 | P1 | 🟡 | 已有CheckedChanged，027完成004a当前二态原生通知→共享Click；原全待办遗漏历史事件，现纠正。CheckStateChanged、三态/AutoCheck、直接OnClick自动切换与完整事件顺序仍缺，不由bool比较替代Indeterminate语义。 |
+| CheckBox-004a | P1 | ✅ | 批次027：BN_CLICKED先读取BM_GETCHECK并同步既有Checked/CheckedChanged，再调用共享OnClick一次；关闭StandardClick/StandardDoubleClick防重复。范围只限现有二态原生通知衔接，直接OnClick/AutoCheck/三态仍归父项。 |
 | CheckBox-005 | P1 | ⬜ | Appearance 默认 Normal、AppearanceChanged；切换 Button 外观保持三态值；CheckAlign 默认 MiddleLeft 与 TextAlign 默认 MiddleLeft 对照基线验证布局。 |
 | CheckBox-006 | P1 | ⬜ | 父容器点击、空格、Alt 助记键、Disabled/ReadOnly（不存在的 CheckBox 属性不新增）、验证取消和鼠标捕获取消按基线验收。 |
 | CheckBox-007 | P2 | ⬜ | 状态绑定：数据源更新→控件和控件点击→数据源，三态 nullable 绑定与 Checked bool 绑定分开测试，重入期间一次变更不产生无限循环。 |
@@ -41,6 +42,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：BN_CLICKED先读取BM_GETCHECK并同步既有Checked/CheckedChanged，再调用共享OnClick一次；关闭StandardClick/StandardDoubleClick防重复。范围只限现有二态原生通知衔接，直接OnClick/AutoCheck/三态仍归父项。 已有CheckedChanged，027完成004a当前二态原生通知→共享Click；原全待办遗漏历史事件，现纠正。CheckStateChanged、三态/AutoCheck、直接OnClick自动切换与完整事件顺序仍缺，不由bool比较替代Indeterminate语义。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 
 - 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
 

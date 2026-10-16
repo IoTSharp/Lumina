@@ -25,4 +25,10 @@ public enum MouseButtons
     /// The middle mouse button was pressed.
     /// </summary>
     Middle = 0x00400000,
+
+    /// <summary>The first extended mouse button was pressed.</summary>
+    XButton1 = 0x00800000,
+
+    /// <summary>The second extended mouse button was pressed.</summary>
+    XButton2 = 0x01000000,
 }

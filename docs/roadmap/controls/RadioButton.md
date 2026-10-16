@@ -6,7 +6,7 @@
 
 🟡 [RadioButton.cs](../../../Lumina.Forms/RadioButton.cs) 有 BUTTON/BS_AUTORADIOBUTTON、Checked 和 CheckedChanged，但直接继承 Control；尚无 AutoCheck、Appearance、CheckAlign 或明确托管互斥组同步，原生兄弟自动取消不保证另一托管对象发事件。
 
-源码定位：[Lumina.Forms/RadioButton.cs](../../../Lumina.Forms/RadioButton.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：ButtonBase、真实 Parent/容器树、焦点与 Tab 导航；必须先修复顶层控件 Parent 为空的问题。
+源码定位：[Lumina.Forms/RadioButton.cs](../../../Lumina.Forms/RadioButton.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：ButtonBase、真实 Parent/容器树、焦点与 Tab 导航；018已使Form直属子项Parent为真实Form，原“顶层Parent为空”阻塞过时；完整分组与导航仍需在该父链上实现。
 
 公开成员（含继承的全部属性、事件和方法）逐项见 [RadioButton API 清单](../api/RadioButton.md)；共同行为、AOT、设计器与计数方法见 [基础任务](../foundations.md)。本表列出具体实现/验收动作，API 清单中余下成员也必须逐条关闭，不能把表外成员当作已支持。
 
@@ -18,7 +18,8 @@
 |---|---|---|---|
 | RadioButton-001 | P0 | ⬜ | 恢复 RadioButton : ButtonBase；Parent、GroupBox、Panel、UserControl、Form 下的分组关系可查询，按钮移组立即清理旧组状态。 |
 | RadioButton-002 | P1 | 🟡 | Checked=false、AutoCheck=true 默认值；程序写入、鼠标、空格、助记键分别测试单选互斥；AutoCheck=false 不自动取消同组其他控件。 |
-| RadioButton-003 | P1 | ⬜ | CheckedChanged 与 Click：同组 A→B 时旧按钮取消事件和新按钮选中事件顺序按 WinForms 记录；同值赋值不重复，点击已选项不变成全未选。 |
+| RadioButton-003 | P1 | 🟡 | 已有CheckedChanged，027完成003a当前按钮原生状态→共享Click；原全待办遗漏历史事件，现纠正。组内旧项取消通知/新项顺序、AutoCheck和直接OnClick状态切换仍缺，原生兄弟取消不等于托管组同步。 |
+| RadioButton-003a | P1 | ✅ | 批次027：BN_CLICKED同步当前按钮既有Checked/CheckedChanged，再调用共享OnClick一次；StandardClick关闭，保留参考StandardDoubleClick=true。仅当前按钮通知衔接代码完成，不关闭ButtonBase、AutoCheck、托管互斥组及键盘选择。 |
 | RadioButton-004 | P1 | ⬜ | Appearance=Normal、AppearanceChanged、CheckAlign=MiddleLeft、TextAlign=MiddleLeft；切换 Appearance.Button 仍保持相同组和事件契约。 |
 | RadioButton-005 | P1 | ⬜ | TabStop 及箭头导航：单选组进入/离开、无选中项、禁用项、隐藏项、RTL、Home/End（按基线支持情况）与焦点移动行为逐场景验收。 |
 | RadioButton-006 | P1 | ⬜ | AutoCheck、CausesValidation 与验证取消协同；验证失败时选中状态、焦点与 Click 是否改变按真实 WinForms 对照。 |
@@ -41,6 +42,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：BN_CLICKED同步当前按钮既有Checked/CheckedChanged，再调用共享OnClick一次；StandardClick关闭，保留参考StandardDoubleClick=true。仅当前按钮通知衔接代码完成，不关闭ButtonBase、AutoCheck、托管互斥组及键盘选择。 已有CheckedChanged，027完成003a当前按钮原生状态→共享Click；原全待办遗漏历史事件，现纠正。组内旧项取消通知/新项顺序、AutoCheck和直接OnClick状态切换仍缺，原生兄弟取消不等于托管组同步。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 
 - 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
 

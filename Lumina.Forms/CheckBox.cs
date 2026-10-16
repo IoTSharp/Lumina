@@ -8,7 +8,7 @@ public class CheckBox : Control
     private bool _checked;
 
     /// <summary>Initializes a check box drawn by the native button control.</summary>
-    public CheckBox() => SetStyle(ControlStyles.UserPaint, false);
+    public CheckBox() => SetStyle(ControlStyles.UserPaint | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
 
     /// <summary>
     /// Gets or sets a value indicating whether the control should use system visual styles for its background.
@@ -97,6 +97,7 @@ public class CheckBox : Control
             OnCheckedChanged(EventArgs.Empty);
         }
 
+        OnClick(EventArgs.Empty);
         return true;
     }
 

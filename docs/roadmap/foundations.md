@@ -9,7 +9,7 @@
 | FND-001 | 🟡 | 002～018基础构造、ControlCollection/Parent与Form标准链保留；019补Control-07a标准句柄入口/状态/事件及Form必要覆盖。IDropTarget、所有派生默认/完整扩展契约仍缺，不由基类或构造关闭父项 | [Control](controls/Control.md)、[Form](controls/Form.md)、[批次019](batches/019.md) |
 | FND-002 | 🟡 | 003～025投递/context范围保留；026的Control-05c补已接受InvokeAsync任务关闭/Post/Attach失败终止，保留取消先后/重建/已开始异步工作和ValueTask单消费。ApplicationContext/模态、多UI退出、等待期间释放同一wait与完整竞态仍缺；null Delegate/Send、关闭增强和错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次026](batches/026.md) |
 | FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
-| FND-004 | 🟡 | 018～026完整Demo AOT已真实显示，Enable option复选框0→1，WM_CLOSE正常exit0且记录HWND全部销毁。模态、完整布局/业务交互、设计器和可访问性仍未验收；018截图的文字裁切未据此宣称修复，不关闭父项 | [026证据](batches/026.md)、[原评估](../assessments/2026-10-15/README.md) |
+| FND-004 | 🟡 | 018～026 Demo窗口证据保留；027 Native AOT原生窗口可见、程序BM_CLICK使Enable option 0→1、WM_CLOSE正常exit0且原HWND全部销毁。锁屏下物理鼠标命中未验收；模态、完整布局/业务交互、设计器/可访问性及018文字裁切仍未关闭 | [027证据](batches/027.md)、[原评估](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
 
@@ -27,7 +27,7 @@
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；原全部未开始状态遗漏旧局部实现，现纠正。完整Font/Dpi/None/Inherit、AutoScaleFactor、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018补默认TabStop、添加时TabIndex与嵌套ActiveControl/显式ActivateControl首范围；Select/Focus(bool)、Enter/Leave/验证完整事件、Tab/助记键和默认/取消按钮仍缺 |
 | FND-019 | ⬜ | KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey/PreProcessMessage、KeyPreview、抑制按键；中文 IME 组合态、焦点切换与候选窗位置 |
-| FND-020 | ⬜ | MouseDown/Up/Click/DoubleClick/Wheel/Move/Enter/Leave/Hover、Capture、HitTest；坐标、按键、双击和原生消息不重复派发 |
+| FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
 | FND-021 | ⬜ | CausesValidation、AutoValidate、Validating(Cancel)/Validated、Validate/ValidateChildren；取消验证后焦点与提交行为 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
 | FND-023 | 🟡 | 023消息/样式/基础Paint保留；024的14b补背景图像五布局、真实屏幕透明/alpha及父Graphics/DC状态、失效传播，21场景307行JIT/AOT全同（参考关闭差异16行另列）。RTL/mirror、滚动/主题透明、完整owner draw/反射/派生绘制、缓冲失败与资源压力仍缺，父项不关闭 |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次027：FND-020按真实坐标/捕获/鼠标基础实现改部分；CNS补标准参数/枚举，Control-12、CheckBox-004、RadioButton-003及RadioButton父链的过时状态已校正。4,289测试通过、25共同场景保留5项参考/1项AOT差异及锁屏命中限制；不关闭父项/平台，见[027](batches/027.md)。
 
 - 2026-10-16 · 批次026：FND-002/004/012随05c/08c及实际Demo AOT更新；4,243测试、32场景JIT/AOT全同。固定参考25场景有9项关闭/释放增强差异，旧004/005各两行差异保留严格失败，025历史4差异保持。原生失败后后续托管错误仍短路，完整竞态/资源/设计器/平台不关闭；见[026](batches/026.md)。
 

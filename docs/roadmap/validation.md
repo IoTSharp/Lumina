@@ -472,3 +472,13 @@ Control-05c/08c明确范围完成；全部4,243测试通过（新增28+20），�
 6组旧参考/JIT回归：投递69/context57/生命周期204行全同；Action59与ValueTask90各两行关闭增强差异并保留严格失败；025仍四同四差异。旧日志已先保存，旧AOT未重跑。探针AOT3,851,776字节、Demo4,289,024字节且CLR目录0；Demo真实显示/Enable option 0→1/WM_CLOSE exit0/原始HWND全失效、无强制清理。原始Events遮蔽编译失败、Site先命中child的中间诊断与最终target-site参考均保留；Container.Add IL2026、TypeConverter IL3053和Demo既有IL3050等警告不隐藏。
 
 13项目/17目标仅.NET10，Windows官方Drawing10.0.0、固定双目标/原始Designer资源及net10.0无WinForms/Resources.Extensions/自有Drawing依赖保持；公共签名未变，固定1,095类型/61,240行/187页和运行unverified不变。修正Form-07全待办和索引引言过时状态；普通Parent/child/Site再失败仍短路，完整Dispose/并发/输入/绘制/Designer/资源/模态及GTK4/AppKit未完成。详见[026](batches/026.md)与artifacts/compatibility-batch026/evidence.json，不由测试数推98%。
+
+## 批次 027 · 2026-10-16 坐标、捕获与鼠标输入
+
+批次027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪及五处必要消费者共享Click子范围。4,289测试（新增21+25）通过，双目标Release 0错误/645警告；25共同场景549行、固定参考20同/5差异，JIT/实际AOT24同/1异常文本差异，所有进程exit0。锁屏导致参考10、JIT/AOT20次WindowFromPoint命中失败，成功命中与物理点击未验收。生命周期204及消息绘制558行参考/JIT回归全同。输入探针/Demo AOT为3,107,840/4,298,752字节且CLR目录0；Demo原生窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0/原HWND全失效，无强制清理。13项目/17目标仅.NET10、官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API已重导出但固定1,095类型/61,240行/187页及运行unverified不变。完整Control/派生输入/键盘验证/资源Designer/平台和旧差异仍未关闭。
+
+固定WinForms10.0.11共同参考run `20261016-220702-8990064`；最终JIT/AOT run `20261016-222106-7575539`，同源SHA256 `A47B7CDA7FF8E64917279641FC0C3689E0DE644B82DB6DA265449E1C0743D407`。独立FlatStyle.System仅参考3场景run `20261016-220710-9807290`，Lumina无FlatStyle，不进入25共同场景分母。所有原始日志保留，strictMatches=false/aotMatches=false和driver exit1不改写。
+
+direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler与Lumina.Forms.MouseEventHandler类型名差异，AOT为“Specified cast is not valid.”；四消费者保留默认owner draw/UserMouse/UserPaint、BM_CLICK/MouseUp/Capture顺序，以及CheckBox/RadioButton直接OnClick、AutoCheck/组同步缺口。PictureBox在该fixture仅UserPaint样式不同。锁屏命中诊断为可见但禁用的LockScreenBackstopFrame（0,0,1920,1080）；未获得用户解锁确认，不以置顶/程序坐标移动伪造成功点击。
+
+旧生命周期run `20261016-142310-2252409`、消息绘制run `20261016-142321-3761380`分别保存于019/023驱动的runs目录，两者参考/JIT严格相同，旧AOT本批未重跑。MenuStrip私有宿主事件遮蔽已消除；首轮4,287测试/707警告、WM_COMMAND fixture负ID未截LOWORD的诊断与中间探针均保留。现有IL2026/IL3050/IL3053及旧palette/custom Param/集合/Designer边界不隐藏。详见[027](batches/027.md)、本机artifacts/compatibility-batch027/evidence.json；不由测试或任务数推出98%。

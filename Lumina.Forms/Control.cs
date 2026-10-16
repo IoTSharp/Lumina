@@ -1,4 +1,4 @@
-// Layout, appearance, message and painting portions adapted from dotnet/winforms v10.0.11.
+// Layout, appearance, message, painting and mouse input portions adapted from dotnet/winforms v10.0.11.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses those portions under the MIT license.
 
@@ -26,6 +26,23 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
     private static readonly Win32.WindowProc s_subclassProc = SubclassWindowProcThunk;
     private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
+    private static readonly object s_clickEvent = new();
+    private static readonly object s_doubleClickEvent = new();
+    private static readonly object s_mouseCaptureChangedEvent = new();
+    private static readonly object s_mouseClickEvent = new();
+    private static readonly object s_mouseDoubleClickEvent = new();
+    private static readonly object s_mouseDownEvent = new();
+    private static readonly object s_mouseEnterEvent = new();
+    private static readonly object s_mouseHoverEvent = new();
+    private static readonly object s_mouseLeaveEvent = new();
+    private static readonly object s_mouseMoveEvent = new();
+    private static readonly object s_mouseUpEvent = new();
+    private static readonly object s_mouseWheelEvent = new();
+    private static readonly Lazy<uint> s_mouseEnterMessage = new(static () =>
+    {
+        uint message = Win32.RegisterWindowMessageW("Lumina.Forms.MouseEnter");
+        return message != 0 ? message : throw new Win32Exception(Marshal.GetLastWin32Error());
+    });
     private const string DefaultWindowClassName = "Lumina.Forms.Control";
     [ThreadStatic]
     private static Control? s_creatingControl;
@@ -92,6 +109,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick
         | ControlStyles.UseTextForAccessibility | ControlStyles.Selectable;
     private bool _exceptionWhilePainting;
+    private bool _trackingMouseEvent;
+    private bool _mouseEnterPending;
+    private bool _mousePressed;
+    private bool _doubleClickFired;
 
     internal bool CachePreferredSize { get; set; }
     internal bool ParticipatesInLayout => _visible;
@@ -215,6 +236,79 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool RecreatingHandle => _recreatingHandle;
+
+    /// <summary>Gets or sets whether this control has captured mouse input.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Category("Focus")]
+    public bool Capture
+    {
+        get => NativeHandle != 0 && Win32.GetCapture() == NativeHandle;
+        set
+        {
+            if (Capture == value) { return; }
+            if (value) { _ = Win32.SetCapture(Handle); }
+            else { _ = Win32.ReleaseCapture(); }
+        }
+    }
+
+    /// <summary>Gets the current state of the five mouse buttons.</summary>
+    public static MouseButtons MouseButtons
+    {
+        get
+        {
+            MouseButtons buttons = MouseButtons.None;
+            if (Win32.GetKeyState(Win32.VK_LBUTTON) < 0) { buttons |= MouseButtons.Left; }
+            if (Win32.GetKeyState(Win32.VK_RBUTTON) < 0) { buttons |= MouseButtons.Right; }
+            if (Win32.GetKeyState(Win32.VK_MBUTTON) < 0) { buttons |= MouseButtons.Middle; }
+            if (Win32.GetKeyState(Win32.VK_XBUTTON1) < 0) { buttons |= MouseButtons.XButton1; }
+            if (Win32.GetKeyState(Win32.VK_XBUTTON2) < 0) { buttons |= MouseButtons.XButton2; }
+            return buttons;
+        }
+    }
+
+    /// <summary>Gets the current mouse location in screen coordinates.</summary>
+    public static Point MousePosition
+    {
+        get
+        {
+            _ = Win32.GetCursorPos(out Win32.POINT point);
+            return new Point(point.x, point.y);
+        }
+    }
+
+    /// <summary>Converts a screen location to client coordinates.</summary>
+    public Point PointToClient(Point p)
+    {
+        Win32.POINT point = new() { x = p.X, y = p.Y };
+        _ = Win32.MapWindowPoints(0, Handle, ref point, 1);
+        return new Point(point.x, point.y);
+    }
+
+    /// <summary>Converts a client location to screen coordinates.</summary>
+    public Point PointToScreen(Point p)
+    {
+        Win32.POINT point = new() { x = p.X, y = p.Y };
+        _ = Win32.MapWindowPoints(Handle, 0, ref point, 1);
+        return new Point(point.x, point.y);
+    }
+
+    /// <summary>Converts a screen rectangle to client coordinates.</summary>
+    public Rectangle RectangleToClient(Rectangle r)
+    {
+        Win32.RECT rectangle = new() { Left = r.Left, Top = r.Top, Right = r.Right, Bottom = r.Bottom };
+        _ = Win32.MapWindowPoints(0, Handle, ref rectangle, 2);
+        return Rectangle.FromLTRB(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
+    }
+
+    /// <summary>Converts a client rectangle to screen coordinates.</summary>
+    public Rectangle RectangleToScreen(Rectangle r)
+    {
+        Win32.RECT rectangle = new() { Left = r.Left, Top = r.Top, Right = r.Right, Bottom = r.Bottom };
+        _ = Win32.MapWindowPoints(Handle, 0, ref rectangle, 2);
+        return Rectangle.FromLTRB(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
+    }
 
     /// <summary>
     /// Gets whether the control's native window has the keyboard focus.
@@ -797,6 +891,104 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     [Category("Behavior")]
     public event EventHandler? StyleChanged;
+
+    /// <summary>Occurs when the control is clicked.</summary>
+    [Category("Action")]
+    public event EventHandler? Click
+    {
+        add => Events.AddHandler(s_clickEvent, value);
+        remove => Events.RemoveHandler(s_clickEvent, value);
+    }
+
+    /// <summary>Occurs when the control is double-clicked.</summary>
+    [Category("Action")]
+    public event EventHandler? DoubleClick
+    {
+        add => Events.AddHandler(s_doubleClickEvent, value);
+        remove => Events.RemoveHandler(s_doubleClickEvent, value);
+    }
+
+    /// <summary>Occurs when a mouse button clicks the control.</summary>
+    [Category("Action")]
+    public event MouseEventHandler? MouseClick
+    {
+        add => Events.AddHandler(s_mouseClickEvent, value);
+        remove => Events.RemoveHandler(s_mouseClickEvent, value);
+    }
+
+    /// <summary>Occurs when a mouse button double-clicks the control.</summary>
+    [Category("Action")]
+    public event MouseEventHandler? MouseDoubleClick
+    {
+        add => Events.AddHandler(s_mouseDoubleClickEvent, value);
+        remove => Events.RemoveHandler(s_mouseDoubleClickEvent, value);
+    }
+
+    /// <summary>Occurs when the control receives a mouse capture change notification.</summary>
+    [Category("Action")]
+    public event EventHandler? MouseCaptureChanged
+    {
+        add => Events.AddHandler(s_mouseCaptureChangedEvent, value);
+        remove => Events.RemoveHandler(s_mouseCaptureChangedEvent, value);
+    }
+
+    /// <summary>Occurs when a mouse button is pressed over the control.</summary>
+    [Category("Mouse")]
+    public event MouseEventHandler? MouseDown
+    {
+        add => Events.AddHandler(s_mouseDownEvent, value);
+        remove => Events.RemoveHandler(s_mouseDownEvent, value);
+    }
+
+    /// <summary>Occurs when the mouse pointer enters the control.</summary>
+    [Category("Mouse")]
+    public event EventHandler? MouseEnter
+    {
+        add => Events.AddHandler(s_mouseEnterEvent, value);
+        remove => Events.RemoveHandler(s_mouseEnterEvent, value);
+    }
+
+    /// <summary>Occurs when the mouse pointer rests over the control.</summary>
+    [Category("Mouse")]
+    public event EventHandler? MouseHover
+    {
+        add => Events.AddHandler(s_mouseHoverEvent, value);
+        remove => Events.RemoveHandler(s_mouseHoverEvent, value);
+    }
+
+    /// <summary>Occurs when the mouse pointer leaves the control.</summary>
+    [Category("Mouse")]
+    public event EventHandler? MouseLeave
+    {
+        add => Events.AddHandler(s_mouseLeaveEvent, value);
+        remove => Events.RemoveHandler(s_mouseLeaveEvent, value);
+    }
+
+    /// <summary>Occurs when the mouse pointer moves over the control.</summary>
+    [Category("Mouse")]
+    public event MouseEventHandler? MouseMove
+    {
+        add => Events.AddHandler(s_mouseMoveEvent, value);
+        remove => Events.RemoveHandler(s_mouseMoveEvent, value);
+    }
+
+    /// <summary>Occurs when a mouse button is released over the control.</summary>
+    [Category("Mouse")]
+    public event MouseEventHandler? MouseUp
+    {
+        add => Events.AddHandler(s_mouseUpEvent, value);
+        remove => Events.RemoveHandler(s_mouseUpEvent, value);
+    }
+
+    /// <summary>Occurs when the mouse wheel rotates while the control receives wheel input.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Category("Mouse")]
+    public event MouseEventHandler? MouseWheel
+    {
+        add => Events.AddHandler(s_mouseWheelEvent, value);
+        remove => Events.RemoveHandler(s_mouseWheelEvent, value);
+    }
 
     /// <summary>
     /// Gets or sets the text displayed by the control.
@@ -2285,7 +2477,15 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         if (_handle != handle || _handleDestroyedNotified) { return; }
         _handleDestroyedNotified = true;
-        try { OnHandleDestroyed(EventArgs.Empty); }
+        try
+        {
+            if (!_recreatingHandle && !_disposing && !_disposed && _trackingMouseEvent)
+            {
+                OnMouseLeave(EventArgs.Empty);
+                _trackingMouseEvent = false;
+            }
+            OnHandleDestroyed(EventArgs.Empty);
+        }
         finally
         {
             if (_disposing) { _visible = false; }
@@ -2326,6 +2526,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             if (!_recreatingHandle) { _threadDispatcher = null; }
             _originalWindowProc = 0;
             _handle = 0;
+            _trackingMouseEvent = false;
             _created = false;
             ReleaseNativeFont();
         }
@@ -2377,6 +2578,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (_handle == 0 || _recreatingHandle) { return; }
         bool wasCreated = _created;
         nint focused = ContainsFocus ? Win32.GetFocus() : 0;
+        if (_trackingMouseEvent)
+        {
+            _mouseEnterPending = true;
+            _trackingMouseEvent = false;
+        }
         nint nativeParent = Win32.GetParent(_handle);
         Control[] children = ChildControls.ToArray();
         _recreatingHandle = true;
@@ -2618,6 +2824,71 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void OnLeave(EventArgs e)
     {
         Leave?.Invoke(this, e);
+    }
+
+    /// <summary>Raises the <see cref="Click"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnClick(EventArgs e) => ((EventHandler?)Events[s_clickEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="DoubleClick"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDoubleClick(EventArgs e) => ((EventHandler?)Events[s_doubleClickEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="MouseClick"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseClick(MouseEventArgs e) => RaiseMouseEvent(s_mouseClickEvent, e);
+
+    /// <summary>Raises the <see cref="MouseDoubleClick"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseDoubleClick(MouseEventArgs e) => RaiseMouseEvent(s_mouseDoubleClickEvent, e);
+
+    /// <summary>Raises the <see cref="MouseCaptureChanged"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseCaptureChanged(EventArgs e) => ((EventHandler?)Events[s_mouseCaptureChangedEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="MouseDown"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseDown(MouseEventArgs e) => RaiseMouseEvent(s_mouseDownEvent, e);
+
+    /// <summary>Raises the <see cref="MouseEnter"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseEnter(EventArgs e) => ((EventHandler?)Events[s_mouseEnterEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="MouseHover"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseHover(EventArgs e) => ((EventHandler?)Events[s_mouseHoverEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="MouseLeave"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseLeave(EventArgs e) => ((EventHandler?)Events[s_mouseLeaveEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="MouseMove"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseMove(MouseEventArgs e) => RaiseMouseEvent(s_mouseMoveEvent, e);
+
+    /// <summary>Raises the <see cref="MouseUp"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseUp(MouseEventArgs e) => RaiseMouseEvent(s_mouseUpEvent, e);
+
+    /// <summary>Raises the <see cref="MouseWheel"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMouseWheel(MouseEventArgs e) => RaiseMouseEvent(s_mouseWheelEvent, e);
+
+    /// <summary>Invokes the target control's virtual click event method.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void InvokeOnClick(Control? toInvoke, EventArgs e) => toInvoke?.OnClick(e);
+
+    /// <summary>Raises the mouse event stored under the specified event-list key.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void RaiseMouseEvent(object key, MouseEventArgs e) => ((MouseEventHandler?)Events[key])?.Invoke(this, e);
+
+    /// <summary>Restarts active mouse hover and leave tracking.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void ResetMouseEventArgs()
+    {
+        if (!_trackingMouseEvent) { return; }
+        _trackingMouseEvent = false;
+        HookMouseEvent();
     }
 
     /// <summary>
@@ -3141,6 +3412,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     protected virtual void OnVisibleChanged(EventArgs e)
     {
+        if (Visible) { _trackingMouseEvent = false; }
         if (Visible && _handle == 0 && _parent is not null)
         {
             bool canCreate = true;
@@ -3623,9 +3895,133 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     internal nint DispatchWindowMessage(nint hwnd, uint message, nint wParam, nint lParam)
     {
+        // WinForms performs native mouse tracking outside the virtual WndProc.
+        // Direct calls to WndProc therefore do not synthesize MouseEnter, while
+        // native messages still track when a derived control consumes the move.
+        switch (message)
+        {
+            case Win32.WM_MOUSELEAVE:
+                _trackingMouseEvent = false;
+                break;
+            case Win32.WM_MOUSEMOVE when !_trackingMouseEvent:
+                HookMouseEvent();
+                if (!_mouseEnterPending)
+                {
+                    _ = Win32.SendMessageW(hwnd, unchecked((int)s_mouseEnterMessage.Value), 0, 0);
+                }
+                else { _mouseEnterPending = false; }
+                break;
+            case Win32.WM_MOUSEWHEEL:
+                ResetMouseEventArgs();
+                break;
+        }
         Message dispatch = Message.Create(hwnd, unchecked((int)message), wParam, lParam);
         WndProc(ref dispatch);
         return dispatch.Result;
+    }
+
+    private void HookMouseEvent()
+    {
+        if (_trackingMouseEvent) { return; }
+        _trackingMouseEvent = true;
+        Win32.TRACKMOUSEEVENT tracking = new()
+        {
+            cbSize = (uint)Marshal.SizeOf<Win32.TRACKMOUSEEVENT>(),
+            dwFlags = Win32.TME_LEAVE | Win32.TME_HOVER,
+            hwndTrack = NativeHandle,
+            dwHoverTime = 100
+        };
+        _ = Win32.TrackMouseEvent(ref tracking);
+    }
+
+    private static Point MouseMessageLocation(nint lParam)
+        => new(unchecked((short)(long)lParam), unchecked((short)((long)lParam >> 16)));
+
+    private static MouseButtons XMouseButton(nint wParam)
+        => Win32.HighWord(wParam) == 1 ? MouseButtons.XButton1
+            : Win32.HighWord(wParam) == 2 ? MouseButtons.XButton2 : MouseButtons.None;
+
+    private void WmMouseDown(ref Message message, MouseButtons button, int clicks)
+    {
+        MouseButtons realState = MouseButtons;
+        _mousePressed = true;
+        if (!GetStyle(ControlStyles.UserMouse))
+        {
+            DefWndProc(ref message);
+            if (IsDisposed) { return; }
+        }
+        else if (button == MouseButtons.Left && GetStyle(ControlStyles.Selectable))
+        {
+            _ = Focus();
+        }
+
+        if (realState != MouseButtons) { return; }
+        Capture = true;
+        if (realState != MouseButtons) { return; }
+        if (Enabled)
+        {
+            Point point = MouseMessageLocation(message.LParam);
+            OnMouseDown(new MouseEventArgs(button, clicks, point.X, point.Y, 0));
+        }
+    }
+
+    private void WmMouseUp(ref Message message, MouseButtons button)
+    {
+        try
+        {
+            Point point = MouseMessageLocation(message.LParam);
+            Point screen = PointToScreen(point);
+            if (!GetStyle(ControlStyles.UserMouse))
+            {
+                DefWndProc(ref message);
+            }
+            else if (button == MouseButtons.Right)
+            {
+                nint location = unchecked((nint)((screen.X & 0xffff) | ((screen.Y & 0xffff) << 16)));
+                _ = Win32.SendMessageW(Handle, Win32.WM_CONTEXTMENU, Handle, location);
+            }
+
+            // Retain the library's attached context menu route for native
+            // classes that do not produce WM_CONTEXTMENU. Its existing guard
+            // prevents repeating the menu already shown by native processing.
+            if (button == MouseButtons.Right && ContextMenuStrip is not null)
+            {
+                _ = TryShowAttachedContextMenuFromClientPoint(message.HWnd, message.LParam);
+            }
+
+            bool fireClick = GetStyle(ControlStyles.StandardClick) && _mousePressed && !IsDisposed
+                && Win32.WindowFromPoint(new Win32.POINT { x = screen.X, y = screen.Y }) == Handle;
+            if (fireClick)
+            {
+                if (!_doubleClickFired)
+                {
+                    OnClick(new MouseEventArgs(button, 1, point.X, point.Y, 0));
+                    OnMouseClick(new MouseEventArgs(button, 1, point.X, point.Y, 0));
+                }
+                else
+                {
+                    OnDoubleClick(new MouseEventArgs(button, 2, point.X, point.Y, 0));
+                    OnMouseDoubleClick(new MouseEventArgs(button, 2, point.X, point.Y, 0));
+                }
+            }
+            OnMouseUp(new MouseEventArgs(button, 1, point.X, point.Y, 0));
+        }
+        finally
+        {
+            _doubleClickFired = false;
+            _mousePressed = false;
+            Capture = false;
+        }
+    }
+
+    private void WmMouseWheel(ref Message message)
+    {
+        Point point = PointToClient(MouseMessageLocation(message.LParam));
+        HandledMouseEventArgs args = new(MouseButtons.None, 0, point.X, point.Y,
+            unchecked((short)Win32.HighWord(message.WParam)));
+        OnMouseWheel(args);
+        message.Result = args.Handled ? 1 : 0;
+        if (!args.Handled) { DefWndProc(ref message); }
     }
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -3654,8 +4050,73 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             return;
         }
 
+        if (s_mouseEnterMessage.IsValueCreated && unchecked((uint)m.Msg) == s_mouseEnterMessage.Value)
+        {
+            DefWndProc(ref m);
+            OnMouseEnter(EventArgs.Empty);
+            return;
+        }
+
         switch (m.Msg)
         {
+            case Win32.WM_CAPTURECHANGED:
+                OnMouseCaptureChanged(EventArgs.Empty);
+                DefWndProc(ref m);
+                return;
+            case Win32.WM_LBUTTONDOWN:
+                WmMouseDown(ref m, MouseButtons.Left, 1);
+                return;
+            case Win32.WM_RBUTTONDOWN:
+                WmMouseDown(ref m, MouseButtons.Right, 1);
+                return;
+            case Win32.WM_MBUTTONDOWN:
+                WmMouseDown(ref m, MouseButtons.Middle, 1);
+                return;
+            case Win32.WM_XBUTTONDOWN:
+                WmMouseDown(ref m, XMouseButton(m.WParam), 1);
+                return;
+            case Win32.WM_LBUTTONDBLCLK:
+            case Win32.WM_RBUTTONDBLCLK:
+            case Win32.WM_MBUTTONDBLCLK:
+            case Win32.WM_XBUTTONDBLCLK:
+                MouseButtons button = m.Msg switch
+                {
+                    Win32.WM_LBUTTONDBLCLK => MouseButtons.Left,
+                    Win32.WM_RBUTTONDBLCLK => MouseButtons.Right,
+                    Win32.WM_MBUTTONDBLCLK => MouseButtons.Middle,
+                    _ => XMouseButton(m.WParam)
+                };
+                WmMouseDown(ref m, button, 2);
+                if (GetStyle(ControlStyles.StandardDoubleClick)) { _doubleClickFired = true; }
+                return;
+            case Win32.WM_LBUTTONUP:
+                WmMouseUp(ref m, MouseButtons.Left);
+                return;
+            case Win32.WM_RBUTTONUP:
+                WmMouseUp(ref m, MouseButtons.Right);
+                return;
+            case Win32.WM_MBUTTONUP:
+                WmMouseUp(ref m, MouseButtons.Middle);
+                return;
+            case Win32.WM_XBUTTONUP:
+                WmMouseUp(ref m, XMouseButton(m.WParam));
+                return;
+            case Win32.WM_MOUSEMOVE:
+                if (!GetStyle(ControlStyles.UserMouse)) { DefWndProc(ref m); }
+                Point point = MouseMessageLocation(m.LParam);
+                OnMouseMove(new MouseEventArgs(MouseButtons, 0, point.X, point.Y, 0));
+                return;
+            case Win32.WM_MOUSEHOVER:
+                DefWndProc(ref m);
+                OnMouseHover(EventArgs.Empty);
+                return;
+            case Win32.WM_MOUSELEAVE:
+                DefWndProc(ref m);
+                OnMouseLeave(EventArgs.Empty);
+                return;
+            case Win32.WM_MOUSEWHEEL:
+                WmMouseWheel(ref m);
+                return;
             case Win32.WM_PAINT when GetStyle(ControlStyles.UserPaint):
                 PaintWindow(ref m);
                 return;

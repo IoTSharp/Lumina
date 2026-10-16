@@ -95,10 +95,21 @@ internal static class Win32
     public const int WM_KEYUP = 0x0101;
     public const int WM_MOUSEMOVE = 0x0200;
     public const int WM_MOUSELEAVE = 0x02A3;
+    public const int WM_MOUSEHOVER = 0x02A1;
+    public const int WM_MOUSEWHEEL = 0x020A;
+    public const int WM_CAPTURECHANGED = 0x0215;
     public const int WM_LBUTTONDOWN = 0x0201;
     public const int WM_LBUTTONUP = 0x0202;
+    public const int WM_LBUTTONDBLCLK = 0x0203;
     public const int WM_RBUTTONDOWN = 0x0204;
     public const int WM_RBUTTONUP = 0x0205;
+    public const int WM_RBUTTONDBLCLK = 0x0206;
+    public const int WM_MBUTTONDOWN = 0x0207;
+    public const int WM_MBUTTONUP = 0x0208;
+    public const int WM_MBUTTONDBLCLK = 0x0209;
+    public const int WM_XBUTTONDOWN = 0x020B;
+    public const int WM_XBUTTONUP = 0x020C;
+    public const int WM_XBUTTONDBLCLK = 0x020D;
     public const int WM_SETTINGCHANGE = 0x001A;
     public const int WM_COMMAND = 0x0111;
     public const int WM_INITDIALOG = 0x0110;
@@ -214,6 +225,11 @@ internal static class Win32
     public const int IDC_SIZENS = 32645;
     public const int HTCLIENT = 1;
     public const int VK_F10 = 0x79;
+    public const int VK_LBUTTON = 0x01;
+    public const int VK_RBUTTON = 0x02;
+    public const int VK_MBUTTON = 0x04;
+    public const int VK_XBUTTON1 = 0x05;
+    public const int VK_XBUTTON2 = 0x06;
     public const int VK_SHIFT = 0x10;
     public const int VK_CONTROL = 0x11;
     public const int VK_MENU = 0x12;
@@ -318,6 +334,7 @@ internal static class Win32
     public const int MSGF_MENU = 2;
     public const int TRANSPARENT = 1;
     public const uint TME_LEAVE = 0x00000002;
+    public const uint TME_HOVER = 0x00000001;
     public const int MAX_PATH = 260;
 
     public const uint OFN_READONLY = 0x00000001;
@@ -940,6 +957,12 @@ internal static class Win32
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ScreenToClient(nint hWnd, ref POINT lpPoint);
+
+    [DllImport("user32.dll")]
+    internal static extern int MapWindowPoints(nint hWndFrom, nint hWndTo, ref POINT lpPoints, uint cPoints);
+
+    [DllImport("user32.dll")]
+    internal static extern int MapWindowPoints(nint hWndFrom, nint hWndTo, ref RECT lpPoints, uint cPoints);
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern nint SetCapture(nint hWnd);

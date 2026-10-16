@@ -1,9 +1,11 @@
+using System.Drawing;
+
 namespace Lumina.Forms;
 
 /// <summary>
 /// Provides mouse event data.
 /// </summary>
-public sealed class MouseEventArgs : EventArgs
+public class MouseEventArgs : EventArgs
 {
     /// <summary>
     /// Initializes mouse event data.
@@ -46,4 +48,7 @@ public sealed class MouseEventArgs : EventArgs
     /// Gets the mouse wheel delta.
     /// </summary>
     public int Delta { get; }
+
+    /// <summary>Gets the location of the mouse in the control's client coordinates.</summary>
+    public Point Location => new(X, Y);
 }

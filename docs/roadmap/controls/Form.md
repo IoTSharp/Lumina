@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～025标准继承/父子树、句柄/显示、布局、资源、绘制与native双错范围保留；026继承Control-05c/08c的队列终止与原生销毁后有限托管收尾，真实Form独立测试及Demo AOT通过。已有Close/WM_CLOSE和FormClosing.Cancel；历史Created隐藏属性、FormClosing委托、FormClosed/ShowDialog、完整默认/缩放/各关闭原因、完整Dispose资源事务、多UI退出与Designer仍缺，不由继承子范围关闭整Form。
+🟡 **现状：**018～026标准继承/父子树、句柄/显示、布局、绘制与有限资源收尾保留；027不改Form.cs，真实Form消息沿既有DispatchWindowMessage/WndProc继承基础鼠标/坐标/Capture，必要消费回归与Demo AOT检查通过。锁屏下物理点击未验收。历史Created隐藏属性、FormClosing委托、FormClosed/ShowDialog、完整默认/缩放/关闭原因、Dispose资源事务、多UI退出与Designer仍缺，不由继承子范围关闭整Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -46,6 +46,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：Form.cs未改；既有标准消息路径继承027坐标/捕获/鼠标基础，真实Form父子与订阅/坐标回归通过。Demo程序BM_CLICK与WM_CLOSE证据单列，锁屏下成功命中及物理输入未验收；Form-12/完整容器导航、模态/Designer保持未完，见[027](../batches/027.md)。
 
 - 2026-10-16 · 批次026：继承05c/08c的真实Form队列关闭/重建、异步工作与托管子树/Site清理通过独立回归；未改Form.cs，不据基类完成关闭完整Form。按实际代码纠正Form-07仍全待办的历史状态：Close、WM_CLOSE、FormClosing.Cancel和Dispose已存在，父项改部分并保留所有剩余关闭原因/标准事件/资源事务。Demo AOT真实显示/复选框/正常退出/原始HWND失效通过，完整Designer/模态仍未验收，见[026](../batches/026.md)。
 

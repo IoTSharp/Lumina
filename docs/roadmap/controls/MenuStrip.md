@@ -18,7 +18,8 @@
 | ✅ | P0 / MenuStrip-01a | 批次020：现有菜单布局通过标准OnLayout及内部直属Form定位入口执行；暂停延期与直属Form定位有回归；嵌套strip遵守父级约束，本批嵌套定位fixture仅直接覆盖ToolStrip。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P0 / MenuStrip-02 | 完整传递 ToolStripMenuItem 的 ShortcutKeys/ShortcutKeyDisplayString/ShowShortcutKeys、CheckOnClick/Checked/CheckState、DropDownItems 和启用状态。 |
 | ⬜ | P1 / MenuStrip-03 | 实现 MenuActivate/MenuDeactivate，Alt/F10 进入、Esc 逐层退出、左右同级切换、上下/Enter 选项与焦点还原；不依赖鼠标才能打开菜单。 |
-| ⬜ | P1 / MenuStrip-04 | 动态 Items/DropDownItems 增删、文本/图像/勾选/可见性变化在已打开或下一次打开时准确同步；Click/ItemClicked 与关闭事件顺序捕获。 |
+| 🟡 | P1 / MenuStrip-04 | 027完成04a私有顶层宿主共享Click事件槽；动态Items/DropDownItems增删、文本/图像/勾选/可见性同步、Click/ItemClicked与关闭顺序仍待完整对照。 |
+| ✅ | P1 / MenuStrip-04a | 批次027：私有TopLevelMenuItemHost移除独立Click，既有WM_LBUTTONUP位置调用继承OnClick，保留菜单原激活路径。25项消费回归包含该宿主订阅去重；仅事件槽衔接，不关闭完整菜单输入、Alt/F10/焦点或ItemClicked。 |
 | ⬜ | P1 / MenuStrip-05 | 实现 MdiWindowListItem、AllowMerge、ToolStripManager.Merge/RevertMerge 相关场景；MdiClient 未完成时明确阻塞，不能单独标已支持。 |
 | ⬜ | P1 / MenuStrip-06 | 核验助记键冲突、&& 转义、快捷键在 TextBox 等编辑控件聚焦时的优先级、禁用/隐藏父菜单下命令是否可触发。 |
 | 🟡 | P1 / MenuStrip-07 | 022完成07a有效字体/显式颜色消费；完整RTL/DPI/长标题/图像透明/.resx本地化和可访问性层级仍待验收。 |
@@ -41,6 +42,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：私有TopLevelMenuItemHost复用Control.Click/OnClick，避免新基类事件与宿主独立事件分裂；既有鼠标释放处理位置不变，新增宿主回归通过。仅04a代码完成，04父项保持部分，完整键盘/激活/设备交互仍缺，见[027](../batches/027.md)。
 
 - 2026-10-16 · 批次022：07a接入有效Font/HFONT及显式前景/背景父链，默认palette不写public颜色。修复继承ToolStrip的宿主兼容检查把Label派生菜单标题误判为Button而在字体布局时替换的问题，现保留宿主引用并重新测量；08按实际顶层宿主/HMENU实现更正为部分。全部菜单激活/MDI/Renderer/DPI/Designer与三平台不关闭，见[022](../batches/022.md)。
 

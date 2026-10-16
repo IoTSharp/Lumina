@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-🟡 [Button.cs](../../../Lumina.Forms/Button.cs) 直接继承 Control；已有 BUTTON/BS_PUSHBUTTON、BN_CLICKED→Click、PerformClick。PerformClick 直接调用事件；缺 ButtonBase、DialogResult、NotifyDefault、IButtonControl 和验证/默认按钮协作，不能把可点击等同完整兼容。
+🟡 [Button.cs](../../../Lumina.Forms/Button.cs) 直接继承 Control；已有 BUTTON/BS_PUSHBUTTON、BN_CLICKED→Click、PerformClick。027使PerformClick、BN_CLICKED和Control类型订阅共用OnClick/事件槽；缺 ButtonBase、DialogResult、NotifyDefault、IButtonControl 和验证/默认按钮协作，不能把可点击等同完整兼容。
 
 源码定位：[Lumina.Forms/Button.cs](../../../Lumina.Forms/Button.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：ButtonBase、Control 输入路由、Form.AcceptButton / CancelButton / DialogResult、验证与焦点链。
 
@@ -20,7 +20,8 @@
 | Button-002 | P1 | 🟡 | 已有 Click / PerformClick 入口接统一动作；Enabled=false、Visible=false、未创建句柄、CausesValidation=true 且验证失败时，按真实 WinForms 比对是否执行及事件次数。 |
 | Button-003 | P1 | ⬜ | DialogResult 默认 None，属性变更不立即关闭；点击后写入所属模态 Form.DialogResult，测试 None/OK/Cancel、嵌套容器与无父窗体。 |
 | Button-004 | P1 | ⬜ | NotifyDefault(bool)、IsDefault、Form.AcceptButton/CancelButton；切换焦点/默认按钮、Enter/Escape、按钮移出或被 Dispose 后均不留下过期引用。 |
-| Button-005 | P1 | ⬜ | 鼠标、空格、Enter、Alt 助记键、PerformClick、辅助技术默认动作采用可比较的事件记录；MouseDown/Up、Click、命令执行、验证、FormClosing 顺序逐项对照基线。 |
+| Button-005 | P1 | 🟡 | 027完成005a共享Click/原生通知衔接；鼠标与空格/Enter/Alt助记键、辅助技术、命令/验证/FormClosing完整顺序仍待对照。默认owner draw/UserMouse与当前native样式及BM_CLICK顺序差异保留。 |
+| Button-005a | P1 | ✅ | 批次027：移除遮蔽Control的独立Click事件，OnClick覆盖转发base，PerformClick/BN_CLICKED进入同一虚事件槽；StandardClick/StandardDoubleClick关闭以避免base鼠标重复激活。只关闭该必要接入，ButtonBase/FlatStyle/验证/默认按钮仍缺。 |
 | Button-006 | P1 | ⬜ | AutoSizeMode 默认 GrowOnly 按基线确认；配合 AutoSize=false 默认值、最小尺寸、换行图文、TextImageRelation 和 DPI，禁用当前硬编码最小高度造成的布局偏移。 |
 | Button-007 | P2 | ⬜ | 按钮公开 DoubleClick / MouseDoubleClick 的隐藏与实际事件行为按 API 元数据和原生行为验证；不要因继承 Control 而引入基线不会触发的双击。 |
 | Button-008 | P2 | ⬜ | Button 图像/背景/FlatStyle/UseVisualStyleBackColor 的创建前与创建后写入保持一致，句柄重建不能丢失默认按钮状态。 |
@@ -41,6 +42,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次027：移除遮蔽Control的独立Click事件，OnClick覆盖转发base，PerformClick/BN_CLICKED进入同一虚事件槽；StandardClick/StandardDoubleClick关闭以避免base鼠标重复激活。只关闭该必要接入，ButtonBase/FlatStyle/验证/默认按钮仍缺。 027完成005a共享Click/原生通知衔接；鼠标与空格/Enter/Alt助记键、辅助技术、命令/验证/FormClosing完整顺序仍待对照。默认owner draw/UserMouse与当前native样式及BM_CLICK顺序差异保留。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 
 - 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
 

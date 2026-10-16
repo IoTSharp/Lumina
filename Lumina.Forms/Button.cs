@@ -10,7 +10,7 @@ public class Button : Control
     /// </summary>
     public Button()
     {
-        SetStyle(ControlStyles.UserPaint, false);
+        SetStyle(ControlStyles.UserPaint | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
         Margin = new Padding(3);
     }
 
@@ -18,11 +18,6 @@ public class Button : Control
     /// Gets or sets a value indicating whether the control should use system visual styles for its background.
     /// </summary>
     public bool UseVisualStyleBackColor { get; set; } = true;
-
-    /// <summary>
-    /// Occurs when the user activates the button.
-    /// </summary>
-    public event EventHandler? Click;
 
     /// <summary>
     /// Programmatically raises the button click action.
@@ -85,8 +80,8 @@ public class Button : Control
     /// Raises the <see cref="Click"/> event.
     /// </summary>
     /// <param name="e">The event arguments.</param>
-    protected virtual void OnClick(EventArgs e)
+    protected override void OnClick(EventArgs e)
     {
-        Click?.Invoke(this, e);
+        base.OnClick(e);
     }
 }

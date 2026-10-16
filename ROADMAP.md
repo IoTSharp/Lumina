@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次026完成Control-05c/08c：已接受InvokeAsync任务关闭/投递失败终止、实际HWND已销毁后异常继续正常托管清理，保留取消先后、已开始异步工作和标准托管短路。4,243测试（新增48）通过，双目标Release 0错误/643警告；25标准场景16同/9增强差异，另7旧Task仅Lumina，32场景JIT/实际AOT全同。探针/Demo AOT为3,851,776/4,289,024字节且CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。旧004/005各两行关闭差异、025四差异和警告保留，完整输入/绘制/Designer/资源/DPI、全部Dispose/线程竞态、Linux/macOS及完整Control/Form仍缺；固定1,095类型/61,240行/187页与运行unverified不变。下一批沿Control-13坐标、捕获和鼠标输入推进，见[验证记录](docs/roadmap/validation.md)和[026](docs/roadmap/batches/026.md)。
+批次027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪及五处必要消费者共享Click子范围。4,289测试（新增21+25）通过，双目标Release 0错误/645警告；25共同场景549行、固定参考20同/5差异，JIT/实际AOT24同/1异常文本差异，所有进程exit0。锁屏导致参考10、JIT/AOT20次WindowFromPoint命中失败，成功命中与物理点击未验收。生命周期204及消息绘制558行参考/JIT回归全同。输入探针/Demo AOT为3,107,840/4,298,752字节且CLR目录0；Demo原生窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0/原HWND全失效，无强制清理。13项目/17目标仅.NET10、官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API已重导出但固定1,095类型/61,240行/187页及运行unverified不变。完整Control/派生输入/键盘验证/资源Designer/平台和旧差异仍未关闭。下一批沿Control-12焦点、选择导航与必要容器链推进，见[验证记录](docs/roadmap/validation.md)、[027](docs/roadmap/batches/027.md)和[028](docs/roadmap/batches/028.md)。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)
