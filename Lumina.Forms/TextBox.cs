@@ -27,6 +27,7 @@ public class TextBox : Control
     /// </summary>
     public TextBox()
     {
+        SetStyle(ControlStyles.UserPaint, false);
     }
 
     /// <summary>
@@ -36,6 +37,7 @@ public class TextBox : Control
     /// <param name="readOnly">Whether the control should reject user edits.</param>
     public TextBox(bool multiline, bool readOnly = false)
     {
+        SetStyle(ControlStyles.UserPaint, false);
         _multiline = multiline;
         _readOnly = readOnly;
 

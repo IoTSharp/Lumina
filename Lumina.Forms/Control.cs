@@ -1,4 +1,4 @@
-// Layout, preferred-size and appearance portions adapted from dotnet/winforms v10.0.11.
+// Layout, appearance, message and painting portions adapted from dotnet/winforms v10.0.11.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses those portions under the MIT license.
 
@@ -6,6 +6,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -23,6 +24,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
     private static readonly Win32.WindowProc s_subclassProc = SubclassWindowProcThunk;
     private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
+    private const string DefaultWindowClassName = "Lumina.Forms.Control";
+    [ThreadStatic]
+    private static Control? s_creatingControl;
 
     private string _text = string.Empty;
     private int _left;
@@ -78,6 +82,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _autoSize;
     private Rectangle? _specifiedBounds;
     private Size _preferredSizeCache;
+    private CreateParams? _createParams;
+    private string? _lastLegacyClassName;
+    private ControlStyles _controlStyle = ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint
+        | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick
+        | ControlStyles.UseTextForAccessibility | ControlStyles.Selectable;
+    private bool _exceptionWhilePainting;
 
     internal bool CachePreferredSize { get; set; }
     internal bool ParticipatesInLayout => _visible;
@@ -766,6 +776,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public event EventHandler? FontChanged;
 
+    [Category("Appearance")]
+    public event PaintEventHandler? Paint;
+
+    [Category("Behavior")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public event InvalidateEventHandler? Invalidated;
+
+    [Category("Behavior")]
+    public event EventHandler? StyleChanged;
+
     /// <summary>
     /// Gets or sets the text displayed by the control.
     /// </summary>
@@ -825,15 +845,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             if (_parent is not null)
             {
                 Color inherited = _parent.BackColor;
-                if (inherited.IsEmpty || inherited.A == 255) { return inherited; }
+                if (inherited.IsEmpty || inherited.A == 255 || GetStyle(ControlStyles.SupportsTransparentBackColor)) { return inherited; }
             }
             return DefaultBackColor;
         }
         set
         {
-            // The base native control does not support transparent backgrounds.
-            // Transparent ControlStyles and their paint contract are a separate scope.
-            if (!value.IsEmpty && value.A < 255)
+            if (!value.IsEmpty && !GetStyle(ControlStyles.SupportsTransparentBackColor) && value.A < 255)
             {
                 throw new ArgumentException("Control does not support transparent background colors.");
             }
@@ -915,7 +933,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _nativeFontDirty = false;
             try
             {
-                if (NativeHandle != 0)
+                if (NativeHandle != 0 && !GetStyle(ControlStyles.UserPaint))
                 {
                     _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETFONT, replacement, (nint)1);
                 }
@@ -932,7 +950,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     internal void ApplyFontToHandle()
     {
-        if (NativeHandle == 0) { return; }
+        if (NativeHandle == 0 || GetStyle(ControlStyles.UserPaint)) { return; }
         nint previous = _nativeFontHandle;
         nint font = NativeFontHandle;
         if (NativeHandle != 0 && previous == font)
@@ -1161,7 +1179,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets the Win32 class name used to create the underlying child window.
     /// </summary>
-    protected virtual string ClassName => "STATIC";
+    protected virtual string ClassName => DefaultWindowClassName;
 
     /// <summary>
     /// Gets the Win32 style flags used when creating the underlying child window.
@@ -1172,6 +1190,90 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Gets optional Win32 extended style flags for the underlying child window.
     /// </summary>
     protected virtual uint ExStyle => 0;
+
+    /// <summary>Gets the native parameters used when creating or updating the control's window.</summary>
+    protected virtual CreateParams CreateParams
+    {
+        get
+        {
+            CreateParams parameters = _createParams ??= new CreateParams();
+            string legacyClassName = ClassName;
+            // The standard base class has no public native class name. Retain
+            // the historical ClassName extension for existing native controls.
+            if (legacyClassName != DefaultWindowClassName || _lastLegacyClassName != legacyClassName)
+            {
+                parameters.ClassName = legacyClassName == DefaultWindowClassName ? null : legacyClassName;
+            }
+            _lastLegacyClassName = legacyClassName;
+            // WinForms exposes a null caption for an unassigned Text value in
+            // CreateParams. Native creation still supplies an empty string
+            // when the caption is null.
+            parameters.Caption = _text.Length == 0 ? null : _text;
+            parameters.X = _left;
+            parameters.Y = _top;
+            parameters.Width = _width;
+            parameters.Height = _height;
+            uint style = Style & ~(Win32.WS_VISIBLE | Win32.WS_DISABLED | Win32.WS_TABSTOP);
+            style = _topLevel ? style & ~Win32.WS_CHILD : style | Win32.WS_CHILD;
+            if (_visible) { style |= Win32.WS_VISIBLE; }
+            if (!Enabled) { style |= Win32.WS_DISABLED; }
+            if (TabStop) { style |= Win32.WS_TABSTOP; }
+            parameters.Style = unchecked((int)style);
+            parameters.ExStyle = unchecked((int)ExStyle);
+            if (GetStyle(ControlStyles.ContainerControl)) { parameters.ExStyle |= (int)Win32.WS_EX_CONTROLPARENT; }
+            parameters.ClassStyle = (int)Win32.CS_DBLCLKS;
+            parameters.Parent = _topLevel ? 0 : _parent?.NativeHandle ?? 0;
+            return parameters;
+        }
+    }
+
+    [Category("Behavior")]
+    protected virtual bool DoubleBuffered
+    {
+        get => GetStyle(ControlStyles.OptimizedDoubleBuffer);
+        set
+        {
+            if (value == DoubleBuffered) { return; }
+            SetStyle(value ? ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint
+                : ControlStyles.OptimizedDoubleBuffer, value);
+        }
+    }
+
+    protected bool ResizeRedraw
+    {
+        get => GetStyle(ControlStyles.ResizeRedraw);
+        set => SetStyle(ControlStyles.ResizeRedraw, value);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected bool GetStyle(ControlStyles flag) => (_controlStyle & flag) == flag;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void SetStyle(ControlStyles flag, bool value)
+        => _controlStyle = value ? _controlStyle | flag : _controlStyle & ~flag;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void UpdateStyles()
+    {
+        if (NativeHandle != 0)
+        {
+            CreateParams parameters = CreateParams;
+            if (_visible) { parameters.Style |= (int)Win32.WS_VISIBLE; }
+            if (unchecked((int)(nuint)Win32.GetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE)) != parameters.Style)
+            {
+                _ = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE, unchecked((nint)parameters.Style));
+            }
+            if (unchecked((int)(nuint)Win32.GetWindowLongPtrW(NativeHandle, Win32.GWL_EXSTYLE)) != parameters.ExStyle)
+            {
+                _ = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWL_EXSTYLE, unchecked((nint)parameters.ExStyle));
+            }
+            _ = Win32.SetWindowPos(NativeHandle, 0, 0, 0, 0, 0,
+                Win32.SWP_FRAMECHANGED | Win32.SWP_NOACTIVATE | Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER);
+            UpdateBoundsFromNativeWindow();
+            Invalidate(true);
+        }
+        OnStyleChanged(EventArgs.Empty);
+    }
 
     /// <summary>
     /// Gets a value indicating whether this control should materialize a native child window.
@@ -1452,24 +1554,73 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Invalidates the control so the underlying native window repaints.
     /// </summary>
     public void Invalidate()
+        => Invalidate(false);
+
+    public void Invalidate(bool invalidateChildren)
     {
-        if (NativeHandle != 0)
+        if (NativeHandle == 0) { return; }
+        if (invalidateChildren)
         {
-            _ = Win32.InvalidateRect(NativeHandle, 0, true);
+            _ = Win32.RedrawWindow(NativeHandle, 0, 0, Win32.RDW_INVALIDATE | Win32.RDW_ERASE | Win32.RDW_ALLCHILDREN);
         }
+        else { _ = Win32.InvalidateRect(NativeHandle, 0, !GetStyle(ControlStyles.Opaque)); }
+        NotifyInvalidate(ClientRectangle);
+    }
+
+    public void Invalidate(Rectangle rc) => Invalidate(rc, false);
+
+    public unsafe void Invalidate(Rectangle rc, bool invalidateChildren)
+    {
+        if (rc.IsEmpty) { Invalidate(invalidateChildren); return; }
+        if (NativeHandle == 0) { return; }
+        Win32.RECT rectangle = new() { Left = rc.Left, Top = rc.Top, Right = rc.Right, Bottom = rc.Bottom };
+        if (invalidateChildren)
+        {
+            _ = Win32.RedrawWindow(NativeHandle, (nint)(&rectangle), 0,
+                Win32.RDW_INVALIDATE | Win32.RDW_ERASE | Win32.RDW_ALLCHILDREN);
+        }
+        else { _ = Win32.InvalidateRect(NativeHandle, (nint)(&rectangle), !GetStyle(ControlStyles.Opaque)); }
+        NotifyInvalidate(rc);
+    }
+
+    public void Invalidate(Region? region) => Invalidate(region, false);
+
+    public void Invalidate(Region? region, bool invalidateChildren)
+    {
+        if (region is null) { Invalidate(invalidateChildren); return; }
+        if (NativeHandle == 0) { return; }
+        using Graphics graphics = Graphics.FromHwnd(NativeHandle);
+        nint regionHandle = region.GetHrgn(graphics);
+        try
+        {
+            if (invalidateChildren)
+            {
+                _ = Win32.RedrawWindow(NativeHandle, 0, regionHandle,
+                    Win32.RDW_INVALIDATE | Win32.RDW_ERASE | Win32.RDW_ALLCHILDREN);
+            }
+            else { _ = Win32.InvalidateRgn(NativeHandle, regionHandle, !GetStyle(ControlStyles.Opaque)); }
+            // The Region overload deliberately calls OnInvalidated directly.
+            OnInvalidated(new InvalidateEventArgs(Rectangle.Ceiling(region.GetBounds(graphics))));
+        }
+        finally { _ = Win32.DeleteObject(regionHandle); }
+    }
+
+    public void Update()
+    {
+        if (NativeHandle != 0) { _ = Win32.UpdateWindow(NativeHandle); }
     }
 
     /// <summary>
     /// Forces the control to repaint immediately.
     /// </summary>
-    public void Refresh()
+    public virtual void Refresh()
     {
-        if (NativeHandle != 0)
-        {
-            Invalidate();
-            _ = Win32.UpdateWindow(NativeHandle);
-        }
+        Invalidate(true);
+        Update();
     }
+
+    /// <summary>Creates a drawing surface for the control. The caller owns the returned graphics.</summary>
+    public Graphics CreateGraphics() => Graphics.FromHwnd(Handle);
 
     /// <summary>
     /// Sets input focus to the control.
@@ -1943,43 +2094,59 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         try
         {
             if (!ShouldCreateNativeHandle) { return; }
-            int nativeHeight = GetNativeHeight(_height);
-            nint parentHandle = _parent?._handle ?? 0;
-            if (parentHandle == 0 && !_topLevel) { parentHandle = GetParkingWindow(); }
-
-            // Install the subclass before showing the window, so the initial
-            // WM_SHOWWINDOW follows HandleCreated and creates the visible tree.
-            uint style = _topLevel ? Style & ~Win32.WS_CHILD : Style | Win32.WS_CHILD;
-            _handle = Win32.CreateWindowExW(
-                ExStyle, ClassName, _text, style & ~Win32.WS_VISIBLE,
-                _left, _top, _width, nativeHeight, parentHandle, (nint)Id,
-                Owner?.InstanceHandle ?? Win32.GetModuleHandleW(null), 0);
-
-            if (_handle == 0)
+            CreateParams parameters = CreateParams;
+            int logicalHeight = parameters.Height;
+            int nativeHeight = GetNativeHeight(logicalHeight);
+            nint parentHandle = parameters.Parent;
+            uint style = unchecked((uint)parameters.Style);
+            if (parentHandle == 0 && (style & Win32.WS_CHILD) != 0) { parentHandle = GetParkingWindow(); }
+            nint instance = Owner?.InstanceHandle ?? Win32.GetModuleHandleW(null);
+            NativeWindowClassRegistration windowClass = NativeWindowClass.GetOrRegister(
+                parameters.ClassName, parameters.ClassStyle, Marshal.GetFunctionPointerForDelegate(s_subclassProc), instance);
+            _originalWindowProc = windowClass.OriginalWindowProc;
+            if (parameters.Caption is { Length: > short.MaxValue } caption) { parameters.Caption = caption[..short.MaxValue]; }
+            using NativeCreateParameter nativeParameter = NativeCreateParameter.Create(parameters.Param);
+            Control? previousCreatingControl = s_creatingControl;
+            s_creatingControl = this;
+            nint createdHandle;
+            try
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error(), $"Failed to create control '{ClassName}'.");
+                // Association happens at WM_NCCREATE, before any native class
+                // messages reach the standard virtual WndProc. lpParam remains
+                // the caller's marshalled CreateParams.Param throughout.
+                createdHandle = Win32.CreateWindowExW(
+                    unchecked((uint)parameters.ExStyle), windowClass.Name, parameters.Caption ?? string.Empty,
+                    style & ~Win32.WS_VISIBLE, parameters.X, parameters.Y, parameters.Width, nativeHeight,
+                    parentHandle, (nint)Id, instance, nativeParameter.Pointer);
             }
-
-            if (_width < 0 || _height < 0)
+            finally { s_creatingControl = previousCreatingControl; }
+            if (createdHandle == 0)
             {
-                if (!Win32.GetWindowRect(_handle, out Win32.RECT bounds))
+                int error = Marshal.GetLastWin32Error();
+                if (_handle != 0 && !Win32.IsWindow(_handle)) { ClearNativeHandle(); }
+                throw new Win32Exception(error, $"Failed to create control '{parameters.ClassName}'.");
+            }
+            try
+            {
+                if (_handle != createdHandle) { RegisterNativeHandle(createdHandle); }
+                if (!Win32.GetWindowRect(createdHandle, out Win32.RECT bounds))
                 {
-                    int error = Marshal.GetLastWin32Error();
-                    _ = Win32.DestroyWindow(_handle);
-                    _handle = 0;
-                    throw new Win32Exception(error);
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
+                Win32.POINT location = new() { x = bounds.Left, y = bounds.Top };
+                if ((style & Win32.WS_CHILD) != 0 && parentHandle != 0)
+                {
+                    _ = Win32.ScreenToClient(parentHandle, ref location);
+                }
+                _left = location.x;
+                _top = location.y;
                 _width = bounds.Right - bounds.Left;
-                _height = nativeHeight == _height ? bounds.Bottom - bounds.Top : Math.Max(0, _height);
+                _height = nativeHeight == logicalHeight ? bounds.Bottom - bounds.Top : Math.Max(0, logicalHeight);
+                UpdateClientSize();
             }
-            UpdateClientSize();
-            try { RegisterSubclass(); }
             catch (Exception registrationException)
             {
-                // Until subclass registration succeeds, WM_NCDESTROY may not
-                // reach us. Roll back the newly allocated HWND explicitly and
-                // keep the registration exception (including its Win32 error).
-                nint failedHandle = _handle;
+                nint failedHandle = createdHandle;
                 bool destroyed = Win32.DestroyWindow(failedHandle);
                 int destroyError = Marshal.GetLastWin32Error();
                 if (destroyed || !Win32.IsWindow(failedHandle))
@@ -1997,11 +2164,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 throw;
             }
             ApplyFontToHandle();
+            // Handle recreation preserves the current native text even when a
+            // derived CreateParams override supplies a temporary caption.
+            if (_text.Length != 0) { _ = Win32.SetWindowTextW(_handle, _text); }
             _ = Win32.EnableWindow(_handle, Enabled);
             UpdateChildZOrder();
             ApplyTheme();
             NotifyNativeHandleCreated();
-            if (_visible && _handle != 0) { _ = Win32.ShowWindow(_handle, Win32.SW_SHOW); }
+            if ((style & Win32.WS_VISIBLE) != 0 && _handle != 0) { _ = Win32.ShowWindow(_handle, Win32.SW_SHOW); }
         }
         finally { EndNativeHandleCreation(); }
     }
@@ -2055,16 +2225,21 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             if (NativeHandle != 0) { s_controlsByHandle.Remove(NativeHandle); }
         }
-        if (_recreatingHandle) { _threadDispatcher?.SuspendForRecreation(); }
-        else
+        try
         {
-            _threadDispatcher?.Close();
-            _threadDispatcher = null;
+            if (_recreatingHandle) { _threadDispatcher?.SuspendForRecreation(); }
+            else { _threadDispatcher?.Close(); }
         }
-        _originalWindowProc = 0;
-        _handle = 0;
-        _created = false;
-        ReleaseNativeFont();
+        finally
+        {
+            // Completion can fail if a caller disposed an invocation's wait
+            // handle. Native ownership must still be released in that case.
+            if (!_recreatingHandle) { _threadDispatcher = null; }
+            _originalWindowProc = 0;
+            _handle = 0;
+            _created = false;
+            ReleaseNativeFont();
+        }
     }
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -2380,8 +2555,207 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <param name="e">The event arguments.</param>
     protected virtual void OnResize(EventArgs e)
     {
+        if (GetStyle(ControlStyles.ResizeRedraw) || _exceptionWhilePainting) { Invalidate(); }
         RequestLayout(this, nameof(Bounds));
         Resize?.Invoke(this, e);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnStyleChanged(EventArgs e) => StyleChanged?.Invoke(this, e);
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void NotifyInvalidate(Rectangle invalidatedArea)
+        => OnInvalidated(new InvalidateEventArgs(invalidatedArea));
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnInvalidated(InvalidateEventArgs e)
+    {
+        if (_controls is { } children)
+        {
+            // Invalidated handlers can remove or dispose siblings. Re-read the
+            // live count, as WinForms does, instead of retaining the old span.
+            for (int index = 0; index < children.Count; index++)
+            {
+                Control child = children[index];
+                if (child.NativeHandle == 0 || !child.GetStyle(ControlStyles.SupportsTransparentBackColor)
+                    || child.BackColor.A == 255) { continue; }
+                Rectangle rectangle = e.InvalidRect;
+                rectangle.Offset(-child.Left, -child.Top);
+                rectangle = Rectangle.Intersect(child.ClientRectangle, rectangle);
+                if (!rectangle.IsEmpty) { child.Invalidate(rectangle); }
+            }
+        }
+        Invalidated?.Invoke(this, e);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPaint(PaintEventArgs e) => Paint?.Invoke(this, e);
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPaintBackground(PaintEventArgs pevent)
+    {
+        // A direct call before creation must not create a window. WinForms
+        // paints the actual native client rectangle, which is then empty.
+        _ = Win32.GetClientRect(NativeHandle, out Win32.RECT client);
+        ArgumentNullException.ThrowIfNull(pevent, "e");
+        Rectangle rectangle = Rectangle.FromLTRB(client.Left, client.Top, client.Right, client.Bottom);
+        Color color = BackColor;
+        if (GetStyle(ControlStyles.SupportsTransparentBackColor) && color.A < 255)
+        {
+            PaintTransparentBackground(pevent, rectangle);
+        }
+        if (color.A != 0)
+        {
+            using SolidBrush brush = new(color);
+            pevent.Graphics.FillRectangle(brush, rectangle);
+        }
+    }
+
+    protected void InvokePaint(Control c, PaintEventArgs e) => c.OnPaint(e);
+
+    protected void InvokePaintBackground(Control c, PaintEventArgs e) => c.OnPaintBackground(e);
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPrint(PaintEventArgs e)
+    {
+        ArgumentNullException.ThrowIfNull(e);
+        if (GetStyle(ControlStyles.UserPaint))
+        {
+            PaintWithErrorHandling(e, background: true);
+            // Only internally created native printing arguments request the
+            // SaveState behavior. Public PaintEventArgs borrow the caller's
+            // graphics, including changes made by OnPaintBackground.
+            if (e is PrintPaintEventArgs printArgs) { printArgs.ResetGraphics(); }
+            PaintWithErrorHandling(e, background: false);
+        }
+        else if (e is PrintPaintEventArgs printArgs)
+        {
+            Message message = printArgs.Message;
+            DefWndProc(ref message);
+        }
+        else
+        {
+            nint hdc = e.Graphics.GetHdc();
+            try
+            {
+                Message message = Message.Create(Handle, Win32.WM_PRINTCLIENT, hdc, (nint)0x1E);
+                DefWndProc(ref message);
+            }
+            finally { e.Graphics.ReleaseHdc(hdc); }
+        }
+    }
+
+    private void PaintTransparentBackground(PaintEventArgs e, Rectangle rectangle)
+    {
+        if (_parent is null)
+        {
+            using SolidBrush brush = new(SystemColors.Control);
+            e.Graphics.FillRectangle(brush, rectangle);
+            return;
+        }
+        GraphicsState state = e.Graphics.Save();
+        try
+        {
+            e.Graphics.TranslateTransform(-Left, -Top);
+            Rectangle parentClip = rectangle;
+            parentClip.Offset(Left, Top);
+            using PaintEventArgs parentArgs = new(e.Graphics, parentClip);
+            InvokePaintBackground(_parent, parentArgs);
+            InvokePaint(_parent, parentArgs);
+        }
+        finally { e.Graphics.Restore(state); }
+    }
+
+    private void PaintWithErrorHandling(PaintEventArgs e, bool background)
+    {
+        if (_exceptionWhilePainting)
+        {
+            if (background) { PaintException(e); }
+            return;
+        }
+        try
+        {
+            if (!background) { OnPaint(e); }
+            else if (!GetStyle(ControlStyles.Opaque)) { OnPaintBackground(e); }
+        }
+        catch
+        {
+            _exceptionWhilePainting = true;
+            Invalidate();
+            throw;
+        }
+    }
+
+    private void PaintException(PaintEventArgs e)
+    {
+        Rectangle clientRectangle = ClientRectangle;
+        Rectangle rectangle = clientRectangle;
+        using Pen pen = new(Color.Red, 2);
+        rectangle.X++;
+        rectangle.Y++;
+        rectangle.Width--;
+        rectangle.Height--;
+        e.Graphics.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width - 1, rectangle.Height - 1);
+        rectangle.Inflate(-1, -1);
+        e.Graphics.FillRectangle(Brushes.White, rectangle);
+        e.Graphics.DrawLine(pen, clientRectangle.Left, clientRectangle.Top, clientRectangle.Right, clientRectangle.Bottom);
+        e.Graphics.DrawLine(pen, clientRectangle.Left, clientRectangle.Bottom, clientRectangle.Right, clientRectangle.Top);
+    }
+
+    private sealed class PrintPaintEventArgs : PaintEventArgs
+    {
+        private GraphicsState? _savedGraphicsState;
+
+        internal PrintPaintEventArgs(Message message, Graphics graphics, Rectangle clipRectangle)
+            : base(graphics, clipRectangle)
+        {
+            Message = message;
+            _savedGraphicsState = graphics.Save();
+        }
+
+        internal Message Message { get; }
+
+        internal void ResetGraphics()
+        {
+            if (_savedGraphicsState is not { } state) { return; }
+            Graphics.Restore(state);
+            _savedGraphicsState = null;
+        }
+    }
+
+    private void PaintWindow(ref Message message)
+    {
+        bool buffered = DoubleBuffered || GetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint);
+        bool beginPaint = message.WParam == 0;
+        Win32.PAINTSTRUCT paint = default;
+        nint hdc = beginPaint ? Win32.BeginPaint(message.HWnd, out paint) : message.WParam;
+        try
+        {
+            Rectangle clip = beginPaint
+                ? Rectangle.FromLTRB(paint.rcPaint.Left, paint.rcPaint.Top, paint.rcPaint.Right, paint.rcPaint.Bottom)
+                : ClientRectangle;
+            if (buffered && (clip.Width <= 0 || clip.Height <= 0)) { return; }
+            if (hdc == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
+            bool background = (beginPaint && GetStyle(ControlStyles.AllPaintingInWmPaint)) || buffered;
+            using BufferedGraphics? buffer = buffered ? BufferedGraphicsManager.Current.Allocate(hdc, ClientRectangle) : null;
+            using Graphics? directGraphics = buffer is null ? Graphics.FromHdc(hdc) : null;
+            Graphics graphics = buffer?.Graphics ?? directGraphics!;
+            if (buffer is not null) { graphics.SetClip(clip); }
+            using PaintEventArgs args = new(graphics, clip);
+            if (background)
+            {
+                GraphicsState state = graphics.Save();
+                PaintWithErrorHandling(args, background: true);
+                graphics.Restore(state);
+            }
+            PaintWithErrorHandling(args, background: false);
+            buffer?.Render();
+        }
+        finally
+        {
+            if (beginPaint) { _ = Win32.EndPaint(message.HWnd, ref paint); }
+        }
+        message.Result = 0;
     }
 
     /// <summary>
@@ -2872,24 +3246,6 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static uint ToArgb(Color color)
         => unchecked((uint)color.ToArgb());
 
-    private void RegisterSubclass()
-    {
-        if (_handle == 0 || _originalWindowProc != 0)
-        {
-            return;
-        }
-
-        nint subclassPointer = Marshal.GetFunctionPointerForDelegate(s_subclassProc);
-        nint previousWindowProc = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWLP_WNDPROC, subclassPointer);
-        if (previousWindowProc == 0)
-        {
-            throw new Win32Exception(Marshal.GetLastWin32Error());
-        }
-
-        _originalWindowProc = previousWindowProc;
-        RegisterNativeHandle(_handle);
-    }
-
     private static nint SubclassWindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
     {
         Control? control;
@@ -2898,14 +3254,30 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _ = s_controlsByHandle.TryGetValue(hwnd, out control);
         }
 
-        if (control is null)
-        {
-            return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
-        }
-
         try
         {
-            return control.SubclassWindowProc(hwnd, message, wParam, lParam);
+            try
+            {
+                if (control is null && s_creatingControl is { NativeHandle: 0 } creating)
+                {
+                    control = creating;
+                    control.RegisterNativeHandle(hwnd);
+                }
+                return control is null
+                    ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
+                    : control.DispatchWindowMessage(hwnd, message, wParam, lParam);
+            }
+            finally
+            {
+                // Native lifetime bookkeeping must run even when a derived
+                // message handler consumes WM_NCDESTROY or throws. Cleanup is
+                // also inside the exception boundary of this native callback.
+                if (message == Win32.WM_NCDESTROY && control is not null)
+                {
+                    lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
+                    if (control.NativeHandle == hwnd) { control.ClearNativeHandle(); }
+                }
+            }
         }
         catch (Exception exception)
         {
@@ -2914,48 +3286,82 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             ReportNativeWindowException(exception);
             return 0;
         }
-        finally
-        {
-            // Native lifetime bookkeeping must run even when a derived control
-            // handles WM_NCDESTROY itself or its message handler throws.
-            if (message == Win32.WM_NCDESTROY)
-            {
-                lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
-                if (control.NativeHandle == hwnd) { control.ClearNativeHandle(); }
-            }
-        }
     }
 
-    private nint SubclassWindowProc(nint hwnd, uint message, nint wParam, nint lParam)
+    internal nint DispatchWindowMessage(nint hwnd, uint message, nint wParam, nint lParam)
     {
-        if (message == Win32.WM_DESTROY) { NotifyNativeHandleDestroyed(hwnd); }
-        if (_threadDispatcher?.TryDispatch(message) == true)
+        Message dispatch = Message.Create(hwnd, unchecked((int)message), wParam, lParam);
+        WndProc(ref dispatch);
+        return dispatch.Result;
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void DefWndProc(ref Message m)
+    {
+        m.Result = _originalWindowProc != 0
+            ? Win32.CallWindowProcW(_originalWindowProc, m.HWnd, unchecked((uint)m.Msg), m.WParam, m.LParam)
+            : Win32.DefWindowProcW(m.HWnd, unchecked((uint)m.Msg), m.WParam, m.LParam);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_DESTROY) { NotifyNativeHandleDestroyed(m.HWnd); }
+        if (_threadDispatcher?.TryDispatch(unchecked((uint)m.Msg)) == true)
         {
-            return 0;
+            m.Result = 0;
+            return;
         }
 
-        if (HandleWindowMessage(message, wParam, lParam, out nint interceptedResult))
+        // Retain existing control-specific native hooks inside the standard
+        // virtual entry, so WndProc overrides can observe every native message.
+        if (HandleWindowMessage(unchecked((uint)m.Msg), m.WParam, m.LParam, out nint interceptedResult))
         {
-            return interceptedResult;
+            m.Result = interceptedResult;
+            return;
         }
 
-        nint result = _originalWindowProc != 0
-            ? Win32.CallWindowProcW(_originalWindowProc, hwnd, message, wParam, lParam)
-            : Win32.DefWindowProcW(hwnd, message, wParam, lParam);
-
-        if (message == Win32.WM_SHOWWINDOW) { NotifyNativeVisibilityChanged(wParam != 0); }
-
-        if (message == Win32.WM_CONTEXTMENU && ContextMenuStrip is not null && TryShowAttachedContextMenu(hwnd, lParam))
+        switch (m.Msg)
         {
-            return 0;
+            case Win32.WM_PAINT when GetStyle(ControlStyles.UserPaint):
+                PaintWindow(ref m);
+                return;
+            case Win32.WM_ERASEBKGND when GetStyle(ControlStyles.UserPaint):
+                if (!GetStyle(ControlStyles.AllPaintingInWmPaint))
+                {
+                    if (m.WParam == 0) { m.Result = 0; return; }
+                    _ = Win32.GetClientRect(m.HWnd, out Win32.RECT client);
+                    using Graphics graphics = Graphics.FromHdc(m.WParam);
+                    using PaintEventArgs args = new(graphics,
+                        Rectangle.FromLTRB(client.Left, client.Top, client.Right, client.Bottom));
+                    PaintWithErrorHandling(args, background: true);
+                }
+                m.Result = 1;
+                return;
+            case Win32.WM_PRINTCLIENT when GetStyle(ControlStyles.UserPaint):
+                if (m.WParam != 0)
+                {
+                    using Graphics graphics = Graphics.FromHdc(m.WParam);
+                    using PaintEventArgs args = new PrintPaintEventArgs(m, graphics, ClientRectangle);
+                    OnPrint(args);
+                }
+                m.Result = 0;
+                return;
         }
 
-        if (message == Win32.WM_RBUTTONUP && ContextMenuStrip is not null)
+        DefWndProc(ref m);
+        if (m.Msg == Win32.WM_SHOWWINDOW) { NotifyNativeVisibilityChanged(m.WParam != 0); }
+
+        if (m.Msg == Win32.WM_CONTEXTMENU && ContextMenuStrip is not null && TryShowAttachedContextMenu(m.HWnd, m.LParam))
         {
-            _ = TryShowAttachedContextMenuFromClientPoint(hwnd, lParam);
+            m.Result = 0;
+            return;
         }
 
-        return result;
+        if (m.Msg == Win32.WM_RBUTTONUP && ContextMenuStrip is not null)
+        {
+            _ = TryShowAttachedContextMenuFromClientPoint(m.HWnd, m.LParam);
+        }
     }
 
     private WindowThreadDispatcher? FindMarshalingDispatcher()
@@ -3107,8 +3513,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private Size GetNonClientSize()
     {
+        CreateParams parameters = CreateParams;
         Win32.RECT rectangle = default;
-        if (!Win32.AdjustWindowRectEx(ref rectangle, Style, false, ExStyle))
+        if (!Win32.AdjustWindowRectEx(ref rectangle, unchecked((uint)parameters.Style), false, unchecked((uint)parameters.ExStyle)))
         {
             throw new Win32Exception(Marshal.GetLastWin32Error());
         }

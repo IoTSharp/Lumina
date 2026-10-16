@@ -15,6 +15,7 @@ public class TreeView : Control
     /// </summary>
     public TreeView()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(6);
         Nodes = new TreeNodeCollection();
     }

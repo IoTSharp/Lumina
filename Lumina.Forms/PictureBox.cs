@@ -21,6 +21,9 @@ public class PictureBox : Control, ISupportInitialize
     private Size _sourceImageSize;
     private PictureBoxSizeMode _sizeMode;
 
+    /// <summary>Initializes an image box drawn by the native static control.</summary>
+    public PictureBox() => SetStyle(ControlStyles.UserPaint, false);
+
     /// <summary>
     /// Occurs when the user activates the picture box.
     /// </summary>

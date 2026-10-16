@@ -61,6 +61,8 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 
 ## 修改历史
 
+- 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
+
 - 2026-10-16 · 批次016历史回标：移除当前结论中已过时的ListViewItem(string)基础空引用阻塞，保留001/003的原始修复提交和证据；任务01只标部分完成，未改变ListView源码，Items/Columns/完整所属/native及默认值差异仍缺，不新增验收声明。
 
 - `2fb513a` · 2026-04-09：提交包含 ListView 功能和异步调用增强；现有集合仍未与原生内容同步。

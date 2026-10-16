@@ -16,6 +16,7 @@ public class GroupBox : ContainerControlBase
     /// </summary>
     public GroupBox()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Padding = new Padding(3);
         Size = new Size(200, 100);
     }

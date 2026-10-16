@@ -44,6 +44,8 @@
 
 ## 修改历史
 
+- 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
+
 - 2026-10-16 · 批次022：010由全待办改部分，010a明确关闭基础字体所有权/继承及必要颜色默认；不再将外部Font会被Dispose写成当前问题。公开属性准确默认与native palette消费分离，3条默认前景色差异保留；TextBoxBase标准继承、ReadOnlyChanged/完整事件、PreferredHeight/DPI/IME和Designer仍缺。固定TextBoxBase v10.0.11源码及hash保存在022证据目录。
 
 以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：

@@ -9,11 +9,12 @@ namespace Lumina.Forms;
 /// </summary>
 public class Form : ContainerControl
 {
-    private const string WindowClassName = "LuminaFormsWindow";
-    private static bool s_registered;
+    [ThreadStatic]
+    private static FormCreationContext? t_creatingForm;
 
     private readonly Dictionary<int, Control> _controlsById = [];
     private GCHandle _selfHandle;
+    private nint _formDefaultWindowProc;
     private bool _shown;
     private bool _loaded;
     private bool _showing;
@@ -145,6 +146,20 @@ public class Form : ContainerControl
 
     protected override uint ExStyle => WindowExStyle;
 
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            CreateParams parameters = base.CreateParams;
+            if (StartPosition != FormStartPosition.Manual)
+            {
+                parameters.X = Win32.CW_USEDEFAULT;
+                parameters.Y = Win32.CW_USEDEFAULT;
+            }
+            return parameters;
+        }
+    }
+
     internal WindowThreadDispatcher? ThreadDispatcher => NativeThreadDispatcher;
 
     internal nint InstanceHandle { get; private set; }
@@ -237,47 +252,63 @@ public class Form : ContainerControl
         }
     }
 
-    private void CreateFormHandle()
+    private unsafe void CreateFormHandle()
     {
         PerformAutoScale();
         InstanceHandle = Win32.GetModuleHandleW(null);
-        EnsureWindowClassRegistered(InstanceHandle);
 
         // Resolve virtual properties before acquiring the per-window strong
         // reference, so a failed getter can be retried without losing a GCHandle.
-        uint windowExStyle = WindowExStyle;
-        string windowText = Text;
-        uint windowStyle = WindowStyle;
-        int windowLeft = StartPosition == FormStartPosition.Manual ? Left : Win32.CW_USEDEFAULT;
-        int windowTop = StartPosition == FormStartPosition.Manual ? Top : Win32.CW_USEDEFAULT;
-        int windowWidth = Width;
-        int windowHeight = Height;
+        CreateParams parameters = CreateParams;
+        NativeWindowClassRegistration windowClass = NativeWindowClass.GetOrRegister(
+            parameters.ClassName, parameters.ClassStyle,
+            (nint)(delegate* unmanaged[Stdcall]<nint, uint, nint, nint, nint>)&WindowProcThunk,
+            InstanceHandle, DefaultAppIconProvider.GetIconHandle());
+        using NativeCreateParameter nativeParameter = NativeCreateParameter.Create(parameters.Param);
+        string? caption = parameters.Caption;
+        if (caption?.Length > short.MaxValue) { caption = caption[..short.MaxValue]; }
 
         _selfHandle = GCHandle.Alloc(this);
+        _formDefaultWindowProc = windowClass.OriginalWindowProc;
 
         Application.NotifyWindowCreated();
-        nint hwnd = Win32.CreateWindowExW(
-            windowExStyle,
-            WindowClassName,
-            windowText,
-            windowStyle,
-            windowLeft,
-            windowTop,
-            windowWidth,
-            windowHeight,
-            0,
-            0,
-            InstanceHandle,
-            GCHandle.ToIntPtr(_selfHandle));
+        FormCreationContext? previousCreation = t_creatingForm;
+        t_creatingForm = new(this);
+        nint hwnd;
+        int creationError;
+        try
+        {
+            hwnd = Win32.CreateWindowExW(
+                unchecked((uint)parameters.ExStyle), windowClass.Name, caption ?? string.Empty,
+                unchecked((uint)parameters.Style) & ~Win32.WS_VISIBLE,
+                parameters.X, parameters.Y, parameters.Width, parameters.Height,
+                parameters.Parent, 0, InstanceHandle, nativeParameter.Pointer);
+            creationError = Marshal.GetLastWin32Error();
+        }
+        catch
+        {
+            // A failed native call can throw before a window exists. Keep a
+            // live window rooted, but release an unused creation reference.
+            if (NativeHandle == 0)
+            {
+                if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
+                _formDefaultWindowProc = 0;
+            }
+            throw;
+        }
+        finally
+        {
+            t_creatingForm = previousCreation;
+        }
 
         if (hwnd == 0)
         {
-            int err = Marshal.GetLastWin32Error();
+            if (NativeHandle != 0 && !Win32.IsWindow(NativeHandle)) { ClearNativeHandle(); }
             if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
-            throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {err}");
+            _formDefaultWindowProc = 0;
+            throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {creationError}");
         }
 
-        RegisterNativeHandle(hwnd);
         ApplyFontToHandle();
         UpdateBoundsFromNativeWindow();
         _ = Win32.EnableWindow(hwnd, Enabled);
@@ -1019,74 +1050,93 @@ public class Form : ContainerControl
         ownsBrush = false;
     }
 
-    private static unsafe void EnsureWindowClassRegistered(nint instanceHandle)
-    {
-        if (s_registered)
-        {
-            return;
-        }
-
-        nint defaultIconHandle = DefaultAppIconProvider.GetIconHandle();
-        var windowClass = new Win32.WNDCLASSEXW
-        {
-            cbSize = (uint)Marshal.SizeOf<Win32.WNDCLASSEXW>(),
-            style = Win32.CS_HREDRAW | Win32.CS_VREDRAW,
-            lpfnWndProc = (nint)(delegate* unmanaged[Stdcall]<nint, uint, nint, nint, nint>)&WindowProcThunk,
-            hInstance = instanceHandle,
-            hIcon = defaultIconHandle,
-            hCursor = Win32.LoadCursorW(0, (nint)Win32.IDC_ARROW),
-            hbrBackground = Win32.GetSysColorBrush(Win32.COLOR_BTNFACE),
-            lpszClassName = WindowClassName,
-            hIconSm = defaultIconHandle,
-        };
-
-        ushort atom = Win32.RegisterClassExW(ref windowClass);
-        int regError = Marshal.GetLastWin32Error();
-        if (atom == 0 && regError != 1410 /* ERROR_CLASS_ALREADY_EXISTS */)
-        {
-            throw new InvalidOperationException($"Failed to register the native window class. Win32 error: {regError}");
-        }
-
-        s_registered = true;
-    }
-
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
     private static nint WindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
     {
-        if (message == Win32.WM_NCCREATE)
+        Form? self = null;
+        try
         {
-            var createStruct = ReadCreateStruct(lParam);
-            Win32.SetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA, createStruct.lpCreateParams);
-        }
-
-        nint userData = Win32.GetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA);
-        if (userData != 0)
-        {
-            var self = (Form?)GCHandle.FromIntPtr(userData).Target;
-            if (self is not null)
+            _ = TryGetControlByHandle(hwnd, out Control? control);
+            self = control as Form;
+            if (self is null && t_creatingForm is { WindowHandle: 0 } pending)
             {
-                try
+                // Associate on the first callback (which can precede NCCREATE)
+                // without occupying a system class's GWLP_USERDATA slot. The
+                // pending context is consumed once and restored by the caller
+                // around nested or reentrant window creation.
+                self = pending.Form;
+                pending.WindowHandle = hwnd;
+                self.RegisterNativeHandle(hwnd);
+            }
+
+            try
+            {
+                return self is null
+                    ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
+                    : self.DispatchWindowMessage(hwnd, message, wParam, lParam);
+            }
+            finally
+            {
+                // A derived WndProc may consume this message or throw. The
+                // native lifetime still ends and must release every root.
+                if (message == Win32.WM_NCDESTROY && self is not null)
                 {
-                    return self.WindowProc(hwnd, message, wParam, lParam);
-                }
-                catch (Exception exception)
-                {
-                    // A managed event cannot unwind through USER32. Preserve
-                    // the exception through the application's existing UI route.
-                    try { Application.OnThreadException(exception); }
-                    catch (Exception reportingException)
-                    {
-                        Environment.FailFast("The application UI thread exception handler failed.", reportingException);
-                    }
-                    return 0;
+                    self.ReleaseDestroyedFormHandle(hwnd);
                 }
             }
         }
-
-        return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+        catch (Exception exception)
+        {
+            // Include association and final cleanup in the native exception
+            // boundary so no managed exception unwinds through USER32.
+            try { Application.OnThreadException(exception); }
+            catch (Exception reportingException)
+            {
+                Environment.FailFast("The application UI thread exception handler failed.", reportingException);
+            }
+            return 0;
+        }
     }
 
-    private nint WindowProc(nint hwnd, uint message, nint wParam, nint lParam)
+    private void ReleaseDestroyedFormHandle(nint hwnd)
+    {
+        if (NativeHandle != hwnd) { return; }
+        try
+        {
+            try { ReleaseMainMenuStrip(); }
+            finally { ReleasePaletteResources(); }
+        }
+        finally
+        {
+            try { ClearNativeHandle(); }
+            finally
+            {
+                if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
+                _formDefaultWindowProc = 0;
+                if (Disposing) { UnregisterOpenForm(); }
+            }
+        }
+    }
+
+    protected override void DefWndProc(ref Message m)
+    {
+        if (_formDefaultWindowProc != 0)
+        {
+            m.Result = Win32.CallWindowProcW(_formDefaultWindowProc, m.HWnd,
+                unchecked((uint)m.Msg), m.WParam, m.LParam);
+        }
+        else
+        {
+            base.DefWndProc(ref m);
+        }
+    }
+
+    protected override void WndProc(ref Message message)
+    {
+        message.Result = WindowProc(message.HWnd, unchecked((uint)message.Msg), message.WParam, message.LParam, ref message);
+    }
+
+    private nint WindowProc(nint hwnd, uint message, nint wParam, nint lParam, ref Message managedMessage)
     {
         if (ThreadDispatcher?.TryDispatch(message) == true)
         {
@@ -1097,12 +1147,12 @@ public class Form : ContainerControl
         {
             case Win32.WM_SHOWWINDOW:
             {
-                nint result = Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+                DefWndProc(ref managedMessage);
                 if (!_restoringNativeVisibility)
                 {
                     NotifyNativeVisibilityChanged(wParam != 0);
                 }
-                return result;
+                return managedMessage.Result;
             }
 
             case Win32.WM_MOVE:
@@ -1239,33 +1289,16 @@ public class Form : ContainerControl
                 return 0;
 
             case Win32.WM_DESTROY:
-                NotifyNativeHandleDestroyed(hwnd);
-                return 0;
-
-            case Win32.WM_NCDESTROY:
-                try
-                {
-                    ReleaseMainMenuStrip();
-                    ReleasePaletteResources();
-                }
-                finally
-                {
-                    try { ClearNativeHandle(); }
-                    finally
-                    {
-                        Win32.SetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA, 0);
-                        if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
-                        if (Disposing) { UnregisterOpenForm(); }
-                    }
-                }
-
-                return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+                base.WndProc(ref managedMessage);
+                return managedMessage.Result;
 
             default:
-                return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+                base.WndProc(ref managedMessage);
+                return managedMessage.Result;
         }
 
-        return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+        base.WndProc(ref managedMessage);
+        return managedMessage.Result;
     }
 
     private bool HandleCommand(nint wParam, nint lParam)
@@ -1625,9 +1658,10 @@ public class Form : ContainerControl
         ObjectDisposedException.ThrowIf(IsDisposed, this);
     }
 
-    private static unsafe Win32.CREATESTRUCTW ReadCreateStruct(nint lParam)
+    private sealed class FormCreationContext(Form form)
     {
-        return MemoryMarshal.Read<Win32.CREATESTRUCTW>(new ReadOnlySpan<byte>((void*)lParam, sizeof(Win32.CREATESTRUCTW)));
+        internal Form Form { get; } = form;
+        internal nint WindowHandle { get; set; }
     }
 
 }

@@ -9,8 +9,8 @@ Source adaptations
   Repository: https://github.com/dotnet/winforms
   Source baseline: v10.0.11
   Upstream license: MIT
-  Lumina.Forms layout, preferred-size, and related container algorithms include
-  adaptations of the upstream implementation. Adapted files retain the upstream
+  Lumina.Forms layout, preferred-size, window-message, painting, and related
+  control contracts include adaptations of the upstream implementation. Adapted files retain the upstream
   license header. The applicable notice is reproduced here:
 
 The MIT License (MIT)

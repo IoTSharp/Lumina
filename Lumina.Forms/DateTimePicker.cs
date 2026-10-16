@@ -7,6 +7,9 @@ public class DateTimePicker : Control
 {
     private DateTime _value = DateTime.Now;
 
+    /// <summary>Initializes a date picker drawn by the native common control.</summary>
+    public DateTimePicker() => SetStyle(ControlStyles.UserPaint, false);
+
     /// <summary>
     /// Gets or sets the current date value.
     /// </summary>

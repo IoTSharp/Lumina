@@ -19,6 +19,7 @@ public class TabControl : ContainerControlBase
     /// </summary>
     public TabControl()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Size = new Size(200, 100);
         Margin = new Padding(3);
     }

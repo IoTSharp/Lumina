@@ -7,6 +7,9 @@ public class ProgressBar : Control
 {
     private int _value;
 
+    /// <summary>Initializes a progress bar drawn by the native common control.</summary>
+    public ProgressBar() => SetStyle(ControlStyles.UserPaint, false);
+
     /// <summary>
     /// Gets or sets the current progress value.
     /// </summary>

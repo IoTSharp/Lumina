@@ -16,6 +16,7 @@ public class ComboBox : Control
     /// </summary>
     public ComboBox()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         _itemsCollection = new ItemCollection(this);
     }
 

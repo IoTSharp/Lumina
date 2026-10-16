@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～022的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [022结果](docs/roadmap/batches/022.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
+**001～023的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [023结果](docs/roadmap/batches/023.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次022完成Control-11b基础Font/BackColor/ForeColor局部值、父级继承/Reset/通知及08b借用Font/独占HFONT寿命，必要Form/TextBox/GroupBox/Tab/条带消费接入。16场景212行JIT与实际AOT全同；对固定10.0.11仍有13条真实差异：10条基础Control缺UserPaint路径的WM_GETFONT，3条默认palette前景色，strictMatches=false。4,138项测试（新增31）通过，旧默认布局512/事务394/生命周期204/集合391行参考/JIT均同；双目标Release 0错误/478警告，Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。探针2,971,136字节、Demo4,196,352字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。 固定1,095类型/61,240行分母不变，见[验证记录](docs/roadmap/validation.md)。下批[023](docs/roadmap/batches/023.md)沿Control-14/17标准消息、样式与真实绘制接续，不恢复无关循环或暂停巡检。
+批次023完成Control-14a/17a与Form-16a：标准消息/创建参数、基础样式/用户绘制/失效更新及必要Form衔接；系统控件保留原类过程。4,158项测试（新增20）通过，双目标Release 0错误/635警告；18场景558行JIT严格同固定10.0.11，实际AOT有4条自定义Param差异，strictMatches=false。外观212行JIT/AOT全同，参考差异由13减至3条默认palette前景，原10条字体差异已由真实UserPaint修复。四组旧回归通过；Demo AOT真实显示、复选框0→1、exit0/窗口全销毁。Message.GetLParam(Type)和Demo既有IL3050保留。BackgroundImage/可见透明/完整绘制、输入/DPI/Designer/资源/模态与GTK4/AppKit未关闭；固定1,095类型/61,240行/187页与运行unverified不变，见[验证记录](docs/roadmap/validation.md)。下批[024](docs/roadmap/batches/024.md)优先修已释放等待句柄导致的投递关闭队列中断，再沿Control-14补背景绘制；不恢复无关循环或暂停巡检。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)

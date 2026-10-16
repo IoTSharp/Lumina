@@ -11,10 +11,12 @@ internal static class Win32
 
     public const uint CS_VREDRAW = 0x0001;
     public const uint CS_HREDRAW = 0x0002;
+    public const uint CS_DBLCLKS = 0x0008;
 
     public const uint WS_OVERLAPPED = 0x00000000;
     public const uint WS_CHILD = 0x40000000;
     public const uint WS_VISIBLE = 0x10000000;
+    public const uint WS_DISABLED = 0x08000000;
     public const uint WS_CLIPCHILDREN = 0x02000000;
     public const uint WS_CLIPSIBLINGS = 0x04000000;
     public const uint WS_CAPTION = 0x00C00000;
@@ -59,9 +61,16 @@ internal static class Win32
     public const int SW_MAXIMIZE = 3;
 
     public const int GWL_STYLE = -16;
+    public const int GWL_EXSTYLE = -20;
     public const uint SWP_NOSIZE = 0x0001;
     public const uint SWP_NOMOVE = 0x0002;
+    public const uint SWP_NOZORDER = 0x0004;
     public const uint SWP_NOACTIVATE = 0x0010;
+    public const uint SWP_FRAMECHANGED = 0x0020;
+
+    public const uint RDW_INVALIDATE = 0x0001;
+    public const uint RDW_ERASE = 0x0004;
+    public const uint RDW_ALLCHILDREN = 0x0080;
 
     public const int WM_MOVE = 0x0003;
     public const int WM_SIZE = 0x0005;
@@ -378,6 +387,25 @@ internal static class Win32
         public nint hbrBackground;
         public string? lpszMenuName;
         public string? lpszClassName;
+        public nint hIconSm;
+    }
+
+    // Native class information may contain a MAKEINTRESOURCE menu identifier.
+    // Keep both string pointers raw when reading or cloning a system class.
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct WNDCLASSEXW_NATIVE
+    {
+        public uint cbSize;
+        public uint style;
+        public nint lpfnWndProc;
+        public int cbClsExtra;
+        public int cbWndExtra;
+        public nint hInstance;
+        public nint hIcon;
+        public nint hCursor;
+        public nint hbrBackground;
+        public nint lpszMenuName;
+        public nint lpszClassName;
         public nint hIconSm;
     }
 
@@ -719,6 +747,13 @@ internal static class Win32
     [DllImport("user32.dll", EntryPoint = "RegisterClassExW", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern ushort RegisterClassExW(ref WNDCLASSEXW lpwcx);
 
+    [DllImport("user32.dll", EntryPoint = "RegisterClassExW", SetLastError = true)]
+    internal static extern ushort RegisterClassExW(ref WNDCLASSEXW_NATIVE lpwcx);
+
+    [DllImport("user32.dll", EntryPoint = "GetClassInfoExW", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetClassInfoExW(nint instance, string className, ref WNDCLASSEXW_NATIVE windowClass);
+
     [DllImport("user32.dll", EntryPoint = "CreateWindowExW", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern nint CreateWindowExW(
         uint dwExStyle,
@@ -882,6 +917,14 @@ internal static class Win32
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool InvalidateRect(nint hWnd, nint lpRect, bool bErase);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool InvalidateRgn(nint hWnd, nint hRgn, [MarshalAs(UnmanagedType.Bool)] bool erase);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool RedrawWindow(nint hWnd, nint lprcUpdate, nint hrgnUpdate, uint flags);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

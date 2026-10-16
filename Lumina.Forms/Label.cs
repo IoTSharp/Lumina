@@ -7,6 +7,9 @@ namespace Lumina.Forms;
 /// </summary>
 public class Label : Control
 {
+    /// <summary>Initializes a label drawn by the native static control.</summary>
+    public Label() => SetStyle(ControlStyles.UserPaint, false);
+
     public ContentAlignment TextAlign { get; set; } = ContentAlignment.MiddleLeft;
 
     /// <inheritdoc />

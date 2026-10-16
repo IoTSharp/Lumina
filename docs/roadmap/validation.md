@@ -442,3 +442,15 @@ Control-09d/10c、Panel-03a、Form-10b和六容器明确子范围代码完成，
 首次fixture两次编译失败及首次4136/4138、资源诊断失败保留。MenuStrip真正修复标题宿主类型误判导致字体布局替换；Form WM_GETFONT=0符合其窗口过程，资源测试改查实际持有HFONT。旧GetObjectType对已删除对象仍回type6，实际本机GetObjectW=0且字段0/Disposed/窗口消失，据此采用联合释放断言，不延时或手动删除目标句柄。完整日志、PE、项目依赖与索引结果见artifacts/compatibility-batch022/evidence.json和[022](batches/022.md)。
 
 按实际代码纠正GroupBox已继承Controls/部分默认/Win32、Form旧缩放/原生窗口、TabControl/ToolStrip/MenuStrip原生路径及Control/FND绘制局部代码的全待办错标；未完父项/ID/固定分母保留。13项目/17目标仅.NET10，原Demo源码/Designer/resx未改，Windows官方Drawing10.0.0且net10.0无WinForms/Resources.Extensions/自有Drawing。API重导出及README实施列/tasks.csv由原工具重生成，所有运行状态仍unverified，不从数量推98%。
+
+## 批次 023 · 2026-10-16 标准消息、样式与基础绘制
+
+Control-14a/17a、Form-16a明确范围代码完成，父项及整Control保持部分。多个内部智能体分别负责核心、契约/Form、参考探针，互斥文件；主统一顺序集成、文档/API/索引和Git。4,158项测试全部通过，新增20项，0失败/跳过；双目标Release 0错误/635警告。默认布局512、事务394、生命周期204、集合391行旧参考/JIT回归全同，旧AOT不重复声称通过。
+
+18独立STA场景558行JIT严格同固定WinForms10.0.11；实际AOT运行558行，554相同，4条custom CreateParams.Param差异保留strictMatches=false/aotMatches=false，精确边界aotInScopeMatches=true。最终run 20261016-101835-1132631，参考run 20261016-091744-1927945，源码SHA256 B9964B910AE3E42AF3D2E988BC0E806C924EA43186B20CF1D78CBDD9B62E18F7；三端54个场景进程均exit0/complete/无超时。Message.GetLParam(Type)的IL3050仍在，显式根化Payload成功不证明任意marshaller。
+
+外观最终run 20261016-101947-4132109由原batch022驱动保存：16场景212行JIT/AOT严格全同，对旧固定参考仍3条默认palette前景差异，driver exit1；原10条字体消息差异由真实UserPaint窗口修复。原022的13条失败记录保留。消息/外观AOT探针分别3,088,896/3,091,968字节，Demo4,265,984字节，三者CLR目录0；Demo实际显示、复选框0→1、正常exit0、记录窗口全销毁/无强制清理，既有InheritanceAttribute/Enum.GetValues(Type) IL3050保留。
+
+公共OnPrint借用Graphics并保留背景回调的状态修改；native打印在前景前恢复背景状态。真实背景/前景绘制异常报告原异常并绘制后续错误表面；Form截获或抛NCDESTROY仍清root/映射/画刷，Control完成失败仍释放句柄/HFONT。透明失效回调移除/Dispose子项的重入已有回归。另确认已释放AsyncWaitHandle使WindowThreadDispatcher.Close中断余下队列、DestroyHandle预先Close可能抛出，保留Control-04/FND-002并优先留024。
+
+证据限于明确场景：透明/alpha探针没有HWND，PRINTCLIENT像素为位图，不证明屏幕透明合成；隐藏窗口失效主要核参数/通知。BackgroundImage/Layout、可见透明/完整owner draw/消息反射/缓冲失败回退/压力、完整输入/ambient/DPI/Designer/资源/模态及GTK4/AppKit仍未完成。13项目/17目标均.NET10，原始Demo/Designer/resx未改，Windows官方Drawing及net10.0依赖边界保持；API与任务索引重生成，固定1,095类型/61,240行/187页/运行unverified不变。全部证据和原失败见artifacts/compatibility-batch023/evidence.json及[023](batches/023.md)，不从任务或测试数推导98%。

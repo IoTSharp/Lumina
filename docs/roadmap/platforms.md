@@ -32,7 +32,9 @@ XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：�
 
 以上是候选实现，**不是已实现状态**。GTK 的样式是 Linux 工具包原生；不承诺每个桌面环境外观完全相同。AppKit 组合必须使用系统控件，不将 NSTableView/NSOutlineView 等同于完整 DataGridView/TreeView。表格虚拟化、编辑、数据绑定、事件顺序仍由库对齐。
 
-2026-10-16 · 批次022新增Windows官方Drawing字体消费证据：基础托管继承、TextBox真实LOGFONT及每Control独占HFONT创建/替换/失败重建/销毁有JIT与实际AOT/独立资源测试。完整Font/DPI/Designer资源和GTK4/AppKit仍未实现或验收，XPL-001～003状态不因此关闭；基础UserPaint与默认theme差异见[022](batches/022.md)。
+2026-10-16 · 批次023新增Windows官方Drawing基础用户绘制与消息证据：真实WM_PAINT/ERASEBKGND/PRINTCLIENT、借用Graphics和native打印状态、错误表面、销毁清理及实际AOT运行。原基础Control UserPaint的十条字体差异已修，custom Param AOT四差异/动态GetLParam IL3050、默认palette三差异仍在；无HWND透明探针及PRINTCLIENT位图不证明屏幕透明合成。完整资源/绘制与GTK4/AppKit未完成，XPL-001～003不由本批关闭，见[023](batches/023.md)。
+
+2026-10-16 · 批次022历史字体消费证据：基础托管继承、TextBox真实LOGFONT及每Control独占HFONT创建/替换/失败重建/销毁有JIT与实际AOT/独立资源测试。完整Font/DPI/Designer资源和GTK4/AppKit未因此完成，基础UserPaint与默认theme当时的差异保存在[022](batches/022.md)。
 
 ## 必须先解决的资源契约
 

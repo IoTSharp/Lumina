@@ -14,6 +14,7 @@ public class MonthCalendar : Control
     /// </summary>
     public MonthCalendar()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Size = s_defaultMinimumSize;
     }
 

@@ -149,7 +149,8 @@ namespace LuminaCompatibility
         public static bool IsCheckbox(DemoWindowInfo window)
         {
             bool button = window.ClassName.Equals("BUTTON", StringComparison.OrdinalIgnoreCase)
-                || window.ClassName.StartsWith("WindowsForms10.BUTTON.", StringComparison.OrdinalIgnoreCase);
+                || window.ClassName.StartsWith("WindowsForms10.BUTTON.", StringComparison.OrdinalIgnoreCase)
+                || window.ClassName.StartsWith("LuminaFormsWindow.BUTTON.", StringComparison.OrdinalIgnoreCase);
             int kind = window.Style & 0xF;
             return button && (kind == 2 || kind == 3 || kind == 5 || kind == 6)
                 && window.Caption.Equals("Enable option", StringComparison.Ordinal)

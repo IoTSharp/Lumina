@@ -16,6 +16,7 @@ public class ListBox : Control
     /// </summary>
     public ListBox()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         _itemsCollection = new ObjectCollection(this);
     }
 

@@ -23,6 +23,7 @@ public class ListView : Control
     /// </summary>
     public ListView()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(6);
     }
 

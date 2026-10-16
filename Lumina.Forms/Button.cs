@@ -10,6 +10,7 @@ public class Button : Control
     /// </summary>
     public Button()
     {
+        SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(3);
     }
 

@@ -7,6 +7,9 @@ public class RadioButton : Control
 {
     private bool _checked;
 
+    /// <summary>Initializes a radio button drawn by the native button control.</summary>
+    public RadioButton() => SetStyle(ControlStyles.UserPaint, false);
+
     /// <summary>
     /// Gets or sets a value indicating whether the control should use system visual styles for its background.
     /// </summary>
