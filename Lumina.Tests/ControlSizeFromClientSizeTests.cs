@@ -207,7 +207,7 @@ public class ControlSizeFromClientSizeTests
         {
             using var form = native ? new Form() : null;
             using TraceControl control = Create(form, border);
-            nint handle = control.Handle;
+            nint handle = control.IsHandleCreated ? control.Handle : 0;
             var nestedInput = new Size(97, 61);
             control.ActionPoint = point;
             control.AtPoint = () =>
@@ -225,7 +225,7 @@ public class ControlSizeFromClientSizeTests
             Assert.Equal(nested == "direct" ? Array.Empty<string>() : nested == "client"
                 ? new[] { "Resize", "SizeChanged", "ClientSizeChanged", "ClientSizeChanged" }
                 : new[] { "Resize", "SizeChanged", "ClientSizeChanged" }, control.Events);
-            Assert.Equal(handle, control.Handle);
+            Assert.Equal(handle, control.IsHandleCreated ? control.Handle : 0);
             Assert.Equal(native, control.IsHandleCreated);
         });
 
@@ -302,7 +302,7 @@ public class ControlSizeFromClientSizeTests
             nativeWindow = new Size(window.Right - window.Left, window.Bottom - window.Top);
             nativeClient = new Rectangle(client.Left, client.Top, client.Right - client.Left, client.Bottom - client.Top);
         }
-        return new Snapshot(control.Bounds, control.ClientSize, control.ClientRectangle, control.IsHandleCreated, control.Handle, nativeWindow, nativeClient);
+        return new Snapshot(control.Bounds, control.ClientSize, control.ClientRectangle, control.IsHandleCreated, control.IsHandleCreated ? control.Handle : 0, nativeWindow, nativeClient);
     }
 
     private static void OnSta(Action action)

@@ -178,14 +178,14 @@ public class Splitter : Control
         _dragging = true;
         _dragAnchor = point;
         _initialTargetSize = IsHorizontal ? target.Width : target.Height;
-        _ = Win32.SetCapture(Handle);
+        _ = Win32.SetCapture(NativeHandle);
         return true;
     }
 
     private void EndSplit()
     {
         _dragging = false;
-        if (Handle != 0 && Win32.GetCapture() == Handle)
+        if (NativeHandle != 0 && Win32.GetCapture() == NativeHandle)
         {
             _ = Win32.ReleaseCapture();
         }

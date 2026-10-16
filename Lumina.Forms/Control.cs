@@ -53,6 +53,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _topLevel;
     private nint _parkingWindow;
     private bool _applyingBounds;
+    private nint _handle;
+    private bool _created;
+    private bool _creatingHandle;
+    private bool _recreatingHandle;
+    private bool _destroyingHandle;
+    private bool _handleDestroyedNotified;
+    private bool _parentRecreatingHandle;
 
     /// <summary>
     /// Initializes a control and installs the thread's UI synchronization context when enabled.
@@ -124,16 +131,42 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets the native Win32 window handle after the control has been created.
+    /// Gets the native window handle, creating it on first access.
     /// </summary>
-    public nint Handle { get; internal set; }
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DispId(-515)]
+    public nint Handle
+    {
+        get
+        {
+            if (_handle == 0) { CreateHandle(); }
+            return _handle;
+        }
+    }
+
+    // Native existence checks must never materialize a window.
+    internal nint NativeHandle => _handle;
 
     /// <summary>
     /// Gets or sets an arbitrary user-defined value associated with the control.
     /// </summary>
     public object? Tag { get; set; }
 
-    public virtual bool IsHandleCreated => Handle != 0;
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool IsHandleCreated => _handle != 0;
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool Created => _created;
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool RecreatingHandle => _recreatingHandle;
 
     /// <summary>
     /// Gets whether the control's native window has the keyboard focus.
@@ -141,7 +174,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public virtual bool Focused => Handle != 0 && Win32.GetFocus() == Handle;
+    public virtual bool Focused => NativeHandle != 0 && Win32.GetFocus() == NativeHandle;
 
     /// <summary>
     /// Gets whether this control or one of its native child windows has the keyboard focus.
@@ -153,7 +186,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         get
         {
-            nint handle = Handle;
+            nint handle = NativeHandle;
             if (handle == 0)
             {
                 return false;
@@ -171,7 +204,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public bool CanFocus => Handle != 0 && Win32.IsWindowVisible(Handle) && Win32.IsWindowEnabled(Handle);
+    public bool CanFocus => NativeHandle != 0 && Win32.IsWindowVisible(NativeHandle) && Win32.IsWindowEnabled(NativeHandle);
 
     /// <summary>
     /// Gets whether the calling thread differs from the thread that created the control's
@@ -457,11 +490,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             throw new ArgumentException("A top-level control cannot have a parent.");
         }
         _topLevel = value;
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            uint style = unchecked((uint)(nuint)Win32.GetWindowLongPtrW(Handle, Win32.GWL_STYLE));
+            uint style = unchecked((uint)(nuint)Win32.GetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE));
             style = value ? style & ~Win32.WS_CHILD : style | Win32.WS_CHILD;
-            _ = Win32.SetWindowLongPtrW(Handle, Win32.GWL_STYLE, unchecked((nint)style));
+            _ = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE, unchecked((nint)style));
             ReparentNativeWindow();
         }
     }
@@ -475,6 +508,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? Enter;
     public event EventHandler? Leave;
     public event EventHandler? HandleCreated;
+    public event EventHandler? HandleDestroyed;
 
     /// <summary>
     /// Occurs when the control location changes.
@@ -525,9 +559,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         get
         {
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _text = Win32.GetText(Handle);
+                _text = Win32.GetText(NativeHandle);
             }
 
             return _text;
@@ -544,9 +578,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
 
             _text = newText;
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.SetWindowTextW(Handle, _text);
+                _ = Win32.SetWindowTextW(NativeHandle, _text);
             }
 
             OnTextChanged(EventArgs.Empty);
@@ -699,25 +733,68 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void SetVisibleCore(bool value)
     {
         bool previous = Visible;
+        if (value != previous && _topLevel)
+        {
+            if (_handle != 0 || value)
+            {
+                _ = Win32.ShowWindow(Handle, value ? Win32.SW_SHOW : Win32.SW_HIDE);
+            }
+            if (value != Visible)
+            {
+                _visible = value;
+                OnVisibleChanged(EventArgs.Empty);
+            }
+            return;
+        }
+
         _visible = value;
-        if (Handle != 0)
+        if (value != previous && (_handle != 0 || (value && _parent?._created == true)))
         {
-            // WS_VISIBLE describes this control's own visibility. The native
-            // parent chain accounts for hidden ancestors without clearing the
-            // child's bit, which must survive parking and later reparenting.
-            _ = Win32.ShowWindow(Handle, value ? Win32.SW_SHOW : Win32.SW_HIDE);
+            try
+            {
+                if (value) { CreateControl(); }
+                if (_handle != 0) { _ = Win32.ShowWindow(_handle, value ? Win32.SW_SHOW : Win32.SW_HIDE); }
+            }
+            catch
+            {
+                _visible = !value;
+                throw;
+            }
         }
-        else if (value && Visible && _parent?.Handle is nint parentHandle && parentHandle != 0)
+        else if (_handle != 0)
         {
-            CreateHandleRecursive();
+            _ = Win32.ShowWindow(_handle, value ? Win32.SW_SHOW : Win32.SW_HIDE);
         }
-        if (previous != Visible)
+        if (value != previous)
         {
             OnVisibleChanged(EventArgs.Empty);
         }
     }
 
     internal void SetVisibleState(bool value) => _visible = value;
+
+    internal void NotifyNativeVisibilityChanged(bool visible)
+    {
+        if (_recreatingHandle) { return; }
+        bool previous = Visible;
+        if (visible)
+        {
+            bool previousLocal = _visible;
+            _visible = true;
+            bool succeeded = false;
+            try
+            {
+                CreateControl();
+                succeeded = true;
+            }
+            finally { if (!succeeded) { _visible = previousLocal; } }
+        }
+        else if (_parent?.Visible ?? _topLevel)
+        {
+            _visible = false;
+        }
+        if (!_parentRecreatingHandle && previous != visible) { OnVisibleChanged(EventArgs.Empty); }
+    }
 
     /// <summary>
     /// Gets or sets the upper-left location of the control.
@@ -805,11 +882,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         Owner = owner;
         Id = id;
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
             // GWLP_ID changes with the receiving form's command registration,
             // while reparenting deliberately preserves the existing HWND.
-            _ = Win32.SetWindowLongPtrW(Handle, -12, id);
+            _ = Win32.SetWindowLongPtrW(NativeHandle, -12, id);
         }
     }
 
@@ -914,7 +991,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         // WinForms preserves requested negative dimensions before a control has its own
         // HWND. Once created, native window dimensions normalize them to zero.
-        bool hasHandle = Handle != 0;
+        bool hasHandle = NativeHandle != 0;
         if (hasHandle)
         {
             width = Math.Max(0, width);
@@ -1013,9 +1090,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public void Invalidate()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.InvalidateRect(Handle, 0, true);
+            _ = Win32.InvalidateRect(NativeHandle, 0, true);
         }
     }
 
@@ -1024,10 +1101,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public void Refresh()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
             Invalidate();
-            _ = Win32.UpdateWindow(Handle);
+            _ = Win32.UpdateWindow(NativeHandle);
         }
     }
 
@@ -1040,7 +1117,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         if (CanFocus)
         {
-            _ = Win32.SetFocus(Handle);
+            _ = Win32.SetFocus(NativeHandle);
         }
 
         return Focused;
@@ -1141,7 +1218,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public async Task InvokeAsync(Action callback, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+        WindowThreadDispatcher dispatcher = NativeHandle != 0 && _threadDispatcher is { } ownDispatcher
             ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
         if (cancellationToken.IsCancellationRequested)
         {
@@ -1157,7 +1234,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public async Task<T> InvokeAsync<T>(Func<T> callback, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+        WindowThreadDispatcher dispatcher = NativeHandle != 0 && _threadDispatcher is { } ownDispatcher
             ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
         if (cancellationToken.IsCancellationRequested)
         {
@@ -1173,7 +1250,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public async Task InvokeAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+        WindowThreadDispatcher dispatcher = NativeHandle != 0 && _threadDispatcher is { } ownDispatcher
             ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
         if (cancellationToken.IsCancellationRequested)
         {
@@ -1189,7 +1266,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public async Task<T> InvokeAsync<T>(Func<CancellationToken, ValueTask<T>> callback, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+        WindowThreadDispatcher dispatcher = NativeHandle != 0 && _threadDispatcher is { } ownDispatcher
             ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
         if (cancellationToken.IsCancellationRequested)
         {
@@ -1208,7 +1285,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public virtual async Task InvokeAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(action);
-        WindowThreadDispatcher dispatcher = Handle != 0 && _threadDispatcher is { } ownDispatcher
+        WindowThreadDispatcher dispatcher = NativeHandle != 0 && _threadDispatcher is { } ownDispatcher
             ? ownDispatcher : throw WindowThreadDispatcher.NoMarshalingHandle();
         if (cancellationToken.IsCancellationRequested)
         {
@@ -1228,7 +1305,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             try
             {
-                ReleaseNativeResources(releaseChildHandles: false);
+                ReleaseNativeResources();
             }
             finally
             {
@@ -1243,6 +1320,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             return;
         }
 
+        if (_creatingHandle)
+        {
+            throw new InvalidOperationException("Dispose cannot be called while the control handle is being created.");
+        }
+
         _disposing = true;
         bool disposeComponent = false;
         try
@@ -1254,7 +1336,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                     // Native children are destroyed with their parent HWND.
                     // ParentChanged and ControlRemoved must observe that the
                     // disposed control no longer owns a live window.
-                    ReleaseNativeResources(releaseChildHandles: true);
+                    ReleaseNativeResources();
                     _parent?.Controls.Remove(this);
                     if (!_disposed)
                     {
@@ -1289,7 +1371,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 }
                 finally
                 {
-                    ReleaseNativeResources(releaseChildHandles: true);
+                    // A standard DestroyHandle override is called once. A
+                    // skipped or failed base call deliberately leaves its
+                    // native window available for the next explicit attempt.
+                    ReleaseDetachedNativeResources();
                 }
             }
             finally
@@ -1306,22 +1391,38 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
     }
 
-    internal void CreateHandleRecursive()
-    {
-        bool alreadyCreated = Handle != 0;
-        CreateHandle();
+    /// <summary>
+    /// Creates this control and its visible descendants.
+    /// </summary>
+    public void CreateControl() => CreateControl(ignoreVisible: false);
 
-        if (Handle != 0)
+    internal void CreateControl(bool ignoreVisible)
+    {
+        if (!ignoreVisible && (_created || !Visible)) { return; }
+        _created = true;
+        bool succeeded = false;
+        try
         {
-            // A live child may have been moved into a parent that had no HWND
-            // yet. It stays parked until that parent's creation reaches it.
-            if (alreadyCreated && _parent?.Handle is nint parentHandle && parentHandle != 0)
+            if (_handle == 0) { CreateHandle(); }
+            // Creation and native reparenting can call application code and
+            // change the collection. Process the tree that was present here.
+            Control[] children = ChildControls.ToArray();
+            foreach (Control child in children)
             {
-                ReparentNativeWindow();
+                if (child._handle != 0)
+                {
+                    child.ReparentNativeWindow();
+                    child._parentRecreatingHandle = false;
+                }
+                child.CreateControl(ignoreVisible);
             }
-            CreateChildHandles();
+            succeeded = true;
         }
+        finally { if (!succeeded) { _created = false; } }
+        OnCreateControl();
     }
+
+    internal void CreateHandleRecursive() => CreateControl();
 
     internal void ReleaseHandleRecursive()
     {
@@ -1334,112 +1435,244 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         ReleaseBackgroundBrush();
     }
 
-    internal virtual void CreateHandle()
+    internal bool BeginNativeHandleCreation()
     {
         ThrowIfDisposed();
+        if (_creatingHandle) { return false; }
+        if (_handle != 0) { throw new InvalidOperationException("The control already has a window handle."); }
+        _creatingHandle = true;
+        return true;
+    }
 
-        if (Handle != 0)
+    internal void EndNativeHandleCreation() => _creatingHandle = false;
+    internal bool IsCreatingHandle => _creatingHandle;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void CreateHandle()
+    {
+        if (!BeginNativeHandleCreation()) { return; }
+        try
         {
-            return;
-        }
+            if (!ShouldCreateNativeHandle) { return; }
+            int nativeHeight = GetNativeHeight(_height);
+            nint parentHandle = _parent?._handle ?? 0;
+            if (parentHandle == 0 && !_topLevel) { parentHandle = GetParkingWindow(); }
 
-        if (!ShouldCreateNativeHandle)
-        {
-            return;
-        }
+            // Install the subclass before showing the window, so the initial
+            // WM_SHOWWINDOW follows HandleCreated and creates the visible tree.
+            uint style = _topLevel ? Style & ~Win32.WS_CHILD : Style | Win32.WS_CHILD;
+            _handle = Win32.CreateWindowExW(
+                ExStyle, ClassName, _text, style & ~Win32.WS_VISIBLE,
+                _left, _top, _width, nativeHeight, parentHandle, (nint)Id,
+                Owner?.InstanceHandle ?? Win32.GetModuleHandleW(null), 0);
 
-        int nativeHeight = GetNativeHeight(_height);
-
-        if (_parent is not null && _parent.Handle == 0)
-        {
-            _parent.CreateHandle();
-        }
-        nint parentHandle = _parent?.Handle ?? (_topLevel ? 0 : GetParkingWindow());
-
-        Handle = Win32.CreateWindowExW(
-            ExStyle,
-            ClassName,
-            _text,
-            _topLevel ? Style & ~Win32.WS_CHILD : Style | Win32.WS_CHILD,
-            _left,
-            _top,
-            _width,
-            nativeHeight,
-            parentHandle,
-            (nint)Id,
-            Owner?.InstanceHandle ?? Win32.GetModuleHandleW(null),
-            0);
-
-        if (Handle == 0)
-        {
-            throw new InvalidOperationException($"Failed to create control '{ClassName}'.");
-        }
-
-        if (_width < 0 || _height < 0)
-        {
-            // Let USER32 interpret the original creation dimensions, including
-            // CW_USEDEFAULT, before updating the cached bounds for HandleCreated.
-            if (!Win32.GetWindowRect(Handle, out Win32.RECT bounds))
+            if (_handle == 0)
             {
-                int error = Marshal.GetLastWin32Error();
-                _ = Win32.DestroyWindow(Handle);
-                Handle = 0;
-                throw new Win32Exception(error);
+                throw new Win32Exception(Marshal.GetLastWin32Error(), $"Failed to create control '{ClassName}'.");
             }
 
-            _width = bounds.Right - bounds.Left;
-            // A derived control may expand its HWND height (for example, a combo
-            // box's drop-down area) without changing its positive logical height.
-            _height = nativeHeight == _height ? bounds.Bottom - bounds.Top : Math.Max(0, _height);
+            if (_width < 0 || _height < 0)
+            {
+                if (!Win32.GetWindowRect(_handle, out Win32.RECT bounds))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    _ = Win32.DestroyWindow(_handle);
+                    _handle = 0;
+                    throw new Win32Exception(error);
+                }
+                _width = bounds.Right - bounds.Left;
+                _height = nativeHeight == _height ? bounds.Bottom - bounds.Top : Math.Max(0, _height);
+            }
+            UpdateClientSize();
+            try { RegisterSubclass(); }
+            catch (Exception registrationException)
+            {
+                // Until subclass registration succeeds, WM_NCDESTROY may not
+                // reach us. Roll back the newly allocated HWND explicitly and
+                // keep the registration exception (including its Win32 error).
+                nint failedHandle = _handle;
+                bool destroyed = Win32.DestroyWindow(failedHandle);
+                int destroyError = Marshal.GetLastWin32Error();
+                if (destroyed || !Win32.IsWindow(failedHandle))
+                {
+                    if (_handle == failedHandle) { ClearNativeHandle(); }
+                    ReleaseDetachedNativeResources();
+                }
+                else
+                {
+                    // Preserve ownership so a later Dispose can retry when the
+                    // operating system rejects teardown; expose both failures
+                    // without replacing the original registration exception.
+                    registrationException.Data["NativeHandleCleanupError"] = new Win32Exception(destroyError);
+                }
+                throw;
+            }
+            if (Owner is { UiFontHandle: not 0 } owner)
+            {
+                _ = Win32.SendMessageW(_handle, Win32.WM_SETFONT, owner.UiFontHandle, (nint)1);
+            }
+            _ = Win32.EnableWindow(_handle, Enabled);
+            UpdateChildZOrder();
+            ApplyTheme();
+            NotifyNativeHandleCreated();
+            if (_visible && _handle != 0) { _ = Win32.ShowWindow(_handle, Win32.SW_SHOW); }
         }
-
-        UpdateClientSize();
-
-        RegisterSubclass();
-
-        if (Owner is { UiFontHandle: not 0 } owner)
-        {
-            _ = Win32.SendMessageW(Handle, Win32.WM_SETFONT, owner.UiFontHandle, (nint)1);
-        }
-
-        _ = Win32.EnableWindow(Handle, Enabled);
-        _ = Win32.ShowWindow(Handle, _visible ? Win32.SW_SHOW : Win32.SW_HIDE);
-        UpdateChildZOrder();
-        ApplyTheme();
-        OnHandleCreated();
+        finally { EndNativeHandleCreation(); }
     }
 
     internal virtual WindowThreadDispatcher? NativeThreadDispatcher => _threadDispatcher;
 
-    internal void RegisterNativeHandle(nint handle, WindowThreadDispatcher? dispatcher)
+    internal void RegisterNativeHandle(nint handle, WindowThreadDispatcher? dispatcher = null)
     {
-        Handle = handle;
-        _threadDispatcher = dispatcher;
+        _handle = handle;
+        _handleDestroyedNotified = false;
+        if (_threadDispatcher is { } preserved && _recreatingHandle)
+        {
+            if (dispatcher is not null && dispatcher != preserved) { dispatcher.Close(); }
+            preserved.AttachWindow(handle);
+        }
+        else { _threadDispatcher = dispatcher ?? new WindowThreadDispatcher(handle, this); }
         lock (s_subclassLock) { s_controlsByHandle[handle] = this; }
         UpdateClientSize();
+    }
+
+    internal void NotifyNativeHandleDestroyed(nint handle)
+    {
+        if (_handle != handle || _handleDestroyedNotified) { return; }
+        _handleDestroyedNotified = true;
+        try { OnHandleDestroyed(EventArgs.Empty); }
+        finally
+        {
+            if (_disposing) { _visible = false; }
+            else if (!_recreatingHandle) { _created = false; }
+        }
+    }
+
+    internal void NotifyNativeHandleCreated()
+    {
+        try { OnHandleCreated(EventArgs.Empty); }
+        catch (Exception exception) { ReportNativeWindowException(exception); }
+    }
+
+    private static void ReportNativeWindowException(Exception exception)
+    {
+        try { Application.OnThreadException(exception); }
+        catch (Exception reportingException)
+        {
+            Environment.FailFast("The application UI thread exception handler failed.", reportingException);
+        }
     }
 
     internal void ClearNativeHandle()
     {
         lock (s_subclassLock)
         {
-            if (Handle != 0) { s_controlsByHandle.Remove(Handle); }
+            if (NativeHandle != 0) { s_controlsByHandle.Remove(NativeHandle); }
         }
-        _threadDispatcher?.Close();
-        _threadDispatcher = null;
+        if (_recreatingHandle) { _threadDispatcher?.SuspendForRecreation(); }
+        else
+        {
+            _threadDispatcher?.Close();
+            _threadDispatcher = null;
+        }
         _originalWindowProc = 0;
-        Handle = 0;
+        _handle = 0;
+        _created = false;
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void DestroyHandle()
+    {
+        if (_handle == 0 || _destroyingHandle) { return; }
+        if (!_recreatingHandle) { _threadDispatcher?.Close(); }
+        _destroyingHandle = true;
+        try
+        {
+            nint handle = _handle;
+            if (!Win32.DestroyWindow(handle))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+            // A failed subclass-registration rollback can leave an owned HWND
+            // with the original native procedure. It has no cleanup callback.
+            if (_handle == handle) { ClearNativeHandle(); }
+        }
+        finally { _destroyingHandle = false; }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void RecreateHandle()
+    {
+        if (_handle == 0 || _recreatingHandle) { return; }
+        bool wasCreated = _created;
+        nint focused = ContainsFocus ? Win32.GetFocus() : 0;
+        nint nativeParent = Win32.GetParent(_handle);
+        Control[] children = ChildControls.ToArray();
+        _recreatingHandle = true;
+        try
+        {
+            foreach (Control child in children)
+            {
+                if (child._handle == 0) { continue; }
+                child._parentRecreatingHandle = true;
+                Marshal.SetLastPInvokeError(0);
+                nint previous = Win32.SetParent(child._handle, child.GetParkingWindow());
+                int error = Marshal.GetLastPInvokeError();
+                if (previous == 0 && error != 0) { throw new Win32Exception(error); }
+            }
+            DestroyHandle();
+            CreateHandle();
+        }
+        catch
+        {
+            if (_handle == 0)
+            {
+                _created = false;
+                _threadDispatcher?.Close();
+                _threadDispatcher = null;
+            }
+            throw;
+        }
+        finally
+        {
+            _recreatingHandle = false;
+            if (_handle != 0)
+            {
+                foreach (Control child in children)
+                {
+                    if (child._handle != 0 && child._parent == this)
+                    {
+                        child.ReparentNativeWindow();
+                        child.RecreateHandle();
+                        child._parentRecreatingHandle = false;
+                    }
+                }
+            }
+        }
+        if (wasCreated) { CreateControl(); }
+        if (nativeParent != 0 && Win32.IsWindow(nativeParent)
+            && (_parent is null || FromHandle(nativeParent) is null))
+        {
+            Marshal.SetLastPInvokeError(0);
+            nint previous = Win32.SetParent(_handle, nativeParent);
+            int error = Marshal.GetLastPInvokeError();
+            if (previous == 0 && error != 0) { throw new Win32Exception(error); }
+        }
+        if (focused != 0)
+        {
+            _ = Win32.SetFocus(Win32.IsWindow(focused) ? focused : _handle);
+        }
     }
 
     internal void UpdateBoundsFromNativeWindow()
     {
-        if (Handle == 0 || _applyingBounds) { return; }
-        if (!Win32.GetWindowRect(Handle, out Win32.RECT bounds))
+        if (_handle == 0 || _applyingBounds) { return; }
+        if (!Win32.GetWindowRect(NativeHandle, out Win32.RECT bounds))
         {
             throw new Win32Exception(Marshal.GetLastWin32Error());
         }
         Win32.POINT location = new() { x = bounds.Left, y = bounds.Top };
-        if (_parent?.Handle is nint parentHandle && parentHandle != 0)
+        if (_parent?.NativeHandle is nint parentHandle && parentHandle != 0)
         {
             _ = Win32.ScreenToClient(parentHandle, ref location);
         }
@@ -1475,11 +1708,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void ReparentNativeWindow()
     {
-        if (Handle == 0) { return; }
-        nint parentHandle = _parent?.Handle ?? 0;
+        if (_handle == 0) { return; }
+        nint parentHandle = _parent?.NativeHandle ?? 0;
         if (parentHandle == 0 && !_topLevel) { parentHandle = GetParkingWindow(); }
+        // Reassigning the same native parent produces hide/show notifications.
+        // A recreated subtree is already attached by its own CreateHandle.
+        if (Win32.GetAncestor(_handle, 1) == parentHandle) { return; }
         Marshal.SetLastPInvokeError(0);
-        nint previous = Win32.SetParent(Handle, parentHandle);
+        nint previous = Win32.SetParent(NativeHandle, parentHandle);
         int error = Marshal.GetLastPInvokeError();
         if (previous == 0 && error != 0) { throw new Win32Exception(error); }
         if (parentHandle != _parkingWindow)
@@ -1492,14 +1728,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void UpdateChildZOrder()
     {
-        if (Handle == 0 || _parent?.Handle is not nint parentHandle || parentHandle == 0) { return; }
+        if (_handle == 0 || _parent?.NativeHandle is not nint parentHandle || parentHandle == 0) { return; }
         nint previous = 0;
         foreach (Control sibling in _parent.ChildControls)
         {
             if (sibling == this) { break; }
-            if (sibling.Handle != 0) { previous = sibling.Handle; }
+            if (sibling.NativeHandle != 0) { previous = sibling.NativeHandle; }
         }
-        if (!Win32.SetWindowPos(Handle, previous, 0, 0, 0, 0,
+        if (!Win32.SetWindowPos(NativeHandle, previous, 0, 0, 0, 0,
             Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOACTIVATE))
         {
             throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -1514,6 +1750,21 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
     }
 
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public static Control? FromHandle(nint handle)
+        => TryGetControlByHandle(handle, out Control? control) ? control : null;
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public static Control? FromChildHandle(nint handle)
+    {
+        while (handle != 0)
+        {
+            if (FromHandle(handle) is { } control) { return control; }
+            handle = Win32.GetAncestor(handle, 1);
+        }
+        return null;
+    }
+
     internal bool HandleCommand(int notificationCode)
         => OnCommand(notificationCode);
 
@@ -1522,7 +1773,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     internal void RefreshTheme()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
             ApplyTheme();
             Refresh();
@@ -1562,7 +1813,28 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void OnHandleCreated()
     {
         ApplyBounds();
-        HandleCreated?.Invoke(this, EventArgs.Empty);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnHandleCreated(EventArgs e)
+    {
+        OnHandleCreated();
+        HandleCreated?.Invoke(this, e);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnHandleDestroyed(EventArgs e)
+    {
+        HandleDestroyed?.Invoke(this, e);
+        if (_handle != 0 && !_disposing) { _text = Text; }
+        if (!_recreatingHandle) { ReleaseBackgroundBrush(); }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnCreateControl()
+    {
+        // The standard extension point has no default notifications. Descendants
+        // (notably Form) perform their initial managed creation here.
     }
 
     protected virtual void OnEnter(EventArgs e)
@@ -1709,7 +1981,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     protected virtual void OnEnabledChanged(EventArgs e)
     {
-        if (Handle != 0) { _ = Win32.EnableWindow(Handle, Enabled); }
+        if (NativeHandle != 0) { _ = Win32.EnableWindow(NativeHandle, Enabled); }
         EnabledChanged?.Invoke(this, e);
         for (int index = 0; _controls is not null && index < _controls.Count; index++)
         {
@@ -1724,7 +1996,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     protected virtual void OnVisibleChanged(EventArgs e)
     {
-        if (Visible && Handle == 0 && _parent is not null)
+        if (Visible && _handle == 0 && _parent is not null)
         {
             bool canCreate = true;
             for (Control? ancestor = this; ancestor is not null; ancestor = ancestor._parent)
@@ -1824,12 +2096,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <returns><see langword="true"/> if the text changed; otherwise, <see langword="false"/>.</returns>
     protected bool UpdateTextFromHandle()
     {
-        if (Handle == 0)
+        if (_handle == 0)
         {
             return false;
         }
 
-        string currentText = Win32.GetText(Handle);
+        string currentText = Win32.GetText(NativeHandle);
         if (string.Equals(_text, currentText, StringComparison.Ordinal))
         {
             return false;
@@ -1845,7 +2117,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     protected void ApplyExplorerTheme()
     {
-        if (Handle == 0 || !OperatingSystem.IsWindows())
+        if (_handle == 0 || !OperatingSystem.IsWindows())
         {
             return;
         }
@@ -1857,7 +2129,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             return;
         }
 
-        if (Win32.SetWindowTheme(Handle, preferredThemeClass, null) == 0)
+        if (Win32.SetWindowTheme(NativeHandle, preferredThemeClass, null) == 0)
         {
             return;
         }
@@ -1866,7 +2138,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (!string.IsNullOrWhiteSpace(fallbackThemeClass)
             && !string.Equals(preferredThemeClass, fallbackThemeClass, StringComparison.Ordinal))
         {
-            _ = Win32.SetWindowTheme(Handle, fallbackThemeClass, null);
+            _ = Win32.SetWindowTheme(NativeHandle, fallbackThemeClass, null);
         }
     }
 
@@ -1969,28 +2241,26 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         _ownsBackgroundBrush = false;
     }
 
-    private void ReleaseNativeResources(bool releaseChildHandles)
+    private void ReleaseNativeResources()
     {
         try
         {
-            _threadDispatcher?.Close();
-            if (Handle != 0)
-            {
-                _ = Win32.DestroyWindow(Handle);
-            }
+            if (NativeHandle != 0) { DestroyHandle(); }
         }
         finally
         {
-            if (releaseChildHandles)
-            {
-                ReleaseHandleRecursive();
-            }
-            else
-            {
-                // Component's finalizer calls Dispose(false); leave managed ownership untouched.
-                ClearNativeHandle();
-                ReleaseBackgroundBrush();
-            }
+            ReleaseDetachedNativeResources();
+        }
+    }
+
+    private void ReleaseDetachedNativeResources()
+    {
+        // Native WM_NCDESTROY already clears windows destroyed by their
+        // parent. Parked descendants remain live until their own Dispose;
+        // clearing their handles here would orphan those native windows.
+        if (_handle == 0)
+        {
+            ReleaseBackgroundBrush();
             ReleaseParkingWindow();
         }
     }
@@ -2010,25 +2280,20 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void RegisterSubclass()
     {
-        if (Handle == 0 || _originalWindowProc != 0)
+        if (_handle == 0 || _originalWindowProc != 0)
         {
             return;
         }
 
         nint subclassPointer = Marshal.GetFunctionPointerForDelegate(s_subclassProc);
-        nint previousWindowProc = Win32.SetWindowLongPtrW(Handle, Win32.GWLP_WNDPROC, subclassPointer);
+        nint previousWindowProc = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWLP_WNDPROC, subclassPointer);
         if (previousWindowProc == 0)
         {
             throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
         _originalWindowProc = previousWindowProc;
-        lock (s_subclassLock)
-        {
-            s_controlsByHandle[Handle] = this;
-        }
-
-        _threadDispatcher = new WindowThreadDispatcher(Handle, this);
+        RegisterNativeHandle(_handle);
     }
 
     private static nint SubclassWindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
@@ -2048,6 +2313,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             return control.SubclassWindowProc(hwnd, message, wParam, lParam);
         }
+        catch (Exception exception)
+        {
+            // Exceptions cannot unwind across the unmanaged window callback.
+            // Use the same UI exception route as other native notifications.
+            ReportNativeWindowException(exception);
+            return 0;
+        }
         finally
         {
             // Native lifetime bookkeeping must run even when a derived control
@@ -2055,13 +2327,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             if (message == Win32.WM_NCDESTROY)
             {
                 lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
-                if (control.Handle == hwnd) { control.ClearNativeHandle(); }
+                if (control.NativeHandle == hwnd) { control.ClearNativeHandle(); }
             }
         }
     }
 
     private nint SubclassWindowProc(nint hwnd, uint message, nint wParam, nint lParam)
     {
+        if (message == Win32.WM_DESTROY) { NotifyNativeHandleDestroyed(hwnd); }
         if (_threadDispatcher?.TryDispatch(message) == true)
         {
             return 0;
@@ -2075,6 +2348,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         nint result = _originalWindowProc != 0
             ? Win32.CallWindowProcW(_originalWindowProc, hwnd, message, wParam, lParam)
             : Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+
+        if (message == Win32.WM_SHOWWINDOW) { NotifyNativeVisibilityChanged(wParam != 0); }
 
         if (message == Win32.WM_CONTEXTMENU && ContextMenuStrip is not null && TryShowAttachedContextMenu(hwnd, lParam))
         {
@@ -2093,7 +2368,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         for (Control? control = this; control is not null; control = control.Parent)
         {
-            if (control.Handle != 0 && control._threadDispatcher is { } dispatcher)
+            if (control.NativeHandle != 0 && control._threadDispatcher is { } dispatcher)
             {
                 return dispatcher;
             }
@@ -2138,7 +2413,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         _lastContextMenuShownTick = Environment.TickCount64;
         _lastContextMenuScreenLocation = screenLocation;
 
-        nint ownerHandle = Owner?.Handle ?? Parent?.Handle ?? hwnd;
+        nint ownerHandle = Owner?.NativeHandle ?? Parent?.NativeHandle ?? hwnd;
         contextMenuStrip.ShowAtScreenPoint(ownerHandle, screenLocation, Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
         return true;
     }
@@ -2202,7 +2477,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void ApplyBounds()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
             int nativeLeft = _left;
             int nativeTop = _top;
@@ -2219,7 +2494,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _applyingBounds = true;
             try
             {
-                _ = Win32.MoveWindow(Handle, nativeLeft, nativeTop, _width, GetNativeHeight(_height), true);
+                _ = Win32.MoveWindow(NativeHandle, nativeLeft, nativeTop, _width, GetNativeHeight(_height), true);
             }
             finally { _applyingBounds = false; }
         }
@@ -2227,9 +2502,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void UpdateClientSize()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            if (!Win32.GetClientRect(Handle, out Win32.RECT client))
+            if (!Win32.GetClientRect(NativeHandle, out Win32.RECT client))
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
@@ -2307,8 +2582,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 throw new ArgumentException("Top-level control cannot be added to a control.");
             }
 
-            uint ownerThread = Owner.Handle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(Owner.Handle, out _);
-            uint childThread = value.Handle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(value.Handle, out _);
+            uint ownerThread = Owner.NativeHandle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(Owner.NativeHandle, out _);
+            uint childThread = value.NativeHandle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(value.NativeHandle, out _);
             if (ownerThread != childThread)
             {
                 throw new ArgumentException("Controls created on one thread cannot be parented to a control on a different thread.");
@@ -2353,7 +2628,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                     if (previous != value._parent)
                     {
                         value.ReparentNativeWindow();
-                        if (Owner.Handle != 0 && value.Visible && !value.IsDisposed)
+                        if (Owner.NativeHandle != 0 && value.Visible && !value.IsDisposed)
                         {
                             value.CreateHandleRecursive();
                         }
@@ -2400,10 +2675,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
             // Park an existing native window before the managed link changes.
             // Removal must preserve the handle and the child's owned descendants.
-            if (value.Handle != 0)
+            if (value.NativeHandle != 0)
             {
                 Marshal.SetLastPInvokeError(0);
-                nint previous = Win32.SetParent(value.Handle, value.GetParkingWindow());
+                nint previous = Win32.SetParent(value.NativeHandle, value.GetParkingWindow());
                 int error = Marshal.GetLastPInvokeError();
                 if (previous == 0 && error != 0) { throw new Win32Exception(error); }
             }

@@ -455,7 +455,7 @@ public class ControlSizeConstraintsTests
         return control;
     }
 
-    private static Snapshot Capture(Control control) => new(control.Bounds, control.ClientSize, control.IsHandleCreated, control.Handle);
+    private static Snapshot Capture(Control control) => new(control.Bounds, control.ClientSize, control.IsHandleCreated, control.IsHandleCreated ? control.Handle : 0);
     private readonly record struct Snapshot(Rectangle Bounds, Size ClientSize, bool Created, nint Handle);
     private readonly record struct CoreCall(Rectangle Bounds, BoundsSpecified Specified);
 

@@ -16,9 +16,9 @@ public class ProgressBar : Control
         set
         {
             _value = Math.Max(0, value);
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.SendMessageW(Handle, Win32.PBM_SETPOS, (nint)_value, 0);
+                _ = Win32.SendMessageW(NativeHandle, Win32.PBM_SETPOS, (nint)_value, 0);
             }
         }
     }
@@ -46,11 +46,11 @@ public class ProgressBar : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 }

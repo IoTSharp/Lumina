@@ -1,6 +1,6 @@
 # Control
 
-🟡 **现状：**批次 002～017 的基础构造、线程、焦点、边界/客户区/约束及Text证据保留。批次018已接入标准ControlCollection、可设Parent、含parent构造和Form标准继承链，共用父子树、状态和释放路径；本批新增差分与实际运行见[018](../batches/018.md)。整个Control仍未完成：延迟句柄/重建、完整继承属性/布局/输入/绘制/绑定/可访问性、Designer及GTK4/AppKit仍待后续；原AOT元数据和中文Designer差异不随本批关闭。
+🟡 **现状：**批次002～018的基础构造、线程、焦点、边界/客户区/约束、Text和父子集合证据保留。019完成标准延迟Handle、CreateControl、protected句柄创建/销毁/重建、查找映射及可见消息首范围，修复018隐藏父级重挂的中间VisibleChanged差异；范围与实际运行见[019](../batches/019.md)。整个Control仍未完成：全部派生重建/资源和竞态、完整继承属性/布局/输入/绘制/绑定/可访问性、Designer及GTK4/AppKit仍缺；原AOT元数据、非零下界数组fixture和中文Designer差异单列保留。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -19,17 +19,18 @@
 | ✅ | P0 / Control-02a | 批次 008：标准 bool Focus() 与 virtual Focused、ContainsFocus/CanFocus 使用真实 GetFocus/IsChild/IsWindowVisible/IsWindowEnabled；无自身 HWND 不创建句柄，隐藏/禁用/释放与外部原生状态有对照。157 条固定参考/JIT/实际 AOT 相同，17 项新增 STA/元数据回归通过。完整选择、键盘/验证及重建竞态另列。 |
 | ✅ | P0 / Control-02b | 批次 009：SetBounds 及 Width/Height/Size/Bounds 无自身 HWND 时保留零/负尺寸、不创建句柄；已有 HWND 时负数归零，实际零宽高可恢复。首次创建回读原生矩形，HandleCreated 已见归一结果。756 条固定参考/JIT/实际 AOT 相同，33 项新增回归通过。后续基础构造默认/MinMax/通知见已完成01b/c、09a/c、10a；全部派生约束、完整布局/DPI及外部自主通知仍缺。 |
 | ✅ | P0 / Control-02c | 批次 010：标准 BoundsSpecified、四/五参数 SetBounds 的 x/y 名称与 protected virtual SetBoundsCore 实际接入；None/组合/未知位、重复值、属性标志、派生覆盖与直接 core 有 2,034 条固定参考/JIT/实际 AOT 对照，新增 60 项回归通过。外层保留未指定分量，core 接完整矩形，原始 specified 不丢；保留02b尺寸/创建语义。基础Min/Max、通知及客户区见已完成09a/c、10a；完整布局/全部派生约束/外部自主通知仍缺。 |
-| 🟡 | P0 / Control-03 | 批次003完成现有HWND/创建线程与父级句柄查找（03a）；018接入真实Parent/Form标准链并回归既有投递。未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
+| 🟡 | P0 / Control-03 | 批次003完成现有HWND/创建线程与父级句柄查找（03a）；018接入真实Parent/Form标准链，019内部查询改用不创建句柄的NativeHandle并保留重建投递。未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
 | ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
-| 🟡 | P0 / Control-04 | 批次 003 完成 Action/Delegate/args/Func 同步及 BeginInvoke/EndInvoke 首范围（Control-04a）；完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
+| 🟡 | P0 / Control-04 | 批次003完成Action/Delegate/args/Func同步及BeginInvoke/EndInvoke首范围（04a）；019重建时保留dispatcher队列并向新HWND重新投递，已有排队回调有实际对照。完整关闭/重建/线程退出竞态及参数全部边界仍待验收。 |
 | ✅ | P0 / Control-04a | 批次 003：真实 PostMessage 队列、同线程 FIFO/EndInvoke、跨线程返回与异常、ExecutionContext、IAsyncResult 和销毁待执行项唤醒；69 条指定观测在固定 WinForms 10.0.11、JIT、AOT 相同。null Delegate 保护与默认异常 UI 的明确差异见修改历史，不等于父任务完整验收。 |
 | 🟡 | P0 / Control-05 | 批次 004～007 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队、显式/default context 与 callback await 恢复首范围；完整关闭/重建/退出及多 UI/模态竞态仍保留，不随子范围关闭。 |
 | ✅ | P0 / Control-05a | 批次 004：标准 Action/Func<T> 在自身 HWND 线程排队，返回值、原异常及取消保留；旧单 Action/Task 回调也排队。固定 WinForms 10.0.11、JIT、AOT 59 条观测相同，另有旧 Task 路径专项检查；ValueTask/同步上下文与完整关闭竞态未关闭。 |
 | ✅ | P0 / Control-05b | 批次 005：标准 Func<CancellationToken,ValueTask> / ValueTask<T> 在 UI 队列首次调用并单次消费，90 条固定参考/JIT/AOT 观测相同；原异常/结果/token、取消后继续消费及 async lambda 选择已检。同步上下文安装、callback 内 await 后 UI 恢复和完整关闭竞态另列，不代表完整异步兼容。 |
-| 🟡 | P0 / Control-06 | 018完成06a标准父子集合与Windows重挂首范围；Form直接子项Parent为真实Form，共用ControlCollection。隐藏父级原生重挂时三次中间VisibleChanged尚缺（391行严格比较有1行差异），019继续；完整布局事务/继承属性通知、派生重入全部组合与三平台仍缺。 |
+| 🟡 | P0 / Control-06 | 018完成06a标准父子集合与Windows重挂首范围；Form直接子项Parent为真实Form，共用ControlCollection。019修复隐藏父级重挂时中间VisibleChanged，原391行参考/JIT现全部相同；018原始失败记录保留。完整布局事务/继承属性通知、派生重入全部组合与三平台仍缺。 |
 | ✅ | P0 / Control-06a | 批次018：ControlCollection/ArrangedElementCollection、Parent可设与含parent构造、Add/AddRange/Remove/Clear/Find/键和索引/复制/枚举/Clone/排序、ParentChanged与ControlAdded/Removed、Contains/FindForm/TopLevelControl完成；重复添加/循环父子/线程限制、直接Form父级、真实HWND移动/停放/重挂保留句柄和Z序有固定参考。精确范围与运行证据见018；完整布局/ambient通知和Handle延迟/重建另列。 |
-| ⬜ | P1 / Control-07 | Handle 延迟创建、CreateControl/CreateHandle/RecreateHandle/DestroyHandle、FromHandle/FromChildHandle 与映射表一致；HandleCreated/HandleDestroyed、重建后属性恢复和 GCHandle 寿命逐项测。 |
-| 🟡 | P1 / Control-08 | 002的Component释放（08a）保留；018接入UI父子级联Dispose、先销毁HWND再解除Parent及重复释放重挂树处理。借用Font/Image/菜单资源所有权、异常/关闭竞态和完整事件解绑仍待后续，父任务不关闭。 |
+| 🟡 | P1 / Control-07 | 019完成07a标准句柄生命周期及Windows基础可见树/映射/重建队列；所有派生控件的重建属性/焦点/资源恢复、CreateParams/WndProc扩展、全部关闭/线程竞态与GTK4/AppKit生命周期仍待原任务及14/17～19，不由基础Control/Form探针关闭整项。 |
+| ✅ | P1 / Control-07a | 批次019：get-only延迟Handle、独立Created/IsHandleCreated/RecreatingHandle、CreateControl与protected CreateHandle/DestroyHandle/RecreateHandle、OnCreateControl/OnHandleCreated/OnHandleDestroyed及查找映射完成。Windows普通/隐藏/可见树、直接/外部销毁、父子重建、销毁事件中的映射寿命、重挂可见消息、已排队回调保留、创建重入/原异常/Dispose覆盖首范围有204行固定10.0.11/JIT/实际AOT严格对照；完整子范围见019，剩余派生/资源/竞态与平台见父项。 |
+| 🟡 | P1 / Control-08 | 002的Component释放（08a）保留；018接入UI父子级联Dispose、先销毁HWND再解除Parent及重复释放重挂树处理。019补DestroyHandle覆盖只调用一次、覆盖跳过base/抛异常时保留参考状态，以及注册窗口回调失败的真实清理与原异常。借用Font/Image/菜单全部所有权、异常/关闭竞态和完整事件解绑仍待后续。 |
 | ✅ | P1 / Control-08a | 批次 002：继承 Component.Dispose 并覆盖 Dispose(bool)，保留派生 OnDisposing；Site 移除、组件容器级联、重复/重入、Dispose(false)、异常传播和状态退出均有回归。5 项生命周期观测与本机 WinForms 10.0.11 相同；不等同完整控件生命周期验收。 |
 | 🟡 | P1 / Control-09 | 012～014完成基础客户区/换算/运行期MinMax（09a/b/c），构造期默认约束见01b；018集合SetChildIndex及其真实Z序归06a。PreferredSize、Dock/Anchor/AutoSize/GetPreferredSize、Padding/Margin、标准BringToFront/SendToBack和全部派生约束仍待后续。 |
 | ✅ | P1 / Control-09a | 批次 012：标准 ClientSize/ClientRectangle、ClientSizeChanged 与 protected virtual SetClientSizeCore/OnClientSizeChanged 完成；明确初始化基础 Control、四有限边框样式、无/有 HWND、零负/恢复、顺序/覆盖/重入/异常共 5,556 条固定参考/JIT/实际 AOT 相同，80 项新增回归通过。保留原始客户区请求缓存与重复通知；客户区缓存变化可使仅位置操作触发标准尺寸通知。旧边界/通知/原生高度扩展保留；基础构造默认与SizeFromClientSize见已完成01b/c、09b，全部派生约束/外部自主通知/完整布局/Form生命周期仍缺。 |
@@ -58,6 +59,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次019：补07a标准句柄入口、事件、状态与映射。历史内部读Handle的调用改用NativeHandle，避免普通属性/销毁路径意外建窗；保留旧无参OnHandleCreated扩展。WM_SHOWWINDOW接入标准可见树与通知，018的391行父子集合参考/JIT差异已清零，历史失败不改写。重建期间保留dispatcher、子窗停放和重挂，普通销毁仍终止待执行项；Dispose覆盖异常/跳过base按固定参考保留对象/窗口状态。07父项保留全部派生恢复、资源与竞态；Form历史Created事件隐藏标准属性仍明确披露。全Control、Windows完整验收和GTK4/AppKit未关闭，详见[019](../batches/019.md)。
 
 - 2026-10-16 · 批次018：新增标准嵌套集合和Parent setter/含parent构造，共用所有控件父子树；Form进入标准继承后复用同一状态。Windows通过SetParent/停放窗口保留重挂HWND、恢复Z序；级联Dispose先销毁原生树再解除Parent，释放后重挂再次Dispose仍清理当前树。数组复制保留接口存储的逐元素转换与标准异常；对Find及释放通知失败补最小固定参考。同步集合布局暴露的ToolStrip重入由库内修复。历史“Parent/Controls/Form完全未实现”已改为明确首范围，Control-01/03/06/08/09/11及FND父项仍有剩余，不新增整控件或98%声明。最终记录与已知差异见[018](../batches/018.md)。
 

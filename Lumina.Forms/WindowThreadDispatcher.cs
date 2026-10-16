@@ -11,7 +11,7 @@ internal sealed class WindowThreadDispatcher
 {
     private readonly Lock _gate = new();
     private readonly Queue<Invocation> _callbacks = [];
-    private readonly nint _window;
+    private nint _window;
     private readonly uint _threadId;
     private readonly object _owner;
     private readonly int _callbackMessage;
@@ -182,9 +182,46 @@ internal sealed class WindowThreadDispatcher
         lock (_gate)
         {
             _closed = true;
+            _window = 0;
             while (_callbacks.TryDequeue(out Invocation? invocation))
             {
                 invocation.CompleteException(new ObjectDisposedException(_owner.GetType().Name));
+            }
+        }
+    }
+
+    internal void SuspendForRecreation()
+    {
+        lock (_gate)
+        {
+            // The Control still owns these callbacks while only its HWND is replaced.
+            _window = 0;
+        }
+    }
+
+    internal void AttachWindow(nint window)
+    {
+        uint threadId = Win32.GetWindowThreadProcessId(window, out _);
+        if (threadId == 0 || threadId != _threadId)
+        {
+            throw new InvalidOperationException("A recreated window must belong to the original dispatch thread.");
+        }
+
+        lock (_gate)
+        {
+            if (_closed) { throw NoMarshalingHandle(); }
+            _window = window;
+            // Messages sent to the old HWND disappear with it. Repost the retained queue.
+            if (_callbacks.Count != 0 && !Win32.PostMessageW(window, _callbackMessage, 0, 0))
+            {
+                var error = new Win32Exception(Marshal.GetLastWin32Error());
+                _closed = true;
+                _window = 0;
+                while (_callbacks.TryDequeue(out Invocation? pending))
+                {
+                    pending.CompleteException(error);
+                }
+                throw error;
             }
         }
     }
@@ -207,7 +244,7 @@ internal sealed class WindowThreadDispatcher
             _callbacks.Enqueue(invocation);
             // Posting under the queue lock makes destruction and a failed post finish every
             // accepted callback before a synchronous caller can begin waiting.
-            if (!(synchronous && sameThread) && !Win32.PostMessageW(_window, _callbackMessage, 0, 0))
+            if (!(synchronous && sameThread) && _window != 0 && !Win32.PostMessageW(_window, _callbackMessage, 0, 0))
             {
                 var error = new Win32Exception(Marshal.GetLastWin32Error());
                 _closed = true;

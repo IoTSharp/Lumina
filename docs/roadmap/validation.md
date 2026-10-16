@@ -394,3 +394,21 @@ Parent/Controls/Form链、含parent构造、无HWND完整Text/ResetText、native
 | API与路线图 | 固定1,095类型/61,240成员行、187组类型/API页，运行unverified | 同步受影响任务/历史，重新生成逐控件README实施列/tasks.csv；无整类型或98%声明 |
 
 复现：`Test-ControlParentCollection.ps1 -Variant both -PublishAot`（保留严格失败退出）；`Test-NativeFormsDemoWindow.ps1 -ExecutablePath <Demo AOT EXE> -ArtifactsDirectory <证据目录>`；最终测试TRX和日志、原始差异、失败首轮、PE、实际窗口JSON及摘要在artifacts/compatibility-batch018。截图路径为本机`C:/Users/mysti/AppData/Local/Temp/codex-shot-2026-10-16_09-24-08.png`。资源严格门禁FND-006、完整主窗FND-004、Designer和GTK4/AppKit仍未关闭，后续[019](batches/019.md)按同一专项继续。
+## 批次 019 · 2026-10-16 实施结果
+
+标准句柄生命周期Control-07a与Form-06a明确范围完成，见[019](batches/019.md)。Control-07/Form-06及FND父项保留部分完成；标准句柄首范围不能代替完整Control或平台验收。下批020按实际依赖继续标准布局事务。
+
+| 检查 | 结果与范围 |
+| --- | --- |
+| 生命周期固定参考/JIT/实际AOT | 16个隔离STA场景、204行严格相同；含真实窗口可见性、父子树/重建/映射寿命、回调保留、创建重入与Dispose覆盖，以及五个Form场景。最终run为20261016-021319-9490794，sourceHash与参考一致。 |
+| 父子集合回归 | 391行参考/JIT全部相同，018隐藏重挂的中间VisibleChanged差异现已修复；原018失败记录保留。 |
+| 父子集合AOT | 391行运行至complete；32行非零下界数组fixture为PNSE且CopyTo未执行，其余359行同JIT。严格driver仍失败，不能记为完整通过。 |
+| 最终测试/旧驱动 | 4,027测试通过，0失败/跳过；新增Control17/Form14，含失败创建参数重试/Dispose后WeakReference可回收。16个旧Control/context驱动通过。 |
+| 双目标Release | 0错误/428警告；13项目/17目标均.NET10，固定双目标、静态Designer/resx未改，Windows官方Drawing10.0.0，net10.0依赖无WinForms/System.Resources.Extensions。 |
+| Demo实际AOT | 主窗真实显示、复选框0→1、正常exit0且记录HWND全部失效，无强制清理。EXE4,156,928字节、CLR目录0；仅该交互/退出范围，完整布局/模态/Designer未通过。 |
+| 生命周期AOT/警告 | EXE4,115,456字节、CLR目录0，204行完整运行。Container.Add IL2026/TypeConverter IL3053保留；集合另有Array.CreateInstance IL3050；Demo展开的InheritanceAttribute.ToString IL3050仍未关闭。 |
+| 固定API清单 | 1,095类型/61,240行/187组类型页不变，运行验收仍unverified；逐控件README实施列与tasks.csv由既有工具再生成。 |
+
+本批初次DoEvents编译失败、旧Handle快照触发延迟建窗、外部可见旧预期、六行Form原生可见差异及Dispose覆盖重复调用的原始证据保留；最终GCHandle强根泄漏补真实GC回归。Form历史Created事件仍隐藏标准Control.Created，完整派生/资源/竞态、输入/绘制/绑定/可访问性、GTK4/AppKit及全Windows验收未关闭。018截图可见的文字裁切不因主窗退出成功而视为修复。
+
+日志、TRX、严格差分、PE、项目与依赖证据在本机忽略目录artifacts/compatibility-batch019/evidence.json；生命周期每次运行保存在唯一子目录。未改写原始失败、未全局抑制警告、未从测试数或任务数计算98%。

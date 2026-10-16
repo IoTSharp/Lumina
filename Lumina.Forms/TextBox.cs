@@ -74,9 +74,9 @@ public class TextBox : Control
         set
         {
             _readOnly = value;
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.SendMessageW(Handle, Win32.EM_SETREADONLY, value ? (nint)1 : 0, 0);
+                _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETREADONLY, value ? (nint)1 : 0, 0);
             }
         }
     }
@@ -206,14 +206,14 @@ public class TextBox : Control
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             Text += value;
             return;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.EM_SETSEL, (nint)int.MaxValue, (nint)int.MaxValue);
-        _ = Win32.SendMessageW(Handle, Win32.EM_REPLACESEL, 0, value);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)int.MaxValue, (nint)int.MaxValue);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_REPLACESEL, 0, value);
         _ = UpdateTextFromHandle();
     }
 
@@ -227,12 +227,12 @@ public class TextBox : Control
         int safeStart = Math.Max(0, start);
         int safeLength = Math.Max(0, length);
 
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.EM_SETSEL, (nint)safeStart, (nint)(safeStart + safeLength));
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)safeStart, (nint)(safeStart + safeLength));
         if (_selectionStart != safeStart || _selectionLength != safeLength)
         {
             _selectionStart = safeStart;
@@ -246,9 +246,9 @@ public class TextBox : Control
     /// </summary>
     public void ScrollToCaret()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.EM_SCROLLCARET, 0, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SCROLLCARET, 0, 0);
         }
     }
 
@@ -315,12 +315,12 @@ public class TextBox : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <inheritdoc />
@@ -348,12 +348,12 @@ public class TextBox : Control
 
     private bool UpdateSelectionFromHandle()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return false;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.EM_GETSEL, out int start, out int end);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_GETSEL, out int start, out int end);
         int normalizedStart = Math.Max(0, start);
         int normalizedLength = Math.Max(0, end - start);
 
@@ -370,7 +370,7 @@ public class TextBox : Control
 
     private void ApplyFontToHandle()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -391,7 +391,7 @@ public class TextBox : Control
         _ownsFontHandle = _fontHandle != 0;
         if (_fontHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.WM_SETFONT, _fontHandle, (nint)1);
+            _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETFONT, _fontHandle, (nint)1);
         }
     }
 }

@@ -44,12 +44,12 @@ public class DateTimePicker : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <inheritdoc />
@@ -64,7 +64,7 @@ public class DateTimePicker : Control
 
     private void ApplyNativeColors()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -80,6 +80,6 @@ public class DateTimePicker : Control
 
     private nint SetCalendarColor(int colorIndex, uint argb)
     {
-        return Win32.SendMessageW(Handle, Win32.DTM_SETMCCOLOR, (nint)colorIndex, unchecked((nint)Win32.ToColorRef(argb)));
+        return Win32.SendMessageW(NativeHandle, Win32.DTM_SETMCCOLOR, (nint)colorIndex, unchecked((nint)Win32.ToColorRef(argb)));
     }
 }

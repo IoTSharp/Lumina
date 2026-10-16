@@ -233,7 +233,7 @@ public class MenuStrip : ToolStrip
         }
 
         int clientWidth = Owner.ClientSize.Width;
-        if (Owner.Handle != 0 && Win32.GetClientRect(Owner.Handle, out var clientRect))
+        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
         {
             clientWidth = clientRect.Width;
         }
@@ -323,13 +323,13 @@ public class MenuStrip : ToolStrip
                         _hovered = true;
                         Refresh();
 
-                        if (Handle != 0)
+                        if (NativeHandle != 0)
                         {
                             var track = new Win32.TRACKMOUSEEVENT
                             {
                                 cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<Win32.TRACKMOUSEEVENT>(),
                                 dwFlags = Win32.TME_LEAVE,
-                                hwndTrack = Handle,
+                                hwndTrack = NativeHandle,
                             };
 
                             _ = Win32.TrackMouseEvent(ref track);
@@ -361,12 +361,12 @@ public class MenuStrip : ToolStrip
 
         private void PaintHost()
         {
-            if (Handle == 0)
+            if (NativeHandle == 0)
             {
                 return;
             }
 
-            nint hdc = Win32.BeginPaint(Handle, out Win32.PAINTSTRUCT paintStruct);
+            nint hdc = Win32.BeginPaint(NativeHandle, out Win32.PAINTSTRUCT paintStruct);
             if (hdc == 0)
             {
                 return;
@@ -378,7 +378,7 @@ public class MenuStrip : ToolStrip
 
             try
             {
-                if (!Win32.GetClientRect(Handle, out Win32.RECT clientRect))
+                if (!Win32.GetClientRect(NativeHandle, out Win32.RECT clientRect))
                 {
                     return;
                 }
@@ -483,7 +483,7 @@ public class MenuStrip : ToolStrip
                     _ = Win32.DeleteObject(backgroundBrush);
                 }
 
-                _ = Win32.EndPaint(Handle, ref paintStruct);
+                _ = Win32.EndPaint(NativeHandle, ref paintStruct);
             }
         }
 

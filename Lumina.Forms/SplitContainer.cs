@@ -255,7 +255,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
                     _dragOffset = IsVerticalLayout
                         ? point.X - splitterBounds.Left
                         : point.Y - splitterBounds.Top;
-                    _ = Win32.SetCapture(Handle);
+                    _ = Win32.SetCapture(NativeHandle);
                     result = 0;
                     return true;
                 }
@@ -290,7 +290,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
             case Win32.WM_SETCURSOR:
                 if (!IsSplitterFixed
                     && Win32.LowWord(lParam) == Win32.HTCLIENT
-                    && Handle != 0
+                    && NativeHandle != 0
                     && Win32.GetCursorPos(out var cursor)
                     && IsSplitterHot(new Point(cursor.x, cursor.y)))
                 {
@@ -345,20 +345,20 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
-        if (Panel1.Handle != 0)
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
+        if (Panel1.NativeHandle != 0)
         {
-            DarkModeNative.ApplyThemeToWindow(Panel1.Handle, CurrentVisualStyle.IsDarkMode);
+            DarkModeNative.ApplyThemeToWindow(Panel1.NativeHandle, CurrentVisualStyle.IsDarkMode);
         }
 
-        if (Panel2.Handle != 0)
+        if (Panel2.NativeHandle != 0)
         {
-            DarkModeNative.ApplyThemeToWindow(Panel2.Handle, CurrentVisualStyle.IsDarkMode);
+            DarkModeNative.ApplyThemeToWindow(Panel2.NativeHandle, CurrentVisualStyle.IsDarkMode);
         }
     }
 
@@ -437,7 +437,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
     private bool IsSplitterHot(Point screenPoint)
     {
         Rectangle splitterBounds = GetSplitterBounds();
-        if (Handle != 0 && Win32.GetWindowRect(Handle, out var rect))
+        if (NativeHandle != 0 && Win32.GetWindowRect(NativeHandle, out var rect))
         {
             splitterBounds.Offset(rect.Left, rect.Top);
         }
@@ -517,7 +517,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
     private void StopDraggingSplitter()
     {
         _draggingSplitter = false;
-        if (Handle != 0 && Win32.GetCapture() == Handle)
+        if (NativeHandle != 0 && Win32.GetCapture() == NativeHandle)
         {
             _ = Win32.ReleaseCapture();
         }

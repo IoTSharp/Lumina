@@ -79,13 +79,13 @@ public class ListView : Control
 
     private void ApplyExtendedStyles()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
         _ = Win32.SendMessageW(
-            Handle,
+            NativeHandle,
             Win32.LVM_SETEXTENDEDLISTVIEWSTYLE,
             (nint)ModernExtendedStyles,
             (nint)ModernExtendedStyles);
@@ -93,18 +93,18 @@ public class ListView : Control
 
     private void InstallDarkModeSubclass()
     {
-        if (Handle == 0 || !DarkModeNative.IsSupported)
+        if (NativeHandle == 0 || !DarkModeNative.IsSupported)
         {
             return;
         }
 
-        _ = Win32.SetWindowSubclass(Handle, s_listViewSubclassProc, 0, 0);
-        _ = Win32.SendMessageW(Handle, Win32.WM_CHANGEUISTATE, Win32.MakeLParam(Win32.UIS_SET, Win32.UISF_HIDEFOCUS), 0);
+        _ = Win32.SetWindowSubclass(NativeHandle, s_listViewSubclassProc, 0, 0);
+        _ = Win32.SendMessageW(NativeHandle, Win32.WM_CHANGEUISTATE, Win32.MakeLParam(Win32.UIS_SET, Win32.UISF_HIDEFOCUS), 0);
     }
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -114,13 +114,13 @@ public class ListView : Control
             return;
         }
 
-        nint headerHandle = Win32.SendMessageW(Handle, Win32.LVM_GETHEADER, 0, 0);
+        nint headerHandle = Win32.SendMessageW(NativeHandle, Win32.LVM_GETHEADER, 0, 0);
         bool useDarkMode = CurrentVisualStyle.IsDarkMode;
 
         s_applyingTheme = true;
         try
         {
-            _ = DarkModeNative.AllowWindowDarkMode(Handle, useDarkMode);
+            _ = DarkModeNative.AllowWindowDarkMode(NativeHandle, useDarkMode);
             if (headerHandle != 0)
             {
                 _ = DarkModeNative.AllowWindowDarkMode(headerHandle, useDarkMode);
@@ -137,7 +137,7 @@ public class ListView : Control
 
     private void ApplyNativeColors()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -146,9 +146,9 @@ public class ListView : Control
         uint background = Win32.ToColorRef(palette.ControlBackground);
         uint foreground = Win32.ToColorRef(palette.ControlForeground);
 
-        _ = Win32.SendMessageW(Handle, Win32.LVM_SETBKCOLOR, 0, unchecked((nint)background));
-        _ = Win32.SendMessageW(Handle, Win32.LVM_SETTEXTBKCOLOR, 0, unchecked((nint)background));
-        _ = Win32.SendMessageW(Handle, Win32.LVM_SETTEXTCOLOR, 0, unchecked((nint)foreground));
+        _ = Win32.SendMessageW(NativeHandle, Win32.LVM_SETBKCOLOR, 0, unchecked((nint)background));
+        _ = Win32.SendMessageW(NativeHandle, Win32.LVM_SETTEXTBKCOLOR, 0, unchecked((nint)background));
+        _ = Win32.SendMessageW(NativeHandle, Win32.LVM_SETTEXTCOLOR, 0, unchecked((nint)foreground));
     }
 
     private static nint ListViewSubclassProc(nint hWnd, uint uMsg, nint wParam, nint lParam, nuint uIdSubclass, nuint dwRefData)

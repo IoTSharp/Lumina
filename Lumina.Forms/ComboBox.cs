@@ -51,9 +51,9 @@ public class ComboBox : Control
     {
         get
         {
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _selectedIndex = (int)Win32.SendMessageW(Handle, Win32.CB_GETCURSEL, 0, 0);
+                _selectedIndex = (int)Win32.SendMessageW(NativeHandle, Win32.CB_GETCURSEL, 0, 0);
             }
 
             return _selectedIndex;
@@ -64,18 +64,18 @@ public class ComboBox : Control
 
             if (_selectedIndex == value)
             {
-                if (Handle != 0)
+                if (NativeHandle != 0)
                 {
-                    _ = Win32.SendMessageW(Handle, Win32.CB_SETCURSEL, (nint)value, 0);
+                    _ = Win32.SendMessageW(NativeHandle, Win32.CB_SETCURSEL, (nint)value, 0);
                 }
 
                 return;
             }
 
             _selectedIndex = value;
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.SendMessageW(Handle, Win32.CB_SETCURSEL, (nint)value, 0);
+                _ = Win32.SendMessageW(NativeHandle, Win32.CB_SETCURSEL, (nint)value, 0);
             }
 
             OnSelectedIndexChanged(EventArgs.Empty);
@@ -128,9 +128,9 @@ public class ComboBox : Control
     public int AddItem(object? value)
     {
         _items.Add(value);
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.CB_ADDSTRING, 0, value?.ToString() ?? string.Empty);
+            _ = Win32.SendMessageW(NativeHandle, Win32.CB_ADDSTRING, 0, value?.ToString() ?? string.Empty);
         }
 
         return _items.Count - 1;
@@ -144,9 +144,9 @@ public class ComboBox : Control
         bool selectionChanged = _selectedIndex != -1;
         _items.Clear();
         _selectedIndex = -1;
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.CB_RESETCONTENT, 0, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.CB_RESETCONTENT, 0, 0);
         }
 
         if (selectionChanged)
@@ -167,12 +167,12 @@ public class ComboBox : Control
 
         foreach (object? item in CollectionsMarshal.AsSpan(_items))
         {
-            _ = Win32.SendMessageW(Handle, Win32.CB_ADDSTRING, 0, item?.ToString() ?? string.Empty);
+            _ = Win32.SendMessageW(NativeHandle, Win32.CB_ADDSTRING, 0, item?.ToString() ?? string.Empty);
         }
 
         if (_selectedIndex >= 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.CB_SETCURSEL, (nint)_selectedIndex, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.CB_SETCURSEL, (nint)_selectedIndex, 0);
         }
     }
 
@@ -184,7 +184,7 @@ public class ComboBox : Control
             return false;
         }
 
-        int currentIndex = (int)Win32.SendMessageW(Handle, Win32.CB_GETCURSEL, 0, 0);
+        int currentIndex = (int)Win32.SendMessageW(NativeHandle, Win32.CB_GETCURSEL, 0, 0);
         if (_selectedIndex != currentIndex)
         {
             _selectedIndex = currentIndex;
@@ -203,12 +203,12 @@ public class ComboBox : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <inheritdoc />

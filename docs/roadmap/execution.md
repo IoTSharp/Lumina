@@ -26,9 +26,9 @@
 
 ## 当前接续与每批收尾
 
-2026-10-16：批次[018](batches/018.md)完成Control-06a普通父子集合/Windows重挂与Form-01真实标准链，以及ContainerControl-01/ScrollableControl-01a依赖范围。父Control-06保留隐藏原生重挂的中间VisibleChanged差异；391条参考/JIT有1行不匹配，AOT另有32条非零下界数组fixture不支持记录，严格门禁未通过。3,996项测试通过，完整Demo AOT主窗/一次复选框操作/正常退出取得实证；完整布局/模态/Designer及资源告警仍缺，M0/M1不视为通过。
+2026-10-16：批次[019](batches/019.md)完成Control-07a标准句柄生命周期与Form-06a必要显示衔接；204行固定参考/JIT/实际AOT全同，4,027测试及16个旧Control/context驱动通过，双目标Release 0错误/428警告。018隐藏重挂VisibleChanged差异已修复，父子集合391行参考/JIT全同；AOT的32行非零下界数组fixture仍未执行CopyTo，严格失败与历史证据保留。Demo AOT主窗/复选框/正常退出再次通过；Form.Created历史差异、全部派生恢复/资源、完整布局/模态/Designer与平台仍缺，M0/M1不视为通过。
 
-下批[019](batches/019.md)按[HANDOFF](../../HANDOFF.md)先只读准备后交接，继续Control-07标准句柄生命周期、可见树/消息顺序与必要Form覆盖；之后按既有Control任务依赖推进完整布局、属性、输入/绘制/绑定等及GTK4/AppKit/Drawing配套。用户要求完整Control闭环、Windows实际验收及Linux/macOS对应代码，不能以本批首范围结束。暂停的巡检及无关ListViewItem循环不恢复；不重启全库评估、不新增调度框架。
+下批[020](batches/020.md)按[HANDOFF](../../HANDOFF.md)先只读准备后交接。现有基础Control.SuspendLayout/PerformLayout为空、Form.Layout为EventHandler、ScrollableControl有单独暂停计数，先完成Control-10/FND-015标准布局事务与必要容器衔接，再推进Control-09完整布局计算及其余属性、输入/绘制/绑定和GTK4/AppKit/Drawing依赖。用户要求完整Control闭环、Windows实际验收及Linux/macOS对应代码，不能以本批首范围结束。暂停巡检及无关控件循环不恢复；不重启全库评估、不新增调度框架。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

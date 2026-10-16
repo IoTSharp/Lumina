@@ -175,12 +175,12 @@ public class PictureBox : Control, ISupportInitialize
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     private void ApplyImage()
@@ -193,9 +193,9 @@ public class PictureBox : Control, ISupportInitialize
             if (_image is null && (string.IsNullOrWhiteSpace(_imageLocation) || !File.Exists(_imageLocation)))
             {
                 _sourceImageSize = Size.Empty;
-                if (Handle != 0)
+                if (NativeHandle != 0)
                 {
-                    _ = Win32.SendMessageW(Handle, Win32.STM_SETIMAGE, (nint)Win32.IMAGE_BITMAP, 0);
+                    _ = Win32.SendMessageW(NativeHandle, Win32.STM_SETIMAGE, (nint)Win32.IMAGE_BITMAP, 0);
                 }
 
                 return;
@@ -216,7 +216,7 @@ public class PictureBox : Control, ISupportInitialize
                 SetBounds(Left, Top, _sourceImageSize.Width, _sourceImageSize.Height);
             }
 
-            if (Handle == 0)
+            if (NativeHandle == 0)
             {
                 return;
             }
@@ -231,7 +231,7 @@ public class PictureBox : Control, ISupportInitialize
                 ? NativeBitmapLoader.RenderBitmap(_image, canvasSize, imageRectangle)
                 : NativeBitmapLoader.RenderBitmap(_imageLocation!, canvasSize, imageRectangle);
 
-            nint previousHandle = Win32.SendMessageW(Handle, Win32.STM_SETIMAGE, (nint)Win32.IMAGE_BITMAP, newBitmapHandle);
+            nint previousHandle = Win32.SendMessageW(NativeHandle, Win32.STM_SETIMAGE, (nint)Win32.IMAGE_BITMAP, newBitmapHandle);
             if (previousHandle != 0)
             {
                 _ = Win32.DeleteObject(previousHandle);

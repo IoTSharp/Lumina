@@ -74,13 +74,13 @@ public class ContextMenuStrip : Component
     {
         ArgumentNullException.ThrowIfNull(control);
 
-        if (control.Handle != 0 && Win32.GetWindowRect(control.Handle, out var rect))
+        if (control.NativeHandle != 0 && Win32.GetWindowRect(control.NativeHandle, out var rect))
         {
-            ShowAtScreenPoint(control.Owner?.Handle ?? control.Handle, new Point(rect.Left + position.X, rect.Top + position.Y), control.Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
+            ShowAtScreenPoint(control.Owner?.NativeHandle ?? control.NativeHandle, new Point(rect.Left + position.X, rect.Top + position.Y), control.Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
             return;
         }
 
-        ShowAtScreenPoint(control.Owner?.Handle ?? 0, new Point(control.Left + position.X, control.Top + position.Y), control.Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
+        ShowAtScreenPoint(control.Owner?.NativeHandle ?? 0, new Point(control.Left + position.X, control.Top + position.Y), control.Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
     }
 
     internal void ShowAtScreenPoint(nint ownerHandle, Point screenLocation, ResolvedVisualStyle visualStyle)

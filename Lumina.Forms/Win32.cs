@@ -97,6 +97,7 @@ internal static class Win32
     public const int WM_SYSCHAR = 0x0106;
     public const int WM_SYSKEYDOWN = 0x0104;
     public const int WM_DESTROY = 0x0002;
+    public const int WM_SHOWWINDOW = 0x0018;
     public const int WM_NCCREATE = 0x0081;
     public const int WM_NCDESTROY = 0x0082;
     public const int WM_SETFONT = 0x0030;
@@ -742,6 +743,16 @@ internal static class Win32
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool DestroyWindow(nint hWnd);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWindow(nint hWnd);
+
+    [DllImport("user32.dll")]
+    internal static extern nint GetAncestor(nint hWnd, uint gaFlags);
+
+    [DllImport("user32.dll")]
+    internal static extern nint GetParent(nint hWnd);
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern nint BeginPaint(nint hWnd, out PAINTSTRUCT lpPaint);

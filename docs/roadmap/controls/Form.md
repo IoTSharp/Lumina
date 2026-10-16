@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**批次018已建立Form : ContainerControl : ScrollableControl : Control : Component，共用基础状态、Controls/Parent、句柄投递和Dispose。真实顶层HWND与主题/菜单路径保留。Layout仍使用EventHandler、FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/显示/关闭事件和多UI退出仍未完成，不能由标准继承关闭整个Form。
+🟡 **现状：**批次018已建立Form : ContainerControl : ScrollableControl : Control : Component，共用状态、父子树、句柄投递和Dispose。019补protected CreateHandle与标准句柄事件、延迟建窗、Show/Load/排队Shown及直接/外部销毁和重建可见性衔接。历史Created事件仍隐藏Control.Created属性（经Control视图可读），Layout仍为EventHandler、FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/显示/关闭事件和多UI退出仍缺，不能由基础衔接关闭整个Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -14,9 +14,10 @@
 | ✅ | P0 / Form-01 | 批次018：建立Form : ContainerControl : ScrollableControl : Control : Component，实际共用Text/Name/Bounds/ClientSize/Handle/Controls/颜色/ISynchronizeInvoke/Dispose；直接子项Parent为Form，移除重复状态与集合。真实窗口移动/尺寸回写及父子释放有运行证据，见018。整Form、容器行为与平台兼容未关闭。 |
 | ⬜ | P0 / Form-02 | 修正 FormClosingEventHandler/FormClosedEventHandler、LayoutEventHandler 等准确类型和事件参数；Created 等历史自有事件不能抵扣 HandleCreated；旧 Closing/Closed 仍按基线保留兼容。 |
 | ⬜ | P0 / Form-03 | 实现 ShowDialog()/ShowDialog(IWin32Window)、Show(owner)、DialogResult、Modal；owner 禁用恢复、嵌套消息循环、Esc/Enter、取消关闭与对话框复用完整验收。 |
-| 🟡 | P0 / Form-04 | 003～007的真实投递/context/await恢复已于018合入Control标准继承路径并通过旧驱动；完整关闭/重建/退出与多UI/模态竞态仍缺。 |
+| 🟡 | P0 / Form-04 | 003～007的真实投递/context/await恢复已于018合入Control标准继承路径；019保留句柄重建前已排队回调，直接DestroyHandle/外部销毁不等于Close、不退出消息循环。完整关闭/重建/退出与多UI/模态竞态仍缺。 |
 | 🟡 | P1 / Form-05 | 018已校准空Text、300×300默认Size、TabStop=true和初始Visible=false，并消费共享客户区。StartPosition、完整ClientSize/AutoScaleMode等默认与派生元数据仍待对照，父任务不关闭。 |
-| ⬜ | P1 / Form-06 | 实现显示生命周期：HandleCreated、BindingContextChanged、Load、VisibleChanged、Activated、Shown 真实顺序；Hide→Show 不重复 Load/Shown；Visible/WindowState/Handle 同步。 |
+| 🟡 | P1 / Form-06 | 019完成06a与Control标准句柄路径的必要衔接；BindingContextChanged/Activated、完整Visible/WindowState/Handle联动、所有显示入口及标准事件委托仍待对齐。历史Created事件隐藏Control.Created是已知表面差异，不计为标准属性兼容。 |
+| ✅ | P1 / Form-06a | 批次019：protected CreateHandle、延迟Handle、首次Show经OnCreateControl发Load并排队Shown，重复Show/隐藏/重建不重复Load/Shown；直接/外部销毁不触发Close语义，已显示窗体重建恢复真实原生可见性并保留Created/子控件状态，字体/菜单/GCHandle随真实窗口寿命清理。指定五个Form场景纳入019的204行参考/JIT/实际AOT对照，14项专项回归含创建参数失败重试后的真实GC回收；完整显示/关闭/模态及所有资源异常仍见父项。 |
 | ⬜ | P1 / Form-07 | 实现 Close/FormClosing.Cancel、CloseReason、FormClosed、Dispose；用户关闭、owner/MDI 关闭、Application.Exit、系统关机的事件原因与取消作用域不同，不能统一 UserClosing。 |
 | ⬜ | P1 / Form-08 | 补 Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm/Focused、BringToFront/Activate；关闭 owner 的从属窗口与焦点恢复对照。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
@@ -40,6 +41,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次019：Form覆盖标准protected CreateHandle并复用Control映射/事件/dispatcher。创建恢复真实ShowWindow时仅抑制内部恢复消息的重复托管通知，外部销毁后Handle重读保持Created=false及子窗未创建；直接销毁/重建不再冒充Close。Shown经UI队列触发；历史Created事件为兼容保留并明确其隐藏属性的差异。Form-06由全部未开始纠正为部分完成，06a为本批明确子范围；Form-02/03/07及完整窗口/设计器/资源/跨平台不关闭，见[019](../batches/019.md)。
 
 - 2026-10-16 · 批次018：Form由独立IDisposable类改为标准ContainerControl/ScrollableControl/Control/Component链，删除重复的属性、句柄/投递、集合和释放状态；保留真实顶层HWND、主题、菜单及原始Demo源码。原生移动/尺寸写回共享Bounds/ClientSize；Dispose清活动控件，销毁已显示窗口时静默清可见态。默认Text/Size/TabStop/Visible按参考校准，历史“Form独立状态/不存在标准链”回标。完整Form事件委托/模态/默认/布局/缩放/Designer/平台仍缺，见[018](../batches/018.md)。
 

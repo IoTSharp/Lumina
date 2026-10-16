@@ -1,11 +1,12 @@
 param(
     [ValidateSet('reference', 'lumina', 'both')][string]$Variant = 'both',
-    [switch]$PublishAot
+    [switch]$PublishAot,
+    [string]$ArtifactsDirectory
 )
 
 $ErrorActionPreference = 'Stop'
 $parentCollectionRepoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-$probeRoot = Join-Path $parentCollectionRepoRoot 'artifacts/compatibility-batch018/control-parent-collection'
+$probeRoot = if ($ArtifactsDirectory) { [IO.Path]::GetFullPath($ArtifactsDirectory) } else { Join-Path $parentCollectionRepoRoot 'artifacts/compatibility-batch018/control-parent-collection' }
 $utf8 = [Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = $utf8
 [IO.Directory]::CreateDirectory($probeRoot) | Out-Null

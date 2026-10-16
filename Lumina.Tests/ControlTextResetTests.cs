@@ -296,7 +296,6 @@ public class ControlTextResetTests
         Assert.Equal(new Rectangle(11, 13, 71, 43), control.Bounds);
         Assert.Equal(new Size(71, 43), control.ClientSize);
         Assert.False(control.IsHandleCreated);
-        Assert.Equal(0, control.Handle);
         Assert.Null(control.Parent);
         Assert.Equal(disposed, control.IsDisposed);
         Assert.False(control.Disposing);

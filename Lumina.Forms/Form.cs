@@ -16,6 +16,9 @@ public class Form : ContainerControl
     private GCHandle _selfHandle;
     private bool _shown;
     private bool _loaded;
+    private bool _showing;
+    private bool _restoringNativeVisibility;
+    private bool _registeredOpenForm;
     private EventArgs? _sizeChangedArguments = EventArgs.Empty;
     private int _nextControlId = 1000;
     private bool _effectExplicitlySet;
@@ -54,7 +57,7 @@ public class Form : ContainerControl
     /// <summary>
     /// Occurs after the native form handle and attached child controls are created.
     /// </summary>
-    public event EventHandler? Created;
+    public new event EventHandler? Created;
 
     /// <summary>
     /// Occurs before the form is first shown.
@@ -119,9 +122,9 @@ public class Form : ContainerControl
         set
         {
             _windowState = value;
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.ShowWindow(Handle, value switch
+                _ = Win32.ShowWindow(NativeHandle, value switch
                 {
                     FormWindowState.Minimized => Win32.SW_MINIMIZE,
                     FormWindowState.Maximized => Win32.SW_MAXIMIZE,
@@ -184,59 +187,100 @@ public class Form : ContainerControl
     public void Show()
     {
         ThrowIfDisposed();
-        if (Visible && Handle != 0)
+        if (Visible && NativeHandle != 0)
         {
             return;
         }
 
-        CreateHandleRecursive();
-        if (!_loaded)
+        _showing = true;
+        try
+        {
+            base.SetVisibleCore(true);
+            PerformLayout();
+            if (NativeHandle != 0)
+            {
+                _ = Win32.UpdateWindow(NativeHandle);
+            }
+        }
+        finally
+        {
+            _showing = false;
+        }
+    }
+
+    protected override void OnCreateControl()
+    {
+        base.OnCreateControl();
+        if (_showing && !_loaded)
         {
             _loaded = true;
             OnCreated();
             OnLoad();
-        }
-
-        PerformLayout();
-        base.SetVisibleCore(true);
-        _ = Win32.UpdateWindow(Handle);
-        if (!_shown)
-        {
-            _shown = true;
-            OnShown();
+            if (!IsDisposed && NativeHandle != 0)
+            {
+                _ = BeginInvoke((Action)(() =>
+                {
+                    if (!_shown && !IsDisposed)
+                    {
+                        _shown = true;
+                        OnShown();
+                    }
+                }));
+            }
         }
     }
 
-    internal override void CreateHandle()
+    protected override void CreateHandle()
     {
-        ThrowIfDisposed();
-        if (Handle != 0)
-        {
-            return;
-        }
+        if (!BeginNativeHandleCreation()) { return; }
 
+        try
+        {
+            CreateFormHandle();
+        }
+        finally
+        {
+            EndNativeHandleCreation();
+        }
+    }
+
+    private void CreateFormHandle()
+    {
         PerformAutoScale();
         InstanceHandle = Win32.GetModuleHandleW(null);
         EnsureWindowClassRegistered(InstanceHandle);
 
-        UiFontHandle = Win32.CreateUiFont();
-        OwnsUiFontHandle = UiFontHandle != 0;
+        // Resolve virtual properties before acquiring the per-window strong
+        // reference, so a failed getter can be retried without losing a GCHandle.
+        uint windowExStyle = WindowExStyle;
+        string windowText = Text;
+        uint windowStyle = WindowStyle;
+        int windowLeft = StartPosition == FormStartPosition.Manual ? Left : Win32.CW_USEDEFAULT;
+        int windowTop = StartPosition == FormStartPosition.Manual ? Top : Win32.CW_USEDEFAULT;
+        int windowWidth = Width;
+        int windowHeight = Height;
+
         if (UiFontHandle == 0)
         {
-            UiFontHandle = Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
+            UiFontHandle = Win32.CreateUiFont();
+            OwnsUiFontHandle = UiFontHandle != 0;
+            if (UiFontHandle == 0)
+            {
+                UiFontHandle = Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
+            }
         }
         _selfHandle = GCHandle.Alloc(this);
 
         Application.NotifyWindowCreated();
         nint hwnd = Win32.CreateWindowExW(
-            WindowExStyle,
+            windowExStyle,
             WindowClassName,
-            Text,
-            WindowStyle,
-            StartPosition == FormStartPosition.Manual ? Left : Win32.CW_USEDEFAULT,
-            StartPosition == FormStartPosition.Manual ? Top : Win32.CW_USEDEFAULT,
-            Width,
-            Height,
+            windowText,
+            windowStyle,
+            windowLeft,
+            windowTop,
+            windowWidth,
+            windowHeight,
             0,
             0,
             InstanceHandle,
@@ -244,19 +288,13 @@ public class Form : ContainerControl
 
         if (hwnd == 0)
         {
-            _selfHandle.Free();
             int err = Marshal.GetLastWin32Error();
-            if (OwnsUiFontHandle)
-            {
-                _ = Win32.DeleteObject(UiFontHandle);
-            }
-
-            UiFontHandle = 0;
-            OwnsUiFontHandle = false;
+            if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
+            if (!RecreatingHandle) { ReleaseUiFont(); }
             throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {err}");
         }
 
-        RegisterNativeHandle(hwnd, new WindowThreadDispatcher(hwnd, this));
+        RegisterNativeHandle(hwnd);
         UpdateBoundsFromNativeWindow();
         _ = Win32.EnableWindow(hwnd, Enabled);
         ApplyWindowIcon();
@@ -270,7 +308,16 @@ public class Form : ContainerControl
         }
 
         Application.RegisterOpenForm(this);
-        OnHandleCreated();
+        _registeredOpenForm = true;
+        NotifyNativeHandleCreated();
+        if (Visible && NativeHandle != 0)
+        {
+            // Creating a replacement HWND restores the existing visible state.
+            // It does not run CreateControl or announce a new visibility change.
+            _restoringNativeVisibility = true;
+            try { _ = Win32.ShowWindow(NativeHandle, Win32.SW_SHOW); }
+            finally { _restoringNativeVisibility = false; }
+        }
     }
 
     /// <summary>
@@ -278,9 +325,9 @@ public class Form : ContainerControl
     /// </summary>
     public void Close()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.WM_CLOSE, 0, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.WM_CLOSE, 0, 0);
         }
         else
         {
@@ -307,17 +354,17 @@ public class Form : ContainerControl
 
     public void Activate()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SetForegroundWindow(Handle);
+            _ = Win32.SetForegroundWindow(NativeHandle);
         }
     }
 
     public void BringToFront()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SetForegroundWindow(Handle);
+            _ = Win32.SetForegroundWindow(NativeHandle);
         }
     }
 
@@ -514,9 +561,9 @@ public class Form : ContainerControl
         _effectExplicitlySet = true;
         _pendingEffectKind = EffectKind.None;
         _pendingEffectOptions = null;
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            LuminaWindow.Clear(Handle);
+            LuminaWindow.Clear(NativeHandle);
         }
     }
 
@@ -571,7 +618,7 @@ public class Form : ContainerControl
     }
 
     /// <summary>
-    /// Called when the form is being closed in response to <c>WM_DESTROY</c>.
+    /// Called after a close request has been accepted, before the form is disposed.
     /// </summary>
     protected virtual void OnClosed()
     {
@@ -648,7 +695,7 @@ public class Form : ContainerControl
     /// <returns><see langword="true"/> if the size was retrieved; otherwise, <see langword="false"/>.</returns>
     protected bool TryGetClientSize(out int width, out int height)
     {
-        if (Handle != 0 && Win32.GetClientRect(Handle, out var rect))
+        if (NativeHandle != 0 && Win32.GetClientRect(NativeHandle, out var rect))
         {
             width = rect.Width;
             height = rect.Height;
@@ -671,20 +718,42 @@ public class Form : ContainerControl
         }
         finally
         {
-            ReleaseMainMenuStrip();
-            ReleasePaletteResources();
-            ReleaseOwnedIcon();
-            if (UiFontHandle != 0 && OwnsUiFontHandle)
+            // A failed or reentrant disposal may leave the HWND alive. Its
+            // callback and GDI resources must live at least as long as it does.
+            if (NativeHandle == 0 && !IsCreatingHandle)
             {
-                _ = Win32.DeleteObject(UiFontHandle);
-            }
+                ReleaseMainMenuStrip();
+                ReleasePaletteResources();
+                ReleaseOwnedIcon();
+                ReleaseUiFont();
+                if (_selfHandle.IsAllocated)
+                {
+                    _selfHandle.Free();
+                }
 
-            UiFontHandle = 0;
-            OwnsUiFontHandle = false;
-            if (_selfHandle.IsAllocated)
-            {
-                _selfHandle.Free();
+                UnregisterOpenForm();
             }
+        }
+    }
+
+    private void ReleaseUiFont()
+    {
+        if (UiFontHandle != 0 && OwnsUiFontHandle)
+        {
+            _ = Win32.DeleteObject(UiFontHandle);
+        }
+
+        UiFontHandle = 0;
+        OwnsUiFontHandle = false;
+    }
+
+    private void UnregisterOpenForm()
+    {
+        if (!_registeredOpenForm) { return; }
+        _registeredOpenForm = false;
+        if (Application.UnregisterOpenForm(this))
+        {
+            Win32.PostQuitMessage(0);
         }
     }
 
@@ -743,7 +812,7 @@ public class Form : ContainerControl
         }
 
         _refreshingMainMenuStrip = true;
-        if (!OperatingSystem.IsWindows() || Handle == 0)
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0)
         {
             try
             {
@@ -759,16 +828,16 @@ public class Form : ContainerControl
 
         try
         {
-            _ = Win32.SetMenu(Handle, 0);
+            _ = Win32.SetMenu(NativeHandle, 0);
             previous?.ReleaseNativeMenu();
 
             if (_mainMenuStrip is not null)
             {
                 _mainMenuStrip.SynchronizeNativeMenu();
-                _ = Win32.SetMenu(Handle, _mainMenuStrip.GetNativeMenuHandle());
+                _ = Win32.SetMenu(NativeHandle, _mainMenuStrip.GetNativeMenuHandle());
             }
 
-            _ = Win32.DrawMenuBar(Handle);
+            _ = Win32.DrawMenuBar(NativeHandle);
         }
         finally
         {
@@ -778,7 +847,7 @@ public class Form : ContainerControl
 
     private bool UsesNativeMainMenuBar()
         => OperatingSystem.IsWindows()
-            && Handle != 0
+            && NativeHandle != 0
             && _mainMenuStrip is not null
             && _mainMenuStrip.UsesNativeMenuBar;
 
@@ -788,7 +857,7 @@ public class Form : ContainerControl
 
         if (!UsesNativeMainMenuBar()
             && _mainMenuStrip is not null
-            && _mainMenuStrip.Handle != 0
+            && _mainMenuStrip.NativeHandle != 0
             && _mainMenuStrip.Visible)
         {
             inset += Math.Max(0, _mainMenuStrip.Height);
@@ -807,10 +876,10 @@ public class Form : ContainerControl
 
     private void ReleaseMainMenuStrip()
     {
-        if (Handle != 0 && OperatingSystem.IsWindows())
+        if (NativeHandle != 0 && OperatingSystem.IsWindows())
         {
-            _ = Win32.SetMenu(Handle, 0);
-            _ = Win32.DrawMenuBar(Handle);
+            _ = Win32.SetMenu(NativeHandle, 0);
+            _ = Win32.DrawMenuBar(NativeHandle);
         }
 
         _mainMenuStrip?.ReleaseNativeMenu();
@@ -900,17 +969,17 @@ public class Form : ContainerControl
 
     private void ApplyPendingEffect()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        LuminaWindow.SetEffect(Handle, _pendingEffectKind, _pendingEffectOptions);
+        LuminaWindow.SetEffect(NativeHandle, _pendingEffectKind, _pendingEffectOptions);
     }
 
     private void ApplyPendingThemeMode()
     {
-        if (Handle == 0 || !OperatingSystem.IsWindows())
+        if (NativeHandle == 0 || !OperatingSystem.IsWindows())
         {
             return;
         }
@@ -920,10 +989,10 @@ public class Form : ContainerControl
         _suppressMainMenuRefresh = true;
         try
         {
-            _ = Win32.DwmSetWindowAttribute(Handle, Win32.DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDarkMode, sizeof(int));
-            _ = DarkModeNative.AllowWindowDarkMode(Handle, useDarkMode != 0);
+            _ = Win32.DwmSetWindowAttribute(NativeHandle, Win32.DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDarkMode, sizeof(int));
+            _ = DarkModeNative.AllowWindowDarkMode(NativeHandle, useDarkMode != 0);
             DarkModeNative.RefreshImmersiveState();
-            DarkModeNative.RefreshTitleBarTheme(Handle);
+            DarkModeNative.RefreshTitleBarTheme(NativeHandle);
         }
         finally
         {
@@ -943,7 +1012,7 @@ public class Form : ContainerControl
         _surfaceBackgroundColorRef = Win32.ToColorRef(palette.SurfaceBackground);
         _controlBackgroundColorRef = Win32.ToColorRef(palette.ControlBackground);
 
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
             RefreshHandles();
         }
@@ -951,13 +1020,13 @@ public class Form : ContainerControl
 
     private void RefreshHandles()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            DarkModeNative.RefreshTitleBarTheme(Handle);
+            DarkModeNative.RefreshTitleBarTheme(NativeHandle);
             RefreshMainMenuStrip();
         }
 
-        _ = Win32.InvalidateRect(Handle, 0, false);
+        _ = Win32.InvalidateRect(NativeHandle, 0, false);
 
         foreach (Control control in ChildControls)
         {
@@ -1060,7 +1129,21 @@ public class Form : ContainerControl
             var self = (Form?)GCHandle.FromIntPtr(userData).Target;
             if (self is not null)
             {
-                return self.WindowProc(hwnd, message, wParam, lParam);
+                try
+                {
+                    return self.WindowProc(hwnd, message, wParam, lParam);
+                }
+                catch (Exception exception)
+                {
+                    // A managed event cannot unwind through USER32. Preserve
+                    // the exception through the application's existing UI route.
+                    try { Application.OnThreadException(exception); }
+                    catch (Exception reportingException)
+                    {
+                        Environment.FailFast("The application UI thread exception handler failed.", reportingException);
+                    }
+                    return 0;
+                }
             }
         }
 
@@ -1076,6 +1159,16 @@ public class Form : ContainerControl
 
         switch (message)
         {
+            case Win32.WM_SHOWWINDOW:
+            {
+                nint result = Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+                if (!_restoringNativeVisibility)
+                {
+                    NotifyNativeVisibilityChanged(wParam != 0);
+                }
+                return result;
+            }
+
             case Win32.WM_MOVE:
                 UpdateBoundsFromNativeWindow();
                 return 0;
@@ -1094,6 +1187,7 @@ public class Form : ContainerControl
                     return 0;
                 }
 
+                OnClosed();
                 Dispose();
                 return 0;
             }
@@ -1210,40 +1304,30 @@ public class Form : ContainerControl
                 return 0;
 
             case Win32.WM_DESTROY:
-                if (Disposing)
-                {
-                    // Destruction updates the stored state directly. Hiding the
-                    // form here would incorrectly raise VisibleChanged.
-                    SetVisibleState(false);
-                }
-                OnClosed();
+                NotifyNativeHandleDestroyed(hwnd);
                 return 0;
 
             case Win32.WM_NCDESTROY:
-                ThreadDispatcher?.Close();
-                ReleaseMainMenuStrip();
-                ReleasePaletteResources();
-
-                if (UiFontHandle != 0 && OwnsUiFontHandle)
+                try
                 {
-                    _ = Win32.DeleteObject(UiFontHandle);
-                    UiFontHandle = 0;
-                    OwnsUiFontHandle = false;
+                    ReleaseMainMenuStrip();
+                    ReleasePaletteResources();
+
+                    // Parked child HWNDs keep this HFONT until their own rebuild.
+                    if (!RecreatingHandle) { ReleaseUiFont(); }
+                }
+                finally
+                {
+                    try { ClearNativeHandle(); }
+                    finally
+                    {
+                        Win32.SetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA, 0);
+                        if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
+                        if (Disposing) { UnregisterOpenForm(); }
+                    }
                 }
 
-                ClearNativeHandle();
-                Win32.SetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA, 0);
-                if (Application.UnregisterOpenForm(this))
-                {
-                    Win32.PostQuitMessage(0);
-                }
-
-                if (_selfHandle.IsAllocated)
-                {
-                    _selfHandle.Free();
-                }
-
-                return 0;
+                return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
 
             default:
                 return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
@@ -1342,8 +1426,8 @@ public class Form : ContainerControl
             y = parentClientPoint.Y,
         };
 
-        if (Handle != 0
-            && Win32.ClientToScreen(Handle, ref screenPoint)
+        if (NativeHandle != 0
+            && Win32.ClientToScreen(NativeHandle, ref screenPoint)
             && TryGetControlFromScreenPoint(new Point(screenPoint.x, screenPoint.y), out control, out controlHandle))
         {
             screenLocation = new Point(screenPoint.x, screenPoint.y);
@@ -1395,12 +1479,12 @@ public class Form : ContainerControl
 
     private bool HandleEraseBackground(nint hdc)
     {
-        if (hdc == 0 || Handle == 0 || _windowBackgroundBrush == 0)
+        if (hdc == 0 || NativeHandle == 0 || _windowBackgroundBrush == 0)
         {
             return false;
         }
 
-        if (!Win32.GetClientRect(Handle, out var rect))
+        if (!Win32.GetClientRect(NativeHandle, out var rect))
         {
             return false;
         }
@@ -1558,7 +1642,7 @@ public class Form : ContainerControl
 
     private void ApplyWindowIcon()
     {
-        if (!OperatingSystem.IsWindows() || Handle == 0)
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0)
         {
             return;
         }
@@ -1569,8 +1653,8 @@ public class Form : ContainerControl
             return;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.WM_SETICON, (nint)Win32.ICON_BIG, iconHandle);
-        _ = Win32.SendMessageW(Handle, Win32.WM_SETICON, (nint)Win32.ICON_SMALL, iconHandle);
+        _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETICON, (nint)Win32.ICON_BIG, iconHandle);
+        _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETICON, (nint)Win32.ICON_SMALL, iconHandle);
     }
 
     private nint ResolveIconHandle()

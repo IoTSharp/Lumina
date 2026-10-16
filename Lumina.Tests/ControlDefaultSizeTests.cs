@@ -43,7 +43,6 @@ public class ControlDefaultSizeTests
             Assert.Equal(Size.Empty, control.ClientSize);
             Assert.Equal(Rectangle.Empty, control.ClientRectangle);
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
             int notifications = 0;
             control.LocationChanged += (_, _) => notifications++;
             control.Move += (_, _) => notifications++;
@@ -93,7 +92,6 @@ public class ControlDefaultSizeTests
             Assert.Equal(client, control.ClientSize);
             Assert.Equal(new Rectangle(Point.Empty, client), control.ClientRectangle);
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
             Assert.DoesNotContain(settings.Calls, call => call.Point is "enter:core" or "HandleCreated" || call.Point.StartsWith("notify:", StringComparison.Ordinal));
             string[] expected = profile == "empty"
                 ? ["default:min", "default:max", "default:size", "derived-constructor"]

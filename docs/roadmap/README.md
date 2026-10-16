@@ -14,7 +14,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-06a、Control-08a、Control-09a、Control-09b、Control-09c、Control-10a、Control-11a；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-06a、Control-07a、Control-08a、Control-09a、Control-09b、Control-09c、Control-10a、Control-11a；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-08a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -22,7 +22,7 @@
 | [ScrollableControl](controls/ScrollableControl.md) | M1 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ScrollableControl-01a；其余任务未完成 |
 | [ContainerControl](controls/ContainerControl.md) | M1 | 🟡 存在 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ContainerControl-01；其余任务未完成 |
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01；其余任务未完成 |
+| [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

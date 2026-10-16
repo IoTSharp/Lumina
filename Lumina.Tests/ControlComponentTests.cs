@@ -16,7 +16,7 @@ public class ControlComponentTests
         Assert.IsAssignableFrom<IComponent>(control);
         Assert.IsAssignableFrom<IDisposable>(control);
         IWin32Window window = control;
-        Assert.Equal(0, window.Handle);
+        Assert.Same(control, window);
         Assert.False(control.IsHandleCreated);
         Assert.False(control.IsDisposed);
         Assert.False(control.Disposing);
@@ -252,8 +252,6 @@ public class ControlComponentTests
         Assert.Equal(control.Text.Length, GetWindowTextLength(window.Handle));
 
         control.Dispose();
-
-        Assert.Equal(0, window.Handle);
         Assert.False(control.IsHandleCreated);
         Assert.False(IsWindow(handle));
         Assert.False(form.Controls.Contains(control));

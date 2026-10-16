@@ -103,17 +103,17 @@ public class GroupBox : ContainerControlBase
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     private void PaintGroupBox(nint targetHdc)
     {
-        if (Handle == 0 || Width <= 0 || Height <= 0)
+        if (NativeHandle == 0 || Width <= 0 || Height <= 0)
         {
             return;
         }
@@ -124,7 +124,7 @@ public class GroupBox : ContainerControlBase
 
         if (hdc == 0)
         {
-            hdc = Win32.BeginPaint(Handle, out paintStruct);
+            hdc = Win32.BeginPaint(NativeHandle, out paintStruct);
             if (hdc == 0)
             {
                 return;
@@ -142,7 +142,7 @@ public class GroupBox : ContainerControlBase
         {
             if (ownsPaintScope)
             {
-                _ = Win32.EndPaint(Handle, ref paintStruct);
+                _ = Win32.EndPaint(NativeHandle, ref paintStruct);
             }
         }
     }

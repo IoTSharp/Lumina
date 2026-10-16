@@ -93,7 +93,6 @@ public class ControlBoundsSpecifiedTests
             Assert.Empty(control.Calls);
             Assert.Equal(expected, control.Bounds);
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
         });
 
     [Theory]

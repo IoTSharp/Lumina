@@ -183,7 +183,7 @@ public class ControlFocusTests
     [InlineData(false)]
     [InlineData(true)]
     [Trait("Category", "WindowsHandle")]
-    public void CanFocus_ReadsNativeVisibilityAndEnablementInsteadOfManagedFlags(bool disable)
+    public void CanFocus_ReadsNativeStateAndVisibilityTracksShowWindow(bool disable)
         => OnStaThread(() =>
         {
             using var form = new Form();
@@ -195,7 +195,7 @@ public class ControlFocusTests
             if (disable) { _ = EnableWindow(control.Handle, false); }
             else { _ = ShowWindow(control.Handle, 0); }
             Assert.True(control.Enabled);
-            Assert.True(control.Visible);
+            Assert.Equal(disable, control.Visible);
             Assert.False(control.CanFocus);
             Assert.False(control.Focus());
 
@@ -262,7 +262,6 @@ public class ControlFocusTests
         Assert.False(control.CanFocus);
         Assert.False(control.Focus());
         Assert.False(control.IsHandleCreated);
-        Assert.Equal(0, control.Handle);
     }
 
     private static void OnStaThread(Action action)

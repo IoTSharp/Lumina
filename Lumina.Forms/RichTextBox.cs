@@ -38,12 +38,12 @@ public class RichTextBox : TextBox
     {
         base.ApplyTheme();
 
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
         ThemePalette palette = CurrentVisualStyle.Palette;
-        _ = Win32.SendMessageW(Handle, Win32.EM_SETBKGNDCOLOR, 0, unchecked((nint)Win32.ToColorRef(palette.ControlBackground)));
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETBKGNDCOLOR, 0, unchecked((nint)Win32.ToColorRef(palette.ControlBackground)));
     }
 }

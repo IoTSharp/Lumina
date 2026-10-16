@@ -164,10 +164,10 @@ public static class MessageBox
             }
 
             dialog.Show();
-            CenterDialog(ownerHandle, dialog.Handle);
-            _ = Win32.SetForegroundWindow(dialog.Handle);
+            CenterDialog(ownerHandle, dialog.NativeHandle);
+            _ = Win32.SetForegroundWindow(dialog.NativeHandle);
 
-            while (dialog.Handle != 0)
+            while (dialog.NativeHandle != 0)
             {
                 int getMessageResult = Win32.GetMessage(out Win32.MSG msg, 0, 0, 0);
                 if (getMessageResult <= 0)

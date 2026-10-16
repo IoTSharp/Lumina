@@ -387,6 +387,8 @@ public class FormControlInheritanceTests
             Assert.Equal(handle, control.Handle);
             Assert.True(control.Visible);
             Assert.Equal(1, loads);
+            // Shown is posted by the first Show and runs on the UI queue.
+            form.EndInvoke(form.BeginInvoke((Action)(() => { })));
             Assert.Equal(1, shown);
         });
 

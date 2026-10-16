@@ -25,7 +25,6 @@ public class ControlBoundsTests
             control.SetBounds(-7, 9, width, height);
             AssertBounds(control, new Rectangle(-7, 9, width, height));
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
 
             control.SetBounds(-7, 9, width, height);
             AssertBounds(control, new Rectangle(-7, 9, width, height));
@@ -88,7 +87,6 @@ public class ControlBoundsTests
             control.Width = 0;
             AssertBounds(control, new Rectangle(11, 13, 0, -5));
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
         });
 
     [Theory]

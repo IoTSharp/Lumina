@@ -60,12 +60,12 @@ public class StatusStrip : ToolStrip
     {
         base.ApplyNativeThemeState();
 
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <inheritdoc />
@@ -86,7 +86,7 @@ public class StatusStrip : ToolStrip
         {
             if (message == Win32.WM_CONTEXTMENU
                 && ShouldHandleBlankAreaContextMenu(lParam)
-                && TryShowAttachedContextMenu(Handle, lParam))
+                && TryShowAttachedContextMenu(NativeHandle, lParam))
             {
                 result = 0;
                 return true;
@@ -94,7 +94,7 @@ public class StatusStrip : ToolStrip
 
             if (message == Win32.WM_RBUTTONUP
                 && IsBlankAreaClientPoint(ExtractPoint(lParam))
-                && TryShowAttachedContextMenuFromClientPoint(Handle, lParam))
+                && TryShowAttachedContextMenuFromClientPoint(NativeHandle, lParam))
             {
                 result = 0;
                 return true;
@@ -206,7 +206,7 @@ public class StatusStrip : ToolStrip
 
         int clientWidth = Owner.ClientSize.Width;
         int clientHeight = Owner.ClientSize.Height;
-        if (Owner.Handle != 0 && Win32.GetClientRect(Owner.Handle, out var clientRect))
+        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
         {
             clientWidth = clientRect.Width;
             clientHeight = clientRect.Height;
@@ -247,7 +247,7 @@ public class StatusStrip : ToolStrip
             }
 
             Rectangle bounds = child.Bounds;
-            if (useScreenCoordinates && child.Handle != 0 && Win32.GetWindowRect(child.Handle, out var rect))
+            if (useScreenCoordinates && child.NativeHandle != 0 && Win32.GetWindowRect(child.NativeHandle, out var rect))
             {
                 bounds = new Rectangle(rect.Left, rect.Top, rect.Width, rect.Height);
             }

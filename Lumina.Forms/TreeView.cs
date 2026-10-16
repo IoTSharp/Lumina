@@ -52,23 +52,23 @@ public class TreeView : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     private void ApplyExtendedStyles()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
         _ = Win32.SendMessageW(
-            Handle,
+            NativeHandle,
             Win32.TVM_SETEXTENDEDSTYLE,
             (nint)ModernExtendedStyles,
             (nint)ModernExtendedStyles);
@@ -76,7 +76,7 @@ public class TreeView : Control
 
     private void ApplyNativeColors()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -85,7 +85,7 @@ public class TreeView : Control
         uint background = Win32.ToColorRef(palette.ControlBackground);
         uint foreground = Win32.ToColorRef(palette.ControlForeground);
 
-        _ = Win32.SendMessageW(Handle, Win32.TVM_SETBKCOLOR, 0, unchecked((nint)background));
-        _ = Win32.SendMessageW(Handle, Win32.TVM_SETTEXTCOLOR, 0, unchecked((nint)foreground));
+        _ = Win32.SendMessageW(NativeHandle, Win32.TVM_SETBKCOLOR, 0, unchecked((nint)background));
+        _ = Win32.SendMessageW(NativeHandle, Win32.TVM_SETTEXTCOLOR, 0, unchecked((nint)foreground));
     }
 }

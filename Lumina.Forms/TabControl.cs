@@ -35,9 +35,9 @@ public class TabControl : ContainerControlBase
     {
         get
         {
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                int nativeIndex = (int)Win32.SendMessageW(Handle, Win32.TCM_GETCURSEL, 0, 0);
+                int nativeIndex = (int)Win32.SendMessageW(NativeHandle, Win32.TCM_GETCURSEL, 0, 0);
                 if (nativeIndex >= -1)
                 {
                     _selectedIndex = nativeIndex;
@@ -153,7 +153,7 @@ public class TabControl : ContainerControlBase
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -166,8 +166,8 @@ public class TabControl : ContainerControlBase
         s_applyingTabTheme = true;
         try
         {
-            DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
-            _ = Win32.SetWindowTheme(Handle, CurrentVisualStyle.IsDarkMode ? "Explorer" : "Tab", null);
+            DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
+            _ = Win32.SetWindowTheme(NativeHandle, CurrentVisualStyle.IsDarkMode ? "Explorer" : "Tab", null);
         }
         finally
         {
@@ -184,7 +184,7 @@ public class TabControl : ContainerControlBase
         }
 
         int previousIndex = _selectedIndex;
-        int nativeIndex = (int)Win32.SendMessageW(Handle, Win32.TCM_GETCURSEL, 0, 0);
+        int nativeIndex = (int)Win32.SendMessageW(NativeHandle, Win32.TCM_GETCURSEL, 0, 0);
         if (nativeIndex >= -1)
         {
             _selectedIndex = nativeIndex;
@@ -218,9 +218,9 @@ public class TabControl : ContainerControlBase
 
     private void ApplySelectedIndex(bool raiseChangedEvent)
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SendMessageW(Handle, Win32.TCM_SETCURSEL, (nint)_selectedIndex, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.TCM_SETCURSEL, (nint)_selectedIndex, 0);
         }
 
         UpdateTabPages();
@@ -264,12 +264,12 @@ public class TabControl : ContainerControlBase
 
     private void SynchronizeNativeTabs()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.TCM_DELETEALLITEMS, 0, 0);
+        _ = Win32.SendMessageW(NativeHandle, Win32.TCM_DELETEALLITEMS, 0, 0);
 
         List<TabPage> pages = GetTabPages();
         for (int index = 0; index < pages.Count; index++)
@@ -290,7 +290,7 @@ public class TabControl : ContainerControlBase
                 cchTextMax = text.Length,
             };
 
-            _ = Win32.SendMessageW(Handle, Win32.TCM_INSERTITEMW, (nint)index, ref item);
+            _ = Win32.SendMessageW(NativeHandle, Win32.TCM_INSERTITEMW, (nint)index, ref item);
         }
         finally
         {
@@ -319,9 +319,9 @@ public class TabControl : ContainerControlBase
 
     private Rectangle GetPageBounds()
     {
-        if (Handle != 0 && Win32.GetClientRect(Handle, out var rect))
+        if (NativeHandle != 0 && Win32.GetClientRect(NativeHandle, out var rect))
         {
-            _ = Win32.SendMessageW(Handle, Win32.TCM_ADJUSTRECT, 0, ref rect);
+            _ = Win32.SendMessageW(NativeHandle, Win32.TCM_ADJUSTRECT, 0, ref rect);
             return new Rectangle(
                 rect.Left,
                 rect.Top,
@@ -374,12 +374,12 @@ public class TabControl : ContainerControlBase
 
     private void ApplyTabHeaderMetrics()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        _ = Win32.SendMessageW(Handle, Win32.TCM_SETPADDING, 0, Win32.MakeLParam(6, 3));
+        _ = Win32.SendMessageW(NativeHandle, Win32.TCM_SETPADDING, 0, Win32.MakeLParam(6, 3));
     }
 
     private void EnsureSelection()
@@ -410,7 +410,7 @@ public class TabControl : ContainerControlBase
 
     private void ApplyNativeColors()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }

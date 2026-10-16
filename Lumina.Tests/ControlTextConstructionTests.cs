@@ -85,7 +85,6 @@ public class ControlTextConstructionTests
             Assert.Equal(rectangle.Size, control.ClientSize);
             Assert.Equal(new Rectangle(Point.Empty, rectangle.Size), control.ClientRectangle);
             Assert.False(control.IsHandleCreated);
-            Assert.Equal(0, control.Handle);
             Assert.Null(SynchronizationContext.Current);
         });
 

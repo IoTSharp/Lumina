@@ -622,9 +622,9 @@ public static class Application
         {
             foreach (Form form in s_openForms)
             {
-                if (form.Handle != 0)
+                if (form.NativeHandle != 0)
                 {
-                    return form.Handle;
+                    return form.NativeHandle;
                 }
             }
         }

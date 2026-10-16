@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～018的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [018结果](docs/roadmap/batches/018.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
+**001～019的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [019结果](docs/roadmap/batches/019.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次018完成Control-06a父子集合与Form标准继承链基础：3,996项测试通过、双目标Release 0错误。固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged仍差1行；实际AOT的32行非零下界数组fixture因运行时不支持而未执行CopyTo，其余359行同JIT，严格门禁仍失败。完整Demo AOT已真实显示、复选框0→1并正常退出，记录HWND全部销毁；模态、完整布局/Designer、既有IL3050和Linux/macOS仍未闭环。基类、局部运行和API签名不等于整Control验收，固定分母1,095类型/61,240行不变，见[验证记录](docs/roadmap/validation.md)。下一批[019](docs/roadmap/batches/019.md)继续句柄生命周期和可见消息衔接，完整专项与跨平台实现目标持续；无关控件和暂停巡检不恢复。
+批次019完成Control-07a标准句柄生命周期与Form-06a必要显示衔接：204行固定参考/JIT/实际AOT严格相同，4,027项测试及16个旧Control/context驱动通过，双目标Release 0错误/428警告。018隐藏父级重挂的可见消息差异已修复，391行参考/JIT全同；集合AOT仍有32行非零下界数组fixture未执行CopyTo，其余359行同JIT，严格失败保留。Demo AOT再次真实显示、复选框0→1、正常exit0且记录HWND全部失效。Form历史Created事件隐藏Control.Created、完整布局/模态/Designer、资源IL3050与Linux/macOS仍缺；没有整Control或98%声明。固定1,095类型/61,240行不变，见[验证记录](docs/roadmap/validation.md)。下一批[020](docs/roadmap/batches/020.md)先补标准布局事务和必要容器衔接，继续完整专项；无关控件和暂停巡检不恢复。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)

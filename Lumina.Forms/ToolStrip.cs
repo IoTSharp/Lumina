@@ -94,19 +94,19 @@ public class ToolStrip : ContainerControlBase
 
     private protected virtual void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     private void ClearNativeText()
     {
-        if (Handle != 0)
+        if (NativeHandle != 0)
         {
-            _ = Win32.SetWindowTextW(Handle, string.Empty);
+            _ = Win32.SetWindowTextW(NativeHandle, string.Empty);
         }
     }
 
@@ -133,7 +133,7 @@ public class ToolStrip : ContainerControlBase
         }
 
         int clientWidth = Owner.ClientSize.Width;
-        if (Owner.Handle != 0 && Win32.GetClientRect(Owner.Handle, out var clientRect))
+        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
         {
             clientWidth = clientRect.Width;
         }
@@ -175,7 +175,7 @@ public class ToolStrip : ContainerControlBase
     {
         ItemsChanged?.Invoke(this, EventArgs.Empty);
 
-        if (Owner is not null || Handle != 0)
+        if (Owner is not null || NativeHandle != 0)
         {
             PerformLayout();
         }
@@ -651,7 +651,7 @@ public class ToolStrip : ContainerControlBase
             ToolStripDropDownItem item = navigable[currentIndex];
             Control host = _itemHosts.TryGetValue(item, out Control? h) ? h : initialHost;
             Point screenLocation = GetDropDownScreenLocation(host);
-            nint ownerHandle = Owner?.Handle ?? Handle;
+            nint ownerHandle = Owner?.NativeHandle ?? NativeHandle;
 
             int nextIndex;
             bool keepCurrentArmed = armedIndex == currentIndex;
@@ -699,7 +699,7 @@ public class ToolStrip : ContainerControlBase
         OnDropDownStateChanged(item, host, isOpen: true);
         try
         {
-            ToolStripPopupMenu.Show(item.DropDownItems, Owner?.Handle ?? Handle, screenLocation, Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
+            ToolStripPopupMenu.Show(item.DropDownItems, Owner?.NativeHandle ?? NativeHandle, screenLocation, Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle);
         }
         finally
         {
@@ -709,7 +709,7 @@ public class ToolStrip : ContainerControlBase
 
     private static Point GetDropDownScreenLocation(Control host)
     {
-        if (host.Handle != 0 && Win32.GetWindowRect(host.Handle, out var rect))
+        if (host.NativeHandle != 0 && Win32.GetWindowRect(host.NativeHandle, out var rect))
         {
             return new Point(rect.Left, Math.Max(rect.Top, rect.Bottom - 1));
         }
@@ -719,7 +719,7 @@ public class ToolStrip : ContainerControlBase
 
     private static Rectangle GetScreenBounds(Control host)
     {
-        if (host.Handle != 0 && Win32.GetWindowRect(host.Handle, out var rect))
+        if (host.NativeHandle != 0 && Win32.GetWindowRect(host.NativeHandle, out var rect))
         {
             return Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
         }

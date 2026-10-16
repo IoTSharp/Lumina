@@ -46,12 +46,12 @@ public class MonthCalendar : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <inheritdoc />
@@ -66,7 +66,7 @@ public class MonthCalendar : Control
 
     private void ApplyNativeColors()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
@@ -87,7 +87,7 @@ public class MonthCalendar : Control
 
     private nint SetCalendarColor(int colorIndex, uint colorRef)
     {
-        return Win32.SendMessageW(Handle, Win32.MCM_SETCOLOR, (nint)colorIndex, unchecked((nint)colorRef));
+        return Win32.SendMessageW(NativeHandle, Win32.MCM_SETCOLOR, (nint)colorIndex, unchecked((nint)colorRef));
     }
 
     private void EnsureMinimumSize()
@@ -107,13 +107,13 @@ public class MonthCalendar : Control
 
     private Size GetMinimumRequiredSize()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return s_defaultMinimumSize;
         }
 
         var rect = new Win32.RECT();
-        _ = Win32.SendMessageW(Handle, Win32.MCM_GETMINREQRECT, 0, ref rect);
+        _ = Win32.SendMessageW(NativeHandle, Win32.MCM_GETMINREQRECT, 0, ref rect);
 
         return rect.Width > 0 && rect.Height > 0
             ? new Size(rect.Width, rect.Height)

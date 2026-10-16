@@ -24,9 +24,9 @@ public class CheckBox : Control
     {
         get
         {
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _checked = Win32.SendMessageW(Handle, Win32.BM_GETCHECK, 0, 0) == (nint)Win32.BST_CHECKED;
+                _checked = Win32.SendMessageW(NativeHandle, Win32.BM_GETCHECK, 0, 0) == (nint)Win32.BST_CHECKED;
             }
 
             return _checked;
@@ -35,18 +35,18 @@ public class CheckBox : Control
         {
             if (_checked == value)
             {
-                if (Handle != 0)
+                if (NativeHandle != 0)
                 {
-                    _ = Win32.SendMessageW(Handle, Win32.BM_SETCHECK, (nint)(value ? Win32.BST_CHECKED : Win32.BST_UNCHECKED), 0);
+                    _ = Win32.SendMessageW(NativeHandle, Win32.BM_SETCHECK, (nint)(value ? Win32.BST_CHECKED : Win32.BST_UNCHECKED), 0);
                 }
 
                 return;
             }
 
             _checked = value;
-            if (Handle != 0)
+            if (NativeHandle != 0)
             {
-                _ = Win32.SendMessageW(Handle, Win32.BM_SETCHECK, (nint)(value ? Win32.BST_CHECKED : Win32.BST_UNCHECKED), 0);
+                _ = Win32.SendMessageW(NativeHandle, Win32.BM_SETCHECK, (nint)(value ? Win32.BST_CHECKED : Win32.BST_UNCHECKED), 0);
             }
 
             OnCheckedChanged(EventArgs.Empty);
@@ -87,7 +87,7 @@ public class CheckBox : Control
             return false;
         }
 
-        bool currentValue = Win32.SendMessageW(Handle, Win32.BM_GETCHECK, 0, 0) == (nint)Win32.BST_CHECKED;
+        bool currentValue = Win32.SendMessageW(NativeHandle, Win32.BM_GETCHECK, 0, 0) == (nint)Win32.BST_CHECKED;
         if (_checked != currentValue)
         {
             _checked = currentValue;
@@ -106,12 +106,12 @@ public class CheckBox : Control
 
     private void ApplyNativeThemeState()
     {
-        if (Handle == 0)
+        if (NativeHandle == 0)
         {
             return;
         }
 
-        DarkModeNative.ApplyThemeToWindow(Handle, CurrentVisualStyle.IsDarkMode);
+        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <summary>
