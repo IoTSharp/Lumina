@@ -501,3 +501,5 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 - 初轮fixture未释放移除控件、Windows PowerShell 5.1驱动失败及实现迭代保留。父子集合首次7行句柄差异已通过恢复可见树创建修复，最终391行严格全同；028中间复测也出现关闭LostFocus，最终仍为原12场景差异。旧AOT/设备/Designer未重验。
 - API重新导出：固定1,095类型/61,240行/187页、各平台运行unverified不变。13项目/17目标仅.NET10，Demo原始源码/Designer/resx不改，net10.0依赖官方Drawing10.0.0且无WinForms/System.Resources.Extensions。AOT原IL3050/IL3053等警告保留，详见本机 `artifacts/compatibility-batch029/evidence.json`。
 - 用户明确029完成后停止；本批实现与文档提交推送、远端核验完成后停止，不创建下一聊天或批次，luminaforms保持PAUSED。完整范围及剩余依赖见[029](batches/029.md)。
+
+- 029实现已成功推送 `4dd229ee106eec28eed33571752e1e9139fee0b6`，HEAD/origin/main/实际远端一致且工作区干净；417份Markdown/2,096任务/187行实施索引0错误，整类型代码完成0。停止记录单独提交推送，最终SHA核验见artifacts/compatibility-batch029/stop-push.json。

@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-10-17。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～029](batches/029.md)的明确子范围代码完成；用户要求029结束后停止，提交推送并核验远端后结束，不创建下一聊天或批次、不恢复巡检。完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成，等待新的明确指示。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-10-17。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～029](batches/029.md)的明确子范围代码完成；029实现已提交推送并核验远端，按用户要求停止，不创建下一聊天或批次、不恢复巡检。完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成，等待新的明确指示。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 

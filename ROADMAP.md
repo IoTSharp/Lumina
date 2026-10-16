@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～029的明确子范围代码完成；按用户2026-10-17指示，029提交推送并核验远端后停止。** [当前记录](HANDOFF.md) · [029结果](docs/roadmap/batches/029.md) · [完整任务索引](docs/roadmap/tasks.csv)。不创建下一批聊天，不恢复巡检；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～029的明确子范围代码完成；029已提交推送并核验远端，按用户2026-10-17指示停止。** [当前记录](HANDOFF.md) · [029结果](docs/roadmap/batches/029.md) · [完整任务索引](docs/roadmap/tasks.csv)。不创建下一批聊天，不恢复巡检；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
