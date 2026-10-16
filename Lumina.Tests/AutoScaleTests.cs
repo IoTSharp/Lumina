@@ -44,11 +44,12 @@ public class AutoScaleTests
         var label = new Label();
         label.SetBounds(10, 12, 30, 20);
         form.Controls.Add(label);
+        Rectangle initialBounds = form.Bounds;
 
         form.PerformAutoScale();
 
-        Assert.Equal(100, form.Width);
-        Assert.Equal(80, form.Height);
+        Assert.Equal(initialBounds, form.Bounds);
+        Assert.Equal(new Size(100, 80), form.ClientSize);
         Assert.Equal(new Rectangle(10, 12, 30, 20), label.Bounds);
     }
 

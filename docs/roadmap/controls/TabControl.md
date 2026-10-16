@@ -39,6 +39,8 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
+- 2026-10-16 · 批次018集成：标准Control可见通知开始创建可见子树，暴露本地TabControl在无HWND时也提前切换TabPage.Visible的历史差异；官方SelectedIndex无句柄时只保存索引，读取DisplayRectangle才创建用于精确计算。现有布局测试改为核对实际DisplayRectangle与选中页Bounds一致，不再把本地4/21估计值当标准参考。未扩大本控件实现或关闭选择/布局任务；该差异继续留本页待办。
+
 - `9d5165f`（2026-04-09）：扩展 TabControl 兼容功能。
 - `f666aa6`（2026-04-08）：UI 和发布改进提交涉及本文件。
 - `cb090bc`（2026-04-08）：记事本/UI 改进提交涉及本文件。

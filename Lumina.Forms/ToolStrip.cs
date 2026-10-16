@@ -12,6 +12,7 @@ public class ToolStrip : ContainerControlBase
 
     private readonly ToolStripItemCollection _items;
     private readonly Dictionary<ToolStripItem, Control> _itemHosts = [];
+    private bool _updatingItemHosts;
 
     internal event EventHandler? ItemsChanged;
 
@@ -252,35 +253,48 @@ public class ToolStrip : ContainerControlBase
 
     private protected void EnsureItemHosts()
     {
-        foreach (ToolStripItem item in Items)
+        if (_updatingItemHosts || Disposing || IsDisposed)
         {
-            if (!ShouldCreateHostControl(item))
-            {
-                if (_itemHosts.Remove(item, out Control? removedHost))
-                {
-                    RemoveItemHost(removedHost);
-                }
+            return;
+        }
 
-                continue;
-            }
-
-            if (_itemHosts.TryGetValue(item, out Control? existingHost))
+        // ControlCollection mutations now request layout synchronously. Keep
+        // this reconciliation atomic when adding or replacing a hosted child.
+        _updatingItemHosts = true;
+        try
+        {
+            foreach (ToolStripItem item in Items)
             {
-                if (existingHost is not null && IsCompatibleHostControl(existingHost, item))
+                if (!ShouldCreateHostControl(item))
                 {
+                    if (_itemHosts.Remove(item, out Control? removedHost))
+                    {
+                        RemoveItemHost(removedHost);
+                    }
+
                     continue;
                 }
 
-                if (existingHost is not null)
+                if (_itemHosts.TryGetValue(item, out Control? existingHost))
                 {
-                    RemoveItemHost(existingHost);
-                }
-            }
+                    if (existingHost is not null && IsCompatibleHostControl(existingHost, item))
+                    {
+                        continue;
+                    }
 
-            Control host = CreateHostControl(item);
-            _itemHosts[item] = host;
-            Controls.Add(host);
+                    _itemHosts.Remove(item);
+                    if (existingHost is not null)
+                    {
+                        RemoveItemHost(existingHost);
+                    }
+                }
+
+                Control host = CreateHostControl(item);
+                _itemHosts[item] = host;
+                Controls.Add(host);
+            }
         }
+        finally { _updatingItemHosts = false; }
     }
 
     private protected virtual void LayoutItemHosts()

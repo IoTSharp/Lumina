@@ -58,6 +58,12 @@ internal static class Win32
     public const int SW_MINIMIZE = 6;
     public const int SW_MAXIMIZE = 3;
 
+    public const int GWL_STYLE = -16;
+    public const uint SWP_NOSIZE = 0x0001;
+    public const uint SWP_NOMOVE = 0x0002;
+    public const uint SWP_NOACTIVATE = 0x0010;
+
+    public const int WM_MOVE = 0x0003;
     public const int WM_SIZE = 0x0005;
     public const int WM_SETFOCUS = 0x0007;
     public const int WM_KILLFOCUS = 0x0008;
@@ -817,6 +823,13 @@ internal static class Win32
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool MoveWindow(nint hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern nint SetParent(nint hWndChild, nint hWndNewParent);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
+
     [DllImport("user32.dll", ExactSpelling = true)]
     internal static extern int GetSystemMetrics(int nIndex);
 
@@ -869,6 +882,10 @@ internal static class Win32
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ClientToScreen(nint hWnd, ref POINT lpPoint);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool ScreenToClient(nint hWnd, ref POINT lpPoint);
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern nint SetCapture(nint hWnd);

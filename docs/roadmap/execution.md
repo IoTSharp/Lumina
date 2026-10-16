@@ -1,14 +1,14 @@
 # 执行顺序与发布门槛
 
-2026-10-15 用户确定实施方式：先逐批完成代码，复杂 UI/真机验证集中后置。每批由新的编码主会话带 2～3 个无文件冲突的内部子智能体推进，一人一任务；根目录 [HANDOFF.md](../../HANDOFF.md) 是接续入口。以下里程碑中的“验收/发布门槛”是后期兼容验收要求，不用来阻塞可独立推进的代码任务；FND-004 等纯真机项继续保留，转入 Windows 集中验收阶段。Linux 后期统一测试，macOS 的真机结果单独记录。
+2026-10-15用户确定逐批代码实施与每批新主聊天/多个互斥子智能体机制；根目录[HANDOFF.md](../../HANDOFF.md)是接续入口。2026-10-16另行授权完整Control专项，Windows实际运行/Native AOT及相关Designer/资源验收纳入该专项完成条件，不能继续一概后置。Linux/macOS完成对应代码并单列编译与设备证据；无关全量循环和暂停巡检不恢复。
 
 任务按依赖和真实迁移阻塞排序。P0 先做；P1 是共同基础及常见场景；P2 是业务/高级能力；P3 是历史专属和低频补齐。P3 代表后做，不代表从全量兼容目标删除。跨平台不等待每个历史 Windows 控件完成，但必须先通过资源与基础原型。
 
 | 顺序 | 里程碑 | 优先级/状态 | 具体任务入口 | 完成门槛 |
 | --- | --- | --- | --- | --- |
 | 00 | 基线可追踪 | P0 🟡 | [计量](coverage.md)、[类型/成员](api/types.json)、[全控件索引](README.md) | 清单已生成；行为场景和证据映射仍需建立 |
-| 01 | M0 阻塞 | P0 🟡 | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程/基础构造/启动签名等子范围已实现；完整继承、AOT主窗与警告仍未闭环 |
-| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/组件释放等子范围完成；Parent/Controls/Form标准链、完整布局/键盘/验证/模态/设计器仍缺 |
+| 01 | M0 阻塞 | P0 🟡 | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程/基础构造/启动签名与Form标准链已实现；完整AOT主窗/模态与警告仍未闭环 |
+| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/释放、Parent/Controls/Form标准链首范围完成；完整句柄/布局/键盘/验证/模态/设计器仍缺 |
 | 03 | M2a 高频简单控件 | P1 🟡 已有局部代码，开发/验收未完成 | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
 | 04 | M2b 已有确定性薄弱控件 | P1 🟡 已有局部代码，开发/验收未完成 | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
 | 05 | M2c 容器/列表/菜单 | P1 🟡 已有局部代码，开发/验收未完成 | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
@@ -26,10 +26,9 @@
 
 ## 当前接续与每批收尾
 
-2026-10-16：批次[017](batches/017.md)完成Control-11a无父级无自身HWND文本/重置和ListViewItem-04b未挂接图像选择状态首范围，001～016既有子范围保留。Control-11、ListViewItem-04/FND-003仍部分完成，Form/Parent/Controls、已有HWND/native文本、ImageList/图像构造/设计器转换器、完整所属和资源不随子项关闭。AOT的DispId工具链删除差异、中文Designer/动态转换及完整主窗/三平台验收仍单列，M0/M1不视为通过。
+2026-10-16：批次[018](batches/018.md)完成Control-06a普通父子集合/Windows重挂与Form-01真实标准链，以及ContainerControl-01/ScrollableControl-01a依赖范围。父Control-06保留隐藏原生重挂的中间VisibleChanged差异；391条参考/JIT有1行不匹配，AOT另有32条非零下界数组fixture不支持记录，严格门禁未通过。3,996项测试通过，完整Demo AOT主窗/一次复选框操作/正常退出取得实证；完整布局/模态/Designer及资源告警仍缺，M0/M1不视为通过。
 
-017及必要验证、路线图和提交推送已完成，原实施轮次结束。用户随后于2026-10-16要求在新会话把Control完整闭环：Windows取得实际验收证据，Linux/macOS完成对应实现代码。新主按[HANDOFF](../../HANDOFF.md)完成归属交接后，从Control-06及Form标准链等真实依赖继续，推进完整Control清单及必要依赖至专项目标完成；不以一个局部子范围代替完整验收，不恢复暂停巡检或无关控件循环。Windows真实窗口、输入/布局/绘制/投递/生命周期、Native AOT及相关设计器/资源验证纳入本次完成条件，Linux/macOS编译与真机状态分列。ListViewItem其余图像构造、挂接样式/图像及完整所属/ImageList/native仍保留原任务，未在此专项分派；保留既有优先级和固定分母，不重启全库评估、不增加调度框架。
-
+下批[019](batches/019.md)按[HANDOFF](../../HANDOFF.md)先只读准备后交接，继续Control-07标准句柄生命周期、可见树/消息顺序与必要Form覆盖；之后按既有Control任务依赖推进完整布局、属性、输入/绘制/绑定等及GTK4/AppKit/Drawing配套。用户要求完整Control闭环、Windows实际验收及Linux/macOS对应代码，不能以本批首范围结束。暂停的巡检及无关ListViewItem循环不恢复；不重启全库评估、不新增调度框架。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

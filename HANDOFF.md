@@ -5,13 +5,16 @@
 ## 当前接续点
 
 - 调度状态：017已完成并结束原实施轮次。用户随后于2026-10-16直接要求“在新会话中开始实现 [Control] 把 [Control] 完全闭环，确保至少windows下能够验收，其他系统下实现代码”。据此开启Control专项，持续完成必要实现及Windows实际验收；Linux/macOS完成对应代码并单列未取得的真机证据。完整专项目标完成后结束，不以一个局部子范围代替整Control闭环，不恢复无关控件的全路线图循环。
-- 指定新编码主会话：`01a14184-c746-7262-9000-4655cdb6a387`（Control 完整闭环：Windows 验收与跨平台实现，本地Lumina项目）。已创建并发送完整目标与约束，先只读准备。旧主`01a14163-281b-7980-9fa1-558752cecf8b`在本交接记录成功提交推送、核对远端并发送“开始接管”前仍是唯一写入者；新主须核对本文件归属/交接SHA/工作区后明确实际接管。确认接管后旧主停止写入、构建及Git并立即归档，不等待Control实现结束。
+- 当前编码主会话：`01a14184-c746-7262-9000-4655cdb6a387`（Control 完整闭环：Windows 验收与跨平台实现，本地Lumina项目）。2026-10-16收到“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main、实际远端refs/heads/main均为交接SHA `52a45f6ef08aa78de579f74005e4dafa69f9a100`。旧主`01a14163-281b-7980-9fa1-558752cecf8b`已停止写入/构建/Git，本主已检查其状态并通过set_thread_archived确认归档。
 - 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
 - 当前范围：[Control任务](docs/roadmap/controls/Control.md)与[逐API清单](docs/roadmap/api/Control.md)的完整剩余工作及必要依赖，按现有优先级首先处理Control-06/Parent/Controls/Form标准链，再推进句柄/生命周期/布局/交互/资源/AOT及平台后端。新主按真实依赖拆分后续实施批次；不再搭配无关ListViewItem小任务，不重启全项目评估。
+- 当前实施批次：[018 · Control父子集合与Form标准继承链](docs/roadmap/batches/018.md)明确子范围代码完成，三个内部子任务已交付并停止写入；当前主统一完成检查/路线图与提交推送，随后按协议交接[019 · 标准句柄生命周期](docs/roadmap/batches/019.md)。完整Control专项继续，不能以本批结束目标。
+- 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
+- 019责任：Control-07代码子智能体独占Control.cs及明确分配的生命周期内部文件/测试；Form衔接子智能体独占Form.cs/独立测试；验收子智能体独占新生命周期探针。共享interop、全部文档/API/索引、顺序构建/运行/Git归新主；先固定参考再实施，协调公共签名，不重叠写入。先处理018剩余可见消息序列、延迟Handle与标准CreateControl/protected句柄生命周期/查找/重建，再按依赖继续完整Control和平台工作。
 - 最近完成批次：[017](docs/roadmap/batches/017.md)，两项代码、必要验证、路线图整理及推送完成；原内部子任务已结束。实现提交`2df2cca120f38b94d5c469b3687cd5cc5a800f15`，结束记录提交`77955c4066b3b8933133742ff7c3c9200b9f0fc6`均已成功推送。创建Control聊天前HEAD/origin/main/实际远端refs/heads/main三者均为77955c4，工作区干净。本次归属交接另行commit/push，成功核对后在开始消息中给出交接SHA，新主不得把017实现或结束记录SHA误作本次交接SHA。
 - 历史实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前边界：017明确范围已完成，不代表Control整类型完成。资源严格告警门禁仍有已定位IL3050（标准Container/InheritanceAttribute），FND-006保持部分完成；图像设计器转换器/编辑器和文本AOT的DispId删除差异保留。Control本次Windows实际运行、Native AOT、相关设计器/资源与生命周期验收是完成条件，不能套用历史统一后置规则；Linux/macOS代码实现、编译和真机证据分别记录。
+- 当前边界：018明确基础范围已完成，不代表Control整类型完成。资源严格告警门禁仍有已定位IL3050（标准Container/InheritanceAttribute），FND-006保持部分完成；图像设计器转换器/编辑器和文本AOT的DispId删除差异保留。Control本次完整Windows运行验收仍是完成条件；018的主窗复选框/退出只完成指定范围，Native AOT严格差异、相关设计器/资源与完整生命周期不可忽略，不能套用历史统一后置规则；Linux/macOS代码实现、编译和真机证据分别记录。
 
 ## 批次017完成证据与结束范围
 

@@ -232,7 +232,9 @@ public class ContainerControlTests
 
         Assert.False(firstPage.Visible);
         Assert.True(secondPage.Visible);
-        Assert.Equal(new Rectangle(4, 21, 192, 75), secondPage.Bounds);
+        // Visibility changes can create the native tab window. Its actual
+        // content rectangle then replaces the no-handle layout estimate.
+        Assert.Equal(tabControl.DisplayRectangle, secondPage.Bounds);
     }
 
     [Fact]

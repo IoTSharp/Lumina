@@ -1,20 +1,21 @@
 # ScrollableControl
 
-⬜ **当前状态：**尚无同名标准基类。滚动相关成员散落在 Control/容器表面，不能据此认定可滚动。
+🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；实现客户区DisplayRectangle和现有布局暂停衔接。Panel仍未迁入，AutoScroll状态/滚动条/坐标与平台滚动均未实现，不能把基类存在计为可滚动。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
 - 完整成员及继承成员：[ScrollableControl API](../api/ScrollableControl.md)。本文展开高影响工作，API 清单中未展开的成员仍全部进入验收。
 - 共同要求：[基础契约与验收](../foundations.md)。
-- 源码：同名标准类型尚未实现；不可用历史内部容器名称抵扣此类型。
+- 源码：[ScrollableControl.cs](../../../Lumina.Forms/ScrollableControl.cs)。
 - 前置与排序：Control 的句柄、父子、布局与输入；Panel/ContainerControl 的共同前置。
 
 ## 顺序任务
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / ScrollableControl-01 | 新增标准 ScrollableControl 基类，保留 Control 的 public/protected 可派生契约；先补标准层次，再迁移 Panel 与 ContainerControl，避免新增公共替代概念。 |
-| ⬜ | P0 / ScrollableControl-02 | 实现 AutoScroll=false、AutoScrollMargin、AutoScrollMinSize、AutoScrollPosition、DisplayRectangle、HorizontalScroll/VerticalScroll 的状态模型及 ScrollProperties。 |
+| 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入；Panel仍用历史基类，完整Control受保护契约也仍待后续，不关闭父项。 |
+| ✅ | P0 / ScrollableControl-01a | 018新增标准ScrollableControl : Control，实际共享父子集合/客户区/释放和布局暂停，ContainerControl/Form复用。仅此继承依赖范围代码完成；Panel迁移和任何滚动行为不在此完成范围。 |
+| 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle。AutoScroll、AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties完整状态模型仍待实现。 |
 | ⬜ | P0 / ScrollableControl-03 | 明确 AutoScrollPosition 赋正值、读负偏移的 WinForms 约定；布局、滚动和子控件 Bounds 的逻辑/显示坐标分离，并验证重复滚动不累积误差。 |
 | ⬜ | P1 / ScrollableControl-04 | 实现 ScrollControlIntoView、ScrollToControl、SetAutoScrollMargin；隐藏、负坐标、Dock、Anchor、嵌套控件和超大内容的可滚动区域按基线计算。 |
 | ⬜ | P1 / ScrollableControl-05 | 实现 Scroll 事件的 ScrollEventType、OldValue/NewValue、ScrollOrientation；区分程序赋值、滚动条拖动、鼠标滚轮和触摸板导致的事件。 |
@@ -39,7 +40,7 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
-- 无同名类型的实现修改历史；不得将规划文档创建计入运行库实现完成。
+- 2026-10-16 · 批次018：新增标准类支持Form真实继承，共用Control状态并提供客户区DisplayRectangle/布局暂停衔接。纠正历史“同名类不存在”为当前部分状态；Panel、所有滚动和GTK4/AppKit仍缺，未新增整类型验收，见[018](../batches/018.md)。
 - 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料

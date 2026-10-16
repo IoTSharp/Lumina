@@ -8,13 +8,13 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～017的明确子范围代码完成；用户于2026-10-16另行授权在新会话完成Control整类型闭环。** [当前记录](HANDOFF.md) · [017结果](docs/roadmap/batches/017.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
+**001～018的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [018结果](docs/roadmap/batches/018.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停的巡检不恢复。✅代码完成和🧪兼容验收通过分开记录；父任务按剩余项保持部分完成。每批提交前按真实代码/必要检查整理受影响条目，同步总览、任务页、历史和交接并重生成索引；不以文档、签名、基类或局部探针关闭整个控件/平台。既有未完项和固定基线分母保留，Control本次Windows验收不再统一后置。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
 | 0 | 固定 .NET 10.0.11 类型、成员、继承与接口清单 | ✅ 清单已生成；运行验收仍待办 | [基线](docs/roadmap/api/baseline.json)、[逐成员](docs/roadmap/api/members.csv)、[接口](docs/roadmap/api/interfaces.csv) |
-| 1 · M0 | UI线程、ListViewItem构造、启动签名、完整Demo AOT主窗、裁剪警告 | 🟡 线程/基础构造/签名等子范围已实现；主窗/警告与完整继承仍缺 | [基础阻塞](docs/roadmap/foundations.md) |
-| 2 · M1 | 标准继承、生命周期、父子/集合、布局、焦点、验证、模态、DPI | 🟡 基础Control构造/边界/通知/释放等子范围已实现；Parent/Controls/Form链与完整布局仍缺 | [公共基础](docs/roadmap/foundations.md)、[Form](docs/roadmap/controls/Form.md) |
+| 1 · M0 | UI线程、ListViewItem构造、启动签名、完整Demo AOT主窗、裁剪警告 | 🟡 线程/基础构造/签名及Form标准链已实现；完整主窗/模态/警告仍未闭环 | [基础阻塞](docs/roadmap/foundations.md) |
+| 2 · M1 | 标准继承、生命周期、父子/集合、布局、焦点、验证、模态、DPI | 🟡 基础Control构造/边界/通知/释放及Parent/Controls/Form链首范围已实现；完整句柄/布局/验证/模态仍缺 | [公共基础](docs/roadmap/foundations.md)、[Form](docs/roadmap/controls/Form.md) |
 | 3 · M2 | 逐项补齐已有控件、原生双向同步、输入、菜单、TaskDialog与公共对话框 | 🟡 已有局部实现 | [每控件独立任务](docs/roadmap/README.md)、[行为场景](docs/roadmap/behavior-catalog.md) |
 | 4 · M3 | 绑定、DataGridView、业务组件、真实应用迁移 | ⬜ | [执行顺序](docs/roadmap/execution.md)、[DataGridView](docs/roadmap/controls/DataGridView.md) |
 | 5 · M4 | 高级控件、历史占位契约、Printing、派生绘制、可访问性、COM/MDI边界 | ⬜ | [完整索引](docs/roadmap/README.md)、[附属类型](docs/roadmap/contracts.md) |
@@ -24,8 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次017完成无父级无自身HWND的Text/ResetText及未挂接ImageIndex/ImageKey：3,934项测试和29个旧差分驱动通过，双目标Release 0错误；文本3,774条固定参考/JIT相同，实际AOT仅DispId属性被工具链主动删除，其他3,773条原始记录相同；图像状态518条参考/JIT相同，未计此范围实际AOT运行验收。图像转换器/编辑器、完整Demo主窗交互/正常关闭、既有IL3050、设计器、全量控件及Linux/macOS运行仍保留缺口。API分母仍为1,095类型/61,240行、运行状态unverified，不由数量推算98%，见[验证证据](docs/roadmap/validation.md)。Parent/Controls/Form、已有HWND文本、ImageList/图像构造/native和完整所属继续在原任务下保留，本次未分派。
-
+批次018完成Control-06a父子集合与Form标准继承链基础：3,996项测试通过、双目标Release 0错误。固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged仍差1行；实际AOT的32行非零下界数组fixture因运行时不支持而未执行CopyTo，其余359行同JIT，严格门禁仍失败。完整Demo AOT已真实显示、复选框0→1并正常退出，记录HWND全部销毁；模态、完整布局/Designer、既有IL3050和Linux/macOS仍未闭环。基类、局部运行和API签名不等于整Control验收，固定分母1,095类型/61,240行不变，见[验证记录](docs/roadmap/validation.md)。下一批[019](docs/roadmap/batches/019.md)继续句柄生命周期和可见消息衔接，完整专项与跨平台实现目标持续；无关控件和暂停巡检不恢复。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)

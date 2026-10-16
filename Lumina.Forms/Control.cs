@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -46,6 +47,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private volatile WindowThreadDispatcher? _threadDispatcher;
     private long _lastContextMenuShownTick = long.MinValue;
     private Point _lastContextMenuScreenLocation = new(int.MinValue, int.MinValue);
+    private Control? _parent;
+    private ControlCollection? _controls;
+    private int _tabIndex = -1;
+    private bool _topLevel;
+    private nint _parkingWindow;
+    private bool _applyingBounds;
 
     /// <summary>
     /// Initializes a control and installs the thread's UI synchronization context when enabled.
@@ -99,6 +106,18 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         Size = new Size(width, height);
     }
 
+    public Control(Control? parent, string? text) : this()
+    {
+        Parent = parent;
+        Text = text;
+    }
+
+    public Control(Control? parent, string? text, int left, int top, int width, int height) : this(parent, text)
+    {
+        Location = new Point(left, top);
+        Size = new Size(width, height);
+    }
+
     /// <summary>
     /// Gets or sets the design-time or lookup name of the control.
     /// </summary>
@@ -107,7 +126,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets the native Win32 window handle after the control has been created.
     /// </summary>
-    public nint Handle { get; private set; }
+    public nint Handle { get; internal set; }
 
     /// <summary>
     /// Gets or sets an arbitrary user-defined value associated with the control.
@@ -168,7 +187,15 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets the tab order index used by designer-style layout code.
     /// </summary>
-    public int TabIndex { get; set; }
+    public int TabIndex
+    {
+        get => _tabIndex == -1 ? 0 : _tabIndex;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            _tabIndex = value;
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the control sizes itself to its contents.
@@ -202,7 +229,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets a value indicating whether the user can move the focus to this control with the Tab key.
     /// </summary>
-    public bool TabStop { get; set; }
+    public bool TabStop { get; set; } = true;
 
     public Font Font
     {
@@ -356,9 +383,88 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public bool Disposing => _disposing;
 
     /// <summary>
-    /// Gets the parent control, if the control is currently hosted inside a container control.
+    /// Gets or sets the parent control.
     /// </summary>
-    public Control? Parent { get; private set; }
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Control? Parent
+    {
+        get => _parent;
+        set
+        {
+            if (_parent == value) { return; }
+            if (value is not null) { value.Controls.Add(this); }
+            else { _parent?.Controls.Remove(this); }
+        }
+    }
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    public ControlCollection Controls => _controls ??= CreateControlsInstance();
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool HasChildren => _controls is { Count: > 0 };
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Control? TopLevelControl
+    {
+        get
+        {
+            for (Control? control = this; control is not null; control = control._parent)
+            {
+                if (control.GetTopLevel()) { return control; }
+            }
+            return null;
+        }
+    }
+
+    public event EventHandler? ParentChanged;
+    public event EventHandler? EnabledChanged;
+    public event EventHandler? VisibleChanged;
+    public event ControlEventHandler? ControlAdded;
+    public event ControlEventHandler? ControlRemoved;
+
+    protected virtual ControlCollection CreateControlsInstance() => new(this);
+
+    public bool Contains(Control? ctl)
+    {
+        for (Control? control = ctl?._parent; control is not null; control = control._parent)
+        {
+            if (control == this) { return true; }
+        }
+        return false;
+    }
+
+    public Form? FindForm()
+    {
+        for (Control? control = this; control is not null; control = control._parent)
+        {
+            if (control is Form form) { return form; }
+        }
+        return null;
+    }
+
+    protected bool GetTopLevel() => _topLevel;
+
+    protected void SetTopLevel(bool value)
+    {
+        if (_topLevel == value) { return; }
+        if (value && _parent is not null)
+        {
+            throw new ArgumentException("A top-level control cannot have a parent.");
+        }
+        _topLevel = value;
+        if (Handle != 0)
+        {
+            uint style = unchecked((uint)(nuint)Win32.GetWindowLongPtrW(Handle, Win32.GWL_STYLE));
+            style = value ? style & ~Win32.WS_CHILD : style | Win32.WS_CHILD;
+            _ = Win32.SetWindowLongPtrW(Handle, Win32.GWL_STYLE, unchecked((nint)style));
+            ReparentNativeWindow();
+        }
+    }
 
     /// <summary>
     /// Occurs when the <see cref="Text"/> property changes.
@@ -572,14 +678,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public bool Enabled
     {
-        get => _enabled;
+        get => _enabled && (_parent is null || _parent.Enabled);
         set
         {
+            bool previous = Enabled;
             _enabled = value;
-            if (Handle != 0)
-            {
-                _ = Win32.EnableWindow(Handle, value);
-            }
+            if (previous != Enabled) { OnEnabledChanged(EventArgs.Empty); }
         }
     }
 
@@ -588,16 +692,32 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public bool Visible
     {
-        get => _visible;
-        set
+        get => _visible && (_parent is null || _parent.Visible);
+        set => SetVisibleCore(value);
+    }
+
+    protected virtual void SetVisibleCore(bool value)
+    {
+        bool previous = Visible;
+        _visible = value;
+        if (Handle != 0)
         {
-            _visible = value;
-            if (Handle != 0)
-            {
-                _ = Win32.ShowWindow(Handle, value ? Win32.SW_SHOW : Win32.SW_HIDE);
-            }
+            // WS_VISIBLE describes this control's own visibility. The native
+            // parent chain accounts for hidden ancestors without clearing the
+            // child's bit, which must survive parking and later reparenting.
+            _ = Win32.ShowWindow(Handle, value ? Win32.SW_SHOW : Win32.SW_HIDE);
+        }
+        else if (value && Visible && _parent?.Handle is nint parentHandle && parentHandle != 0)
+        {
+            CreateHandleRecursive();
+        }
+        if (previous != Visible)
+        {
+            OnVisibleChanged(EventArgs.Empty);
         }
     }
+
+    internal void SetVisibleState(bool value) => _visible = value;
 
     /// <summary>
     /// Gets or sets the upper-left location of the control.
@@ -677,24 +797,47 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets the current resolved visual style available to the control.
     /// </summary>
-    protected ResolvedVisualStyle CurrentVisualStyle => Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle;
+    protected ResolvedVisualStyle CurrentVisualStyle => this is Form form
+        ? form.CurrentVisualStyle
+        : Owner?.CurrentVisualStyle ?? Application.CurrentVisualStyle;
 
     internal void Attach(Form owner, int id, Control? parent)
     {
-        ThrowIfDisposed();
         Owner = owner;
         Id = id;
-        Parent = parent;
+        if (Handle != 0)
+        {
+            // GWLP_ID changes with the receiving form's command registration,
+            // while reparenting deliberately preserves the existing HWND.
+            _ = Win32.SetWindowLongPtrW(Handle, -12, id);
+        }
     }
 
-    internal void SetParent(Control parent)
+    internal ReadOnlySpan<Control> ChildControls => _controls is null ? [] : _controls.ItemsSpan;
+
+    internal void AddChild(Control control) => Controls.Add(control);
+
+    internal bool RemoveChild(Control control)
     {
-        Parent = parent;
+        bool contained = Controls.Contains(control);
+        Controls.Remove(control);
+        return contained;
     }
 
-    internal void ClearParent()
+    internal virtual void OnChildAdded(Control control) { }
+    internal virtual void OnChildRemoved(Control control) { }
+
+    internal void AttachChildrenToOwner(Form owner)
     {
-        Parent = null;
+        foreach (Control child in ChildControls) { owner.AttachControl(child, this); }
+    }
+
+    internal void CreateChildHandles()
+    {
+        foreach (Control child in ChildControls)
+        {
+            if (child._visible) { child.CreateHandleRecursive(); }
+        }
     }
 
     internal void DetachFromOwner()
@@ -1101,35 +1244,59 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
 
         _disposing = true;
+        bool disposeComponent = false;
         try
         {
             try
             {
-                if (!_disposed)
+                try
                 {
-                    try
+                    // Native children are destroyed with their parent HWND.
+                    // ParentChanged and ControlRemoved must observe that the
+                    // disposed control no longer owns a live window.
+                    ReleaseNativeResources(releaseChildHandles: true);
+                    _parent?.Controls.Remove(this);
+                    if (!_disposed)
                     {
-                        if (Parent is ContainerControlBase parentContainer)
+                        try
                         {
-                            _ = parentContainer.Controls.Remove(this);
+                            OnDisposing();
                         }
-                        else if (Owner is not null)
+                        catch
                         {
-                            _ = Owner.Controls.Remove(this);
+                            // Preserve the historical hook's Component cleanup
+                            // contract without applying it to standard parent or
+                            // child disposal notifications that fail earlier.
+                            disposeComponent = true;
+                            throw;
                         }
-
-                        OnDisposing();
                     }
-                    finally
+                    if (_controls is { } children)
                     {
-                        ReleaseNativeResources(releaseChildHandles: true);
+                        for (int index = 0; index < children.Count; index++)
+                        {
+                            Control child = children[index];
+                            child._parent = null;
+                            child.Owner?.DetachControl(child);
+                            child.Dispose();
+                        }
+                        // A caller may retain the old collection. WinForms leaves
+                        // that detached view intact while subsequent Controls reads
+                        // obtain a fresh, empty collection.
+                        _controls = null;
                     }
+                    disposeComponent = true;
+                }
+                finally
+                {
+                    ReleaseNativeResources(releaseChildHandles: true);
                 }
             }
             finally
             {
-                // Component removes the site before raising Disposed, including on repeated disposal.
-                base.Dispose(true);
+                // A failed standard notification leaves Component.Site and its
+                // Disposed event untouched until a later disposal attempt.
+                if (disposeComponent) { base.Dispose(true); }
             }
         }
         finally
@@ -1141,38 +1308,35 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     internal void CreateHandleRecursive()
     {
+        bool alreadyCreated = Handle != 0;
         CreateHandle();
 
-        if (Handle != 0 && this is ContainerControlBase container)
+        if (Handle != 0)
         {
-            container.CreateChildHandles();
+            // A live child may have been moved into a parent that had no HWND
+            // yet. It stays parked until that parent's creation reaches it.
+            if (alreadyCreated && _parent?.Handle is nint parentHandle && parentHandle != 0)
+            {
+                ReparentNativeWindow();
+            }
+            CreateChildHandles();
         }
     }
 
     internal void ReleaseHandleRecursive()
     {
-        if (this is ContainerControlBase container)
+        foreach (Control child in ChildControls)
         {
-            foreach (Control child in container.ChildControls)
-            {
-                child.ReleaseHandleRecursive();
-            }
+            child.ReleaseHandleRecursive();
         }
 
-        _threadDispatcher?.Close();
-        _threadDispatcher = null;
+        ClearNativeHandle();
         ReleaseBackgroundBrush();
-        Handle = 0;
     }
 
-    internal void CreateHandle()
+    internal virtual void CreateHandle()
     {
         ThrowIfDisposed();
-
-        if (Owner is null)
-        {
-            throw new InvalidOperationException("The control is not attached to a form.");
-        }
 
         if (Handle != 0)
         {
@@ -1186,18 +1350,24 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         int nativeHeight = GetNativeHeight(_height);
 
+        if (_parent is not null && _parent.Handle == 0)
+        {
+            _parent.CreateHandle();
+        }
+        nint parentHandle = _parent?.Handle ?? (_topLevel ? 0 : GetParkingWindow());
+
         Handle = Win32.CreateWindowExW(
             ExStyle,
             ClassName,
             _text,
-            Style,
+            _topLevel ? Style & ~Win32.WS_CHILD : Style | Win32.WS_CHILD,
             _left,
             _top,
             _width,
             nativeHeight,
-            Parent?.Handle ?? Owner.Handle,
+            parentHandle,
             (nint)Id,
-            Owner.InstanceHandle,
+            Owner?.InstanceHandle ?? Win32.GetModuleHandleW(null),
             0);
 
         if (Handle == 0)
@@ -1227,15 +1397,113 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         RegisterSubclass();
 
-        if (Owner.UiFontHandle != 0)
+        if (Owner is { UiFontHandle: not 0 } owner)
         {
-            _ = Win32.SendMessageW(Handle, Win32.WM_SETFONT, Owner.UiFontHandle, (nint)1);
+            _ = Win32.SendMessageW(Handle, Win32.WM_SETFONT, owner.UiFontHandle, (nint)1);
         }
 
-        _ = Win32.EnableWindow(Handle, _enabled);
+        _ = Win32.EnableWindow(Handle, Enabled);
         _ = Win32.ShowWindow(Handle, _visible ? Win32.SW_SHOW : Win32.SW_HIDE);
+        UpdateChildZOrder();
         ApplyTheme();
         OnHandleCreated();
+    }
+
+    internal virtual WindowThreadDispatcher? NativeThreadDispatcher => _threadDispatcher;
+
+    internal void RegisterNativeHandle(nint handle, WindowThreadDispatcher? dispatcher)
+    {
+        Handle = handle;
+        _threadDispatcher = dispatcher;
+        lock (s_subclassLock) { s_controlsByHandle[handle] = this; }
+        UpdateClientSize();
+    }
+
+    internal void ClearNativeHandle()
+    {
+        lock (s_subclassLock)
+        {
+            if (Handle != 0) { s_controlsByHandle.Remove(Handle); }
+        }
+        _threadDispatcher?.Close();
+        _threadDispatcher = null;
+        _originalWindowProc = 0;
+        Handle = 0;
+    }
+
+    internal void UpdateBoundsFromNativeWindow()
+    {
+        if (Handle == 0 || _applyingBounds) { return; }
+        if (!Win32.GetWindowRect(Handle, out Win32.RECT bounds))
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+        Win32.POINT location = new() { x = bounds.Left, y = bounds.Top };
+        if (_parent?.Handle is nint parentHandle && parentHandle != 0)
+        {
+            _ = Win32.ScreenToClient(parentHandle, ref location);
+        }
+        bool moved = _left != location.x || _top != location.y;
+        bool resized = _width != bounds.Right - bounds.Left || _height != bounds.Bottom - bounds.Top;
+        _left = location.x;
+        _top = location.y;
+        _width = bounds.Right - bounds.Left;
+        _height = bounds.Bottom - bounds.Top;
+        int previousClientWidth = _clientWidth;
+        int previousClientHeight = _clientHeight;
+        UpdateClientSize();
+        resized |= previousClientWidth != _clientWidth || previousClientHeight != _clientHeight;
+        if (moved || resized) { OnBoundsChanged(); }
+        if (moved) { OnLocationChanged(EventArgs.Empty); }
+        if (resized)
+        {
+            OnSizeChanged(EventArgs.Empty);
+            OnClientSizeChanged(EventArgs.Empty);
+        }
+    }
+
+    private nint GetParkingWindow()
+    {
+        if (_parkingWindow == 0)
+        {
+            _parkingWindow = Win32.CreateWindowExW(0, "STATIC", string.Empty, 0,
+                0, 0, 0, 0, 0, 0, Win32.GetModuleHandleW(null), 0);
+            if (_parkingWindow == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
+        }
+        return _parkingWindow;
+    }
+
+    private void ReparentNativeWindow()
+    {
+        if (Handle == 0) { return; }
+        nint parentHandle = _parent?.Handle ?? 0;
+        if (parentHandle == 0 && !_topLevel) { parentHandle = GetParkingWindow(); }
+        Marshal.SetLastPInvokeError(0);
+        nint previous = Win32.SetParent(Handle, parentHandle);
+        int error = Marshal.GetLastPInvokeError();
+        if (previous == 0 && error != 0) { throw new Win32Exception(error); }
+        if (parentHandle != _parkingWindow)
+        {
+            ReleaseParkingWindow();
+        }
+        ApplyBounds();
+        UpdateChildZOrder();
+    }
+
+    private void UpdateChildZOrder()
+    {
+        if (Handle == 0 || _parent?.Handle is not nint parentHandle || parentHandle == 0) { return; }
+        nint previous = 0;
+        foreach (Control sibling in _parent.ChildControls)
+        {
+            if (sibling == this) { break; }
+            if (sibling.Handle != 0) { previous = sibling.Handle; }
+        }
+        if (!Win32.SetWindowPos(Handle, previous, 0, 0, 0, 0,
+            Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOACTIVATE))
+        {
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
     }
 
     internal static bool TryGetControlByHandle(nint handle, out Control? control)
@@ -1380,8 +1648,125 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual bool HandleWindowMessage(uint message, nint wParam, nint lParam, out nint result)
     {
         result = 0;
+        switch (message)
+        {
+            case Win32.WM_SETFOCUS:
+                ContainerControl.NotifyControlFocused(this);
+                break;
+            case Win32.WM_COMMAND:
+                if (lParam != 0 && TryGetControlByHandle(lParam, out Control? commandControl) && commandControl is not null)
+                {
+                    if (Owner is not null)
+                    {
+                        Owner.RouteCommandFromContainer(commandControl, Win32.HighWord(wParam), lParam);
+                    }
+                    else { _ = commandControl.HandleCommand(Win32.HighWord(wParam)); }
+                    return true;
+                }
+                break;
+            case Win32.WM_NOTIFY:
+                if (lParam != 0)
+                {
+                    Win32.NMHDR header = Marshal.PtrToStructure<Win32.NMHDR>(lParam);
+                    if (TryGetControlByHandle(header.hwndFrom, out Control? notifyControl) && notifyControl is not null)
+                    {
+                        if (Owner is not null)
+                        {
+                            _ = Owner.RouteNotifyFromContainer(notifyControl, unchecked((int)header.code), lParam);
+                        }
+                        else { _ = notifyControl.HandleNotify(unchecked((int)header.code), lParam); }
+                        return true;
+                    }
+                }
+                break;
+            case Win32.WM_CTLCOLORBTN:
+            case Win32.WM_CTLCOLORDLG:
+            case Win32.WM_CTLCOLOREDIT:
+            case Win32.WM_CTLCOLORLISTBOX:
+            case Win32.WM_CTLCOLORSTATIC:
+                if (wParam != 0)
+                {
+                    _ = TryGetControlByHandle(lParam, out Control? child);
+                    Control colorControl = child ?? this;
+                    if (colorControl.TryGetThemeColors(out nint brush, out uint background, out uint foreground, out bool transparent))
+                    {
+                        if (transparent || (child is null && message == Win32.WM_CTLCOLORSTATIC))
+                        {
+                            _ = Win32.SetBkMode(wParam, Win32.TRANSPARENT);
+                        }
+                        else { _ = Win32.SetBkColor(wParam, background); }
+                        _ = Win32.SetTextColor(wParam, foreground);
+                        result = brush;
+                        return true;
+                    }
+                }
+                break;
+        }
         return false;
     }
+
+    protected virtual void OnParentChanged(EventArgs e) => ParentChanged?.Invoke(this, e);
+
+    protected virtual void OnEnabledChanged(EventArgs e)
+    {
+        if (Handle != 0) { _ = Win32.EnableWindow(Handle, Enabled); }
+        EnabledChanged?.Invoke(this, e);
+        for (int index = 0; _controls is not null && index < _controls.Count; index++)
+        {
+            _controls[index].OnParentEnabledChanged(e);
+        }
+    }
+
+    protected virtual void OnParentEnabledChanged(EventArgs e)
+    {
+        if (_enabled) { OnEnabledChanged(e); }
+    }
+
+    protected virtual void OnVisibleChanged(EventArgs e)
+    {
+        if (Visible && Handle == 0 && _parent is not null)
+        {
+            bool canCreate = true;
+            for (Control? ancestor = this; ancestor is not null; ancestor = ancestor._parent)
+            {
+                if (ancestor.Disposing) { canCreate = false; break; }
+            }
+            if (canCreate) { CreateHandleRecursive(); }
+        }
+        VisibleChanged?.Invoke(this, e);
+        for (int index = 0; _controls is not null && index < _controls.Count; index++)
+        {
+            Control child = _controls[index];
+            if (child.Visible) { child.OnParentVisibleChanged(e); }
+        }
+    }
+
+    protected virtual void OnParentVisibleChanged(EventArgs e)
+    {
+        if (_visible) { OnVisibleChanged(e); }
+    }
+
+    private void AssignParent(Control? value)
+    {
+        bool previousEnabled = Enabled;
+        bool previousVisible = Visible;
+        _parent = value;
+        OnParentChanged(EventArgs.Empty);
+        for (Control? ancestor = this; ancestor is not null; ancestor = ancestor._parent)
+        {
+            if (ancestor.Disposing) { return; }
+        }
+        if (previousEnabled != Enabled) { OnEnabledChanged(EventArgs.Empty); }
+        bool visible = Visible;
+        if (previousVisible != visible && !(!previousVisible && visible && _parent is null && !_topLevel))
+        {
+            OnVisibleChanged(EventArgs.Empty);
+        }
+    }
+
+    protected virtual void OnControlAdded(ControlEventArgs e) => ControlAdded?.Invoke(this, e);
+
+    protected virtual void OnControlRemoved(ControlEventArgs e) => ControlRemoved?.Invoke(this, e);
 
     /// <summary>
     /// Called after the control bounds change.
@@ -1391,7 +1776,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     }
 
     /// <summary>
-    /// Called before the control destroys its native resources during disposal.
+    /// Called to release control-owned resources after its native windows have been destroyed.
     /// </summary>
     protected virtual void OnDisposing()
     {
@@ -1603,10 +1988,20 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             else
             {
                 // Component's finalizer calls Dispose(false); leave managed ownership untouched.
-                _threadDispatcher = null;
-                Handle = 0;
+                ClearNativeHandle();
                 ReleaseBackgroundBrush();
             }
+            ReleaseParkingWindow();
+        }
+    }
+
+    private void ReleaseParkingWindow()
+    {
+        nint parkingWindow = _parkingWindow;
+        _parkingWindow = 0;
+        if (parkingWindow != 0)
+        {
+            _ = Win32.DestroyWindow(parkingWindow);
         }
     }
 
@@ -1644,9 +2039,25 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _ = s_controlsByHandle.TryGetValue(hwnd, out control);
         }
 
-        return control is null
-            ? Win32.DefWindowProcW(hwnd, message, wParam, lParam)
-            : control.SubclassWindowProc(hwnd, message, wParam, lParam);
+        if (control is null)
+        {
+            return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+        }
+
+        try
+        {
+            return control.SubclassWindowProc(hwnd, message, wParam, lParam);
+        }
+        finally
+        {
+            // Native lifetime bookkeeping must run even when a derived control
+            // handles WM_NCDESTROY itself or its message handler throws.
+            if (message == Win32.WM_NCDESTROY)
+            {
+                lock (s_subclassLock) { s_controlsByHandle.Remove(hwnd); }
+                if (control.Handle == hwnd) { control.ClearNativeHandle(); }
+            }
+        }
     }
 
     private nint SubclassWindowProc(nint hwnd, uint message, nint wParam, nint lParam)
@@ -1673,19 +2084,6 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (message == Win32.WM_RBUTTONUP && ContextMenuStrip is not null)
         {
             _ = TryShowAttachedContextMenuFromClientPoint(hwnd, lParam);
-        }
-
-        if (message == Win32.WM_NCDESTROY)
-        {
-            lock (s_subclassLock)
-            {
-                _ = s_controlsByHandle.Remove(hwnd);
-            }
-
-            _originalWindowProc = 0;
-            _threadDispatcher?.Close();
-            _threadDispatcher = null;
-            Handle = 0;
         }
 
         return result;
@@ -1809,7 +2207,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             int nativeLeft = _left;
             int nativeTop = _top;
 
-            if (Parent is null
+            if (Parent is Form
                 && Owner is not null
                 && this is not MenuStrip
                 && this is not ToolStrip
@@ -1818,7 +2216,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 nativeTop += Owner.GetClientContentTopInset();
             }
 
-            _ = Win32.MoveWindow(Handle, nativeLeft, nativeTop, _width, GetNativeHeight(_height), true);
+            _applyingBounds = true;
+            try
+            {
+                _ = Win32.MoveWindow(Handle, nativeLeft, nativeTop, _width, GetNativeHeight(_height), true);
+            }
+            finally { _applyingBounds = false; }
         }
     }
 
@@ -1856,5 +2259,332 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private void ThrowIfDisposed()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+    }
+
+    /// <summary>
+    /// Represents the ordered child controls belonging to a control.
+    /// </summary>
+    [ListBindable(false)]
+    public class ControlCollection : Layout.ArrangedElementCollection, IList, ICloneable, IEnumerable<Control>
+    {
+        private int _lastAccessedIndex = -1;
+
+        public ControlCollection(Control owner)
+        {
+            ArgumentNullException.ThrowIfNull(owner);
+            Owner = owner;
+        }
+
+        public Control Owner { get; }
+
+        internal ReadOnlySpan<Control> ItemsSpan => CollectionsMarshal.AsSpan(InnerList);
+
+        public virtual Control this[int index]
+        {
+            get
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(index);
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
+                return InnerList[index];
+            }
+        }
+
+        public virtual Control? this[string? key]
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(key)) { return null; }
+                int index = IndexOfKey(key);
+                return IsValidIndex(index) ? this[index] : null;
+            }
+        }
+
+        public virtual void Add(Control? value)
+        {
+            if (value is null) { return; }
+            if (value.GetTopLevel())
+            {
+                throw new ArgumentException("Top-level control cannot be added to a control.");
+            }
+
+            uint ownerThread = Owner.Handle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(Owner.Handle, out _);
+            uint childThread = value.Handle == 0 ? Win32.GetCurrentThreadId() : Win32.GetWindowThreadProcessId(value.Handle, out _);
+            if (ownerThread != childThread)
+            {
+                throw new ArgumentException("Controls created on one thread cannot be parented to a control on a different thread.");
+            }
+            for (Control? ancestor = Owner; ancestor is not null; ancestor = ancestor._parent)
+            {
+                if (ancestor == value)
+                {
+                    throw new ArgumentException("A circular control reference has been made. A control cannot be owned by or parented to itself.");
+                }
+            }
+            if (value._parent == Owner)
+            {
+                Owner.Controls.SetChildIndex(value, -1);
+                return;
+            }
+
+            value._parent?.Controls.Remove(value);
+            InnerList.Add(value);
+            if (value._tabIndex == -1)
+            {
+                int next = 0;
+                for (int i = 0; i < Count - 1; i++)
+                {
+                    int tabIndex = this[i].TabIndex;
+                    if (next <= tabIndex) { next = unchecked(tabIndex + 1); }
+                }
+                value._tabIndex = next;
+            }
+
+            Owner.SuspendLayout();
+            try
+            {
+                Control? previous = value._parent;
+                try
+                {
+                    (Owner as Form ?? Owner.Owner)?.AttachControl(value, Owner);
+                    value.AssignParent(Owner);
+                }
+                finally
+                {
+                    if (previous != value._parent)
+                    {
+                        value.ReparentNativeWindow();
+                        if (Owner.Handle != 0 && value.Visible && !value.IsDisposed)
+                        {
+                            value.CreateHandleRecursive();
+                        }
+                    }
+                }
+            }
+            finally { Owner.ResumeLayout(false); }
+
+            value.InitLayout();
+            Owner.PerformLayout();
+            Owner.OnControlAdded(new ControlEventArgs(value));
+        }
+
+        // Historical table-layout convenience remains available to existing
+        // designer files until TableLayoutControlCollection owns that overload.
+        public void Add(Control control, int column, int row)
+        {
+            if (Owner is TableLayoutPanel table) { table.AddCell(control, column, row); }
+            else { Add(control); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public virtual void AddRange(params Control[] controls)
+        {
+            ArgumentNullException.ThrowIfNull(controls);
+            if (controls.Length == 0) { return; }
+            Owner.SuspendLayout();
+            try
+            {
+                for (int i = 0; i < controls.Length; i++) { Add(controls[i]); }
+            }
+            finally { Owner.ResumeLayout(true); }
+        }
+
+        public void AddRange(IEnumerable<Control> controls)
+        {
+            ArgumentNullException.ThrowIfNull(controls);
+            AddRange(controls.ToArray());
+        }
+
+        public virtual void Remove(Control? value)
+        {
+            if (value is null || value._parent != Owner) { return; }
+
+            // Park an existing native window before the managed link changes.
+            // Removal must preserve the handle and the child's owned descendants.
+            if (value.Handle != 0)
+            {
+                Marshal.SetLastPInvokeError(0);
+                nint previous = Win32.SetParent(value.Handle, value.GetParkingWindow());
+                int error = Marshal.GetLastPInvokeError();
+                if (previous == 0 && error != 0) { throw new Win32Exception(error); }
+            }
+            InnerList.Remove(value);
+            value.Owner?.DetachControl(value);
+            value.AssignParent(null);
+            Owner.OnChildRemoved(value);
+            Owner.PerformLayout();
+            Owner.OnControlRemoved(new ControlEventArgs(value));
+            ContainerControl.NotifyControlRemoved(Owner, value);
+        }
+
+        public void RemoveAt(int index) => Remove(this[index]);
+
+        public virtual void RemoveByKey(string? key)
+        {
+            int index = IndexOfKey(key);
+            if (IsValidIndex(index)) { RemoveAt(index); }
+        }
+
+        public virtual void Clear()
+        {
+            Owner.SuspendLayout();
+            try
+            {
+                while (Count != 0) { RemoveAt(Count - 1); }
+            }
+            finally { Owner.ResumeLayout(true); }
+        }
+
+        public bool Contains(Control? control) => ((IList)InnerList).Contains(control);
+
+        public int IndexOf(Control? control) => ((IList)InnerList).IndexOf(control);
+
+        public virtual bool ContainsKey(string? key) => IsValidIndex(IndexOfKey(key));
+
+        public virtual int IndexOfKey(string? key)
+        {
+            if (string.IsNullOrEmpty(key)) { return -1; }
+            if (IsValidIndex(_lastAccessedIndex) && NameMatches(this[_lastAccessedIndex].Name, key))
+            {
+                return _lastAccessedIndex;
+            }
+            for (int index = 0; index < Count; index++)
+            {
+                if (NameMatches(this[index].Name, key))
+                {
+                    _lastAccessedIndex = index;
+                    return index;
+                }
+            }
+            _lastAccessedIndex = -1;
+            return -1;
+        }
+
+        public Control[] Find(string key, bool searchAllChildren)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key), "The key may not be null or empty.");
+            }
+            List<Control> matches = [];
+            FindChildren(this, key, searchAllChildren, matches);
+            return [.. matches];
+        }
+
+        private static void FindChildren(ControlCollection controls, string key, bool searchAllChildren, List<Control> matches)
+        {
+            try
+            {
+                for (int index = 0; index < controls.Count; index++)
+                {
+                    // The indexer is virtual. Preserve each standard access,
+                    // including derived collections that return null or throw.
+                    if (controls[index] is null) { continue; }
+                    if (NameMatches(controls[index].Name, key)) { matches.Add(controls[index]); }
+                }
+                if (!searchAllChildren) { return; }
+                for (int index = 0; index < controls.Count; index++)
+                {
+                    if (controls[index] is null) { continue; }
+                    if (controls[index].Controls.Count > 0)
+                    {
+                        FindChildren(controls[index].Controls, key, true, matches);
+                    }
+                }
+            }
+            catch (Exception exception) when (exception is not (NullReferenceException
+                or StackOverflowException or OutOfMemoryException or System.Threading.ThreadAbortException
+                or IndexOutOfRangeException or AccessViolationException))
+            {
+                // WinForms retains matches collected before an ordinary derived
+                // collection failure. Critical runtime exceptions propagate.
+            }
+        }
+
+        public int GetChildIndex(Control child) => GetChildIndex(child, true);
+
+        public virtual int GetChildIndex(Control child, bool throwException)
+        {
+            int index = IndexOf(child);
+            if (index < 0 && throwException) { throw new ArgumentException("Control is not a child of this parent."); }
+            return index;
+        }
+
+        public virtual void SetChildIndex(Control child, int newIndex)
+        {
+            ArgumentNullException.ThrowIfNull(child);
+            int current = GetChildIndex(child);
+            if (current == newIndex) { return; }
+            if (newIndex >= Count || newIndex == -1) { newIndex = Count - 1; }
+            if (newIndex < 0) { _ = InnerList[newIndex]; }
+            InnerList.RemoveAt(current);
+            InnerList.Insert(newIndex, child);
+            child.UpdateChildZOrder();
+            Owner.PerformLayout();
+        }
+
+        object ICloneable.Clone()
+        {
+            ControlCollection clone = Owner.CreateControlsInstance();
+            clone.InnerList.AddRange(InnerList);
+            return clone;
+        }
+
+        int IList.Add(object? control)
+        {
+            if (control is not Control value) { throw new ArgumentException("Object must be a Control.", nameof(control)); }
+            Add(value);
+            return IndexOf(value);
+        }
+
+        void IList.Remove(object? control)
+        {
+            if (control is Control value) { Remove(value); }
+        }
+
+        void IList.Clear() => Clear();
+        void IList.RemoveAt(int index) => RemoveAt(index);
+
+        public override IEnumerator GetEnumerator() => new ControlCollectionEnumerator(this);
+
+        IEnumerator<Control> IEnumerable<Control>.GetEnumerator()
+        {
+            IEnumerator enumerator = GetEnumerator();
+            while (enumerator.MoveNext()) { yield return (Control)enumerator.Current!; }
+        }
+
+        private bool IsValidIndex(int index) => index >= 0 && index < Count;
+
+        private static bool NameMatches(string? name, string key)
+            => name?.Length == key.Length && string.Equals(name, key, StringComparison.InvariantCultureIgnoreCase);
+
+        private sealed class ControlCollectionEnumerator(ControlCollection controls) : IEnumerator
+        {
+            private readonly int _originalCount = controls.Count;
+            private int _current = -1;
+
+            public object? Current => _current < 0 ? null : controls[_current];
+
+            public bool MoveNext()
+            {
+                if (_current < controls.Count - 1 && _current < _originalCount - 1)
+                {
+                    _current++;
+                    return true;
+                }
+                return false;
+            }
+
+            public void Reset() => _current = -1;
+        }
+    }
+
+    /// <summary>
+    /// Initializes layout after the control is added to its parent.
+    /// </summary>
+    protected virtual void InitLayout()
+    {
+        // Preserve the existing container initialization path for tab pages,
+        // table cells, and hosted items when their parent is first assigned.
+        _parent?.OnChildAdded(this);
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -8,18 +7,16 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a top-level LuminaForms window backed by a native Win32 overlapped window.
 /// </summary>
-public class Form : IDisposable, ISynchronizeInvoke
+public class Form : ContainerControl
 {
     private const string WindowClassName = "LuminaFormsWindow";
     private static bool s_registered;
 
-    private readonly List<Control> _controlList = [];
     private readonly Dictionary<int, Control> _controlsById = [];
-    private readonly ControlCollection _controls;
     private GCHandle _selfHandle;
-    private bool _disposed;
-    private volatile WindowThreadDispatcher? _threadDispatcher;
     private bool _shown;
+    private bool _loaded;
+    private EventArgs? _sizeChangedArguments = EventArgs.Empty;
     private int _nextControlId = 1000;
     private bool _effectExplicitlySet;
     private bool _refreshingMainMenuStrip;
@@ -31,8 +28,6 @@ public class Form : IDisposable, ISynchronizeInvoke
     private ThemeMode? _requestedThemeMode;
     private NativeTheme? _themeOverride;
     private ThemePalette? _paletteOverride;
-    private Color _backColor = Color.Empty;
-    private Color _foreColor = Color.Empty;
     private nint _windowBackgroundBrush;
     private bool _ownsWindowBackgroundBrush;
     private nint _surfaceBackgroundBrush;
@@ -52,8 +47,8 @@ public class Form : IDisposable, ISynchronizeInvoke
     /// </summary>
     public Form()
     {
-        WindowsFormsSynchronizationContext.InstallIfNeeded();
-        _controls = new ControlCollection(this);
+        SetTopLevel(true);
+        base.SetVisibleCore(false);
     }
 
     /// <summary>
@@ -87,26 +82,6 @@ public class Form : IDisposable, ISynchronizeInvoke
     public event EventHandler? Layout;
 
     /// <summary>
-    /// Occurs when the form size changes.
-    /// </summary>
-    public event EventHandler? SizeChanged;
-
-    /// <summary>
-    /// Occurs when the <see cref="BackColor"/> property changes.
-    /// </summary>
-    public event EventHandler? BackColorChanged;
-
-    /// <summary>
-    /// Occurs when the <see cref="ForeColor"/> property changes.
-    /// </summary>
-    public event EventHandler? ForeColorChanged;
-
-    /// <summary>
-    /// Gets or sets the window title text.
-    /// </summary>
-    public string Text { get; set; } = "Lumina Native Form";
-
-    /// <summary>
     /// Gets or sets the window icon. When unset, Lumina.Forms falls back to its built-in logo icon.
     /// </summary>
     public Icon? Icon
@@ -136,13 +111,6 @@ public class Form : IDisposable, ISynchronizeInvoke
         }
     }
 
-    /// <summary>
-    /// Gets or sets the design-time or lookup name of the form.
-    /// </summary>
-    public string Name { get; set; } = string.Empty;
-
-    public Size MinimumSize { get; set; }
-
     public FormStartPosition StartPosition { get; set; } = FormStartPosition.Manual;
 
     public FormWindowState WindowState
@@ -164,59 +132,6 @@ public class Form : IDisposable, ISynchronizeInvoke
     }
 
     /// <summary>
-    /// Gets or sets the form background color. Set <see cref="Color.Empty"/> to follow the active theme.
-    /// </summary>
-    public Color BackColor
-    {
-        get => _backColor;
-        set
-        {
-            if (_backColor == value)
-            {
-                return;
-            }
-
-            _backColor = value;
-            OnBackColorChanged(EventArgs.Empty);
-            ApplyApplicationDefaults();
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the form foreground color. Set <see cref="Color.Empty"/> to follow the active theme.
-    /// </summary>
-    public Color ForeColor
-    {
-        get => _foreColor;
-        set
-        {
-            if (_foreColor == value)
-            {
-                return;
-            }
-
-            _foreColor = value;
-            OnForeColorChanged(EventArgs.Empty);
-            ApplyApplicationDefaults();
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets how the form should scale itself and its child controls.
-    /// </summary>
-    public AutoScaleMode AutoScaleMode { get; set; }
-
-    /// <summary>
-    /// Gets or sets the design-time scaling dimensions used as the baseline for automatic scaling.
-    /// </summary>
-    public SizeF AutoScaleDimensions { get; set; }
-
-    /// <summary>
-    /// Gets the current runtime scaling dimensions for the configured <see cref="AutoScaleMode"/>.
-    /// </summary>
-    public SizeF CurrentAutoScaleDimensions => GetCurrentAutoScaleDimensions();
-
-    /// <summary>
     /// Gets the Win32 window styles used when the form handle is created.
     /// </summary>
     protected virtual uint WindowStyle => Win32.WS_OVERLAPPEDWINDOW | Win32.WS_CLIPCHILDREN;
@@ -224,65 +139,20 @@ public class Form : IDisposable, ISynchronizeInvoke
     /// <summary>
     /// Gets the Win32 extended window styles used when the form handle is created.
     /// </summary>
-    protected virtual uint WindowExStyle => Win32.WS_EX_APPWINDOW | Win32.WS_EX_COMPOSITED;
+    protected virtual uint WindowExStyle => Win32.WS_EX_APPWINDOW | Win32.WS_EX_COMPOSITED | Win32.WS_EX_CONTROLPARENT;
 
-    /// <summary>
-    /// Gets or sets the initial window width.
-    /// </summary>
-    public int Width { get; set; } = 960;
+    protected override Size DefaultSize => new(300, 300);
 
-    /// <summary>
-    /// Gets or sets the initial window height.
-    /// </summary>
-    public int Height { get; set; } = 640;
+    protected override uint Style => WindowStyle;
 
-    /// <summary>
-    /// Gets the native window handle after the form has been created.
-    /// </summary>
-    public nint Handle { get; private set; }
+    protected override uint ExStyle => WindowExStyle;
 
-    /// <summary>
-    /// Gets a value indicating whether the form has been disposed.
-    /// </summary>
-    public bool IsDisposed { get; private set; }
-
-    /// <summary>
-    /// Gets whether the calling thread differs from the thread that created the native window.
-    /// </summary>
-    public bool InvokeRequired => _threadDispatcher?.InvokeRequired ?? false;
-
-    internal WindowThreadDispatcher? ThreadDispatcher => Handle != 0 ? _threadDispatcher : null;
+    internal WindowThreadDispatcher? ThreadDispatcher => NativeThreadDispatcher;
 
     internal nint InstanceHandle { get; private set; }
 
     internal nint UiFontHandle { get; private set; }
     private bool OwnsUiFontHandle { get; set; }
-
-    /// <summary>
-    /// Gets or sets the client size used when creating the form.
-    /// </summary>
-    public Size ClientSize
-    {
-        get
-        {
-            if (Handle != 0 && Win32.GetClientRect(Handle, out var clientRect))
-            {
-                return new Size(clientRect.Width, clientRect.Height);
-            }
-
-            return new Size(Width, Height);
-        }
-        set
-        {
-            Width = value.Width;
-            Height = value.Height;
-        }
-    }
-
-    /// <summary>
-    /// Gets the collection of child controls owned by the form.
-    /// </summary>
-    public ControlCollection Controls => _controls;
 
     /// <summary>
     /// Gets or sets the main menu strip associated with the form.
@@ -306,7 +176,7 @@ public class Form : IDisposable, ISynchronizeInvoke
     /// <summary>
     /// Gets the visual style currently resolved for this form after application defaults and form-level overrides are applied.
     /// </summary>
-    public ResolvedVisualStyle CurrentVisualStyle => ResolveCurrentVisualStyle();
+    public new ResolvedVisualStyle CurrentVisualStyle => ResolveCurrentVisualStyle();
 
     /// <summary>
     /// Creates the native window, applies the current application defaults, and shows the form.
@@ -314,14 +184,38 @@ public class Form : IDisposable, ISynchronizeInvoke
     public void Show()
     {
         ThrowIfDisposed();
-        if (_shown)
+        if (Visible && Handle != 0)
+        {
+            return;
+        }
+
+        CreateHandleRecursive();
+        if (!_loaded)
+        {
+            _loaded = true;
+            OnCreated();
+            OnLoad();
+        }
+
+        PerformLayout();
+        base.SetVisibleCore(true);
+        _ = Win32.UpdateWindow(Handle);
+        if (!_shown)
+        {
+            _shown = true;
+            OnShown();
+        }
+    }
+
+    internal override void CreateHandle()
+    {
+        ThrowIfDisposed();
+        if (Handle != 0)
         {
             return;
         }
 
         PerformAutoScale();
-
-        _shown = true;
         InstanceHandle = Win32.GetModuleHandleW(null);
         EnsureWindowClassRegistered(InstanceHandle);
 
@@ -339,8 +233,8 @@ public class Form : IDisposable, ISynchronizeInvoke
             WindowClassName,
             Text,
             WindowStyle,
-            Win32.CW_USEDEFAULT,
-            Win32.CW_USEDEFAULT,
+            StartPosition == FormStartPosition.Manual ? Left : Win32.CW_USEDEFAULT,
+            StartPosition == FormStartPosition.Manual ? Top : Win32.CW_USEDEFAULT,
             Width,
             Height,
             0,
@@ -351,12 +245,20 @@ public class Form : IDisposable, ISynchronizeInvoke
         if (hwnd == 0)
         {
             _selfHandle.Free();
-              int err = Marshal.GetLastWin32Error();
-              throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {err}");
+            int err = Marshal.GetLastWin32Error();
+            if (OwnsUiFontHandle)
+            {
+                _ = Win32.DeleteObject(UiFontHandle);
+            }
+
+            UiFontHandle = 0;
+            OwnsUiFontHandle = false;
+            throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {err}");
         }
 
-        Handle = hwnd;
-        _threadDispatcher = new WindowThreadDispatcher(hwnd, this);
+        RegisterNativeHandle(hwnd, new WindowThreadDispatcher(hwnd, this));
+        UpdateBoundsFromNativeWindow();
+        _ = Win32.EnableWindow(hwnd, Enabled);
         ApplyWindowIcon();
         Application.EnsureVisualStylesInitialized();
         ApplyApplicationDefaults();
@@ -367,19 +269,8 @@ public class Form : IDisposable, ISynchronizeInvoke
             CenterToScreen();
         }
 
-        foreach (var control in CollectionsMarshal.AsSpan(_controlList))
-        {
-            control.CreateHandleRecursive();
-        }
-
         Application.RegisterOpenForm(this);
-        OnCreated();
-        OnLoad();
-        PerformLayout();
-
-        _ = Win32.ShowWindow(Handle, Win32.SW_SHOW);
-        _ = Win32.UpdateWindow(Handle);
-        OnShown();
+        OnHandleCreated();
     }
 
     /// <summary>
@@ -391,13 +282,26 @@ public class Form : IDisposable, ISynchronizeInvoke
         {
             _ = Win32.SendMessageW(Handle, Win32.WM_CLOSE, 0, 0);
         }
+        else
+        {
+            Dispose();
+        }
     }
 
     public void Hide()
     {
-        if (Handle != 0)
+        base.SetVisibleCore(false);
+    }
+
+    protected override void SetVisibleCore(bool value)
+    {
+        if (value)
         {
-            _ = Win32.ShowWindow(Handle, Win32.SW_HIDE);
+            Show();
+        }
+        else
+        {
+            Hide();
         }
     }
 
@@ -429,166 +333,17 @@ public class Form : IDisposable, ISynchronizeInvoke
         int left = Math.Max(0, (screenWidth - Width) / 2);
         int top = Math.Max(0, (screenHeight - Height) / 2);
 
-        if (Handle != 0)
-        {
-            _ = Win32.MoveWindow(Handle, left, top, Width, Height, true);
-        }
+        Location = new Point(left, top);
     }
 
-    /// <summary>
-    /// Suspends layout logic for compatibility with designer-generated code.
-    /// </summary>
-    public void SuspendLayout()
+    public override void PerformLayout()
     {
-    }
-
-    /// <summary>
-    /// Resumes layout logic for compatibility with designer-generated code.
-    /// </summary>
-    /// <param name="performLayout">Whether layout should be performed immediately.</param>
-    public void ResumeLayout()
-    {
-        ResumeLayout(true);
-    }
-
-    public void ResumeLayout(bool performLayout)
-    {
-        if (performLayout)
-        {
-            PerformLayout();
-        }
-    }
-
-    /// <summary>
-    /// Executes the specified delegate synchronously on the UI thread.
-    /// </summary>
-    /// <param name="method">The delegate to invoke.</param>
-    /// <returns>The return value produced by the delegate, if any.</returns>
-    public object? Invoke(Delegate method)
-        => Invoke(method, args: null);
-
-    /// <summary>
-    /// Executes a delegate and its arguments on the native window's creating thread.
-    /// </summary>
-    public object? Invoke(Delegate method, params object?[]? args)
-    {
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        return dispatcher.Invoke(this, method, args);
-    }
-
-    /// <summary>
-    /// Executes an action on the native window's creating thread.
-    /// </summary>
-    public void Invoke(Action method) => Invoke((Delegate)method);
-
-    /// <summary>
-    /// Executes a function on the native window's creating thread and returns its result.
-    /// </summary>
-    public T Invoke<T>(Func<T> method)
-    {
-        ArgumentNullException.ThrowIfNull(method);
-        T result = default!;
-        Invoke((Delegate)(Action)(() => result = method()));
-        return result;
-    }
-
-    /// <summary>
-    /// Queues the specified delegate on the native window's creating thread.
-    /// </summary>
-    /// <param name="method">The delegate to invoke.</param>
-    /// <returns>An async handle representing the queued invocation.</returns>
-    public IAsyncResult BeginInvoke(Delegate method)
-        => BeginInvoke(method, args: null);
-
-    /// <summary>
-    /// Queues a delegate and its arguments on the native window's creating thread.
-    /// </summary>
-    public IAsyncResult BeginInvoke(Delegate method, params object?[]? args)
-    {
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        return dispatcher.BeginInvoke(this, method, args);
-    }
-
-    /// <summary>
-    /// Queues an action on the native window's creating thread.
-    /// </summary>
-    public IAsyncResult BeginInvoke(Action method) => BeginInvoke((Delegate)method);
-
-    /// <summary>
-    /// Waits for a callback queued with BeginInvoke and returns its result.
-    /// </summary>
-    public object? EndInvoke(IAsyncResult asyncResult) => WindowThreadDispatcher.EndInvoke(asyncResult);
-
-    /// <summary>
-    /// Queues an action on the native window's creating thread and observes its completion.
-    /// </summary>
-    public async Task InvokeAsync(Action callback, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        if (cancellationToken.IsCancellationRequested)
+        if (DeferLayout())
         {
             return;
         }
 
-        await dispatcher.InvokeAsync(() => { callback(); return true; }, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Queues a function on the native window's creating thread and returns its result.
-    /// </summary>
-    public async Task<T> InvokeAsync<T>(Func<T> callback, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return default!;
-        }
-
-        return await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Queues an asynchronous callback on the native window's creating thread and observes its completion.
-    /// </summary>
-    public async Task InvokeAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return;
-        }
-
-        await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Queues an asynchronous function on the native window's creating thread and returns its result.
-    /// </summary>
-    public async Task<T> InvokeAsync<T>(Func<CancellationToken, ValueTask<T>> callback, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        WindowThreadDispatcher dispatcher = ThreadDispatcher ?? throw WindowThreadDispatcher.NoMarshalingHandle();
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return default!;
-        }
-
-        return await dispatcher.InvokeAsync(callback, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Performs layout for compatibility with designer-generated code.
-    /// </summary>
-    public void PerformLayout()
-    {
-        foreach (var control in CollectionsMarshal.AsSpan(_controlList))
-        {
-            control.PerformLayout();
-        }
-
+        base.PerformLayout();
         OnLayout();
     }
 
@@ -836,25 +591,43 @@ public class Form : IDisposable, ISynchronizeInvoke
     /// </summary>
     protected virtual void OnSizeChanged()
     {
-        SizeChanged?.Invoke(this, EventArgs.Empty);
+        base.OnSizeChanged(_sizeChangedArguments!);
+    }
+
+    protected override void OnSizeChanged(EventArgs e)
+    {
+        // Keep the historical parameterless hook while forwarding the standard
+        // argument, including reentrant calls, to the inherited notification.
+        EventArgs? previous = _sizeChangedArguments;
+        _sizeChangedArguments = e;
+        try
+        {
+            OnSizeChanged();
+        }
+        finally
+        {
+            _sizeChangedArguments = previous;
+        }
     }
 
     /// <summary>
     /// Raises the <see cref="BackColorChanged"/> event.
     /// </summary>
     /// <param name="e">The event arguments.</param>
-    protected virtual void OnBackColorChanged(EventArgs e)
+    protected override void OnBackColorChanged(EventArgs e)
     {
-        BackColorChanged?.Invoke(this, e);
+        base.OnBackColorChanged(e);
+        ApplyApplicationDefaults();
     }
 
     /// <summary>
     /// Raises the <see cref="ForeColorChanged"/> event.
     /// </summary>
     /// <param name="e">The event arguments.</param>
-    protected virtual void OnForeColorChanged(EventArgs e)
+    protected override void OnForeColorChanged(EventArgs e)
     {
-        ForeColorChanged?.Invoke(this, e);
+        base.OnForeColorChanged(e);
+        ApplyApplicationDefaults();
     }
 
     /// <summary>
@@ -888,120 +661,41 @@ public class Form : IDisposable, ISynchronizeInvoke
     }
 
     /// <summary>
-    /// Applies automatic scaling to the form and all attached controls using the configured <see cref="AutoScaleMode"/>.
+    /// Releases the form's native resources and the standard component/control ownership tree.
     /// </summary>
-    public void PerformAutoScale()
+    protected override void Dispose(bool disposing)
     {
-        AutoScaleMode effectiveMode = ResolveAutoScaleMode();
-        if (effectiveMode == AutoScaleMode.None)
+        try
         {
-            return;
+            base.Dispose(disposing);
         }
-
-        SizeF currentDimensions = GetAutoScaleDimensions(effectiveMode);
-        if (currentDimensions.Width <= 0 || currentDimensions.Height <= 0)
+        finally
         {
-            return;
-        }
+            ReleaseMainMenuStrip();
+            ReleasePaletteResources();
+            ReleaseOwnedIcon();
+            if (UiFontHandle != 0 && OwnsUiFontHandle)
+            {
+                _ = Win32.DeleteObject(UiFontHandle);
+            }
 
-        if (AutoScaleDimensions.Width <= 0 || AutoScaleDimensions.Height <= 0)
-        {
-            AutoScaleDimensions = currentDimensions;
-            return;
-        }
-
-        float scaleX = currentDimensions.Width / AutoScaleDimensions.Width;
-        float scaleY = currentDimensions.Height / AutoScaleDimensions.Height;
-
-        if (IsApproximatelyOne(scaleX) && IsApproximatelyOne(scaleY))
-        {
-            AutoScaleDimensions = currentDimensions;
-            return;
-        }
-
-        Width = ScaleSize(Width, scaleX);
-        Height = ScaleSize(Height, scaleY);
-
-        foreach (var control in CollectionsMarshal.AsSpan(_controlList))
-        {
-            ScaleControlTree(control, scaleX, scaleY);
-        }
-
-        AutoScaleDimensions = currentDimensions;
-    }
-
-    /// <summary>
-    /// Releases the native window and any unmanaged resources owned by the form.
-    /// </summary>
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Releases the resources used by the form.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources;
-    /// <see langword="false"/> to release unmanaged resources only.
-    /// </param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        _disposed = true;
-        IsDisposed = true;
-        _threadDispatcher?.Close();
-
-        ReleaseMainMenuStrip();
-
-        if (Handle != 0)
-        {
-            _ = Win32.DestroyWindow(Handle);
-        }
-
-        if (disposing)
-        {
-            ReleaseControlHandles();
-        }
-
-        ReleasePaletteResources();
-        ReleaseOwnedIcon();
-
-        if (UiFontHandle != 0 && OwnsUiFontHandle)
-        {
-            _ = Win32.DeleteObject(UiFontHandle);
-        }
-
-        if (_selfHandle.IsAllocated)
-        {
-            _selfHandle.Free();
-        }
-
-        Handle = 0;
-        _threadDispatcher = null;
-        UiFontHandle = 0;
-        OwnsUiFontHandle = false;
-    }
-
-    private void AddControl(Control control)
-    {
-        AttachControl(control, parent: null);
-        _controlList.Add(control);
-
-        if (Handle != 0)
-        {
-            control.CreateHandleRecursive();
+            UiFontHandle = 0;
+            OwnsUiFontHandle = false;
+            if (_selfHandle.IsAllocated)
+            {
+                _selfHandle.Free();
+            }
         }
     }
 
     internal void AttachControl(Control control, Control? parent)
     {
         ArgumentNullException.ThrowIfNull(control);
+
+        if (ReferenceEquals(control.Owner, this))
+        {
+            return;
+        }
 
         if (control.Owner is not null)
         {
@@ -1011,9 +705,9 @@ public class Form : IDisposable, ISynchronizeInvoke
         control.Attach(this, ++_nextControlId, parent);
         _controlsById[control.Id] = control;
 
-        if (control is ContainerControlBase container)
+        foreach (Control child in control.ChildControls)
         {
-            container.AttachChildrenToOwner(this);
+            AttachControl(child, control);
         }
     }
 
@@ -1021,13 +715,9 @@ public class Form : IDisposable, ISynchronizeInvoke
     {
         ArgumentNullException.ThrowIfNull(control);
 
-        if (control is ContainerControlBase container)
+        foreach (Control child in control.ChildControls)
         {
-            Control[] children = [.. container.ChildControls];
-            foreach (Control child in children)
-            {
-                DetachControl(child);
-            }
+            DetachControl(child);
         }
 
         bool removed = false;
@@ -1036,7 +726,6 @@ public class Form : IDisposable, ISynchronizeInvoke
             removed = _controlsById.Remove(control.Id) || removed;
         }
 
-        removed = _controlList.Remove(control) || removed;
         control.DetachFromOwner();
         return removed;
     }
@@ -1105,7 +794,7 @@ public class Form : IDisposable, ISynchronizeInvoke
             inset += Math.Max(0, _mainMenuStrip.Height);
         }
 
-        foreach (Control control in CollectionsMarshal.AsSpan(_controlList))
+        foreach (Control control in ChildControls)
         {
             if (control is ToolStrip toolStrip && control is not MenuStrip && control is not StatusStrip && control.Visible)
             {
@@ -1270,7 +959,7 @@ public class Form : IDisposable, ISynchronizeInvoke
 
         _ = Win32.InvalidateRect(Handle, 0, false);
 
-        foreach (Control control in CollectionsMarshal.AsSpan(_controlList))
+        foreach (Control control in ChildControls)
         {
             RefreshControl(control);
         }
@@ -1280,12 +969,7 @@ public class Form : IDisposable, ISynchronizeInvoke
     {
         control.RefreshTheme();
 
-        if (control is not ContainerControlBase container)
-        {
-            return;
-        }
-
-        foreach (Control child in container.ChildControls)
+        foreach (Control child in control.ChildControls)
         {
             RefreshControl(child);
         }
@@ -1342,7 +1026,7 @@ public class Form : IDisposable, ISynchronizeInvoke
         {
             cbSize = (uint)Marshal.SizeOf<Win32.WNDCLASSEXW>(),
             style = Win32.CS_HREDRAW | Win32.CS_VREDRAW,
-                lpfnWndProc = (nint)(delegate* unmanaged[Stdcall]<nint, uint, nint, nint, nint>)&WindowProcThunk,
+            lpfnWndProc = (nint)(delegate* unmanaged[Stdcall]<nint, uint, nint, nint, nint>)&WindowProcThunk,
             hInstance = instanceHandle,
             hIcon = defaultIconHandle,
             hCursor = Win32.LoadCursorW(0, (nint)Win32.IDC_ARROW),
@@ -1351,17 +1035,18 @@ public class Form : IDisposable, ISynchronizeInvoke
             hIconSm = defaultIconHandle,
         };
 
-            ushort atom = Win32.RegisterClassExW(ref windowClass);
-            int regError = Marshal.GetLastWin32Error();
-            if (atom == 0 && regError != 1410 /* ERROR_CLASS_ALREADY_EXISTS */)
-            {
-                throw new InvalidOperationException($"Failed to register the native window class. Win32 error: {regError}");
-            }
-            s_registered = true;
+        ushort atom = Win32.RegisterClassExW(ref windowClass);
+        int regError = Marshal.GetLastWin32Error();
+        if (atom == 0 && regError != 1410 /* ERROR_CLASS_ALREADY_EXISTS */)
+        {
+            throw new InvalidOperationException($"Failed to register the native window class. Win32 error: {regError}");
+        }
+
+        s_registered = true;
     }
 
-        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-        private static nint WindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+    private static nint WindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
     {
         if (message == Win32.WM_NCCREATE)
         {
@@ -1384,15 +1069,19 @@ public class Form : IDisposable, ISynchronizeInvoke
 
     private nint WindowProc(nint hwnd, uint message, nint wParam, nint lParam)
     {
-        if (_threadDispatcher?.TryDispatch(message) == true)
+        if (ThreadDispatcher?.TryDispatch(message) == true)
         {
             return 0;
         }
 
         switch (message)
         {
+            case Win32.WM_MOVE:
+                UpdateBoundsFromNativeWindow();
+                return 0;
+
             case Win32.WM_SIZE:
-                OnSizeChanged();
+                UpdateBoundsFromNativeWindow();
                 PerformLayout();
                 return 0;
 
@@ -1405,7 +1094,8 @@ public class Form : IDisposable, ISynchronizeInvoke
                     return 0;
                 }
 
-                break;
+                Dispose();
+                return 0;
             }
 
             case Win32.WM_CONTEXTMENU:
@@ -1520,15 +1210,19 @@ public class Form : IDisposable, ISynchronizeInvoke
                 return 0;
 
             case Win32.WM_DESTROY:
+                if (Disposing)
+                {
+                    // Destruction updates the stored state directly. Hiding the
+                    // form here would incorrectly raise VisibleChanged.
+                    SetVisibleState(false);
+                }
                 OnClosed();
                 return 0;
 
             case Win32.WM_NCDESTROY:
-                _threadDispatcher?.Close();
-                _threadDispatcher = null;
+                ThreadDispatcher?.Close();
                 ReleaseMainMenuStrip();
                 ReleasePaletteResources();
-                ReleaseControlHandles();
 
                 if (UiFontHandle != 0 && OwnsUiFontHandle)
                 {
@@ -1537,7 +1231,7 @@ public class Form : IDisposable, ISynchronizeInvoke
                     OwnsUiFontHandle = false;
                 }
 
-                Handle = 0;
+                ClearNativeHandle();
                 Win32.SetWindowLongPtrW(hwnd, Win32.GWLP_USERDATA, 0);
                 if (Application.UnregisterOpenForm(this))
                 {
@@ -1862,14 +1556,6 @@ public class Form : IDisposable, ISynchronizeInvoke
         return keyData;
     }
 
-    private void ReleaseControlHandles()
-    {
-        foreach (Control control in CollectionsMarshal.AsSpan(_controlList))
-        {
-            control.ReleaseHandleRecursive();
-        }
-    }
-
     private void ApplyWindowIcon()
     {
         if (!OperatingSystem.IsWindows() || Handle == 0)
@@ -1920,54 +1606,7 @@ public class Form : IDisposable, ISynchronizeInvoke
 
     private void ThrowIfDisposed()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-    }
-
-    private SizeF GetCurrentAutoScaleDimensions()
-        => GetAutoScaleDimensions(ResolveAutoScaleMode());
-
-    private AutoScaleMode ResolveAutoScaleMode()
-    {
-        return AutoScaleMode == AutoScaleMode.Inherit
-            ? AutoScaleMode.Font
-            : AutoScaleMode;
-    }
-
-    private static SizeF GetAutoScaleDimensions(AutoScaleMode autoScaleMode)
-    {
-        return autoScaleMode switch
-        {
-            AutoScaleMode.Dpi => Win32.GetSystemDpiScaleDimensions(),
-            AutoScaleMode.Font => Win32.GetDefaultFontScaleDimensions(),
-            _ => SizeF.Empty,
-        };
-    }
-
-    private static bool IsApproximatelyOne(float value)
-        => Math.Abs(value - 1f) < 0.001f;
-
-    private static int ScaleCoordinate(int value, float factor)
-        => (int)Math.Round(value * factor, MidpointRounding.AwayFromZero);
-
-    private static int ScaleSize(int value, float factor)
-        => Math.Max(1, (int)Math.Round(value * factor, MidpointRounding.AwayFromZero));
-
-    private static void ScaleControlTree(Control control, float scaleX, float scaleY)
-    {
-        Rectangle bounds = control.Bounds;
-        control.SetBounds(
-            ScaleCoordinate(bounds.X, scaleX),
-            ScaleCoordinate(bounds.Y, scaleY),
-            ScaleSize(bounds.Width, scaleX),
-            ScaleSize(bounds.Height, scaleY));
-
-        if (control is ContainerControlBase container)
-        {
-            foreach (Control child in container.ChildControls)
-            {
-                ScaleControlTree(child, scaleX, scaleY);
-            }
-        }
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
     }
 
     private static unsafe Win32.CREATESTRUCTW ReadCreateStruct(nint lParam)
@@ -1975,118 +1614,4 @@ public class Form : IDisposable, ISynchronizeInvoke
         return MemoryMarshal.Read<Win32.CREATESTRUCTW>(new ReadOnlySpan<byte>((void*)lParam, sizeof(Win32.CREATESTRUCTW)));
     }
 
-    /// <summary>
-    /// Represents the child control collection of a LuminaForms form.
-    /// </summary>
-    public sealed class ControlCollection : IEnumerable<Control>
-    {
-        private readonly Form _owner;
-
-        internal ControlCollection(Form owner)
-        {
-            _owner = owner;
-        }
-
-        /// <summary>
-        /// Adds a control to the form.
-        /// </summary>
-        /// <param name="control">The control to add.</param>
-        public void Add(Control control)
-        {
-            _owner.AddControl(control);
-        }
-
-        /// <summary>
-        /// Adds a batch of controls to the form.
-        /// </summary>
-        /// <param name="controls">The controls to add.</param>
-        public void AddRange(IEnumerable<Control> controls)
-        {
-            ArgumentNullException.ThrowIfNull(controls);
-
-            foreach (Control control in controls)
-            {
-                _owner.AddControl(control);
-            }
-        }
-
-        /// <summary>
-        /// Adds a batch of controls to the form.
-        /// </summary>
-        /// <param name="controls">The controls to add.</param>
-        public void AddRange(params Control[] controls)
-        {
-            AddRange((IEnumerable<Control>)controls);
-        }
-
-        internal bool Remove(Control control)
-        {
-            return _owner.DetachControl(control);
-        }
-
-        /// <summary>
-        /// Gets the number of controls currently attached to the form.
-        /// </summary>
-        public int Count => _owner._controlList.Count;
-
-        /// <summary>
-        /// Gets the control at the specified index.
-        /// </summary>
-        /// <param name="index">The zero-based control index.</param>
-        /// <returns>The control at the requested index.</returns>
-        public Control this[int index] => _owner._controlList[index];
-
-        /// <summary>
-        /// Determines whether the specified control is already attached to the form.
-        /// </summary>
-        /// <param name="control">The control to locate.</param>
-        /// <returns><see langword="true"/> if the control is attached; otherwise, <see langword="false"/>.</returns>
-        public bool Contains(Control control)
-        {
-            return _owner._controlList.Contains(control);
-        }
-
-        /// <summary>
-        /// Finds controls by <see cref="Control.Name"/> using case-insensitive matching.
-        /// </summary>
-        /// <param name="key">The control name to locate.</param>
-        /// <param name="searchAllChildren"><see langword="true"/> to search nested containers recursively; otherwise, <see langword="false"/>.</param>
-        /// <returns>The matching controls.</returns>
-        public Control[] Find(string key, bool searchAllChildren)
-        {
-            ArgumentNullException.ThrowIfNull(key);
-
-            List<Control> matches = [];
-            CollectMatches(_owner._controlList, key, searchAllChildren, matches);
-            return [.. matches];
-        }
-
-        /// <inheritdoc />
-        public IEnumerator<Control> GetEnumerator()
-        {
-            return _owner._controlList.GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        private static void CollectMatches(IEnumerable<Control> controls, string key, bool searchAllChildren, List<Control> matches)
-        {
-            foreach (Control control in controls)
-            {
-                if (string.Equals(control.Name, key, StringComparison.OrdinalIgnoreCase))
-                {
-                    matches.Add(control);
-                }
-
-                if (searchAllChildren && control is ContainerControlBase container)
-                {
-                    CollectMatches(container.Controls, key, searchAllChildren, matches);
-                }
-            }
-        }
-    }
 }

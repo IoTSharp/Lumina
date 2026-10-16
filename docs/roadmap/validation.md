@@ -377,3 +377,20 @@ Parent/Controls/Form链、含parent构造、无HWND完整Text/ResetText、native
 - ⬜ System.Drawing.Common公开类型身份的跨平台可行路线。
 
 不会因为规划已细化而宣布以上能力完成；下一项实施按 [M0排序](foundations.md)。
+
+## 2026-10-16 · 批次018
+
+[018](batches/018.md)是Control完整专项的父子/继承依赖批次。Control-06a、Form-01、ContainerControl-01、ScrollableControl-01a明确范围代码完成；整Control、完整容器/滚动与平台未关闭。
+
+| 检查 | 实际结果 | 边界 |
+| --- | --- | --- |
+| 固定10.0.11/JIT | 391条中390相同，strictMatches=false | 第372行隐藏原生父级重挂缺三次中间VisibleChanged；最终状态正确，019继续 |
+| 实际Native AOT探针 | 391条完整运行到complete=True；与JIT有32条差异 | 16个非零下界数组fixture在AOT不支持，明确CopyTo未运行；其余359行相同，不能声称严格通过 |
+| 编译/测试 | 固定双目标Release 0错误/400警告；最终3,996项全通过，0失败/跳过 | ToolStrip重入栈溢出原始失败保留；TabControl固定估计值改为实际DisplayRectangle断言，历史提前建窗差异单列 |
+| 既有差分 | 首轮29个驱动通过；最终可见/释放修复后16个Control/同步上下文驱动再次通过 | 不是全Control成员覆盖率 |
+| 完整Demo实际AOT | 可见主窗，Enable option 0→1，WM_CLOSE后exit0、全部记录HWND失效，无强杀 | 只此交互/关闭范围；截图有文字裁切/布局问题，模态、完整UI和Designer未验收 |
+| Native映像 | 新探针3,667,456字节；Demo4,147,712字节；二者CLR目录0 | 探针IL2026/IL3050/IL3053及Demo既有IL3050保留 |
+| 项目/依赖/资源 | 13项目17目标仅.NET10；官方Drawing10.0.0；net10.0无WinForms/Resources.Extensions/自有Drawing | 原始Designer/resx未改；Linux/macOS后端及对应资源尚未实现，不记跨平台编译/运行通过 |
+| API与路线图 | 固定1,095类型/61,240成员行、187组类型/API页，运行unverified | 同步受影响任务/历史，重新生成逐控件README实施列/tasks.csv；无整类型或98%声明 |
+
+复现：`Test-ControlParentCollection.ps1 -Variant both -PublishAot`（保留严格失败退出）；`Test-NativeFormsDemoWindow.ps1 -ExecutablePath <Demo AOT EXE> -ArtifactsDirectory <证据目录>`；最终测试TRX和日志、原始差异、失败首轮、PE、实际窗口JSON及摘要在artifacts/compatibility-batch018。截图路径为本机`C:/Users/mysti/AppData/Local/Temp/codex-shot-2026-10-16_09-24-08.png`。资源严格门禁FND-006、完整主窗FND-004、Designer和GTK4/AppKit仍未关闭，后续[019](batches/019.md)按同一专项继续。

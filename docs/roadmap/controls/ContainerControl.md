@@ -1,26 +1,26 @@
 # ContainerControl
 
-⬜ **当前状态：**尚无标准 ContainerControl；现有 ContainerControlBase 负责子集合与消息转发，但不是 WinForms ContainerControl 的兼容替身。
+🟡 **当前状态：**018新增标准ContainerControl : ScrollableControl，Form已使用；活动子控件/显式IContainerControl及嵌套链已实现首范围，原Form缩放迁到此处。完整选择/验证/缩放/键盘与平台仍待实现，不以基类存在计为整控件完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
 - 完整成员及继承成员：[ContainerControl API](../api/ContainerControl.md)。本文展开高影响工作，API 清单中未展开的成员仍全部进入验收。
 - 共同要求：[基础契约与验收](../foundations.md)。
-- 源码：同名标准类型尚未实现；不可用历史内部容器名称抵扣此类型。
+- 源码：[ContainerControl.cs](../../../Lumina.Forms/ContainerControl.cs)；历史ContainerControlBase仍保留给既有控件，不作为标准类型替身。
 - 前置与排序：Control、ScrollableControl、UI 线程/焦点；Form、UserControl、SplitContainer 的前置。
 
 ## 顺序任务
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / ContainerControl-01 | 建立 ContainerControl : ScrollableControl : Control 标准继承关系；将 ContainerControlBase 的可复用内部实现逐步迁入，不继续扩大历史公共基类依赖。 |
-| ⬜ | P0 / ContainerControl-02 | 实现 ActiveControl、IContainerControl.ActivateControl、SelectNextControl 与嵌套活动链；显式接口不擅自变为新 public 方法，焦点进入深层子控件时每级容器同步 ActiveControl。 |
+| ✅ | P0 / ContainerControl-01 | 018已建立ContainerControl : ScrollableControl : Control，共用Control父子集合/状态；Form接入标准链，原Form缩放移到该层。历史公共名称保留，完整容器行为另列。 |
+| 🟡 | P0 / ContainerControl-02 | 018补ActiveControl与显式IContainerControl.ActivateControl的不同验证/嵌套活动链、移除候选和释放清理；固定参考覆盖首范围。SelectNextControl、完整焦点/验证与键盘事件仍缺，不能关闭整个活动导航任务。 |
 | ⬜ | P0 / ContainerControl-03 | 实现 AutoValidate、Validate、ValidateChildren(ValidationConstraints)；CausesValidation=false、CancelEventArgs.Cancel 与 AutoValidate 两种 enable 策略均对照。 |
 | ⬜ | P1 / ContainerControl-04 | 记录 Enter/Leave/GotFocus/LostFocus/Validating/Validated 在鼠标与 Tab 路径的真实顺序；取消验证后焦点与 ActiveControl 保持一致。 |
-| ⬜ | P1 / ContainerControl-05 | 实现 AutoScaleMode、AutoScaleDimensions、CurrentAutoScaleDimensions、AutoScaleFactor、PerformAutoScale；字体/显示器 DPI 切换采用增量缩放而非累计重复缩放。 |
+| 🟡 | P1 / ContainerControl-05 | 018已迁入既有AutoScaleMode/Dimensions/CurrentDimensions/PerformAutoScale，保留实际递归缩放及既有测试。AutoScaleFactor、完整嵌套继承/字体/DPI切换和重复缩放仍缺，不以迁移旧算法宣称完整兼容。 |
 | ⬜ | P1 / ContainerControl-06 | 补 ParentForm、BindingContext 传播、ProcessDialogKey/ProcessMnemonic 等派生扩展点；Enter/Escape、助记键和容器内部导航保持标准语义。 |
 | ⬜ | P1 / ContainerControl-07 | 验证自定义 UserControl 继承、嵌套 AutoScaleMode 混用、禁用/隐藏当前活动控件、移除/销毁活动控件及异常验证处理。 |
-| ⬜ | P2 / ContainerControl-08 | Windows 用 WS_EX_CONTROLPARENT 与 UI 线程消息循环，焦点通知接入托管活动链；Form 的独立 IDisposable 类型必须先修正才可验收。 |
+| 🟡 | P2 / ContainerControl-08 | 018已有WS_EX_CONTROLPARENT与焦点活动链连接，Form独立IDisposable问题已由标准继承修正。完整IsDialogMessage/键盘导航/验证与原生焦点生命周期仍待实现。 |
 | ⬜ | P2 / ContainerControl-09 | Linux 用 GtkFixed/GtkBox 原生容器与 GtkEventControllerFocus；兼容层决定验证是否允许转移，再映射 GtkWidget focus；Gtk 自身 focus chain 不等于 ActiveControl。 |
 | ⬜ | P3 / ContainerControl-10 | macOS 用 NSView 与 NSWindow firstResponder/key-view loop；在 responder 切换提交前处理可取消验证，原生控件编辑结束与 WinForms 验证事件去重。 |
 | ⬜ | P1 / ContainerControl-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -39,7 +39,7 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
-- 无同名类型的实现修改历史；不得将规划文档创建计入运行库实现完成。
+- 2026-10-16 · 批次018：新增标准类与IContainerControl，迁入Form缩放；按固定参考区分公开setter与显式接口、嵌套选择与释放。将历史“同名类不存在”和“Form独立IDisposable”更新为当前事实；02/05/08保持部分，其余验证/键盘/平台未关闭，见[018](../batches/018.md)。
 - 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料
