@@ -28,7 +28,9 @@
 
 2026-10-16：批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。见[024](batches/024.md)，M0/M1不关闭。
 
-批次[025](batches/025.md)已完成：普通Drain在完成信号失败后继续FIFO余队列并延后传播完成错误；Control/Form/context的native callback与`WM_NCDESTROY`清理双错边界按有限范围实现。4,195项测试通过，双目标Demo构建0错误，Control探针与Demo Native AOT均为无CLR directory，真实Demo窗口交互/WM_CLOSE/原始HWND销毁通过。4项参考差异保留；InvokeAsync关闭桥接、Dispose后续托管事务、完整Control/Form/Designer/资源/DPI和Linux/macOS仍未关闭。执行收尾/原生边界/参考三个内部任务已冻结，下一批继续按实际依赖排序，见[025](batches/025.md)。
+当前批次[026](batches/026.md)完成Control-05c/08c：已接受InvokeAsync任务关闭/投递失败终止、实际HWND已销毁后的异常继续正常托管清理；活HWND失败、普通Parent/child/Site短路与已开始异步工作保留。4,243测试（新增48）通过，双目标Release 0错误/643警告；25标准场景16同/9明确增强差异，另7旧Task仅Lumina，32场景JIT/实际AOT全同。探针/Demo PE均无CLR目录，Demo真实交互/WM_CLOSE/原始HWND销毁通过。旧004/005各两行增强差异、025四差异与警告不隐藏。Form-07依据已有Close/取消/Dispose由全待办纠正为部分；父项/设计器/资源/完整竞态/平台不关闭。下一批[027](batches/027.md)沿现有Control-13坐标/捕获/鼠标输入及必要Form路由继续，不重启全库评估。
+
+批次[025](batches/025.md)历史快照：普通Drain在完成信号失败后继续FIFO余队列并延后传播完成错误；Control/Form/context的native callback与`WM_NCDESTROY`清理双错边界按有限范围实现。4,195项测试通过，双目标Demo构建0错误，Control探针与Demo Native AOT均为无CLR directory，真实Demo窗口交互/WM_CLOSE/原始HWND销毁通过。4项参考差异保留；当时InvokeAsync关闭桥接与Dispose后续托管收尾缺口由026完成上述有限范围，全部事务/竞态和完整Control仍未关闭。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

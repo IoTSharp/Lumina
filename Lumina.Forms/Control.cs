@@ -2018,6 +2018,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         _disposing = true;
         bool disposeComponent = false;
+        List<Exception>? completionFailures = null;
         try
         {
             try
@@ -2027,7 +2028,15 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                     // Native children are destroyed with their parent HWND.
                     // ParentChanged and ControlRemoved must observe that the
                     // disposed control no longer owns a live window.
-                    ReleaseNativeResources();
+                    try { ReleaseNativeResources(); }
+                    catch (Exception exception) when (NativeHandle == 0)
+                    {
+                        // The window is already gone, so a dispatcher completion
+                        // or post-base DestroyHandle failure must not strand the
+                        // managed ownership tree. A still-live window keeps the
+                        // normal failure boundary and can be retried explicitly.
+                        completionFailures = [exception];
+                    }
                     _parent?.Controls.Remove(this);
                     if (!_disposed)
                     {
@@ -2060,19 +2069,48 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                     }
                     disposeComponent = true;
                 }
+                catch (Exception exception) when (completionFailures is not null)
+                {
+                    // Preserve the normal parent/child notification short circuit.
+                    // Only the original native completion failure changes how
+                    // errors are reported; later managed stages remain skipped.
+                    completionFailures.Add(exception);
+                }
                 finally
                 {
                     // A standard DestroyHandle override is called once. A
                     // skipped or failed base call deliberately leaves its
                     // native window available for the next explicit attempt.
-                    ReleaseDetachedNativeResources();
+                    try { ReleaseDetachedNativeResources(); }
+                    catch (Exception exception) when (completionFailures is not null)
+                    {
+                        completionFailures.Add(exception);
+                    }
                 }
             }
             finally
             {
                 // A failed standard notification leaves Component.Site and its
                 // Disposed event untouched until a later disposal attempt.
-                if (disposeComponent) { base.Dispose(true); }
+                if (disposeComponent)
+                {
+                    try { base.Dispose(true); }
+                    catch (Exception exception) when (completionFailures is not null)
+                    {
+                        // Component keeps its own Site/Disposed ordering. Do not
+                        // manufacture an event when Container.Remove itself fails.
+                        completionFailures.Add(exception);
+                    }
+                }
+            }
+
+            if (completionFailures is { Count: 1 })
+            {
+                ExceptionDispatchInfo.Capture(completionFailures[0]).Throw();
+            }
+            if (completionFailures is { Count: > 1 })
+            {
+                throw new AggregateException(completionFailures);
             }
         }
         finally

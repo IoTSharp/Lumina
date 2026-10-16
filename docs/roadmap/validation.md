@@ -460,3 +460,15 @@ Control-14a/17a、Form-16a明确范围代码完成，父项及整Control保持�
 批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。
 
 固定参考/JIT/AOT的完整run、源码hash、三端63个进程记录和明确未验范围见[024](batches/024.md)及artifacts/compatibility-batch024/evidence.json。屏幕采样与PRINTCLIENT位图分列，direct无HWND不算绘制验收；高对比设备切换、全派生/Designer/跨平台仍待。首轮定向28/30、首轮17行差异与独立去COMPOSITED诊断原始记录保留；修复fixture与正式样式后仅16行有意关闭差异。7组旧驱动仅重跑JIT，消息/外观/集合旧AOT限制不覆盖。13项目/17目标仅.NET10、官方Drawing/固定双目标/原始Designer资源保持；重新导出API与逐控件状态索引，固定分母与unverified不变，不从测试或任务数推98%。
+
+## 批次 025 · 2026-10-16 执行完成与原生异常边界（补录历史）
+
+本页原遗漏025摘要，026收尾按025原始证据补录，不声称全部在026重跑。025完成Control-04c/07b/17b、Form-16c、WindowsFormsSynchronizationContext-06a；4,195测试通过，双目标Release0错误/641警告，8场景JIT/AOT全同，固定参考4同/4差异。探针2,989,056字节、Demo4,287,488字节，CLR目录0；Demo显示/复选框/正常退出/原始HWND销毁有证据。原实现82b9652、文档74372ff、交接f9a3a3e已推送，见[025](batches/025.md)及artifacts/compatibility-batch025/evidence.json。
+
+## 批次 026 · 2026-10-16 异步终止与释放收尾
+
+Control-05c/08c明确范围完成；全部4,243测试通过（新增28+20），双目标Release0错误/643警告。25个固定WinForms10.0.11场景中16严格同、4项queued关闭增强和5项native-after释放增强；另7旧Task仅Lumina，不纳入参考分母。32场景JIT/实际AOT严格同、全部进程exit0/complete=True，但参考strictMatches=false、driver exit1保留。固定参考run20261016-210951-8765335，最终JIT/AOT run20261016-211451-3933342，源码SHA256 CCEA907A90096CF37AEB12372B978D9C95BE4FB7A38B0B2C13FDA43B6216D5F4。750ms pending为有界观察，started中间门控pending不算最终悬挂；Lumina所有最终Task均结算。
+
+6组旧参考/JIT回归：投递69/context57/生命周期204行全同；Action59与ValueTask90各两行关闭增强差异并保留严格失败；025仍四同四差异。旧日志已先保存，旧AOT未重跑。探针AOT3,851,776字节、Demo4,289,024字节且CLR目录0；Demo真实显示/Enable option 0→1/WM_CLOSE exit0/原始HWND全失效、无强制清理。原始Events遮蔽编译失败、Site先命中child的中间诊断与最终target-site参考均保留；Container.Add IL2026、TypeConverter IL3053和Demo既有IL3050等警告不隐藏。
+
+13项目/17目标仅.NET10，Windows官方Drawing10.0.0、固定双目标/原始Designer资源及net10.0无WinForms/Resources.Extensions/自有Drawing依赖保持；公共签名未变，固定1,095类型/61,240行/187页和运行unverified不变。修正Form-07全待办和索引引言过时状态；普通Parent/child/Site再失败仍短路，完整Dispose/并发/输入/绘制/Designer/资源/模态及GTK4/AppKit未完成。详见[026](batches/026.md)与artifacts/compatibility-batch026/evidence.json，不由测试数推98%。

@@ -44,7 +44,7 @@ internal sealed class WindowThreadDispatcher
     {
         var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
-        _ = BeginInvoke(_owner, (Action)(() =>
+        QueueAsyncCallback(() =>
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -57,11 +57,11 @@ internal sealed class WindowThreadDispatcher
             }
             catch (Exception exception)
             {
-                // Task callbacks own their failures. The BeginInvoke wrapper must finish
+                // Task callbacks own their failures. The queued wrapper must finish
                 // successfully so Drain does not also raise Application.ThreadException.
                 completion.TrySetException(exception);
             }
-        }), args: null);
+        }, exception => completion.TrySetException(exception), completion.Task);
 
         // Awaiting the original exception also preserves OperationCanceledException and
         // its own token, rather than replacing it with a newly created canceled task.
@@ -72,7 +72,7 @@ internal sealed class WindowThreadDispatcher
     {
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
-        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        QueueAsyncCallback(() => _ = CompleteCallbackAsync(), exception => completion.TrySetException(exception), completion.Task);
         await completion.Task.ConfigureAwait(false);
 
         async Task CompleteCallbackAsync()
@@ -98,7 +98,7 @@ internal sealed class WindowThreadDispatcher
     {
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
-        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        QueueAsyncCallback(() => _ = CompleteCallbackAsync(), exception => completion.TrySetException(exception), completion.Task);
         await completion.Task.ConfigureAwait(false);
 
         async Task CompleteCallbackAsync()
@@ -126,7 +126,7 @@ internal sealed class WindowThreadDispatcher
     {
         var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         using CancellationTokenRegistration registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
-        _ = BeginInvoke(_owner, (Action)(() => _ = CompleteCallbackAsync()), args: null);
+        QueueAsyncCallback(() => _ = CompleteCallbackAsync(), exception => completion.TrySetException(exception), completion.Task);
         return await completion.Task.ConfigureAwait(false);
 
         async Task CompleteCallbackAsync()
@@ -147,6 +147,22 @@ internal sealed class WindowThreadDispatcher
                 // tokens and wrapper exceptions, without reporting ThreadException.
                 completion.TrySetException(exception);
             }
+        }
+    }
+
+    private void QueueAsyncCallback(Action callback, Action<Exception> queueFailure, Task completion)
+    {
+        try
+        {
+            _ = Enqueue(_owner, callback, args: null, synchronous: false, queueFailure);
+        }
+        catch
+        {
+            // A failed post completes the accepted entry before Enqueue rethrows
+            // the original posting error (possibly with signal failures). Observe
+            // the internal Task as well, since its normal await is now bypassed.
+            _ = completion.Exception;
+            throw;
         }
     }
 
@@ -222,11 +238,11 @@ internal sealed class WindowThreadDispatcher
     internal static InvalidOperationException NoMarshalingHandle()
         => new("Invoke or BeginInvoke cannot be called on a control until an appropriate window handle has been created.");
 
-    private Invocation Enqueue(object caller, Delegate method, object?[]? args, bool synchronous)
+    private Invocation Enqueue(object caller, Delegate method, object?[]? args, bool synchronous, Action<Exception>? queueFailure = null)
     {
         ArgumentNullException.ThrowIfNull(method);
         bool sameThread = !InvokeRequired;
-        var invocation = new Invocation(this, caller, method, args, synchronous, synchronous && sameThread ? null : ExecutionContext.Capture());
+        var invocation = new Invocation(this, caller, method, args, synchronous, synchronous && sameThread ? null : ExecutionContext.Capture(), queueFailure);
         lock (_gate)
         {
             if (_closed)
@@ -378,13 +394,14 @@ internal sealed class WindowThreadDispatcher
         private readonly object _caller;
         private readonly object?[]? _args;
         private readonly ExecutionContext? _executionContext;
+        private readonly Action<Exception>? _queueFailure;
         private SynchronizationContext? _synchronizationContext;
         private ManualResetEvent? _completion;
         private object? _result;
         private ExceptionDispatchInfo? _exception;
         private volatile bool _completed;
 
-        internal Invocation(WindowThreadDispatcher dispatcher, object caller, Delegate method, object?[]? args, bool synchronous, ExecutionContext? executionContext)
+        internal Invocation(WindowThreadDispatcher dispatcher, object caller, Delegate method, object?[]? args, bool synchronous, ExecutionContext? executionContext, Action<Exception>? queueFailure)
         {
             Dispatcher = dispatcher;
             _caller = caller;
@@ -392,6 +409,7 @@ internal sealed class WindowThreadDispatcher
             _args = args;
             Synchronous = synchronous;
             _executionContext = executionContext;
+            _queueFailure = queueFailure;
         }
 
         internal WindowThreadDispatcher Dispatcher { get; }
@@ -454,6 +472,12 @@ internal sealed class WindowThreadDispatcher
         internal void CompleteException(Exception exception)
         {
             _exception = ExceptionDispatchInfo.Capture(exception);
+            // Only entries still in the queue receive this failure. An async
+            // callback which has started keeps its own result and lifetime.
+            // Settle its Task before a caller-disposed wait handle can throw;
+            // these internal notifications only use TrySetException on Task
+            // sources whose continuations always run asynchronously.
+            _queueFailure?.Invoke(exception);
             Complete();
         }
 

@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～024标准继承/父子树、句柄/显示、布局、资源与消息绘制明确范围保留；025完成Form-16c native callback与`WM_NCDESTROY`双错边界。历史Created事件仍隐藏Control.Created属性，FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/缩放/显示关闭、Dispose事务、多UI退出与Designer仍缺，不能由基础衔接关闭整个Form。
+🟡 **现状：**018～025标准继承/父子树、句柄/显示、布局、资源、绘制与native双错范围保留；026继承Control-05c/08c的队列终止与原生销毁后有限托管收尾，真实Form独立测试及Demo AOT通过。已有Close/WM_CLOSE和FormClosing.Cancel；历史Created隐藏属性、FormClosing委托、FormClosed/ShowDialog、完整默认/缩放/各关闭原因、完整Dispose资源事务、多UI退出与Designer仍缺，不由继承子范围关闭整Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -18,7 +18,7 @@
 | 🟡 | P1 / Form-05 | 018已校准空Text、300×300默认Size、TabStop=true和初始Visible=false，并消费共享客户区。StartPosition、完整ClientSize/AutoScaleMode等默认与派生元数据仍待对照，父任务不关闭。 |
 | 🟡 | P1 / Form-06 | 019完成06a与Control标准句柄路径的必要衔接；BindingContextChanged/Activated、完整Visible/WindowState/Handle联动、所有显示入口及标准事件委托仍待对齐。历史Created事件隐藏Control.Created是已知表面差异，不计为标准属性兼容。 |
 | ✅ | P1 / Form-06a | 批次019：protected CreateHandle、延迟Handle、首次Show经OnCreateControl发Load并排队Shown，重复Show/隐藏/重建不重复Load/Shown；直接/外部销毁不触发Close语义，已显示窗体重建恢复真实原生可见性并保留Created/子控件状态，字体/菜单/GCHandle随真实窗口寿命清理。指定五个Form场景纳入019的204行参考/JIT/实际AOT对照，14项专项回归含创建参数失败重试后的真实GC回收；完整显示/关闭/模态及所有资源异常仍见父项。 |
-| ⬜ | P1 / Form-07 | 实现 Close/FormClosing.Cancel、CloseReason、FormClosed、Dispose；用户关闭、owner/MDI 关闭、Application.Exit、系统关机的事件原因与取消作用域不同，不能统一 UserClosing。 |
+| 🟡 | P1 / Form-07 | 已有Close/WM_CLOSE、FormClosing.Cancel及继承Dispose；026的Control-05c/08c补真实Form已接受Task终止与原生销毁后有限托管收尾。完整FormClosed、标准委托、各CloseReason和owner/MDI/Application.Exit/关机路径及资源异常事务仍缺；现有统一UserClosing不能代表全部关闭原因。 |
 | ⬜ | P1 / Form-08 | 补 Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm/Focused、BringToFront/Activate；关闭 owner 的从属窗口与焦点恢复对照。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
 | 🟡 | P1 / Form-10 | 020事务10a、021默认布局10b完成；真实父级Dock替代历史条带专用定位。完整Form AutoSize/AutoSizeMode、客户区/MinMax、AutoScroll、全部嵌套测量/DPI/RTL与Designer仍缺。 |
@@ -46,6 +46,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次026：继承05c/08c的真实Form队列关闭/重建、异步工作与托管子树/Site清理通过独立回归；未改Form.cs，不据基类完成关闭完整Form。按实际代码纠正Form-07仍全待办的历史状态：Close、WM_CLOSE、FormClosing.Cancel和Dispose已存在，父项改部分并保留所有剩余关闭原因/标准事件/资源事务。Demo AOT真实显示/复选框/正常退出/原始HWND失效通过，完整Designer/模态仍未验收，见[026](../batches/026.md)。
 
 - 2026-10-16 · 批次025：Form-16c补齐外部`WM_NCDESTROY` callback与清理同时失败时的异常边界和资源收尾；callback、清理与窗口过程错误按独立顺序报告。外部销毁的待执行 callback 在Lumina中随HWND销毁而得到`ObjectDisposedException`，该与固定WinForms参考的真实差异保留；完整Form/模态/Designer仍未关闭，见[025](../batches/025.md)。
 
