@@ -25,10 +25,10 @@
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；AutoScrollPosition/MinSize、横纵滚动、Dock协作、嵌套滚动坐标与平台滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；原全部未开始状态遗漏旧局部实现，现纠正。完整Font/Dpi/None/Inherit、AutoScaleFactor、DpiChanged父子通知与96/144/192往返仍缺 |
-| FND-018 | 🟡 | 018默认TabStop/TabIndex与活动链保留；028完成基础CanSelect/Select(bool,bool)/选择导航、标准焦点事件和必要ContainerControl/Form/TextBox协作。自动禁用/隐藏/移除转移、验证取消、真实Tab/助记键、默认/取消按钮及派生容器仍缺。纠正历史Focus(bool)误述：公开Focus只有无参，定向入口为Select(bool,bool) |
+| FND-018 | 🟡 | 018～028基础导航/焦点事件保留；029的Control-12c和ContainerControl-02b补禁用/隐藏、移除候选及程序验证协作。全部派生、真实Tab/助记键、默认/取消按钮与关闭焦点差异仍缺；公开Focus无参，定向入口为Select(bool,bool) |
 | FND-019 | ⬜ | KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey/PreProcessMessage、KeyPreview、抑制按键；中文 IME 组合态、焦点切换与候选窗位置 |
 | FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
-| FND-021 | ⬜ | CausesValidation、AutoValidate、Validating(Cancel)/Validated、Validate/ValidateChildren；取消验证后焦点与提交行为 |
+| FND-021 | 🟡 | 029完成Control-12d标准验证事件/属性、ContainerControl-03a的AutoValidate/Validate/ValidateChildren程序状态机及Form-07a关闭前置；取消恢复/Allow/Disable/重入/异常与批量后代顺序有证据。点击/提交抑制、全部派生默认/继承、真实输入及完整平台行为仍缺 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
 | FND-023 | 🟡 | 023消息/样式/基础Paint保留；024的14b补背景图像五布局、真实屏幕透明/alpha及父Graphics/DC状态、失效传播，21场景307行JIT/AOT全同（参考关闭差异16行另列）。RTL/mirror、滚动/主题透明、完整owner draw/反射/派生绘制、缓冲失败与资源压力仍缺，父项不关闭 |
 | FND-024 | ⬜ | AllowDrop/DragEnter/Over/Leave/Drop、DoDragDrop、GiveFeedback/QueryContinueDrag、Clipboard/DataObject；平台格式与内存所有权有测试 |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-17 · 批次029：验证正式归FND-021，纠正准备说明只沿FND-018/019而漏记验证任务；FND-019键盘/IME仍待办。有限程序验证/自动转移完成，关闭LostFocus/WM_QUIT及最终JIT-AOT差异保留，不关闭完整输入/验证，见[029](batches/029.md)。
 
 - 2026-10-16 · 批次028：FND-018补基础选择/事件/活动链范围，FND-019键盘与验证前置仍未完成；纠正非标准Focus(bool)旧表述及Form局部能力漏标。4,343测试/30场景JIT-AOT全同不等于98%；12个参考差异、物理设备/Designer/跨平台边界保留，见[028](batches/028.md)。
 

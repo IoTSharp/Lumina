@@ -16,6 +16,7 @@ public class Panel : ContainerControlBase
     /// </summary>
     public Panel()
     {
+        SetStyle(ControlStyles.ContainerControl, true);
         CachePreferredSize = true;
     }
 

@@ -23,7 +23,7 @@
 | API-AAA9A2E5D49F30F7 | Event | `public event System.Windows.Forms.LabelEditEventHandler BeforeLabelEdit` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-84935017D4114D9F | Event | `public event System.EventHandler BindingContextChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-FE7C29C1AC52877E | Event | `public event System.Windows.Forms.CacheVirtualItemsEventHandler CacheVirtualItems` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-B4A35BE8ADAB4491 | Event | `public event System.EventHandler CausesValidationChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-B4A35BE8ADAB4491 | Event | `public event System.EventHandler CausesValidationChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-8852A49AB3C540A7 | Event | `public event System.Windows.Forms.UICuesEventHandler ChangeUICues` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-EAB49B393F9F795B | Event | `public event System.EventHandler Click` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-C3C0009201800037 | Event | `public event System.EventHandler ClientSizeChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
@@ -104,10 +104,10 @@
 | API-855C9BB0402D52FD | Event | `public event System.EventHandler StyleChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-BE73050ABFC2477F | Event | `public event System.EventHandler SystemColorsChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-50C9A5A43F0A9B73 | Event | `public event System.EventHandler TabIndexChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-D9E4CE57B1590B61 | Event | `public event System.EventHandler TabStopChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-D9E4CE57B1590B61 | Event | `public event System.EventHandler TabStopChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-E4370F8459FA5E55 | Event | `public event System.EventHandler TextChanged` | `System.Windows.Forms.ListView` BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-7482A2CB20700FFA | Event | `public event System.EventHandler Validated` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-B465C320BADA6901 | Event | `public event System.ComponentModel.CancelEventHandler Validating` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-7482A2CB20700FFA | Event | `public event System.EventHandler Validated` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-B465C320BADA6901 | Event | `public event System.ComponentModel.CancelEventHandler Validating` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-64F4BAAC2E1353B3 | Event | `public event System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler VirtualItemsSelectionRangeChanged` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-17652AE19A0726CE | Event | `public event System.EventHandler VisibleChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-A9F689621B0965E2 | Method | `public System.Void ArrangeIcons()` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -228,7 +228,7 @@
 | API-73857BAEA856C1CF | Property | `System.Boolean CanFocus { public get; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-8336126EEDCA6051 | Property | `System.Boolean CanSelect { public get; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-903F92474CA46F09 | Property | `System.Boolean Capture { public get; public set; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-30EEED3B57224B1B | Property | `System.Boolean CausesValidation { public get; public set; }` | `System.Windows.Forms.Control` DefaultValueAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-30EEED3B57224B1B | Property | `System.Boolean CausesValidation { public get; public set; }` | `System.Windows.Forms.Control` DefaultValueAttribute(true) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-76DBD04B5EE40F89 | Property | `System.Boolean CheckBoxes { public get; public set; }` | `System.Windows.Forms.ListView` DefaultValueAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-58AD7F04B947AF69 | Property | `System.Windows.Forms.ListView+CheckedIndexCollection CheckedIndices { public get; }` | `System.Windows.Forms.ListView` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-4A6CC8C4EE805076 | Property | `System.Windows.Forms.ListView+CheckedListViewItemCollection CheckedItems { public get; }` | `System.Windows.Forms.ListView` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -367,7 +367,7 @@
 | API-0C9F0DE6CC076557 | Method | `protected virtual System.Void OnBeforeLabelEdit(System.Windows.Forms.LabelEditEventArgs e)` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-008D646AE8BE0AA6 | Method | `protected virtual System.Void OnBindingContextChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-E7268C41B9C05B2C | Method | `protected virtual System.Void OnCacheVirtualItems(System.Windows.Forms.CacheVirtualItemsEventArgs e)` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-FA7C38D8876ADD90 | Method | `protected virtual System.Void OnCausesValidationChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-FA7C38D8876ADD90 | Method | `protected virtual System.Void OnCausesValidationChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-E82676C00BB5B0D9 | Method | `protected virtual System.Void OnChangeUICues(System.Windows.Forms.UICuesEventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-33139A80E1A41CE1 | Method | `protected virtual System.Void OnClick(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-B175333B63FA56C5 | Method | `protected virtual System.Void OnClientSizeChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
@@ -460,10 +460,10 @@
 | API-A94C0524C1ACE2B4 | Method | `protected virtual System.Void OnStyleChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-B935BC3462754532 | Method | `protected virtual System.Void OnSystemColorsChanged(System.EventArgs e)` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-D715B3EF751814B3 | Method | `protected virtual System.Void OnTabIndexChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-80A7BDD47F09699C | Method | `protected virtual System.Void OnTabStopChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-80A7BDD47F09699C | Method | `protected virtual System.Void OnTabStopChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-230B1BF528456565 | Method | `protected virtual System.Void OnTextChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-7602134A26990187 | Method | `protected virtual System.Void OnValidated(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-4F272FDADEF1BFFF | Method | `protected virtual System.Void OnValidating(System.ComponentModel.CancelEventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-7602134A26990187 | Method | `protected virtual System.Void OnValidated(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-4F272FDADEF1BFFF | Method | `protected virtual System.Void OnValidating(System.ComponentModel.CancelEventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-E0EA6FE612887558 | Method | `protected virtual System.Void OnVirtualItemsSelectionRangeChanged(System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventArgs e)` | `System.Windows.Forms.ListView`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-8783511C62D7DF09 | Method | `protected virtual System.Void OnVisibleChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-2BD77E20B7233B2D | Method | `protected virtual System.Boolean ProcessCmdKey(ref System.Windows.Forms.Message msg, System.Windows.Forms.Keys keyData)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

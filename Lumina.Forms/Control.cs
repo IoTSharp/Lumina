@@ -32,6 +32,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly object s_leaveEvent = new();
     private static readonly object s_gotFocusEvent = new();
     private static readonly object s_lostFocusEvent = new();
+    private static readonly object s_validatingEvent = new();
+    private static readonly object s_validatedEvent = new();
+    private static readonly object s_causesValidationChangedEvent = new();
+    private static readonly object s_tabStopChangedEvent = new();
     private static readonly object s_mouseCaptureChangedEvent = new();
     private static readonly object s_mouseClickEvent = new();
     private static readonly object s_mouseDoubleClickEvent = new();
@@ -94,6 +98,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _applyingBounds;
     private nint _handle;
     private bool _created;
+    private bool _tabStop = true;
+    private bool _causesValidation = true;
     private bool _creatingHandle;
     private bool _recreatingHandle;
     private bool _destroyingHandle;
@@ -501,7 +507,38 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets a value indicating whether the user can move the focus to this control with the Tab key.
     /// </summary>
-    public bool TabStop { get; set; } = true;
+    [DefaultValue(true)]
+    public bool TabStop
+    {
+        get => _tabStop;
+        set
+        {
+            if (_tabStop == value) { return; }
+            _tabStop = value;
+            if (NativeHandle != 0)
+            {
+                uint style = unchecked((uint)(nuint)Win32.GetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE));
+                style = value ? style | Win32.WS_TABSTOP : style & ~Win32.WS_TABSTOP;
+                _ = Win32.SetWindowLongPtrW(NativeHandle, Win32.GWL_STYLE, unchecked((nint)style));
+            }
+            OnTabStopChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Gets or sets a value indicating whether validation is requested when this control causes focus to change.</summary>
+    [DefaultValue(true)]
+    public bool CausesValidation
+    {
+        get => _causesValidation;
+        set
+        {
+            if (_causesValidation == value) { return; }
+            _causesValidation = value;
+            OnCausesValidationChanged(EventArgs.Empty);
+        }
+    }
+
+    internal bool ValidationCancelled { get; set; }
 
     /// <summary>
     /// Gets the default background color of a top-level control.
@@ -797,6 +834,19 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? ParentChanged;
     public event EventHandler? EnabledChanged;
     public event EventHandler? VisibleChanged;
+    /// <summary>Raised when the TabStop property changes.</summary>
+    public event EventHandler? TabStopChanged
+    {
+        add => Events.AddHandler(s_tabStopChangedEvent, value);
+        remove => Events.RemoveHandler(s_tabStopChangedEvent, value);
+    }
+
+    /// <summary>Raised when the CausesValidation property changes.</summary>
+    public event EventHandler? CausesValidationChanged
+    {
+        add => Events.AddHandler(s_causesValidationChangedEvent, value);
+        remove => Events.RemoveHandler(s_causesValidationChangedEvent, value);
+    }
     public event ControlEventHandler? ControlAdded;
     public event ControlEventHandler? ControlRemoved;
     public event LayoutEventHandler? Layout;
@@ -903,6 +953,23 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         add => Events.AddHandler(s_lostFocusEvent, value);
         remove => Events.RemoveHandler(s_lostFocusEvent, value);
     }
+
+    /// <summary>Occurs when the control is validating.</summary>
+    [Category("Focus")]
+    public event CancelEventHandler? Validating
+    {
+        add => Events.AddHandler(s_validatingEvent, value);
+        remove => Events.RemoveHandler(s_validatingEvent, value);
+    }
+
+    /// <summary>Occurs when the control has finished validating.</summary>
+    [Category("Focus")]
+    public event EventHandler? Validated
+    {
+        add => Events.AddHandler(s_validatedEvent, value);
+        remove => Events.RemoveHandler(s_validatedEvent, value);
+    }
+
     public event EventHandler? HandleCreated;
     public event EventHandler? HandleDestroyed;
 
@@ -1374,6 +1441,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             bool previous = Enabled;
             _enabled = value;
+            if (previous != value && !value)
+            {
+                SelectNextIfFocused();
+            }
             if (previous != Enabled) { OnEnabledChanged(EventArgs.Empty); }
         }
     }
@@ -1390,6 +1461,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void SetVisibleCore(bool value)
     {
         bool previous = Visible;
+        if (previous && !value && ContainsFocus)
+        {
+            SelectNextIfFocused();
+        }
         if (value != previous && _topLevel)
         {
             if (_handle != 0 || value)
@@ -1937,6 +2012,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     /// <summary>Creates a drawing surface for the control. The caller owns the returned graphics.</summary>
     public Graphics CreateGraphics() => Graphics.FromHwnd(Handle);
+
+    private void SelectNextIfFocused()
+    {
+        if (ContainsFocus && _parent?.GetContainerControl() is Control container)
+        {
+            container.SelectNextControl(this, true, true, true, true);
+        }
+    }
 
     /// <summary>
     /// Sets input focus to the control.
@@ -3017,6 +3100,73 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected internal virtual void OnLeave(EventArgs e) => ((EventHandler?)Events[s_leaveEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the TabStopChanged event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnTabStopChanged(EventArgs e) => ((EventHandler?)Events[s_tabStopChangedEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the CausesValidationChanged event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnCausesValidationChanged(EventArgs e) => ((EventHandler?)Events[s_causesValidationChangedEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the cancellable Validating event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnValidating(CancelEventArgs e) => ((CancelEventHandler?)Events[s_validatingEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the Validated event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnValidated(EventArgs e) => ((EventHandler?)Events[s_validatedEvent])?.Invoke(this, e);
+
+    internal bool PerformControlValidation(bool bulkValidation)
+    {
+        if (!CausesValidation) { return false; }
+        CancelEventArgs e = new();
+        OnValidating(e);
+        if (e.Cancel) { return true; }
+        if (bulkValidation) { OnValidated(EventArgs.Empty); }
+        else
+        {
+            try { OnValidated(EventArgs.Empty); }
+            catch (Exception exception) { Application.OnThreadException(exception); }
+        }
+        return false;
+    }
+
+    internal bool PerformContainerValidation(ValidationConstraints constraints)
+    {
+        bool failed = false;
+        foreach (Control child in Controls)
+        {
+            if ((constraints & ValidationConstraints.ImmediateChildren) == 0
+                && child.ShouldPerformContainerValidation()
+                && child.PerformContainerValidation(constraints))
+            {
+                failed = true;
+            }
+
+            if (((constraints & ValidationConstraints.Selectable) != 0 && !child.GetStyle(ControlStyles.Selectable))
+                || ((constraints & ValidationConstraints.Enabled) != 0 && !child.Enabled)
+                || ((constraints & ValidationConstraints.Visible) != 0 && !child.Visible)
+                || ((constraints & ValidationConstraints.TabStop) != 0 && !child.TabStop))
+            {
+                continue;
+            }
+
+            if (child.PerformControlValidation(bulkValidation: true)) { failed = true; }
+        }
+        return failed;
+    }
+
+    internal virtual bool ShouldPerformContainerValidation() => GetStyle(ControlStyles.ContainerControl);
+
+    internal static AutoValidate GetAutoValidateForControl(Control control)
+    {
+        for (Control? parent = control.Parent; parent is not null; parent = parent.Parent)
+        {
+            if (parent is ContainerControl container) { return container.AutoValidate; }
+        }
+        return AutoValidate.EnablePreventFocusChange;
+    }
 
     /// <summary>Raises the target control's GotFocus event through its virtual method.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]

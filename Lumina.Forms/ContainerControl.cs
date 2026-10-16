@@ -14,8 +14,11 @@ public class ContainerControl : ScrollableControl, IContainerControl
 {
     private Control? _activeControl;
     private Control? _focusedControl;
+    private Control? _unvalidatedControl;
+    private bool _validating;
     private AutoScaleMode _autoScaleMode = AutoScaleMode.Inherit;
     private SizeF _autoScaleDimensions;
+    private AutoValidate _autoValidate = AutoValidate.Inherit;
 
     /// <summary>
     /// Initializes a container that measures its preferred size from its layout.
@@ -43,6 +46,37 @@ public class ContainerControl : ScrollableControl, IContainerControl
         get => _activeControl;
         set => SetActiveControl(value);
     }
+
+    /// <summary>
+    /// Gets or sets the automatic validation policy used before focus leaves this container.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [AmbientValue(AutoValidate.Inherit)]
+    public virtual AutoValidate AutoValidate
+    {
+        get => _autoValidate == AutoValidate.Inherit ? GetAutoValidateForControl(this) : _autoValidate;
+        set
+        {
+            if (!Enum.IsDefined(value))
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(AutoValidate));
+            }
+
+            if (_autoValidate == value) { return; }
+            _autoValidate = value;
+            OnAutoValidateChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Raised when <see cref="AutoValidate"/> changes.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public event EventHandler? AutoValidateChanged;
+
+    /// <summary>Raises <see cref="AutoValidateChanged"/>.</summary>
+    protected virtual void OnAutoValidateChanged(EventArgs e)
+        => AutoValidateChanged?.Invoke(this, e);
 
     /// <summary>
     /// Gets or sets the scale mode applied to the container and its descendants.
@@ -165,6 +199,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
         // This tracks the logical Enter/Leave path independently of native focus.
         // Selection can change before any HWND exists, and event handlers can
         // replace the active control while this walk is in progress.
+        EnsureUnvalidatedControl(_focusedControl);
         Control? pathControl = _focusedControl;
         while (!ReferenceEquals(_activeControl, pathControl))
         {
@@ -178,7 +213,14 @@ public class ContainerControl : ScrollableControl, IContainerControl
                     nextControl = parent;
                 }
 
-                _focusedControl = pathControl;
+                Control? priorFocusedControl = _focusedControl = pathControl;
+                EnterValidation(nextControl!);
+                if (!ReferenceEquals(_focusedControl, priorFocusedControl))
+                {
+                    pathControl = _focusedControl;
+                    continue;
+                }
+
                 pathControl = nextControl;
                 RaiseEnterOrLeave(pathControl!, enter: true);
             }
@@ -226,6 +268,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
         }
 
         _focusedControl = _activeControl;
+        if (_activeControl is not null) { EnterValidation(_activeControl); }
     }
 
     private static bool ContainsOrEquals(Control parent, Control? child)
@@ -309,51 +352,210 @@ public class ContainerControl : ScrollableControl, IContainerControl
 
     internal static void NotifyControlRemoved(Control oldParent, Control removed)
     {
-        for (Control? parent = oldParent; parent is not null; parent = parent.Parent)
+        if (oldParent.GetContainerControl() is ContainerControl container)
         {
-            if (parent is ContainerControl container
-                && container._activeControl is { } active
-                && (ReferenceEquals(active, removed) || IsDescendant(removed, active)))
-            {
-                Control? next = FindNextSelectableControl(container);
-                container.SetActiveControl(next, focus: false);
-                if (next is not null)
-                {
-                    // Restoring an active child also restores its native focus
-                    // path. Reuse shared creation so visible siblings receive
-                    // handles and hidden subtrees remain deferred.
-                    container.CreateHandleRecursive();
-                    _ = next.Focus();
-                }
-            }
+            container.AfterControlRemoved(removed, oldParent);
         }
     }
 
-    private static Control? FindNextSelectableControl(Control parent)
+    private void AfterControlRemoved(Control removed, Control oldParent)
     {
-        // Once a control has been removed, traversal starts at the first
-        // remaining control in tab order. A nested container manages its own
-        // tab sequence and is not traversed while looking for its sibling.
-        foreach (Control child in parent.Controls.Cast<Control>().OrderBy(control => control.TabIndex))
+        if (ContainsOrEquals(removed, _activeControl))
         {
-            if (child.IsDisposed || child.Disposing || !child.Visible || !child.Enabled)
+            bool selected = SelectNextControl(removed, true, true, true, true);
+            if (selected && !ReferenceEquals(_activeControl, removed))
             {
-                continue;
+                if (_activeControl?.Parent is not null)
+                {
+                    // The focus request also creates the visible container tree,
+                    // including siblings, while hidden descendants stay deferred.
+                    CreateHandleRecursive();
+                    FocusActiveControlInternal();
+                }
             }
-
-            if (child.TabStop)
+            else
             {
-                return child;
+                SetActiveControl(null);
             }
+        }
+        else if (_activeControl is null && Parent?.GetContainerControl() is ContainerControl parent
+            && ReferenceEquals(parent.ActiveControl, this))
+        {
+            FindForm()?.SelectNextControl(this, true, true, true, true);
+        }
 
-            Control? descendant = child is ContainerControl ? null : FindNextSelectableControl(child);
-            if (descendant is not null)
+        for (ContainerControl? container = Parent?.GetContainerControl() as ContainerControl;
+            container is not null; container = container.Parent?.GetContainerControl() as ContainerControl)
+        {
+            if (ContainsOrEquals(removed, container._unvalidatedControl))
             {
-                return descendant;
+                container._unvalidatedControl = oldParent;
             }
         }
 
-        return null;
+        if (ContainsOrEquals(removed, _unvalidatedControl)) { _unvalidatedControl = null; }
+    }
+
+    private void EnsureUnvalidatedControl(Control? candidate)
+    {
+        if (_validating || _unvalidatedControl is not null || candidate is null
+            || GetAutoValidateForControl(candidate) == AutoValidate.Disable)
+        {
+            return;
+        }
+
+        _unvalidatedControl = candidate;
+        while (_unvalidatedControl is ContainerControl container)
+        {
+            if (container._unvalidatedControl is { } pending
+                && GetAutoValidateForControl(pending) != AutoValidate.Disable)
+            {
+                _unvalidatedControl = pending;
+            }
+            else if (container._activeControl is { } active
+                && GetAutoValidateForControl(active) != AutoValidate.Disable)
+            {
+                _unvalidatedControl = active;
+            }
+            else { break; }
+        }
+    }
+
+    private void EnterValidation(Control enterControl)
+    {
+        if (_unvalidatedControl is null || !enterControl.CausesValidation) { return; }
+        AutoValidate mode = GetAutoValidateForControl(_unvalidatedControl);
+        if (mode == AutoValidate.Disable) { return; }
+
+        Control? ancestor = enterControl;
+        while (ancestor is not null && !ContainsOrEquals(ancestor, _unvalidatedControl))
+        {
+            ancestor = ancestor.Parent;
+        }
+
+        ValidateThroughAncestor(ancestor, mode == AutoValidate.EnablePreventFocusChange);
+    }
+
+    /// <summary>Validates the last unvalidated control and its ancestors in this container.</summary>
+    public bool Validate() => Validate(checkAutoValidate: false);
+
+    /// <summary>Validates the current control, optionally honoring disabled automatic validation.</summary>
+    public bool Validate(bool checkAutoValidate) => ValidateInternal(checkAutoValidate, out _);
+
+    private bool ValidateInternal(bool checkAutoValidate, out bool allowsFocusChange)
+    {
+        allowsFocusChange = false;
+        if (AutoValidate != AutoValidate.EnablePreventFocusChange
+            && !(_activeControl?.CausesValidation ?? false))
+        {
+            return true;
+        }
+
+        if (_unvalidatedControl is null)
+        {
+            if (_focusedControl is ContainerControl nested && nested.CausesValidation)
+            {
+                if (!nested.ValidateInternal(checkAutoValidate, out allowsFocusChange)) { return false; }
+            }
+            else { _unvalidatedControl = _focusedControl; }
+        }
+
+        bool preventFocusChange = true;
+        Control? control = _unvalidatedControl ?? _focusedControl;
+        if (control is not null)
+        {
+            AutoValidate mode = GetAutoValidateForControl(control);
+            if (checkAutoValidate && mode == AutoValidate.Disable) { return true; }
+            preventFocusChange = mode == AutoValidate.EnablePreventFocusChange;
+            allowsFocusChange = mode == AutoValidate.EnableAllowFocusChange;
+        }
+
+        return ValidateThroughAncestor(null, preventFocusChange);
+    }
+
+    /// <summary>Validates selectable child controls, including descendants.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual bool ValidateChildren() => ValidateChildren(ValidationConstraints.Selectable);
+
+    /// <summary>Validates descendants that satisfy the specified constraints.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual bool ValidateChildren(ValidationConstraints validationConstraints)
+    {
+        if ((int)validationConstraints is < 0 or > 31)
+        {
+            throw new InvalidEnumArgumentException(nameof(validationConstraints),
+                (int)validationConstraints, typeof(ValidationConstraints));
+        }
+
+        return !PerformContainerValidation(validationConstraints);
+    }
+
+    private bool ValidateThroughAncestor(Control? ancestor, bool preventFocusChange)
+    {
+        ancestor ??= this;
+        if (_validating) { return false; }
+        _unvalidatedControl ??= _focusedControl;
+        if (_unvalidatedControl is null) { return true; }
+        if (!ContainsOrEquals(ancestor, _unvalidatedControl)) { return false; }
+
+        _validating = true;
+        bool cancelled = false;
+        Control? active = _activeControl;
+        Control? validating = _unvalidatedControl;
+        if (active is not null)
+        {
+            active.ValidationCancelled = false;
+            if (active is ContainerControl activeContainer)
+            {
+                foreach (Control child in activeContainer.ChildControls) { child.ValidationCancelled = false; }
+            }
+        }
+
+        try
+        {
+            while (validating is not null && !ReferenceEquals(validating, ancestor))
+            {
+                cancelled = validating.PerformControlValidation(bulkValidation: false);
+                if (cancelled) { break; }
+                validating = validating.Parent;
+            }
+
+            if (cancelled && preventFocusChange)
+            {
+                if (_unvalidatedControl is null && ContainsOrEquals(ancestor, validating))
+                {
+                    _unvalidatedControl = validating;
+                }
+
+                if (ReferenceEquals(active, _activeControl) && active is not null)
+                {
+                    active.ValidationCancelled = true;
+                    if (active is ContainerControl activeContainer)
+                    {
+                        if (activeContainer._focusedControl is { } focused) { focused.ValidationCancelled = true; }
+                        activeContainer.ResetActiveAndFocusedControlsRecursive();
+                    }
+                }
+
+                SetActiveControl(_unvalidatedControl);
+            }
+        }
+        finally
+        {
+            _unvalidatedControl = null;
+            _validating = false;
+        }
+
+        return !cancelled;
+    }
+
+    private void ResetActiveAndFocusedControlsRecursive()
+    {
+        if (_activeControl is ContainerControl nested) { nested.ResetActiveAndFocusedControlsRecursive(); }
+        _activeControl = null;
+        _focusedControl = null;
     }
 
     /// <summary>
@@ -364,6 +566,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
         if (disposing)
         {
             _activeControl = null;
+            _unvalidatedControl = null;
         }
 
         base.Dispose(disposing);

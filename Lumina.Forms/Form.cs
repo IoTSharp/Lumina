@@ -1240,7 +1240,7 @@ public class Form : ContainerControl
 
             case Win32.WM_CLOSE:
             {
-                FormClosingEventArgs closingArgs = new(CloseReason.UserClosing);
+                FormClosingEventArgs closingArgs = new(CloseReason.UserClosing) { Cancel = !Validate(true) };
                 OnFormClosing(closingArgs);
                 if (closingArgs.Cancel)
                 {

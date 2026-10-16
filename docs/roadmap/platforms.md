@@ -42,6 +42,8 @@ XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：�
 
 2026-10-16 · 批次027：Windows坐标/捕获与基础鼠标消息/参数已实现明确范围，25共同场景有5项参考差异、1项JIT/AOT异常文本差异。LockScreenBackstopFrame使真实WindowFromPoint命中失败；程序SendMessage/BM_CLICK/Capture与Demo正常关闭可复现，不能替代物理点击验收。Windows两目标继续官方Drawing10.0.0；本批未实现GTK4/AppKit或Wayland全局坐标等平台适配，跨平台运行仍待办，见[027](batches/027.md)。
 
+2026-10-17 · 批次029：Windows自动转移/程序验证有实际JIT与Native AOT运行；最终关闭LostFocus的33行JIT-AOT差异及额外WM_QUIT保留，不能称严格全同。Windows官方Drawing10.0.0、固定双目标和原始Designer/resx保持，GTK4/AppKit/Unix资源及本机AOT仍待实现/验收。用户要求本批后停止，不启动平台后续任务，见[029](batches/029.md)。
+
 2026-10-16 · 批次028：Windows程序Focus/Select/原生焦点与嵌套活动链有30场景JIT/实际AOT对照，全部同JIT、18场景严格同参考；额外WM_QUIT与SplitContainer继承差异保留。原Demo AOT显示/复选框/正常关闭通过，Windows两目标官方Drawing10.0.0保持。程序焦点不能替代物理Tab/鼠标验收；GTK4/AppKit原生焦点、资源及本机AOT均仍待实现/验证，XPL父项不关闭，见[028](batches/028.md)。
 
 ## 必须先解决的资源契约

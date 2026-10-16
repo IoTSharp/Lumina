@@ -11,7 +11,7 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| 🟡 | P0 / Application-01 | Run(Form mainForm) 的 void/命名参数/null 主窗路径已修正；Run()/Run(ApplicationContext)、拒绝非法嵌套 Run、模态与主循环分别管理、主窗与最后窗口退出区分仍待实现。028同源探针发现Run外最后窗体Close也触发PostQuitMessage，11个场景多出WM_QUIT；必须按循环/线程/主窗所有权修正，不能过滤输出或视为无害噪声。 |
+| 🟡 | P0 / Application-01 | Run(Form mainForm) 的 void/命名参数/null 主窗路径已修正；Run()/Run(ApplicationContext)、拒绝非法嵌套 Run、模态与主循环分别管理、主窗与最后窗口退出区分仍待实现。028同源探针发现Run外最后窗体Close也触发PostQuitMessage，11个场景多出WM_QUIT；029又有15场景记录该差异；必须按循环/线程/主窗所有权修正，不能过滤输出或视为无害噪声。 |
 | ✅ | P0 / Application-01a | 批次 001：Run(Form mainForm) 返回 void，支持相同命名参数调用；null 主窗沿消息循环执行，移除不符基线的空值异常。无界面签名检查和双目标编译通过，消息循环生命周期属于父任务待办。 |
 | ✅ | P0 / Application-02 | SetHighDpiMode 返回真实系统 BOOL/HRESULT 的成功结果，校验枚举，按 OS 能力回退；HighDpiMode 读取当前线程实际 awareness。首次窗口/托盘窗口创建前永久关闭设置入口，manifest/宿主/重复调用失败不假报成功。14 组隔离进程对照通过；旧系统回退、建窗回调、跨屏及真实缩放验收后置。 |
 | 🟡 | P0 / Application-03 | 批次 007 完成现有 Run/RunMessageLoop 与控件/窗体构造的默认 context 安装/还原、默认 callback await UI 恢复；完整 ApplicationContext/模态、多 UI 线程与退出取消/竞态仍缺。 |
@@ -40,6 +40,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-17 · 批次029：程序验证接入未修改Application退出实现；15个场景仍多出WM_QUIT，继续归01/04与Form-07。另有关闭LostFocus差异，不混为同一根因；用户要求本批后停止，见[029](../batches/029.md)。
 
 - 2026-10-16 · 批次028：未改Application代码；焦点探针的11个原生窗体场景关闭后出现参考没有的WM_QUIT，定位既有Form按全局OpenForms退出行为，归01/04保留待修。所有进程exit0不等于循环语义兼容；后续需覆盖Run外关闭、主窗与最后窗口、多UI线程及取消，见[028](../batches/028.md)。
 

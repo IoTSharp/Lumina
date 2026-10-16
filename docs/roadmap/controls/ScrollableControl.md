@@ -1,6 +1,6 @@
 # ScrollableControl
 
-🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；实现客户区DisplayRectangle；020移除独立暂停计数，布局由Control同一事务处理。Panel仍未迁入，AutoScroll状态/滚动条/坐标与平台滚动均未实现，不能把基类存在计为可滚动。
+🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；实现客户区DisplayRectangle；020移除独立暂停计数，布局由Control同一事务处理。Panel仍未迁入，AutoScroll状态/滚动条/坐标与平台滚动均未实现，不能把基类存在计为可滚动。 029补01b验证递归所需的标准容器style；完整滚动仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -15,6 +15,7 @@
 | --- | --- | --- |
 | 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入；Panel仍用历史基类，完整Control受保护契约也仍待后续，不关闭父项。 |
 | ✅ | P0 / ScrollableControl-01a | 018建立标准ScrollableControl : Control，共享父子集合/客户区/释放，ContainerControl/Form复用；020统一事务，021补Visible时请求自身布局并清首选缓存，再调用base通知。仅继承/事务衔接完成，Panel迁移与任何完整滚动行为不在此范围。 |
+| ✅ | P0 / ScrollableControl-01b | 批次029：按固定ScrollableControl源码在构造设置ContainerControl style，使批量验证遍历其子孙；无HWND后代先行回归通过。仅该必要style及消费，其他默认style、滚动/全部派生仍归父项。 |
 | 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle。AutoScroll、AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties完整状态模型仍待实现。 |
 | ⬜ | P0 / ScrollableControl-03 | 明确 AutoScrollPosition 赋正值、读负偏移的 WinForms 约定；布局、滚动和子控件 Bounds 的逻辑/显示坐标分离，并验证重复滚动不累积误差。 |
 | ⬜ | P1 / ScrollableControl-04 | 实现 ScrollControlIntoView、ScrollToControl、SetAutoScrollMargin；隐藏、负坐标、Dock、Anchor、嵌套控件和超大内容的可滚动区域按基线计算。 |
@@ -39,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-17 · 批次029：完成01b必要验证容器style；标准构造位有固定源码依据，未扩大为完整滚动或默认样式验收，见[029](../batches/029.md)。
 
 - 2026-10-16 · 批次021：按官方OnVisibleChanged补Visible时真正请求本体布局/缓存失效，ContainerControl/Form继承消费。原无滚动DisplayRectangle保留，未实现AutoScroll/ScrollProperties，也未迁移Panel；父项继续部分。
 

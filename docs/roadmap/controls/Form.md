@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～027明确范围保留；028完成08a必要定向选择/原生激活与活动子链恢复，句柄可见性恢复使用SW_SHOWNOACTIVATE以保留延迟子句柄顺序。完整Activated/Deactivate、owner/MDI、关闭事件/模态、资源事务/多UI退出及Designer仍缺；关闭最后窗体在Run外额外PostQuitMessage是已知真实差异。
+🟡 **现状：**018～028范围保留；029补WM_CLOSE默认验证取消与继承的AutoValidate/Validate。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、Activated/Deactivate、owner/MDI/模态、资源事务/多UI退出及Designer仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -18,7 +18,8 @@
 | 🟡 | P1 / Form-05 | 018已校准空Text、300×300默认Size、TabStop=true和初始Visible=false，并消费共享客户区。StartPosition、完整ClientSize/AutoScaleMode等默认与派生元数据仍待对照，父任务不关闭。 |
 | 🟡 | P1 / Form-06 | 019完成06a与Control标准句柄路径的必要衔接；BindingContextChanged/Activated、完整Visible/WindowState/Handle联动、所有显示入口及标准事件委托仍待对齐。历史Created事件隐藏Control.Created是已知表面差异，不计为标准属性兼容。 |
 | ✅ | P1 / Form-06a | 批次019：protected CreateHandle、延迟Handle、首次Show经OnCreateControl发Load并排队Shown，重复Show/隐藏/重建不重复Load/Shown；直接/外部销毁不触发Close语义，已显示窗体重建恢复真实原生可见性并保留Created/子控件状态，字体/菜单/GCHandle随真实窗口寿命清理。指定五个Form场景纳入019的204行参考/JIT/实际AOT对照，14项专项回归含创建参数失败重试后的真实GC回收；完整显示/关闭/模态及所有资源异常仍见父项。 |
-| 🟡 | P1 / Form-07 | 已有Close/WM_CLOSE、FormClosing.Cancel及继承Dispose；026完成有限Control-05c/08c收尾。028发现Run外最后窗体关闭也按全局OpenForms发PostQuitMessage，11个场景多出WM_QUIT；归Application-01/04修复。完整FormClosed/标准委托、CloseReason、owner/MDI/Application.Exit/关机及资源异常事务仍缺，统一UserClosing不等于完整关闭原因。 |
+| 🟡 | P1 / Form-07 | 已有Close/WM_CLOSE、FormClosing.Cancel及继承Dispose；029完成07a关闭验证前置。正常关闭多余LostFocus根因未定位，Run外最后窗体额外WM_QUIT继续归Application-01/04。完整FormClosed/标准委托、CloseReason、owner/MDI/Application.Exit/关机及异常事务仍缺。 |
+| ✅ | P1 / Form-07a | 批次029：WM_CLOSE以Validate(true)结果设置FormClosingEventArgs.Cancel，再调用FormClosing允许处理器更改；无句柄Close直接Dispose，不触发验证。继承ContainerControl-03a基础验证策略；模态/完整CloseReason和关闭焦点事件差异不在此完成范围。 |
 | 🟡 | P1 / Form-08 | 已继承Focused，原Activate/BringToFront调用SetForegroundWindow；原全待办遗漏这些局部实现，028按实际代码纠正并完成08a。Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm、Activated/Deactivate、完整激活/Z序/MDI及关闭owner焦点恢复仍缺。 |
 | ✅ | P1 / Form-08a | 批次028：Form.CanSelectCore、protected Select(bool,bool)、SetActiveWindow及WM_ACTIVATE必要衔接；激活时选择首可用控件并恢复最深ContainerControl活动项，销毁后清激活状态。外部销毁后读取Handle以SW_SHOWNOACTIVATE恢复可见性，不提前创建子HWND；后续CreateControl/真实激活顺序有固定参考及旧204行回归。完整激活事件/owner/MDI不在此范围。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
@@ -26,7 +27,7 @@
 | ✅ | P1 / Form-10a | 批次020完成共享暂停/恢复/OnLayout入口，移除重复WM_SIZE布局和无条件子树遍历；当时的直属条带专用定位于021被父级DefaultLayout替代。历史事务范围完成保留，几何见10b。 |
 | ✅ | P1 / Form-10b | 批次021：Form继承默认布局/ContainerControl测量，菜单/工具/状态条按实际Controls反序Dock；移除旧专用定位和Control原生Y坐标额外菜单偏移。隐藏/显示、嵌套/取消Dock及实际HWND矩形有固定参考，原Demo源码不改；完整Form布局和Designer仍归父项。 |
 | 🟡 | P1 / Form-11 | 历史AutoScaleDimensions/PerformAutoScale局部算法已于018迁入ContainerControl，原全待办遗漏继承实现，现更正；022继承基础Font链但未完成字体自动缩放。完整CurrentAutoScaleDimensions、Font/Dpi/Inherit/None、DpiChanged父子通知与96/144/192往返和.resx基准仍待对照。 |
-| 🟡 | P1 / Form-12 | 018继承ActiveControl与局部活动链，028补定向选择、Enter/Leave和真实焦点恢复；原全待办遗漏继承实现已纠正。AcceptButton/CancelButton/IButtonControl、KeyPreview、ProcessDialogKey/ProcessCmdKey、输入语言/IME、AutoValidate/验证取消和全部导航仍缺。 |
+| 🟡 | P1 / Form-12 | 018/028基础活动链与真实焦点恢复保留；029继承ContainerControl的AutoValidate/Validate/ValidateChildren与程序取消。Form自身override及Browsable元数据、AcceptButton/CancelButton/IButtonControl、KeyPreview、ProcessDialogKey/ProcessCmdKey、IME/全部原生输入与验证提交仍缺。 |
 | ⬜ | P1 / Form-13 | 补 MainMenuStrip、IsMdiContainer/MdiParent/MdiChildren/ActiveMdiChild/LayoutMdi/MdiChildActivate；与 MdiClient 一起验收，不能以普通 owned windows 冒充 MDI。 |
 | ⬜ | P2 / Form-14 | 实现 Opacity/TransparencyKey/Region/RightToLeftLayout/AllowTransparency 与 .NET10 标题/边框颜色相关 API；平台差异逐条披露，不能删除普通颜色/图像契约。 |
 | ⬜ | P1 / Form-15 | NativeFormsDemo .Designer.cs/.resx 静态布局、资源、本地化与继承 Form，可在 VS 双向保存；AOT 主窗可见、业务操作、模态、正常退出为发布验收。 |
@@ -47,6 +48,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-17 · 批次029：完成07a有限WM_CLOSE验证前置；验证取消不会跳过FormClosing处理器，无句柄关闭不验证。关闭LostFocus是本批记录的未定位差异，与既有WM_QUIT分别留待办，完整Form不关闭，见[029](../batches/029.md)。
 
 - 2026-10-16 · 批次028：完成08a限定激活/选择链；初次接入WM_ACTIVATE暴露外部销毁后Handle读取提前创建子项的回归，依据固定参考改SW_SHOWNOACTIVATE，保留原测试期望并恢复旧204行全同。补两项延迟恢复测试；原Form-08/12全待办遗漏既有Activate/Focused/ActiveControl已纠正为部分。额外WM_QUIT记录为未完成，完整Form/模态/Designer不关闭，见[028](../batches/028.md)。
 

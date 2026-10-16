@@ -11,6 +11,12 @@ namespace Lumina.Forms;
 /// </summary>
 public class ScrollableControl : Control
 {
+    /// <summary>Initializes a scrollable container whose descendants participate in validation.</summary>
+    public ScrollableControl()
+    {
+        SetStyle(ControlStyles.ContainerControl, true);
+    }
+
     /// <inheritdoc />
     public override Rectangle DisplayRectangle => new(
         Padding.Left,

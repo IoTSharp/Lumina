@@ -491,3 +491,13 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 - 第一轮4,340测试中两失败、生命周期4行差异原样保留；修正错误的未建句柄fixture判断，Form恢复可见性改SW_SHOWNOACTIVATE，新增延迟重建/后续激活回归。最终4,343全通过，未弱化旧期望。旧Focus157/Parent391/Handle204行全同，旧AOT未重跑。
 - 焦点AOT保留Message.GetLParam/Marshal.PtrToStructure(Type) IL3050；Demo保留既有IL3050和TypeConverter汇总IL3053，未全局抑制。原始Designer/resx未改，未做本批设计器往返；027锁屏下物理命中失败仍待补。
 - 证据汇总 `artifacts/compatibility-batch028/evidence.json`，逐场景差异 `reference-differences.json`；参考/最终原始输出、首轮失败、测试TRX、Release/AOT/PE、Demo正常关闭记录均在该目录。各平台API运行标记仍unverified；详见[028](batches/028.md)。
+
+## 批次029 · 2026-10-17 实施与停止记录
+
+批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。
+
+- 固定参考 `20261017-001742-0376196`，最终JIT/AOT `20261017-013511-9230398`，源码SHA256 `E1335D6B0D0E5B92F059A08914F414A52E5C0ADA50D201ABA9DCC8D5E0BF6FC4`。全部16场景exit0、complete及原HWND销毁；strictMatches=false、aotMatches=false，原始异常栈和逐场景差异均保留。
+- 早期 `20261017-012745-9543221` 的JIT/AOT16场景全同是修复最终集合回归前的历史证据；最终关闭通知表现不同，不能选早期结果冒充最终版本验收。取消Close的场景随后由fixture显式Dispose释放，不应写成Close接受了取消验证。
+- 初轮fixture未释放移除控件、Windows PowerShell 5.1驱动失败及实现迭代保留。父子集合首次7行句柄差异已通过恢复可见树创建修复，最终391行严格全同；028中间复测也出现关闭LostFocus，最终仍为原12场景差异。旧AOT/设备/Designer未重验。
+- API重新导出：固定1,095类型/61,240行/187页、各平台运行unverified不变。13项目/17目标仅.NET10，Demo原始源码/Designer/resx不改，net10.0依赖官方Drawing10.0.0且无WinForms/System.Resources.Extensions。AOT原IL3050/IL3053等警告保留，详见本机 `artifacts/compatibility-batch029/evidence.json`。
+- 用户明确029完成后停止；本批实现与文档提交推送、远端核验完成后停止，不创建下一聊天或批次，luminaforms保持PAUSED。完整范围及剩余依赖见[029](batches/029.md)。

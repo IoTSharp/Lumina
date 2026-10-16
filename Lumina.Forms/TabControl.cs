@@ -8,6 +8,8 @@ namespace Lumina.Forms;
 /// </summary>
 public class TabControl : ContainerControlBase
 {
+    internal override bool ShouldPerformContainerValidation() => true;
+
     private readonly Dictionary<TabPage, EventHandler> _textChangedHandlers = [];
     private int _selectedIndex = -1;
 

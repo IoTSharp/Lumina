@@ -1,6 +1,6 @@
 # LuminaForms 路线图
 
-更新：2026-10-16。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
+更新：2026-10-17。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
 实施遵循根目录 [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)。Drawing 已确定为 **Windows 两个目标都用官方 System.Drawing.Common，Linux 使用自有 Lumina.Drawing.Common 包并保留 System.Drawing 源码消费方式**；优先验证同名程序集 System.Drawing.Common，通过 XPL-002 后冻结完整身份与发布方案。按目标 OS/RID 选择完整依赖图，保留原生控件、Designer 资源和 AOT；先做实际必需范围与 Linux 原型，不承诺先重写全套 Drawing。身份、资源与平台运行须有独立证据，不能把需求定案当作实现完成。
 
@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～028的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [028结果](docs/roadmap/batches/028.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码；设备缺失单列未验证范围，暂停巡检不恢复。✅代码完成和🧪兼容验收分开，未完父项保持部分；每批按真实代码/必要检查整理当前与历史状态、重生成索引。固定分母/未完ID保留，不能由签名/基类/局部探针或测试数量得出整控件完成/98%。本次纠正总标题仍停留026而正文已记027的历史滞后。
+**001～029的明确子范围代码完成；按用户2026-10-17指示，029提交推送并核验远端后停止。** [当前记录](HANDOFF.md) · [029结果](docs/roadmap/batches/029.md) · [完整任务索引](docs/roadmap/tasks.csv)。不创建下一批聊天，不恢复巡检；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次028完成Control-12a基础选择导航、12b标准焦点通知、ContainerControl-02a逻辑活动链、Form-08a必要激活及TextBox-003a通知去重。4,343测试（新增28+26）全通过，双目标Release 0错误/646警告。30场景JIT/实际AOT全同，对固定10.0.11参考18同/12差异：11场景关闭后多出WM_QUIT，另1场景为SplitContainer继承链导致的活动容器投影差异；严格driver exit1保留。旧Focus157/父子集合391/句柄生命周期204行参考JIT全同。探针/Demo AOT为3,119,616/4,305,920字节，CLR目录0；Demo窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0且原HWND全部销毁。13项目/17目标仅.NET10，官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API重新导出且1,095类型/61,240行/187页与运行unverified不变。自动焦点转移/完整派生导航、验证/键盘/IME、物理输入、Designer/资源与GTK4/AppKit仍未完成。下一批[029](docs/roadmap/batches/029.md)沿自动焦点转移及验证前置推进，保留关闭多余WM_QUIT与派生容器继承依赖；见[验证记录](docs/roadmap/validation.md)和[028](docs/roadmap/batches/028.md)。
+批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 详情见[029](docs/roadmap/batches/029.md)及[验证记录](docs/roadmap/validation.md)。029后停止，未安排030。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)
