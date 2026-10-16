@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-10-16。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在API附件。批次[001～021](batches/021.md)的明确子范围代码完成；完整Control专项接续[022字体与颜色继承](batches/022.md)，继续取得Windows实际验收并完成Linux/macOS对应代码。017后停止原实施轮次是历史边界，不能当作当前Control专项已停止；无关控件循环和暂停巡检仍不恢复。父任务、设计器资源和三平台整控件验收保持未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-10-16。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在API附件。批次[001～022](batches/022.md)的明确子范围代码完成；完整Control专项接续[023标准消息、样式与绘制](batches/023.md)，继续取得Windows实际验收并完成Linux/macOS对应代码。017后停止原实施轮次是历史边界，不能当作当前Control专项已停止；无关控件循环和暂停巡检仍不恢复。父任务、设计器资源和三平台整控件验收保持未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -14,7 +14,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-06a、Control-07a、Control-08a、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-05a、Control-05b、Control-06a、Control-07a、Control-08a、Control-08b、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-08a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -38,7 +38,7 @@
 | [RadioButton](controls/RadioButton.md) | M2 | 🟡 存在 | 103 / 77 / 75 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
-| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
+| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-010a；其余任务未完成 |
 | [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
@@ -56,10 +56,10 @@
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
 | [Panel](controls/Panel.md) | M2 | 🟡 存在 | 93 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Panel-03a；其余任务未完成 |
-| [GroupBox](controls/GroupBox.md) | M2 | 🟡 存在 | 87 / 72 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
+| [GroupBox](controls/GroupBox.md) | M2 | 🟡 存在 | 87 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ GroupBox-07a；其余任务未完成 |
 | [FlowLayoutPanel](controls/FlowLayoutPanel.md) | M2 | 🟡 存在 | 95 / 73 / 78 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ FlowLayoutPanel-06a、FlowLayoutPanel-06b；其余任务未完成 |
 | [TableLayoutPanel](controls/TableLayoutPanel.md) | M2 | 🟡 存在 | 100 / 74 / 90 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TableLayoutPanel-06a、TableLayoutPanel-06b；其余任务未完成 |
-| [TabControl](controls/TabControl.md) | M2 | 🟡 存在 | 99 / 79 / 82 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TabControl-07a；其余任务未完成 |
+| [TabControl](controls/TabControl.md) | M2 | 🟡 存在 | 99 / 79 / 82 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TabControl-07a、TabControl-08a；其余任务未完成 |
 | [TabPage](controls/TabPage.md) | M2 | 🟡 存在 | 97 / 73 / 77 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [SplitContainer](controls/SplitContainer.md) | M2 | 🟡 存在 | 111 / 76 / 85 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ SplitContainer-05a、SplitContainer-05b；其余任务未完成 |
 | [Splitter](controls/Splitter.md) | M2 | 🟡 存在 | 88 / 74 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
@@ -99,8 +99,8 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [ToolStrip](controls/ToolStrip.md) | M2 | 🟡 存在 | 114 / 82 / 80 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ToolStrip-05a、ToolStrip-05b；其余任务未完成 |
-| [MenuStrip](controls/MenuStrip.md) | M2 | 🟡 存在 | 115 / 84 / 80 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ MenuStrip-01a、MenuStrip-01b；其余任务未完成 |
+| [ToolStrip](controls/ToolStrip.md) | M2 | 🟡 存在 | 114 / 82 / 80 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ToolStrip-05a、ToolStrip-05b、ToolStrip-05c；其余任务未完成 |
+| [MenuStrip](controls/MenuStrip.md) | M2 | 🟡 存在 | 115 / 84 / 80 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ MenuStrip-01a、MenuStrip-01b、MenuStrip-07a；其余任务未完成 |
 | [StatusStrip](controls/StatusStrip.md) | M2 | 🟡 存在 | 116 / 82 / 80 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ StatusStrip-06a、StatusStrip-06b；其余任务未完成 |
 | [ContextMenuStrip](controls/ContextMenuStrip.md) | M2 | 🟡 存在 | 124 / 86 / 88 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ToolStripContainer](controls/ToolStripContainer.md) | M2 | ⬜ 缺失 | 106 / 74 / 81 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

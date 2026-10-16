@@ -5,12 +5,12 @@
 ## 当前接续点
 
 - 调度状态：017已完成并结束原实施轮次。用户随后于2026-10-16直接要求“在新会话中开始实现 [Control] 把 [Control] 完全闭环，确保至少windows下能够验收，其他系统下实现代码”。据此开启Control专项，持续完成必要实现及Windows实际验收；Linux/macOS完成对应代码并单列未取得的真机证据。完整专项目标完成后结束，不以一个局部子范围代替整Control闭环，不恢复无关控件的全路线图循环。
-- 当前编码主会话：01a143be-8230-74b0-aa82-837bcf0b8563（022 · Control字体与颜色继承，本地Lumina项目）。已创建并只读准备，待旧主单独发送“开始接管”和本次已推送交接SHA后核实并实际接管；此实现提交不是交接SHA。旧主01a142ba-a2e6-75e1-a249-96cbb7a07e75及021三个内部任务已冻结实现，旧主只负责本次归属交接与只读确认；新主确认实际接管后旧主立即停止全部写入/构建/Git并归档，不等022完成。
+- 当前编码主会话：01a143be-8230-74b0-aa82-837bcf0b8563（022 · Control字体与颜色继承，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；核实工作区干净，HEAD、origin/main和实际远端refs/heads/main均为已推送交接SHA `d6644d771521127ee3391133afbcfa4ec0322efc`，证据见artifacts/compatibility-batch021/handoff-push.json。旧主01a142ba-a2e6-75e1-a249-96cbb7a07e75及021三个内部任务已停止写入/构建/Git；旧主只读确认本聊天已实际接管后立即归档，不等待022完成。
 - 021历史接管归属：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main与实际远端refs/heads/main均为已推送交接SHA `c9f4f2880429e648f81e7fbbf487a611547c82d3`。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`及020三个内部子任务已停止写入/构建/Git；旧主只读确认实际接管后立即归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
 - 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
-- 当前范围：[Control任务](docs/roadmap/controls/Control.md)与[逐API清单](docs/roadmap/api/Control.md)的完整剩余工作及必要依赖。018父子集合、019句柄、020事务和021基础默认布局/首选尺寸明确子范围完成；022继续Control-11字体/颜色继承及必要主题/原生资源，随后完整交互/资源/AOT与平台后端。不是完成一个小范围便结束，也不恢复无关全路线图循环。
-- 当前实施批次：[022 · 字体与颜色继承](docs/roadmap/batches/022.md)已创建只读准备聊天，待本次独立交接提交推送/远端核对后发送开始；[021](docs/roadmap/batches/021.md)明确范围、验证及路线图整理完成并成功推送。完整Control专项继续，自动化保持暂停。
-- 最近完成批次：021实现提交accc4f92ab9ea1e334a9419872542cb8f3227bf3已成功push；提交后HEAD、origin/main及实际远端refs/heads/main均为该SHA且工作区干净，记录artifacts/compatibility-batch021/implementation-push.json。本归属交接另行commit/push，新主以开始消息给出的交接SHA接管。020实现8408fc800ae766dff4eed1ff6a90ebbcb9901d3a、019实现8bf6ebcf4e6ae9b4b3b5d4dcd443f293388fcda9、018实现78e43f52cbba8aeb5756b6fd753a434e98c984c8与历史证据保留。
+- 当前范围：完整Control专项继续。018父子集合、019句柄、020事务、021基础布局及022字体/颜色父链与资源消费已完成明确子范围；下一批023推进Control-14/17标准消息、样式与真实绘制。不是完成小范围便结束，不恢复无关全路线图循环。
+- 当前实施批次：[022](docs/roadmap/batches/022.md)实现及必要检查完成，正在共享收尾/提交推送；三个内部子任务已冻结。下一批[023](docs/roadmap/batches/023.md)先只读准备，再独立提交推送归属并发送开始。当前主仍独占共享文档/API/集成/Git，未交接前新主不得写入。
+- 最近完成批次：022已实现并通过必要集成，提交推送SHA在完成后记录于本节及artifacts/compatibility-batch022/implementation-push.json；本地commit不算完成。021实现accc4f92ab9ea1e334a9419872542cb8f3227bf3及交接d6644d771521127ee3391133afbcfa4ec0322efc均已成功push并核远端，历史证据保留。
 - 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
 - 019证据：最终4,027测试全部通过、双目标Release 0错误/428警告；生命周期16场景/204行固定10.0.11参考/JIT/实际AOT严格全同，最终run为`20261016-021319-9490794`。父子集合391行参考/JIT全同，018隐藏重挂的中间VisibleChanged缺口已修复；集合AOT仍有32行非零下界数组fixture明确CopyTo未运行，其余359行同JIT，严格失败保留。16个旧Control/context驱动全通过。Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全部失效；生命周期EXE4,115,456字节、Demo4,156,928字节，CLR目录均0。原始失败/警告/路径见`artifacts/compatibility-batch019/evidence.json`，不由这些记录宣称整Control/98%。
 - 019收尾：Control-07/Form-06标部分并登记07a/06a完成子范围，FND及总览/历史同步；修正“标准句柄入口不存在”和“018隐藏重挂可见差异仍未修”的当前表述，保留原始历史失败。API固定1,095类型/61,240行/187页，成员运行仍unverified；408份Markdown、2,037项任务、187行逐控件实施索引0错误，整类型代码完成0。13项目/17目标均.NET10，原始Demo源码/Designer/resx不改，Windows官方Drawing10.0.0且net10.0依赖无WinForms/System.Resources.Extensions。
@@ -18,9 +18,18 @@
 - 历史完成批次：[017](docs/roadmap/batches/017.md)，两项代码、必要验证、路线图整理及推送完成；原内部子任务已结束。实现提交`2df2cca120f38b94d5c469b3687cd5cc5a800f15`，结束记录提交`77955c4066b3b8933133742ff7c3c9200b9f0fc6`均已成功推送。创建Control聊天前HEAD/origin/main/实际远端refs/heads/main三者均为77955c4，工作区干净。本次归属交接另行commit/push，成功核对后在开始消息中给出交接SHA，新主不得把017实现或结束记录SHA误作本次交接SHA。
 - 历史实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前边界：完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。 Form.Created仍隐藏标准bool属性；AOT Text DispId、集合非零下界数组fixture、中文Designer及既有资源IL3050仍保留。Demo单次交互/退出不等于完整UI/文字裁切/模态/Designer验收；Linux/macOS实现、编译和真机分别记录。
+- 当前边界：完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。 Form.Created隐藏标准bool、017 Text DispId AOT差异、集合AOT32行非零下界数组fixture未执行CopyTo、中文Designer和Demo既有IL3050保留。022无局部值且派生颜色getter刻意返回标准默认色的theme显式性仍无法区分；不使用反射或硬编码规避。
 
-## 批次021完成证据与剩余依赖
+## 批次022完成证据与下一依赖
+
+- 批次022完成Control-11b基础Font/BackColor/ForeColor局部值、父级继承/Reset/通知及08b借用Font/独占HFONT寿命，必要Form/TextBox/GroupBox/Tab/条带消费接入。16场景212行JIT与实际AOT全同；对固定10.0.11仍有13条真实差异：10条基础Control缺UserPaint路径的WM_GETFONT，3条默认palette前景色，strictMatches=false。4,138项测试（新增31）通过，旧默认布局512/事务394/生命周期204/集合391行参考/JIT均同；双目标Release 0错误/478警告，Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。探针2,971,136字节、Demo4,196,352字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
+- 完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。
+- 固定参考run 20261016-082323-2290099，最终JIT/AOT 20261016-084839-8131815；旧事务20261016-084716-3291017、生命周期20261016-084724-2175337、默认布局20261016-084735-6315609，父子集合在022目录。完整证据artifacts/compatibility-batch022/evidence.json。仅4组旧差分在本批重跑，不能写成16驱动。
+- 20核心+11资源新测试，首次编译/运行失败和GetObjectType假阳性诊断保留；MenuStrip宿主错误替换已真实修复。13项目/17目标、原始Demo与官方Drawing约束不变，API固定分母和187页运行unverified不变。
+- 已核对本批与受影响历史状态：GroupBox标准集合/局部默认/原生、Form继承缩放/原生、Tab/条带原生、Control/FND已有Invalidate/内部窗口过程改为部分；仅明确子范围✅，不删除任务或关闭整类型。
+- 下一批023核心/必要契约原生衔接/固定参考三个互斥内部任务，主独占共享interop/文档/顺序集成/Git。先对照Message/CreateParams/Styles及真实UserPaint，不伪装WM_GETFONT；完整Control目标与所有授权/验收/推送交接归档规则不变。
+
+## 批次021完成证据与剩余依赖（历史快照）
 
 - 实现已推送accc4f92ab9ea1e334a9419872542cb8f3227bf3并核对三SHA/干净状态；022只读接续聊天01a143be-8230-74b0-aa82-837bcf0b8563已创建。本次归属交接独立提交推送，确认实际接管后旧主立即归档。
 

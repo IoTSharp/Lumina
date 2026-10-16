@@ -102,13 +102,16 @@ public class TabControl : ContainerControlBase
     /// <inheritdoc />
     protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.WS_CLIPSIBLINGS;
 
+    private protected override ThemeColorSlot DefaultBackgroundSlot => ThemeColorSlot.Surface;
+
+    private protected override ThemeColorSlot DefaultForegroundSlot => ThemeColorSlot.Surface;
+
     /// <inheritdoc />
     protected override void OnHandleCreated()
     {
         base.OnHandleCreated();
         ApplyNativeThemeState();
         ApplyTabHeaderMetrics();
-        ApplyNativeColors();
         SynchronizeTextHandlers();
         SynchronizeNativeTabs();
         EnsureSelection();
@@ -142,7 +145,7 @@ public class TabControl : ContainerControlBase
     {
         ApplyNativeThemeState();
         ApplyExplorerTheme();
-        ApplyNativeColors();
+        Invalidate();
     }
 
     private void ApplyNativeThemeState()
@@ -402,28 +405,4 @@ public class TabControl : ContainerControlBase
         SelectedIndexChanged?.Invoke(this, e);
     }
 
-    private void ApplyNativeColors()
-    {
-        if (NativeHandle == 0)
-        {
-            return;
-        }
-
-        ThemePalette palette = CurrentVisualStyle.Palette;
-        BackColor = Color.FromArgb(unchecked((int)palette.SurfaceBackground));
-        ForeColor = Color.FromArgb(unchecked((int)palette.SurfaceForeground));
-
-        foreach (TabPage page in GetTabPages())
-        {
-            if (page.UseVisualStyleBackColor)
-            {
-                page.BackColor = Color.Empty;
-            }
-
-            if (page.ForeColor.IsEmpty)
-            {
-                page.ForeColor = Color.Empty;
-            }
-        }
-    }
 }

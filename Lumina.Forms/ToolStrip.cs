@@ -589,22 +589,10 @@ public class ToolStrip : ContainerControlBase
             return Size.Empty;
         }
 
-        nint fontHandle = Owner?.UiFontHandle ?? 0;
-        bool ownsFontHandle = false;
-        if (fontHandle == 0)
-        {
-            fontHandle = Win32.CreateUiFont();
-            ownsFontHandle = fontHandle != 0;
-        }
-
-        if (fontHandle == 0)
-        {
-            fontHandle = Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
-        }
-
         nint previousFont = 0;
         try
         {
+            nint fontHandle = NativeFontHandle;
             if (fontHandle != 0)
             {
                 previousFont = Win32.SelectObject(screenDc, fontHandle);
@@ -630,11 +618,6 @@ public class ToolStrip : ContainerControlBase
             if (previousFont != 0)
             {
                 _ = Win32.SelectObject(screenDc, previousFont);
-            }
-
-            if (ownsFontHandle)
-            {
-                _ = Win32.DeleteObject(fontHandle);
             }
 
             _ = Win32.ReleaseDC(0, screenDc);

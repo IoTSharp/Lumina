@@ -21,8 +21,9 @@
 | ⬜ | P1 / MenuStrip-04 | 动态 Items/DropDownItems 增删、文本/图像/勾选/可见性变化在已打开或下一次打开时准确同步；Click/ItemClicked 与关闭事件顺序捕获。 |
 | ⬜ | P1 / MenuStrip-05 | 实现 MdiWindowListItem、AllowMerge、ToolStripManager.Merge/RevertMerge 相关场景；MdiClient 未完成时明确阻塞，不能单独标已支持。 |
 | ⬜ | P1 / MenuStrip-06 | 核验助记键冲突、&& 转义、快捷键在 TextBox 等编辑控件聚焦时的优先级、禁用/隐藏父菜单下命令是否可触发。 |
-| ⬜ | P1 / MenuStrip-07 | 覆盖 RTL、DPI、长标题、图像透明度、.resx 本地化和可访问性菜单层级；保留既有布局修复历史，装饰优化排在功能之后。 |
-| ⬜ | P2 / MenuStrip-08 | Windows 可继续顶层原生宿主 + HMENU popup，或局部迁入 SetMenu/HMENU；任何替换先对照 Items/Renderer、焦点和主题，不为单一实现推翻已验证行为。 |
+| 🟡 | P1 / MenuStrip-07 | 022完成07a有效字体/显式颜色消费；完整RTL/DPI/长标题/图像透明/.resx本地化和可访问性层级仍待验收。 |
+| ✅ | P1 / MenuStrip-07a | 批次022顶层宿主绘制使用自身独占HFONT和显式父级颜色链，默认保留语义palette；复用ToolStrip有效字体测量。字体布局须保留现有顶层宿主身份，不以替换控件丢失状态；仅此必要资源衔接，完整菜单资源/输入另列。 |
+| 🟡 | P2 / MenuStrip-08 | 已有顶层原生宿主与HMENU popup，原全待办更正；022沿现有路径接入字体/颜色。完整Items/Renderer、焦点、激活和主题仍待验收，不为单一实现推翻已有行为。 |
 | ⬜ | P2 / MenuStrip-09 | Linux 使用 GtkPopoverMenuBar/GMenuModel/GAction；GAction 状态与 Checked/Enabled 双向同步。GtkPopoverMenuBar 的菜单栏只接受菜单模型，ToolStrip 任意嵌入项需原生组合并单列限制。 |
 | ⬜ | P3 / MenuStrip-10 | macOS 首选 NSMenu/NSMenuItem 接入应用主菜单，按活动窗口切换命令；WinForms 可嵌入/多条 MenuStrip 与 macOS 全局菜单不等价，明确 portable 范围并验证，不暗中忽略 Dock。 |
 | ⬜ | P1 / MenuStrip-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -40,6 +41,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：07a接入有效Font/HFONT及显式前景/背景父链，默认palette不写public颜色。修复继承ToolStrip的宿主兼容检查把Label派生菜单标题误判为Button而在字体布局时替换的问题，现保留宿主引用并重新测量；08按实际顶层宿主/HMENU实现更正为部分。全部菜单激活/MDI/Renderer/DPI/Designer与三平台不关闭，见[022](../batches/022.md)。
 
 - 2026-10-16 · 批次021：移除历史菜单自定位，继承ToolStrip Dock事务并由实际父级DefaultLayout定位；保持既有菜单内容布局。仅父布局接入，不关闭完整菜单默认/激活/MDI/资源。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 

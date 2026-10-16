@@ -21,7 +21,8 @@
 | ⬜ | P1 / TabControl-06 | 支持 ImageIndex/ImageKey、文字运行时变更、页工具提示和 DrawItem；绘制扩展是兼容能力，非跨平台全自绘默认路线。 |
 | 🟡 | P1 / TabControl-07 | 020完成07a标准布局入口衔接；完整DisplayRectangle/页边界/RTL/多行垂直/DPI/隐藏和重建仍待对照，切页不得重复建销业务控件。 |
 | ✅ | P1 / TabControl-07a | 批次020：现有页布局迁到标准OnLayout，复用Control暂停/恢复并移除重复Bounds布局；独立事务回归通过。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
-| ⬜ | P2 / TabControl-08 | Windows 复用 SysTabControl32，TCM_* 与 TCN_* 双向同步；保存 native item/lParam 归属，删除 item 不悬挂托管页引用。 |
+| 🟡 | P2 / TabControl-08 | 已有SysTabControl32、TCM插入/选择/矩形和部分TCN同步，原全待办更正；022完成08a主题默认隔离。完整native item/lParam归属、删除/可取消选择与资源寿命仍待验证。 |
+| ✅ | P2 / TabControl-08a | 批次022主题使用内部Surface默认槽，不再向public BackColor/ForeColor回写或清空TabPage显式颜色。主题刷新/局部状态及页面颜色保留有独立回归；完整Tab绘制/集合/事件和平台仍归父项。 |
 | ⬜ | P2 / TabControl-09 | Linux 使用 GtkNotebook + 每页原生容器；switch-page 默认非 WinForms 全套可取消链，需在动作提交前路由选择与取消。OwnerDraw/多行标签无完整原生等价项，单列。 |
 | ⬜ | P3 / TabControl-10 | macOS 使用 NSTabView/NSTabViewItem 与 delegate shouldSelectTabViewItem；多行/垂直排列、OwnerDraw 标签和工具提示差异逐项记录，禁止假称全量等价。 |
 | ⬜ | P1 / TabControl-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -39,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：移除ApplyNativeColors公共属性写入，theme与显式页颜色分离；08a为必要消费子范围，08按既有TCM/TCN实现从全待办更正为部分。没有将基础Control字体/颜色契约当作完整TabControl兼容，见[022](../batches/022.md)。
 
 - 2026-10-16 · 批次020：现有页定位消费标准OnLayout，完整页边界/选择事件/标准集合与原生切换仍待后续；此批只完成事务衔接。 见[020](../batches/020.md)；父任务保持部分完成。
 

@@ -432,3 +432,13 @@ Control-09d/10c、Panel-03a、Form-10b和六容器明确子范围代码完成，
 默认布局实际AOT3,041,280字节、CLR目录0、无IL2xxx/IL3xxx。Demo实际AOT4,192,256字节、CLR目录0，真实显示/复选框0→1/正常exit0/记录HWND全部失效，无强制清理；既有InheritanceAttribute IL3050保留。最初两个测试失败、探针fixture编译失败及中间9行差异原始记录保留；Splitter旧无Dock构造经独立固定参考确认无效后改为标准Dock/集合顺序，条带旧断言按参考真实几何修正，未降低检查。
 
 13项目/17目标仅.NET10，Windows官方Drawing10.0.0，原始Demo源码/Designer/resx和net10.0依赖边界不变。新增标准API已重生成固定1,095类型/61,240行/187页清单，运行仍unverified；逐控件实施列与tasks.csv重生成。完整路径/进程/PE/警告/计数在artifacts/compatibility-batch021/evidence.json。复杂布局缓存重入、全部派生/DPI/RTL/滚动/FlowTable、完整Windows Control/Designer/资源/模态及Unix未关闭；不由这些数量计算98%。
+
+## 批次 022 · 2026-10-16 字体与颜色继承及必要资源
+
+批次022完成Control-11b基础Font/BackColor/ForeColor局部值、父级继承/Reset/通知及08b借用Font/独占HFONT寿命，必要Form/TextBox/GroupBox/Tab/条带消费接入。16场景212行JIT与实际AOT全同；对固定10.0.11仍有13条真实差异：10条基础Control缺UserPaint路径的WM_GETFONT，3条默认palette前景色，strictMatches=false。4,138项测试（新增31）通过，旧默认布局512/事务394/生命周期204/集合391行参考/JIT均同；双目标Release 0错误/478警告，Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。探针2,971,136字节、Demo4,196,352字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。
+
+固定参考run 20261016-082323-2290099；最终JIT/AOT run 20261016-084839-8131815，同源SHA256为21D6E69FD6F219334C05EBEFFF06EA6B419C6B8C6C57C5756C1040047739B96A。48个场景进程均exit0/complete=true/无超时；严格驱动因13条参考差异exit1，不能将进程完成写成参考全通过。元数据只核选定签名/可见性/虚槽及Browsable/Localizable/AmbientValue构造，不含完整COM/中文Designer。
+
+首次fixture两次编译失败及首次4136/4138、资源诊断失败保留。MenuStrip真正修复标题宿主类型误判导致字体布局替换；Form WM_GETFONT=0符合其窗口过程，资源测试改查实际持有HFONT。旧GetObjectType对已删除对象仍回type6，实际本机GetObjectW=0且字段0/Disposed/窗口消失，据此采用联合释放断言，不延时或手动删除目标句柄。完整日志、PE、项目依赖与索引结果见artifacts/compatibility-batch022/evidence.json和[022](batches/022.md)。
+
+按实际代码纠正GroupBox已继承Controls/部分默认/Win32、Form旧缩放/原生窗口、TabControl/ToolStrip/MenuStrip原生路径及Control/FND绘制局部代码的全待办错标；未完父项/ID/固定分母保留。13项目/17目标仅.NET10，原Demo源码/Designer/resx未改，Windows官方Drawing10.0.0且net10.0无WinForms/Resources.Extensions/自有Drawing。API重导出及README实施列/tasks.csv由原工具重生成，所有运行状态仍unverified，不从数量推98%。

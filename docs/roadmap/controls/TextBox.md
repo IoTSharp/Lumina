@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；Multiline/AcceptsReturn/AcceptsTab/PasswordChar/ScrollBars/WordWrap/PlaceholderText 多为存值，Style 未采用全部值，Select 未建句柄直接返回。错误公开 SelectionChanged（WinForms TextBox 未提供该事件），字体另行克隆/释放需核对所有权。
+🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；Multiline/AcceptsReturn/AcceptsTab/PasswordChar/ScrollBars/WordWrap/PlaceholderText 多为存值，Style 未采用全部值，Select 未建句柄直接返回。错误公开 SelectionChanged（WinForms TextBox 未提供该事件）仍待迁移决策；022已移除隐藏Font及克隆/释放，复用基础继承和借用字体，并补标准颜色默认，详见010a。
 
 源码定位：[Lumina.Forms/TextBox.cs](../../../Lumina.Forms/TextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、Control.Text 原生同步、Form.AcceptButton/CancelButton、剪贴板和自动完成关联类型。
 
@@ -25,7 +25,8 @@
 | TextBox-007 | P1 | ⬜ | CharacterCasing=Normal、TextAlign=Left、TextAlignChanged；输入/粘贴/程序赋值的大小写转换分别验收，RTL 与对齐不混为一个开关。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
 | TextBox-009 | P2 | ⬜ | Paste(string)、继承 Paste/Copy/Cut/Undo、MaxLength、SelectedText、ShortcutsEnabled；异常、只读、超长粘贴和 UTF-16 端点完整对照。 |
-| TextBox-010 | P2 | ⬜ | 单行 PreferredHeight/AutoSize、BorderStyle、Font、DPI 与 IME；去掉固定最小24高度导致的基线差异，外部 Font 不被意外 Dispose。 |
+| TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认；单行PreferredHeight/AutoSize、BorderStyle、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
+| TextBox-010a | P2 | ✅ | 批次022移除隐藏Font、克隆和外部Font释放，复用Control借用Font与独占HFONT创建/替换/销毁。无局部颜色时BackColor为Window（只读为Control）、ForeColor为WindowText，不继承父显式颜色；原生仍消费语义palette且明确记录默认前景差异。字体LOGFONT、Reset/重建/释放及派生颜色getter有限场景见022；全部文本/自动缩放/IME另列。 |
 | TextBox-011 | P3 | ⬜ | 静态 Designer 与 .resx 文本/字体、公开事件完整清单、AOT 输入与剪贴板、三平台原生可访问性和 Dispose 验收。 |
 | TextBox-CLOSE | P3 | ⬜ | 对照 API 清单逐个关闭剩余属性、事件、方法/重载与受保护兼容点；属性写入后读回、通知顺序/取消/重入、默认值、异常、未建句柄/重建/释放后行为分别有证据。Windows 与两原生平台各出属性/事件/行为分子分母，未验收项不能标🧪 验收通过。 |
 
@@ -42,6 +43,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：010由全待办改部分，010a明确关闭基础字体所有权/继承及必要颜色默认；不再将外部Font会被Dispose写成当前问题。公开属性准确默认与native palette消费分离，3条默认前景色差异保留；TextBoxBase标准继承、ReadOnlyChanged/完整事件、PreferredHeight/DPI/IME和Designer仍缺。固定TextBoxBase v10.0.11源码及hash保存在022证据目录。
 
 以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
 

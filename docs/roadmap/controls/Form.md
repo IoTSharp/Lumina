@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**批次018已建立Form : ContainerControl : ScrollableControl : Control : Component，共用状态、父子树、句柄投递和Dispose。019补protected CreateHandle与标准句柄事件、延迟建窗、Show/Load/排队Shown及直接/外部销毁和重建可见性衔接。历史Created事件仍隐藏Control.Created属性（经Control视图可读），020已继承标准LayoutEventHandler并复用Control布局事务；FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/显示/关闭事件和多UI退出仍缺，不能由基础衔接关闭整个Form。
+🟡 **现状：**018标准继承/父子树、019句柄及显示生命周期、020/021标准事务和基础布局保留；022移除共享UiFont资源，复用Control独占HFONT与有效颜色/theme默认分离，失败重建停放子窗字体寿命有专项回归。历史Created事件仍隐藏Control.Created属性，FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/缩放/显示关闭、多UI退出与Designer仍缺，不能由基础衔接关闭整个Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -24,12 +24,12 @@
 | 🟡 | P1 / Form-10 | 020事务10a、021默认布局10b完成；真实父级Dock替代历史条带专用定位。完整Form AutoSize/AutoSizeMode、客户区/MinMax、AutoScroll、全部嵌套测量/DPI/RTL与Designer仍缺。 |
 | ✅ | P1 / Form-10a | 批次020完成共享暂停/恢复/OnLayout入口，移除重复WM_SIZE布局和无条件子树遍历；当时的直属条带专用定位于021被父级DefaultLayout替代。历史事务范围完成保留，几何见10b。 |
 | ✅ | P1 / Form-10b | 批次021：Form继承默认布局/ContainerControl测量，菜单/工具/状态条按实际Controls反序Dock；移除旧专用定位和Control原生Y坐标额外菜单偏移。隐藏/显示、嵌套/取消Dock及实际HWND矩形有固定参考，原Demo源码不改；完整Form布局和Designer仍归父项。 |
-| ⬜ | P1 / Form-11 | 实现 AutoScaleDimensions/CurrentAutoScaleDimensions/PerformAutoScale、Font/Dpi/Inherit/None、DpiChanged 及父子前后通知；跨 96/144/192 DPI 往返和 .resx 基准不重复缩放。 |
+| 🟡 | P1 / Form-11 | 历史AutoScaleDimensions/PerformAutoScale局部算法已于018迁入ContainerControl，原全待办遗漏继承实现，现更正；022继承基础Font链但未完成字体自动缩放。完整CurrentAutoScaleDimensions、Font/Dpi/Inherit/None、DpiChanged父子通知与96/144/192往返和.resx基准仍待对照。 |
 | ⬜ | P1 / Form-12 | 实现 AcceptButton/CancelButton/IButtonControl、KeyPreview、ProcessDialogKey/ProcessCmdKey、输入语言/IME、AutoValidate 和深层 ActiveControl；验证取消时禁止错误关闭对话框。 |
 | ⬜ | P1 / Form-13 | 补 MainMenuStrip、IsMdiContainer/MdiParent/MdiChildren/ActiveMdiChild/LayoutMdi/MdiChildActivate；与 MdiClient 一起验收，不能以普通 owned windows 冒充 MDI。 |
 | ⬜ | P2 / Form-14 | 实现 Opacity/TransparencyKey/Region/RightToLeftLayout/AllowTransparency 与 .NET10 标题/边框颜色相关 API；平台差异逐条披露，不能删除普通颜色/图像契约。 |
 | ⬜ | P1 / Form-15 | NativeFormsDemo .Designer.cs/.resx 静态布局、资源、本地化与继承 Form，可在 VS 双向保存；AOT 主窗可见、业务操作、模态、正常退出为发布验收。 |
-| ⬜ | P1 / Form-16 | Windows 复用现有注册窗口类与 USER32，补 WM_CLOSE/QUERYENDSESSION/SIZE/DPICHANGED、owner 和 dialog loop；保留原生非客户区/输入，不先重做窗口装饰。 |
+| 🟡 | P1 / Form-16 | 已有注册窗口类、USER32窗口过程、WM_CLOSE/SIZE、真实显示/销毁与019重建衔接，原全待办状态更正。022改用Control独占HFONT；完整QUERYENDSESSION/DPICHANGED、owner/dialog loop及关闭竞态仍缺，保留原生非客户区/输入。 |
 | ⬜ | P2 / Form-17 | Linux 使用 GtkWindow/GtkApplicationWindow；close-request/activate/state 适配标准生命周期，模态用 transient-for/modal + 同一 GMainContext。Wayland 任意 Location/全局坐标单列限制。 |
 | ⬜ | P3 / Form-18 | macOS 使用 NSWindow/NSPanel + delegate，NSApplication 主线程；窗口式模态与 sheet 依调用语义选择，firstResponder/close veto 对齐，AppKit 不能原生完整等价 MDI。 |
 | ⬜ | 验收 / Form-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -43,6 +43,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：移除Form共享UiFontHandle，创建/销毁复用Control-08b独占HFONT，避免重建失败时停放子窗口引用已释放父字体。有效颜色与局部/theme默认分开，显式默认色与Reset即便不发属性事件也更新palette画刷。补实际资源寿命回归，完整Font/DPI缩放仍缺；纠正Form-11遗漏018继承缩放、Form-16遗漏已有Win32实现的全待办状态。完整资源、模态、Designer及平台验收不关闭，见[022](../batches/022.md)。
 
 - 2026-10-16 · 批次021：移除直属条带专用定位及旧GetClientContentTopInset，由标准父级DefaultLayout统一布局；ContainerControl首选测量供Form消费。更新020历史定位描述以免把旧算法当当前行为；Created事件仍隐藏Control.Created，完整模态/资源/设计器未关闭。
 

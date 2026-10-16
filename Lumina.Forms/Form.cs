@@ -149,8 +149,6 @@ public class Form : ContainerControl
 
     internal nint InstanceHandle { get; private set; }
 
-    internal nint UiFontHandle { get; private set; }
-    private bool OwnsUiFontHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the main menu strip associated with the form.
@@ -255,15 +253,6 @@ public class Form : ContainerControl
         int windowWidth = Width;
         int windowHeight = Height;
 
-        if (UiFontHandle == 0)
-        {
-            UiFontHandle = Win32.CreateUiFont();
-            OwnsUiFontHandle = UiFontHandle != 0;
-            if (UiFontHandle == 0)
-            {
-                UiFontHandle = Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
-            }
-        }
         _selfHandle = GCHandle.Alloc(this);
 
         Application.NotifyWindowCreated();
@@ -285,11 +274,11 @@ public class Form : ContainerControl
         {
             int err = Marshal.GetLastWin32Error();
             if (_selfHandle.IsAllocated) { _selfHandle.Free(); }
-            if (!RecreatingHandle) { ReleaseUiFont(); }
             throw new InvalidOperationException($"Failed to create the native form window. Win32 error: {err}");
         }
 
         RegisterNativeHandle(hwnd);
+        ApplyFontToHandle();
         UpdateBoundsFromNativeWindow();
         _ = Win32.EnableWindow(hwnd, Enabled);
         ApplyWindowIcon();
@@ -707,7 +696,6 @@ public class Form : ContainerControl
                 ReleaseMainMenuStrip();
                 ReleasePaletteResources();
                 ReleaseOwnedIcon();
-                ReleaseUiFont();
                 if (_selfHandle.IsAllocated)
                 {
                     _selfHandle.Free();
@@ -716,17 +704,6 @@ public class Form : ContainerControl
                 UnregisterOpenForm();
             }
         }
-    }
-
-    private void ReleaseUiFont()
-    {
-        if (UiFontHandle != 0 && OwnsUiFontHandle)
-        {
-            _ = Win32.DeleteObject(UiFontHandle);
-        }
-
-        UiFontHandle = 0;
-        OwnsUiFontHandle = false;
     }
 
     private void UnregisterOpenForm()
@@ -1004,10 +981,10 @@ public class Form : ContainerControl
     }
 
     private Color GetResolvedBackColor(ThemePalette palette)
-        => BackColor.IsEmpty ? Color.FromArgb(unchecked((int)palette.WindowBackground)) : BackColor;
+        => TryGetExplicitBackColor(out Color color) ? color : Color.FromArgb(unchecked((int)palette.WindowBackground));
 
     private Color GetResolvedForeColor(ThemePalette palette)
-        => ForeColor.IsEmpty ? Color.FromArgb(unchecked((int)palette.WindowForeground)) : ForeColor;
+        => TryGetExplicitForeColor(out Color color) ? color : Color.FromArgb(unchecked((int)palette.WindowForeground));
 
     private static void SetBrush(ref nint brush, ref bool ownsBrush, uint argb, int fallbackSysColor)
     {
@@ -1270,9 +1247,6 @@ public class Form : ContainerControl
                 {
                     ReleaseMainMenuStrip();
                     ReleasePaletteResources();
-
-                    // Parked child HWNDs keep this HFONT until their own rebuild.
-                    if (!RecreatingHandle) { ReleaseUiFont(); }
                 }
                 finally
                 {

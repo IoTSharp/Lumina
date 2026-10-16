@@ -1,4 +1,4 @@
-// Layout and preferred-size portions adapted from dotnet/winforms v10.0.11.
+// Layout, preferred-size and appearance portions adapted from dotnet/winforms v10.0.11.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses those portions under the MIT license.
 
@@ -22,6 +22,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly Lock s_subclassLock = new();
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
     private static readonly Win32.WindowProc s_subclassProc = SubclassWindowProcThunk;
+    private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
 
     private string _text = string.Empty;
     private int _left;
@@ -44,6 +45,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private Color _backColor = Color.Empty;
     private Color _foreColor = Color.Empty;
     private Font? _font;
+    private int? _fontHeight;
+    private nint _nativeFontHandle;
+    private Font? _nativeFontSource;
+    private bool _nativeFontDirty;
     private Size? _minimumSize;
     private Size? _maximumSize;
     private nint _backgroundBrush;
@@ -368,11 +373,76 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public bool TabStop { get; set; } = true;
 
-    public Font Font
+    /// <summary>
+    /// Gets the default background color of a top-level control.
+    /// </summary>
+    public static Color DefaultBackColor => SystemColors.Control;
+
+    /// <summary>
+    /// Gets the default font of a top-level control.
+    /// </summary>
+    public static Font DefaultFont => s_defaultFont.Value;
+
+    /// <summary>
+    /// Gets the default foreground color of a top-level control.
+    /// </summary>
+    public static Color DefaultForeColor => SystemColors.ControlText;
+
+    /// <summary>
+    /// Gets or sets the font. A null value restores inheritance from the parent.
+    /// </summary>
+    [Category("Appearance")]
+    [Localizable(true)]
+    [DispId(-512)]
+    [AmbientValue(null)]
+    [AllowNull]
+    public virtual Font Font
     {
-        get => _font ??= SystemFonts.DefaultFont;
-        set => _font = value;
+        get => GetCurrentFont();
+        set
+        {
+            // Equality of explicit values preserves the original borrowed Font
+            // reference. An equal inherited font still establishes a local value.
+            if (Equals(_font, value)) { return; }
+            Font previous = Font;
+            _font = value;
+            InvalidateNativeFont();
+            if (previous.Equals(value))
+            {
+                if (NativeHandle != 0) { ApplyFontToHandle(); }
+                return;
+            }
+
+            if (_fontHeight.HasValue) { _fontHeight = value is null ? -1 : value.Height; }
+            using LayoutTransaction transaction = new(_parent, this, nameof(Font));
+            OnFontChanged(EventArgs.Empty);
+        }
     }
+
+    // The ambient font traverses stored parent fonts; it deliberately does not
+    // consume a parent's override of the public Font getter.
+    private Font GetCurrentFont() => _font ?? _parent?.GetCurrentFont() ?? DefaultFont;
+
+    /// <summary>
+    /// Gets or sets the cached height of the control's font.
+    /// </summary>
+    protected int FontHeight
+    {
+        get
+        {
+            if (_fontHeight is { } height && height != -1) { return height; }
+            if (_font is not null) { return (_fontHeight = _font.Height).Value; }
+            int inheritedHeight = _parent?.FontHeight ?? -1;
+            return inheritedHeight != -1 ? inheritedHeight : (_fontHeight = Font.Height).Value;
+        }
+        set => _fontHeight = value;
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void ResetFont() => Font = null;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal virtual bool ShouldSerializeFont() => _font is not null;
 
     /// <summary>
     /// Gets or sets the minimum size of the control.
@@ -692,6 +762,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? ForeColorChanged;
 
     /// <summary>
+    /// Occurs when the font changes.
+    /// </summary>
+    public event EventHandler? FontChanged;
+
+    /// <summary>
     /// Gets or sets the text displayed by the control.
     /// </summary>
     [Category("Appearance")]
@@ -738,44 +813,147 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public virtual void ResetText() => Text = string.Empty;
 
     /// <summary>
-    /// Gets or sets the background color used by the control. Set <see cref="Color.Empty"/> to fall back to the active theme.
+    /// Gets or sets the background color. An empty value restores parent inheritance.
     /// </summary>
-    public Color BackColor
+    [Category("Appearance")]
+    [DispId(-501)]
+    public virtual Color BackColor
     {
-        get => _backColor;
+        get
+        {
+            if (!_backColor.IsEmpty) { return _backColor; }
+            if (_parent is not null)
+            {
+                Color inherited = _parent.BackColor;
+                if (inherited.IsEmpty || inherited.A == 255) { return inherited; }
+            }
+            return DefaultBackColor;
+        }
         set
         {
-            ThrowIfDisposed();
-            if (_backColor == value)
+            // The base native control does not support transparent backgrounds.
+            // Transparent ControlStyles and their paint contract are a separate scope.
+            if (!value.IsEmpty && value.A < 255)
             {
-                return;
+                throw new ArgumentException("Control does not support transparent background colors.");
             }
-
+            Color previous = BackColor;
+            Color previousLocal = _backColor;
             _backColor = value;
-            ReleaseBackgroundBrush();
-            OnBackColorChanged(EventArgs.Empty);
-            RefreshTheme();
+            if (!previous.Equals(BackColor)) { OnBackColorChanged(EventArgs.Empty); }
+            else if (previousLocal != value) { RefreshInheritedColorTheme(background: true); }
         }
     }
 
     /// <summary>
-    /// Gets or sets the foreground color used by the control. Set <see cref="Color.Empty"/> to fall back to the active theme.
+    /// Gets or sets the foreground color. An empty value restores parent inheritance.
     /// </summary>
-    public Color ForeColor
+    [Category("Appearance")]
+    [DispId(-513)]
+    public virtual Color ForeColor
     {
-        get => _foreColor;
+        get => !_foreColor.IsEmpty ? _foreColor : _parent?.ForeColor ?? DefaultForeColor;
         set
         {
-            ThrowIfDisposed();
-            if (_foreColor == value)
+            Color previous = ForeColor;
+            Color previousLocal = _foreColor;
+            _foreColor = value;
+            if (!previous.Equals(ForeColor)) { OnForeColorChanged(EventArgs.Empty); }
+            else if (previousLocal != value) { RefreshInheritedColorTheme(background: false); }
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void ResetBackColor() => BackColor = Color.Empty;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void ResetForeColor() => ForeColor = Color.Empty;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal virtual bool ShouldSerializeBackColor() => !_backColor.IsEmpty;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal virtual bool ShouldSerializeForeColor() => !_foreColor.IsEmpty;
+
+    internal Color LocalBackColor => _backColor;
+    internal Color LocalForeColor => _foreColor;
+
+    // A palette supplies the native default only while no ancestor has a local
+    // value or a non-default public override. Return the current virtual value,
+    // so derived getters and background transparency filtering are respected.
+    internal virtual bool TryGetExplicitBackColor(out Color color)
+    {
+        color = BackColor;
+        return !_backColor.IsEmpty || color != DefaultBackColor
+            || (_parent?.TryGetExplicitBackColor(out _) ?? false);
+    }
+
+    internal virtual bool TryGetExplicitForeColor(out Color color)
+    {
+        color = ForeColor;
+        return !_foreColor.IsEmpty || color != DefaultForeColor
+            || (_parent?.TryGetExplicitForeColor(out _) ?? false);
+    }
+
+    // Every control owns its HFONT, including when the managed Font is inherited
+    // or borrowed. A parent's HWND recreation therefore cannot invalidate fonts
+    // still selected by parked child windows.
+    internal nint NativeFontHandle
+    {
+        get
+        {
+            Font font = GetCurrentFont();
+            if (_nativeFontHandle != 0 && !_nativeFontDirty && font.Equals(_nativeFontSource))
             {
-                return;
+                return _nativeFontHandle;
             }
 
-            _foreColor = value;
-            OnForeColorChanged(EventArgs.Empty);
-            RefreshTheme();
+            nint replacement = font.ToHfont();
+            nint previous = _nativeFontHandle;
+            _nativeFontHandle = replacement;
+            _nativeFontSource = font;
+            _nativeFontDirty = false;
+            try
+            {
+                if (NativeHandle != 0)
+                {
+                    _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETFONT, replacement, (nint)1);
+                }
+            }
+            finally
+            {
+                // Keep the old HFONT alive until the HWND has consumed its
+                // replacement. Reentrant updates own their newer handle.
+                if (previous != 0) { _ = Win32.DeleteObject(previous); }
+            }
+            return _nativeFontHandle;
         }
+    }
+
+    internal void ApplyFontToHandle()
+    {
+        if (NativeHandle == 0) { return; }
+        nint previous = _nativeFontHandle;
+        nint font = NativeFontHandle;
+        if (NativeHandle != 0 && previous == font)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETFONT, font, (nint)1);
+        }
+    }
+
+    private void InvalidateNativeFont()
+    {
+        if (NativeHandle == 0) { ReleaseNativeFont(); }
+        else { _nativeFontDirty = true; }
+    }
+
+    private void ReleaseNativeFont()
+    {
+        nint font = _nativeFontHandle;
+        _nativeFontHandle = 0;
+        _nativeFontSource = null;
+        _nativeFontDirty = false;
+        if (font != 0) { _ = Win32.DeleteObject(font); }
     }
 
     /// <summary>
@@ -1446,21 +1624,26 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     internal readonly struct LayoutTransaction : IDisposable
     {
         private readonly Control? _container;
+        private readonly bool _resumeLayout;
 
         internal LayoutTransaction(Control? container)
         {
             _container = container;
+            _resumeLayout = true;
             container?.SuspendLayout();
         }
 
-        internal LayoutTransaction(Control? container, Control affectedControl, string property)
-            : this(container)
+        internal LayoutTransaction(Control? container, Control affectedControl, string property, bool resumeLayout = true)
         {
             affectedControl.ClearPreferredSizeCache();
-            container?.RequestLayout(affectedControl, property);
+            _container = container;
+            _resumeLayout = resumeLayout;
+            container?.SuspendLayout();
+            container?.ClearPreferredSizeCache();
+            if (resumeLayout) { container?.RequestLayout(affectedControl, property); }
         }
 
-        public void Dispose() => _container?.ResumeLayout();
+        public void Dispose() => _container?.ResumeLayout(_resumeLayout);
     }
 
     public virtual object? Invoke(Delegate method)
@@ -1813,10 +1996,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 }
                 throw;
             }
-            if (Owner is { UiFontHandle: not 0 } owner)
-            {
-                _ = Win32.SendMessageW(_handle, Win32.WM_SETFONT, owner.UiFontHandle, (nint)1);
-            }
+            ApplyFontToHandle();
             _ = Win32.EnableWindow(_handle, Enabled);
             UpdateChildZOrder();
             ApplyTheme();
@@ -1884,6 +2064,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         _originalWindowProc = 0;
         _handle = 0;
         _created = false;
+        ReleaseNativeFont();
     }
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -2104,7 +2285,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         brush = GetResolvedBackgroundBrush(visualStyle);
         backgroundColorRef = GetResolvedBackColorRef(visualStyle);
         foregroundColorRef = GetResolvedForeColorRef(visualStyle);
-        transparentBackground = UseParentBackgroundForTheming && BackColor.IsEmpty;
+        transparentBackground = UseParentBackgroundForTheming && _backColor.IsEmpty;
         return brush != 0;
     }
 
@@ -2329,6 +2510,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private void AssignParent(Control? value)
     {
+        Font previousFont = Font;
+        Color previousForeColor = ForeColor;
+        Color previousBackColor = BackColor;
         bool previousEnabled = Enabled;
         bool previousVisible = Visible;
         _parent = value;
@@ -2343,6 +2527,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             OnVisibleChanged(EventArgs.Empty);
         }
+        if (!previousFont.Equals(Font)) { OnFontChanged(EventArgs.Empty); }
+        if (!previousForeColor.Equals(ForeColor)) { OnForeColorChanged(EventArgs.Empty); }
+        else { RefreshInheritedColorTheme(background: false); }
+        if (!previousBackColor.Equals(BackColor)) { OnBackColorChanged(EventArgs.Empty); }
+        else { RefreshInheritedColorTheme(background: true); }
         ForceAnchorCalculations = true;
         try { _parent?.LayoutEngine.InitLayout(this, BoundsSpecified.All); }
         finally { ForceAnchorCalculations = false; }
@@ -2379,7 +2568,50 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <param name="e">The event arguments.</param>
     protected virtual void OnBackColorChanged(EventArgs e)
     {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        ReleaseBackgroundBrush();
+        RefreshTheme();
+        Invalidate();
         BackColorChanged?.Invoke(this, e);
+        if (_controls is { } children)
+        {
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].OnParentBackColorChanged(e);
+            }
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnParentBackColorChanged(EventArgs e)
+    {
+        if (_backColor.IsEmpty) { OnBackColorChanged(e); }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnFontChanged(EventArgs e)
+    {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        Invalidate();
+        if (_fontHeight.HasValue) { _fontHeight = -1; }
+        InvalidateNativeFont();
+        if (NativeHandle != 0) { ApplyFontToHandle(); }
+        FontChanged?.Invoke(this, e);
+        if (_controls is { } children)
+        {
+            using LayoutTransaction transaction = new(this, this, nameof(Font), resumeLayout: false);
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].OnParentFontChanged(e);
+            }
+        }
+        RequestLayout(this, this, nameof(Font));
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnParentFontChanged(EventArgs e)
+    {
+        if (_font is null) { OnFontChanged(e); }
     }
 
     /// <summary>
@@ -2388,7 +2620,52 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <param name="e">The event arguments.</param>
     protected virtual void OnForeColorChanged(EventArgs e)
     {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        RefreshTheme();
+        Invalidate();
         ForeColorChanged?.Invoke(this, e);
+        if (_controls is { } children)
+        {
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].OnParentForeColorChanged(e);
+            }
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnParentForeColorChanged(EventArgs e)
+    {
+        if (_foreColor.IsEmpty) { OnForeColorChanged(e); }
+    }
+
+    private bool GetAnyDisposingInHierarchy()
+    {
+        for (Control? control = this; control is not null; control = control._parent)
+        {
+            if (control.Disposing) { return true; }
+        }
+        return false;
+    }
+
+    // Establishing/removing a local value can alter palette consumption while
+    // leaving the public effective value equal. Refresh native caches without
+    // manufacturing property-change notifications. Forms also keep palette
+    // brushes before HWND creation, so their existing palette refresh is needed.
+    private void RefreshInheritedColorTheme(bool background)
+    {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        if (background) { ReleaseBackgroundBrush(); }
+        if (this is Form form) { form.RefreshVisualStyles(); }
+        RefreshTheme();
+        for (int index = 0; _controls is not null && index < _controls.Count; index++)
+        {
+            Control child = _controls[index];
+            if (background ? child._backColor.IsEmpty : child._foreColor.IsEmpty)
+            {
+                child.RefreshInheritedColorTheme(background);
+            }
+        }
     }
 
     /// <summary>
@@ -2474,11 +2751,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private nint GetResolvedBackgroundBrush(ResolvedVisualStyle visualStyle)
     {
-        if (!BackColor.IsEmpty)
+        if (TryGetExplicitBackColor(out Color color))
         {
             if (_backgroundBrush == 0)
             {
-                _backgroundBrush = Win32.CreateSolidBrush(Win32.ToColorRef(ToArgb(BackColor)));
+                _backgroundBrush = Win32.CreateSolidBrush(Win32.ToColorRef(ToArgb(color)));
                 _ownsBackgroundBrush = _backgroundBrush != 0;
             }
 
@@ -2486,6 +2763,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 ? _backgroundBrush
                 : GetFallbackBackgroundBrush();
         }
+
+        if (this is Form form) { return form.GetThemeBrush(ThemeColorSlot.Window); }
 
         if (UseParentBackgroundForTheming)
         {
@@ -2502,10 +2781,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private uint GetResolvedBackColorRef(ResolvedVisualStyle visualStyle)
     {
-        if (!BackColor.IsEmpty)
+        if (TryGetExplicitBackColor(out Color color))
         {
-            return Win32.ToColorRef(ToArgb(BackColor));
+            return Win32.ToColorRef(ToArgb(color));
         }
+
+        if (this is Form form) { return form.GetThemeBackgroundColorRef(ThemeColorSlot.Window); }
 
         if (UseParentBackgroundForTheming)
         {
@@ -2523,9 +2804,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private uint GetResolvedForeColorRef(ResolvedVisualStyle visualStyle)
     {
-        if (!ForeColor.IsEmpty)
+        if (TryGetExplicitForeColor(out Color color))
         {
-            return Win32.ToColorRef(ToArgb(ForeColor));
+            return Win32.ToColorRef(ToArgb(color));
         }
 
         return Owner?.GetThemeForegroundColorRef(DefaultForegroundSlot)
@@ -2573,6 +2854,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (_handle == 0)
         {
             ReleaseBackgroundBrush();
+            ReleaseNativeFont();
             ReleaseParkingWindow();
         }
     }

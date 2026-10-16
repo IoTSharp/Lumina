@@ -1,3 +1,7 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// Color defaults adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
+
 using System.Drawing;
 
 namespace Lumina.Forms;
@@ -17,9 +21,6 @@ public class TextBox : Control
     private ScrollBars _scrollBars;
     private int _selectionStart;
     private int _selectionLength;
-    private Font? _font = CreateDefaultFont();
-    private nint _fontHandle;
-    private bool _ownsFontHandle;
 
     /// <summary>
     /// Initializes a single-line editable text box.
@@ -73,11 +74,13 @@ public class TextBox : Control
         get => _readOnly;
         set
         {
+            if (_readOnly == value) { return; }
             _readOnly = value;
             if (NativeHandle != 0)
             {
                 _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETREADONLY, value ? (nint)1 : 0, 0);
             }
+            RefreshTheme();
         }
     }
 
@@ -150,19 +153,39 @@ public class TextBox : Control
     public event EventHandler? SelectionChanged;
 
     /// <summary>
-    /// Gets or sets the font of the text box.
+    /// Gets or sets the background color of the text box.
     /// </summary>
-    public Font Font
+    public override Color BackColor
     {
-        get => _font ??= CreateDefaultFont();
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _font?.Dispose();
-            _font = (Font)value.Clone();
-            ApplyFontToHandle();
-        }
+        get => ShouldSerializeBackColor() ? base.BackColor : ReadOnly ? SystemColors.Control : SystemColors.Window;
+        set => base.BackColor = value;
     }
+
+    /// <summary>
+    /// Gets or sets the foreground color of the text box.
+    /// </summary>
+    public override Color ForeColor
+    {
+        get => ShouldSerializeForeColor() ? base.ForeColor : SystemColors.WindowText;
+        set => base.ForeColor = value;
+    }
+
+    internal override bool TryGetExplicitBackColor(out Color color)
+    {
+        // EDIT uses its own color defaults. Keep those defaults on the semantic
+        // palette while honoring explicit values and further derived getters.
+        color = BackColor;
+        return !LocalBackColor.IsEmpty || color != (ReadOnly ? SystemColors.Control : SystemColors.Window);
+    }
+
+    internal override bool TryGetExplicitForeColor(out Color color)
+    {
+        color = ForeColor;
+        return !LocalForeColor.IsEmpty || color != SystemColors.WindowText;
+    }
+
+    private protected override ThemeColorSlot DefaultBackgroundSlot
+        => ReadOnly ? ThemeColorSlot.Surface : ThemeColorSlot.Control;
 
     /// <inheritdoc />
     protected override string ClassName => "EDIT";
@@ -295,22 +318,6 @@ public class TextBox : Control
     {
         base.OnHandleCreated();
         ApplyNativeThemeState();
-        ApplyFontToHandle();
-    }
-
-    /// <inheritdoc />
-    protected override void OnDisposing()
-    {
-        if (_fontHandle != 0 && _ownsFontHandle)
-        {
-            _ = Win32.DeleteObject(_fontHandle);
-        }
-
-        _fontHandle = 0;
-        _ownsFontHandle = false;
-        _font?.Dispose();
-        _font = null;
-        base.OnDisposing();
     }
 
     private void ApplyNativeThemeState()
@@ -341,11 +348,6 @@ public class TextBox : Control
         SelectionChanged?.Invoke(this, e);
     }
 
-    private static Font CreateDefaultFont()
-        => SystemFonts.MessageBoxFont is { } font
-            ? (Font)font.Clone()
-            : new Font("Segoe UI", 9f, FontStyle.Regular, GraphicsUnit.Point);
-
     private bool UpdateSelectionFromHandle()
     {
         if (NativeHandle == 0)
@@ -368,30 +370,4 @@ public class TextBox : Control
         return true;
     }
 
-    private void ApplyFontToHandle()
-    {
-        if (NativeHandle == 0)
-        {
-            return;
-        }
-
-        if (_fontHandle != 0 && _ownsFontHandle)
-        {
-            _ = Win32.DeleteObject(_fontHandle);
-            _fontHandle = 0;
-            _ownsFontHandle = false;
-        }
-
-        if (_font is null)
-        {
-            return;
-        }
-
-        _fontHandle = Win32.CreateFontFromManagedFont(_font);
-        _ownsFontHandle = _fontHandle != 0;
-        if (_fontHandle != 0)
-        {
-            _ = Win32.SendMessageW(NativeHandle, Win32.WM_SETFONT, _fontHandle, (nint)1);
-        }
-    }
 }

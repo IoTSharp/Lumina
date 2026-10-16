@@ -26,9 +26,9 @@
 
 ## 当前接续与每批收尾
 
-2026-10-16：批次021完成Control-09d/10c基础默认布局、首选尺寸/缓存和标准LayoutEngine及必要容器衔接。18场景512行固定10.0.11/JIT/实际AOT严格相同；旧020事务394行参考/JIT七行差异清零，019生命周期204行和父子集合391行参考/JIT同。4,107项测试及16个旧Control/context驱动全部通过，双目标Release 0错误/464警告；Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。布局探针3,041,280字节、Demo4,192,256字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。 见[021](batches/021.md)，M0/M1未关闭。
+2026-10-16：批次022完成Control-11b基础Font/BackColor/ForeColor局部值、父级继承/Reset/通知及08b借用Font/独占HFONT寿命，必要Form/TextBox/GroupBox/Tab/条带消费接入。16场景212行JIT与实际AOT全同；对固定10.0.11仍有13条真实差异：10条基础Control缺UserPaint路径的WM_GETFONT，3条默认palette前景色，strictMatches=false。4,138项测试（新增31）通过，旧默认布局512/事务394/生命周期204/集合391行参考/JIT均同；双目标Release 0错误/478警告，Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。探针2,971,136字节、Demo4,196,352字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。 见[022](batches/022.md)，M0/M1未关闭。
 
-下批[022](batches/022.md)按HANDOFF只读准备后交接，推进Control-11基础Font/BackColor/ForeColor继承及必要主题/原生字体消费。先固定参考，核心/资源/探针互斥责任，Win32/共享文档/构建/Git由主负责。完整Control专项继续，暂停巡检及无关循环不恢复。
+下批[023](batches/023.md)按HANDOFF只读准备后交接，推进Control-14/17标准Message/CreateParams/WndProc、ControlStyles及真实Paint/失效更新路径；先固定参考，核心/必要契约衔接/探针互斥，主负责Win32共享interop、文档/顺序构建/Git。不得伪造WM_GETFONT来消除022差异；完整Control专项继续，暂停巡检及无关循环不恢复。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

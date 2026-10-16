@@ -111,6 +111,22 @@ public class MenuStrip : ToolStrip
     private protected override bool ShouldCreateHostControl(ToolStripItem item)
         => !UsesNativeMenuBar && base.ShouldCreateHostControl(item);
 
+    private protected override bool IsCompatibleHostControl(Control host, ToolStripItem item)
+    {
+        if ((OperatingSystem.IsWindows()
+                && item.DisplayStyle == ToolStripItemDisplayStyle.Image
+                && item.Image is not null)
+            || item is ToolStripLabel or ToolStripStatusLabel or ToolStripProgressBar
+                or ToolStripComboBox or ToolStripTextBox or ToolStripSeparator)
+        {
+            return base.IsCompatibleHostControl(host, item);
+        }
+
+        // Menu captions use a label-based host. Reuse it when a font or other
+        // layout input changes so focus, popup state and native resources survive.
+        return host is TopLevelMenuItemHost;
+    }
+
     /// <summary>
     /// Creates a menu-style top-level host for a direct command item.
     /// </summary>
@@ -348,7 +364,9 @@ public class MenuStrip : ToolStrip
                     return;
                 }
 
-                uint backgroundArgb = CurrentVisualStyle.Palette.SurfaceBackground;
+                uint backgroundArgb = TryGetExplicitBackColor(out Color background)
+                    ? unchecked((uint)background.ToArgb())
+                    : CurrentVisualStyle.Palette.SurfaceBackground;
                 backgroundBrush = Win32.CreateSolidBrush(Win32.ToColorRef(backgroundArgb));
                 ownsBrush = backgroundBrush != 0;
                 if (backgroundBrush != 0)
@@ -356,11 +374,7 @@ public class MenuStrip : ToolStrip
                     _ = Win32.FillRect(hdc, ref clientRect, backgroundBrush);
                 }
 
-                nint fontHandle = Owner?.UiFontHandle ?? 0;
-                if (fontHandle == 0)
-                {
-                    fontHandle = Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
-                }
+                nint fontHandle = NativeFontHandle;
 
                 if (fontHandle != 0)
                 {
@@ -414,7 +428,9 @@ public class MenuStrip : ToolStrip
                     ? CurrentVisualStyle.Palette.DisabledForeground
                     : _popupOpen && CurrentVisualStyle.Palette.ControlPressedForeground != 0
                         ? CurrentVisualStyle.Palette.ControlPressedForeground
-                        : CurrentVisualStyle.Palette.SurfaceForeground;
+                        : TryGetExplicitForeColor(out Color foreground)
+                            ? unchecked((uint)foreground.ToArgb())
+                            : CurrentVisualStyle.Palette.SurfaceForeground;
                 _ = Win32.SetTextColor(hdc, Win32.ToColorRef(textArgb));
 
                 int textTop = contentTop + Math.Max(0, (contentHeight - textHeight) / 2);

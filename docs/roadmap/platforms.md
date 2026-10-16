@@ -32,6 +32,8 @@ XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：�
 
 以上是候选实现，**不是已实现状态**。GTK 的样式是 Linux 工具包原生；不承诺每个桌面环境外观完全相同。AppKit 组合必须使用系统控件，不将 NSTableView/NSOutlineView 等同于完整 DataGridView/TreeView。表格虚拟化、编辑、数据绑定、事件顺序仍由库对齐。
 
+2026-10-16 · 批次022新增Windows官方Drawing字体消费证据：基础托管继承、TextBox真实LOGFONT及每Control独占HFONT创建/替换/失败重建/销毁有JIT与实际AOT/独立资源测试。完整Font/DPI/Designer资源和GTK4/AppKit仍未实现或验收，XPL-001～003状态不因此关闭；基础UserPaint与默认theme差异见[022](batches/022.md)。
+
 ## 必须先解决的资源契约
 
 `System.Drawing.Primitives` 的 Point/Size/Rectangle/Color 与 `System.Drawing.Common` 的 Font/Image/Icon/Bitmap/Graphics 不是同一个跨平台问题。现有公开 API、Designer 代码和资源直接使用后者；现代 .NET 的 System.Drawing.Common 是 Windows 专属。仅在内部改用 Cairo 或 CoreGraphics 不能使消费方 `new System.Drawing.Font(...)` 在 Linux/macOS 自动工作。

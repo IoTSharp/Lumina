@@ -185,9 +185,7 @@ public class GroupBox : ContainerControlBase
             return Rectangle.Empty;
         }
 
-        nint fontHandle = Owner is not null && Owner.UiFontHandle != 0
-            ? Owner.UiFontHandle
-            : Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
+        nint fontHandle = NativeFontHandle;
         nint previousFont = 0;
 
         try
@@ -237,9 +235,7 @@ public class GroupBox : ContainerControlBase
             return;
         }
 
-        nint fontHandle = Owner is not null && Owner.UiFontHandle != 0
-            ? Owner.UiFontHandle
-            : Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
+        nint fontHandle = NativeFontHandle;
         nint previousFont = 0;
 
         try
@@ -289,7 +285,7 @@ public class GroupBox : ContainerControlBase
             ? (palette.SurfaceBorder != 0 ? palette.SurfaceBorder : palette.ControlBorder)
             : palette.DisabledBorder;
         uint textArgb = Enabled
-            ? (ForeColor.IsEmpty ? palette.SurfaceForeground : unchecked((uint)ForeColor.ToArgb()))
+            ? (TryGetExplicitForeColor(out Color foreground) ? unchecked((uint)foreground.ToArgb()) : palette.SurfaceForeground)
             : palette.DisabledForeground;
 
         if (ShouldUseClassicFrame())
@@ -433,31 +429,7 @@ public class GroupBox : ContainerControlBase
     }
 
     private int GetCaptionFontHeight()
-    {
-        if (OperatingSystem.IsWindowsVersionAtLeast(6, 1))
-        {
-            try
-            {
-                Font? messageBoxFont = SystemFonts.MessageBoxFont;
-                if (messageBoxFont is not null && messageBoxFont.Height > 0)
-                {
-                    return messageBoxFont.Height;
-                }
-            }
-            catch (ArgumentException)
-            {
-            }
-            catch (PlatformNotSupportedException)
-            {
-            }
-        }
-
-        nint fontHandle = Owner is not null && Owner.UiFontHandle != 0
-            ? Owner.UiFontHandle
-            : Win32.GetStockObject(Win32.DEFAULT_GUI_FONT);
-
-        return Win32.GetFontHeight(fontHandle);
-    }
+        => Font.Height;
 
     private bool ShouldUseClassicFrame()
     {

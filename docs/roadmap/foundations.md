@@ -19,8 +19,8 @@
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
 | FND-011 | 🟡 | 019完成Control-07a与Form-06a：延迟Handle、CreateControl/protected创建销毁重建、标准事件、查找映射、基础可见树及重建回调队列；204行固定参考/JIT/实际AOT全同。全部派生属性/焦点/资源恢复、扩展消息/创建参数、关闭竞态与三平台后端仍缺；Form历史Created事件隐藏属性明确保留差异 |
-| FND-012 | 🟡 | 002的Component释放/Site/Container与018的UI父子级联/重复释放保留；019补DestroyHandle覆盖一次调用、跳过base/抛异常状态及注册窗口回调失败清理。全部异常/关闭竞态、事件解绑及图像/字体/菜单所有权仍缺 |
-| FND-013 | 🟡 | 018补Parent依赖的Enabled/Visible有效值与变化通知；完整Font/BackColor/ForeColor/RightToLeft继承、Reset/ShouldSerialize/设计器继承默认值与其他事件仍缺 |
+| FND-012 | 🟡 | 002/018/019释放与句柄异常首范围保留；022 Control-08b补借用托管Font/每控件HFONT及失败重建停放子窗寿命。全部异常/关闭竞态、事件解绑、图像/菜单和完整派生资源仍缺 |
+| FND-013 | 🟡 | 018 Enabled/Visible与022 Control-11b基础Font/BackColor/ForeColor父链、默认/Reset/internal ShouldSerialize/通知完成；Application/Site/ActiveX ambient、RightToLeft/Cursor、透明Styles、DPI和完整Designer默认仍缺。默认theme前景及基础Control UserPaint差异见022 |
 | FND-014 | 🟡 | 009～020基础Bounds/通知/客户区/MinMax/构造和事务保留；021完成Control-09d基础默认Dock/Anchor/AutoSize、PreferredSize和必要容器内容测量。完整派生测量/RTL/DPI/布局重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；AutoScrollPosition/MinSize、横纵滚动、Dock协作、嵌套滚动坐标与平台滚动仍缺 |
@@ -30,12 +30,14 @@
 | FND-020 | ⬜ | MouseDown/Up/Click/DoubleClick/Wheel/Move/Enter/Leave/Hover、Capture、HitTest；坐标、按键、双击和原生消息不重复派发 |
 | FND-021 | ⬜ | CausesValidation、AutoValidate、Validating(Cancel)/Validated、Validate/ValidateChildren；取消验证后焦点与提交行为 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
-| FND-023 | ⬜ | Paint/OnPaint/OnPaintBackground/Invalidate/Update/Refresh、ControlStyles、DoubleBuffered、WndProc/Message/CreateParams、owner draw；派生控件对照；Windows 原生与派生绘制是独立能力 |
+| FND-023 | 🟡 | 已有无参Invalidate、内部原生窗口过程和部分派生绘制，原全待办更正；标准Paint/OnPaint/OnPaintBackground、Invalidate重载/Update/Refresh、ControlStyles/DoubleBuffered、WndProc/Message/CreateParams及完整owner draw仍缺，沿Control-14接续。Windows原生与派生绘制分开验收 |
 | FND-024 | ⬜ | AllowDrop/DragEnter/Over/Leave/Drop、DoDragDrop、GiveFeedback/QueryContinueDrag、Clipboard/DataObject；平台格式与内存所有权有测试 |
 | FND-025 | ⬜ | AccessibleName/Description/Role、AccessibilityObject/CreateAccessibilityInstance、键盘焦点与选择通知；UIA/AT-SPI/NSAccessibility 均由对应后端验证 |
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次022：FND-012/013补基础字体寿命与外观父链子范围，FND-023/Control-14纠正已有Invalidate/内部窗口过程仍全待办；GroupBox标准Controls/部分默认、Form继承缩放/Win32、TabControl与条带原生实现回标部分。全部未完父项、ID/固定分母及真实Styles/theme差异保留，见[022](batches/022.md)。
 
 - 2026-10-16 · 批次021：FND-014/015按真实默认布局/首选尺寸及引擎缓存子范围更新；CNS-008不再全待办。Control-17的既有Win32实现、Flow/Table有限测量从全待办改部分；020七行差异已修但原始历史保留。全部父项/平台/98%未关闭，见[021](batches/021.md)。
 

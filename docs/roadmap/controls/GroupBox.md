@@ -13,14 +13,15 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / GroupBox-01 | 校正 GroupBox : Control 的标准公开继承与 Controls 集合；不要因为内部复用 ContainerControlBase 而要求消费者依赖新基类。 |
-| ⬜ | P0 / GroupBox-02 | 对齐 Text、FlatStyle、AutoSize、AutoSizeMode、Padding、TabStop=false 等默认值；标题变化、字体变化后 DisplayRectangle 和首选大小重新计算。 |
-| ⬜ | P1 / GroupBox-03 | 完成 Controls 的 Add/Remove/重排/父级转移和 RadioButton 自动互斥分组边界；组内禁用、隐藏控件不打破焦点导航。 |
+| 🟡 | P0 / GroupBox-01 | 已继承018标准Controls集合；公开继承仍为历史ContainerControlBase，GroupBox : Control标准直接基类待校正，不要求消费者使用新基类。 |
+| 🟡 | P0 / GroupBox-02 | 已有200×100及Padding=3默认和标题DisplayRectangle，022标题占位改用有效Font.Height；原全待办遗漏局部实现。完整Text/FlatStyle/AutoSize/AutoSizeMode/TabStop默认、首选测量及变化顺序仍待对照。 |
+| 🟡 | P1 / GroupBox-03 | 已消费018标准Controls的Add/Remove/重排/父级转移；RadioButton自动互斥分组、组内禁用/隐藏和焦点导航仍待验证，不随集合基类关闭。 |
 | ⬜ | P1 / GroupBox-04 | 实现文本 & 助记键、双 && 转义、Alt 导航到首个可选子控件；GroupBox 本身不得增加额外 Tab 焦点。 |
 | ⬜ | P1 / GroupBox-05 | 对照 Layout/TextChanged/FontChanged/AutoSizeChanged 触发顺序，覆盖空标题、多行/超长标题、RTL 和容器缩小到零内容区域。 |
 | ⬜ | P1 / GroupBox-06 | 核验 FlatStyle.System/Standard/Flat/Popup 与高对比、系统主题；当前自绘路径与原生路径分开记录，避免美化改变 WinForms 行为。 |
-| ⬜ | P1 / GroupBox-07 | 验证父背景、Enabled/ForeColor/Font 继承与嵌套布局；标题栏不遮盖子控件，不产生重复背景擦除闪烁。 |
-| ⬜ | P2 / GroupBox-08 | Windows 优先 BUTTON/BS_GROUPBOX + 系统主题；确需主题补绘时保持 HWND 和可访问性，逐项验证 WM_PRINTCLIENT/打印和辅助技术。 |
+| 🟡 | P1 / GroupBox-07 | 022完成07a字体及显式颜色消费；完整Enabled/嵌套布局、标题遮挡、背景擦除闪烁、RTL/DPI仍待验收。 |
+| ✅ | P1 / GroupBox-07a | 批次022标题度量使用有效Font.Height，绘制使用本控件独占HFONT；前景/父背景使用有效显式颜色链，默认theme不写公共属性。移除固定系统字体和吞异常回退；字体改变的DisplayRectangle及资源消费回归见022，仅此必要衔接完成。 |
+| 🟡 | P2 / GroupBox-08 | 已有BUTTON/BS_GROUPBOX及WM_PAINT/WM_PRINTCLIENT主题补绘，原全待办更正为部分。完整系统主题/打印、HWND与可访问性、辅助技术仍待逐项验收，不把自绘称为全部系统原生绘制。 |
 | ⬜ | P2 / GroupBox-09 | Linux 使用 GtkFrame + 原生标题 GtkLabel，child 为 GtkFixed；助记键关联首个可聚焦子控件。GTK frame 不提供 WinForms FlatStyle 全部外观。 |
 | ⬜ | P3 / GroupBox-10 | macOS 使用 NSBox，contentView 承载原生子控件，title/boxType/borderType 映射；FlatStyle 枚举的逐像素等价不作为跨平台原生承诺。 |
 | ⬜ | P1 / GroupBox-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -38,6 +39,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：完成07a有效字体/显式颜色消费，标题度量不再固定系统字体且不吞字体异常。按实际代码纠正01/02/03/08中遗漏标准Controls、已有默认/度量和Win32绘制的全待办状态；标准直接继承、全部默认/首选布局/焦点/打印/Designer与平台保持未完，见[022](../batches/022.md)。
 
 - `cb090bc`（2026-04-08）：记事本与 UI 改进提交涉及本文件。
 - `7d7a67e`（2026-04-08）：Lumina.Forms 初始实现整合涉及本文件。

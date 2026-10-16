@@ -17,12 +17,13 @@
 | ⬜ | P0 / ToolStrip-02 | 逐宿主核验 Items→native 与 native→Items 双向同步：Text/Enabled/Visible/Checked/CheckState/SelectedIndex/Value/Minimum/Maximum；当前 ApplyItemState 只能证明一个方向存在。 |
 | ⬜ | P1 / ToolStrip-03 | 补 AutoSize、CanOverflow、ShowItemToolTips、Stretch、GripStyle、LayoutStyle、ImageList/ImageScalingSize、RenderMode/Renderer、TextDirection、AllowMerge/AllowItemReorder 的标准默认和属性变更。 |
 | ⬜ | P1 / ToolStrip-04 | 实现 ItemAdded/ItemRemoved/ItemClicked、LayoutCompleted、BeginDrag/EndDrag、RendererChanged；同一激活路径只触发一次 item.Click 与 strip.ItemClicked，顺序按官方捕获。 |
-| 🟡 | P1 / ToolStrip-05 | 020事务保留；021父Dock/标准Dock事务/Orientation和已有item布局引擎完成有限接入。完整LayoutStyleChanged、Alignment/Overflow/Placement、测量、RTL/DPI及各item布局仍缺。 |
+| 🟡 | P1 / ToolStrip-05 | 020事务、021父Dock/Orientation有限接入保留；022完成05c有效字体测量衔接。完整LayoutStyleChanged、Alignment/Overflow/Placement、全部item测量、RTL/DPI仍缺。 |
+| ✅ | P1 / ToolStrip-05c | 批次022 MeasureTextCore使用本控件有效Font对应的独占HFONT，替代Form共享/临时系统字体；无HWND测量后Dispose释放本体资源，字体变化经标准布局重新测量。仅此测量资源衔接，完整条带/项目Font及Renderer/overflow另列。 |
 | ✅ | P1 / ToolStrip-05b | 批次021：父级DefaultLayout统一定位，Dock内部事务按实际方向/几何提交并在完成后DockChanged；只读标准Orientation消费Dock及固定横竖LayoutStyle，已有host按方向排列。直属/嵌套/取消Dock有参考；完整Style事件、overflow/所有item测量另列。 |
 | ✅ | P1 / ToolStrip-05a | 批次020：现有item布局迁到标准OnLayout；Form只对直属strip定位，嵌套strip不按Form重排，构造期items未初始化时可安全进入布局。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / ToolStrip-06 | 实现 Alt/助记键、F10、方向键、Tab、Esc、快捷键分发、焦点还原与禁用项跳过；打开下拉菜单后在同级项间切换不能失去输入模式。 |
 | ⬜ | P1 / ToolStrip-07 | 实现工具提示、ImageKey/ImageIndex、RTL、DPI 和可访问性；自定义 Renderer/Paint 扩展与原生默认外观分别列入验收，不能忽略绘制 API 分母。 |
-| ⬜ | P2 / ToolStrip-08 | Windows 保留现有原生控件宿主组合与 popup 菜单；只补缺失语义。ToolbarWindow32 可用于证明等价的子集，不能为追求单一 HWND 破坏 TextBox/ComboBox 集成。 |
+| 🟡 | P2 / ToolStrip-08 | 已有原生控件宿主组合和popup菜单，原全待办更正；022有效字体测量复用Control资源。完整宿主双向同步/资源/焦点仍缺，不为单一HWND破坏TextBox/ComboBox集成。 |
 | ⬜ | P2 / ToolStrip-09 | Linux 用 GtkBox/GtkButton/GtkToggleButton/GtkEntry/GtkDropDown/GtkProgressBar/GtkSeparator 原生组合；GTK4 无旧 GtkToolbar，overflow 由原生 GtkMenuButton/GtkPopover 承载同一逻辑 item。 |
 | ⬜ | P3 / ToolStrip-10 | macOS 兼容任意嵌入/Dock 时用 NSStackView/NSButton/NSTextField/NSPopUpButton/NSProgressIndicator 原生组合；NSToolbar 是窗口级工具栏，不能冒充所有 ToolStrip 布局。 |
 | ⬜ | P1 / ToolStrip-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -40,6 +41,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：05c测量使用有效字体与每控件HFONT，移除临时/父共享字体分支；继承变化经标准布局消费。08按已有真实宿主组合更正为部分，全部item契约/overflow/Renderer与平台仍缺，见[022](../batches/022.md)。
 
 - 2026-10-16 · 批次021：父级DefaultLayout统一定位，Dock内部事务按实际方向/几何提交并在完成后DockChanged；只读标准Orientation消费Dock及固定横竖LayoutStyle，已有host按方向排列。直属/嵌套/取消Dock有参考；完整Style事件、overflow/所有item测量另列。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 

@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～020明确子范围与历史原始差异保留；021完成09d/10c基础默认布局与首选尺寸及必要容器接入，512行固定参考/JIT/实际AOT严格全同，旧020事务394行、019生命周期204行和父子集合391行参考/JIT均同。完整继承属性/全部派生布局/输入/绘制/资源、复杂竞态/Designer及GTK4/AppKit仍缺；AOT元数据、非零下界数组fixture、中文Designer差异仍单列。详见[021](../batches/021.md)，不能以本批结束整Control专项。
+🟡 **当前状态：**002～021明确子范围与原始差异保留；022补基础Font/BackColor/ForeColor局部值、父级继承、Reset/通知及独占HFONT寿命和必要主题消费。整Control继续部分：UserPaint/Styles、完整输入/绘制/资源、其余ambient来源/RTL/Cursor、DPI/全部派生布局、Designer和GTK4/AppKit仍缺。022严格差分保留基础Control原生字体及默认主题颜色差异，详见[022](../batches/022.md)，不能以本批结束整Control专项。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -30,7 +30,8 @@
 | ✅ | P0 / Control-06a | 批次018：ControlCollection/ArrangedElementCollection、Parent可设与含parent构造、Add/AddRange/Remove/Clear/Find/键和索引/复制/枚举/Clone/排序、ParentChanged与ControlAdded/Removed、Contains/FindForm/TopLevelControl完成；重复添加/循环父子/线程限制、直接Form父级、真实HWND移动/停放/重挂保留句柄和Z序有固定参考。精确范围与运行证据见018；完整布局/ambient通知和Handle延迟/重建另列。 |
 | 🟡 | P1 / Control-07 | 019完成07a标准句柄生命周期及Windows基础可见树/映射/重建队列；所有派生控件的重建属性/焦点/资源恢复、CreateParams/WndProc扩展、全部关闭/线程竞态与GTK4/AppKit生命周期仍待原任务及14/17～19，不由基础Control/Form探针关闭整项。 |
 | ✅ | P1 / Control-07a | 批次019：get-only延迟Handle、独立Created/IsHandleCreated/RecreatingHandle、CreateControl与protected CreateHandle/DestroyHandle/RecreateHandle、OnCreateControl/OnHandleCreated/OnHandleDestroyed及查找映射完成。Windows普通/隐藏/可见树、直接/外部销毁、父子重建、销毁事件中的映射寿命、重挂可见消息、已排队回调保留、创建重入/原异常/Dispose覆盖首范围有204行固定10.0.11/JIT/实际AOT严格对照；完整子范围见019，剩余派生/资源/竞态与平台见父项。 |
-| 🟡 | P1 / Control-08 | 002的Component释放（08a）保留；018接入UI父子级联Dispose、先销毁HWND再解除Parent及重复释放重挂树处理。019补DestroyHandle覆盖只调用一次、覆盖跳过base/抛异常时保留参考状态，以及注册窗口回调失败的真实清理与原异常。借用Font/Image/菜单全部所有权、异常/关闭竞态和完整事件解绑仍待后续。 |
+| 🟡 | P1 / Control-08 | 002的Component释放（08a）、018父子级联和019句柄异常清理保留；022补08b借用托管Font/独占HFONT寿命。Image/菜单全部所有权、所有异常/关闭竞态和完整事件解绑仍待后续。 |
+| ✅ | P1 / Control-08b | 批次022：基础Control及必要消费控件各自持有官方Font.ToHfont生成的HFONT，向HWND设置替代句柄后再释放旧句柄，真实销毁及无窗Dispose释放；托管Font保留借用引用不克隆/Dispose。Form重建失败时停放子窗字体仍存活并可更新；TextBox移除隐藏Font与自有释放路径。完整DPI/UserPaint/派生资源/平台仍归父项。 |
 | ✅ | P1 / Control-08a | 批次 002：继承 Component.Dispose 并覆盖 Dispose(bool)，保留派生 OnDisposing；Site 移除、组件容器级联、重复/重入、Dispose(false)、异常传播和状态退出均有回归。5 项生命周期观测与本机 WinForms 10.0.11 相同；不等同完整控件生命周期验收。 |
 | 🟡 | P1 / Control-09 | 012～014客户区/换算/运行期MinMax与015构造默认保留；021完成09d基础默认Dock/Anchor/AutoSize、PreferredSize与指定边界恢复。完整派生测量/布局、DPI/RTL、复杂布局重入/集合修改和BringToFront/SendToBack仍缺；020的Dock/Split七行差异已由021修复，历史原始失败保留。 |
 | ✅ | P1 / Control-09a | 批次 012：标准 ClientSize/ClientRectangle、ClientSizeChanged 与 protected virtual SetClientSizeCore/OnClientSizeChanged 完成；明确初始化基础 Control、四有限边框样式、无/有 HWND、零负/恢复、顺序/覆盖/重入/异常共 5,556 条固定参考/JIT/实际 AOT 相同，80 项新增回归通过。保留原始客户区请求缓存与重复通知；客户区缓存变化可使仅位置操作触发标准尺寸通知。旧边界/通知/原生高度扩展保留；基础构造默认与SizeFromClientSize见已完成01b/c、09b，全部派生约束/外部自主通知/完整布局/Form生命周期仍缺。 |
@@ -41,11 +42,12 @@
 | ✅ | P1 / Control-10b | 批次020完成基础非virtual SuspendLayout/ResumeLayout/PerformLayout入口、protected OnLayout及标准参数/委托、嵌套延期/缓存/重入/原异常及必要属性/父子事务。020原394行JIT/AOT同、参考7行差异保留为历史；021同源394行参考/JIT全同。本子项只计事务状态与调用契约，引擎/缓存由10c补齐。 |
 | ✅ | P1 / Control-10c | 批次021：标准Layout.LayoutEngine及Control.LayoutEngine扩展真实参与布局；OnLayout先事件再引擎，返回true请求父PreferredSize布局；InitLayout、ResumeLayout(false)、子项边界/属性/集合变更协调初始化及首选缓存。自定义引擎调用/返回/异常、默认引擎、缓存与指定边界有512行对照及13项核心回归。非Control arranged对象、复杂缓存共享重入和完整设计器往返另列，不以标准基类默认无几何策略代替实际DefaultLayout。 |
 | ✅ | P1 / Control-10a | 批次 011：标准 LocationChanged/Move、SizeChanged/Resize 与四个 protected virtual On* 已接入七属性/两族 SetBounds/直接 core；重复、指定/未知位、零负尺寸、覆盖/不调 base、重入/原异常和参数轨迹共 2,280 条固定参考/JIT/实际 AOT 相同，99 项新增回归通过。OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数；旧OnBoundsChanged独立保留。基础ClientSizeChanged/客户区见已完成09a，外部原生自主移动/尺寸通知、完整Layout及全部派生约束仍缺。 |
-| 🟡 | P1 / Control-11 | 016/017完成构造Text虚槽及无父级无自身HWND的Text/ResetText（01c/11a）；018补Parent依赖的Enabled/Visible有效值与父级变更通知。完整Font/BackColor/ForeColor/RightToLeft/Cursor继承、Reset/ShouldSerialize/全部事件和已有句柄native文本仍缺，不随子范围关闭。 |
+| 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承。Application默认字体/Site/ActiveX ambient、RightToLeft/Cursor、透明ControlStyles、全部事件与已有句柄native文本仍缺；主题默认值与WinForms视觉差异保留，不随子范围关闭。 |
+| ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
 | ⬜ | P1 / Control-12 | 对齐 Tab/助记键、Enter/Leave/GotFocus/LostFocus、CausesValidation/Validating/Validated；KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress 与 IME 组合态。 |
 | ⬜ | P1 / Control-13 | 实现 MouseDown/Up/Click/DoubleClick/Wheel/Move/Enter/Leave/Hover、Capture/MouseCaptureChanged、坐标换算/PointToClient/PointToScreen；原生通知与反射消息去重。 |
-| ⬜ | P1 / Control-14 | 实现 Paint/OnPaint/OnPaintBackground、Invalidate 各重载、Update/Refresh、ControlStyles/DoubleBuffered、CreateParams/WndProc/DefWndProc；派生用户控件可用，不能以原生默认绘制排除这些契约。 |
+| 🟡 | P1 / Control-14 | 已有无参Invalidate、原生子类窗口过程与内部HandleWindowMessage；历史全待办遗漏这些局部代码。标准Paint/OnPaint/OnPaintBackground、Invalidate各重载、Update/Refresh、ControlStyles/DoubleBuffered、CreateParams/WndProc/DefWndProc仍缺。022基础Control使用STATIC并设置HFONT，WM_GETFONT与WinForms UserPaint路径不同，须由真实样式/绘制契约解决，不能拦截返回0掩盖。 |
 | ⬜ | P1 / Control-15 | 实现 DataBindings/BindingContext/DataContext 与变化传播、拖放/IDataObject/剪贴板、AccessibleName/Description/Role/AccessibilityObject；各领域引用对应独立任务，不能全部留为存值。 |
 | ⬜ | P1 / Control-16 | DesignerSerializationVisibility/DefaultValue/DefaultEvent、ISupportInitialize、.resx Font/Image/Icon/TypeConverter 的消费和裁剪路径逐项验证；真实 VS 设计器与 Native AOT 运行均有证据。 |
 | 🟡 | P1 / Control-17 | 002～021已实际使用USER32子HWND、稳定窗口回调、UI投递/父子重挂/标准生命周期和本批真实布局坐标；历史全待办状态更正为部分。完整WndProc/CreateParams/消息反射、所有派生同步与资源/关闭竞态仍缺，不为具体控件复制第二份Control，也不由基础探针关闭整Windows后端。 |
@@ -62,6 +64,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次022：完成11b基础外观父链与08b借用Font/独占HFONT明确范围，移除TextBox隐藏Font所有权；父重挂/Reset/通知/FontHeight/布局缓存与内部theme局部值分离。固定参考仍记录基础Control原生字体和默认palette前景色差异，完整Styles/UserPaint由14接续；不以托管一致关闭原生绘制。历史Control-14从全待办纠正为已有Invalidate/内部窗口过程的部分状态，全部未完成员与原ID保留。详细运行、首次失败和剩余边界见[022](../batches/022.md)。
 
 - 2026-10-16 · 批次021：09d/10c完成有限基础几何/引擎/缓存。固定10.0.11默认AnchorLayoutV2=false，另进程显式true覆盖；不把V2误当默认。Dock↔Anchor内部切换避免多余DockChanged，真实几何提交保留标准事件；移除旧Form菜单高度二次偏移，native矩形与托管一致。13核心+11容器新测试及全部4,107项通过，512行JIT/实际AOT同参考；020七行差异已修，旧失败不覆盖。Control-17从全待办纠正为已有Win32部分实现，未把它或09/10父项关闭；完整边界见021。
 
