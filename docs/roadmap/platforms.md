@@ -34,6 +34,8 @@ XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：�
 
 2026-10-16 · 批次024新增Windows官方Drawing背景图像五布局、真实父子HWND透明/alpha、DC裁剪/父Graphics状态与失效传播证据。21场景307行JIT/实际AOT全同；屏幕GetDC(0)/ClientToScreen/GetPixel与PRINTCLIENT位图分列，非同比例尺寸区分Stretch/Zoom。无HWNDdirect场景仍仅证明不建窗/状态寿命，高对比设备切换、完整Designer资源/绘制及GTK4/AppKit未完成。相对参考16行关闭增强差异、023 custom Param四差异/GetLParam IL3050和默认palette三差异保留；XPL-001～003不由本批关闭，见[024](batches/024.md)。
 
+2026-10-16 · 批次025补充Windows native边界证据：Control/Form/WindowsFormsSynchronizationContext的unmanaged WindowProc在callback异常、`WM_NCDESTROY`清理失败和默认过程之间保持边界，8场景JIT/AOT全部正常退出；这只推进Windows现有后端的有限生命周期范围，不代表Linux GTK4或macOS AppKit代码/设备验收已完成。XPL-001～003及跨平台原生后端仍保持原状态，见[025](batches/025.md)。
+
 2026-10-16 · 批次022历史字体消费证据：基础托管继承、TextBox真实LOGFONT及每Control独占HFONT创建/替换/失败重建/销毁有JIT与实际AOT/独立资源测试。完整Font/DPI/Designer资源和GTK4/AppKit未因此完成，基础UserPaint与默认theme当时的差异保存在[022](batches/022.md)。
 
 ## 必须先解决的资源契约

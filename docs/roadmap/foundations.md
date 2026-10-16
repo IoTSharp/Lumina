@@ -7,9 +7,9 @@
 | ID | 状态 | 工作与验收 | 对应文档 |
 | --- | --- | --- | --- |
 | FND-001 | 🟡 | 002～018基础构造、ControlCollection/Parent与Form标准链保留；019补Control-07a标准句柄入口/状态/事件及Form必要覆盖。IDropTarget、所有派生默认/完整扩展契约仍缺，不由基类或构造关闭父项 | [Control](controls/Control.md)、[Form](controls/Form.md)、[批次019](batches/019.md) |
-| FND-002 | 🟡 | 003～007/019投递及context范围保留；024的Control-04b完成Close/失败投递余队列收尾和实际HWND销毁，相对10.0.11的增强差异明示。普通Drain完成失败、InvokeAsync关闭Task悬挂、ApplicationContext/模态、多UI退出与完整竞态仍缺；null Delegate/Send和错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次024](batches/024.md) |
+| FND-002 | 🟡 | 003～007/019投递及context范围保留；024完成Close/失败投递余队列收尾，025完成普通Drain完成信号失败后的FIFO继续与native context边界。InvokeAsync关闭Task悬挂、ApplicationContext/模态、多UI退出与完整竞态仍缺；null Delegate/Send和错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次025](batches/025.md) |
 | FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
-| FND-004 | 🟡 | 018～024完整Demo AOT已真实显示，Enable option复选框0→1，WM_CLOSE正常exit0且记录HWND全部销毁。模态、完整布局/业务交互、设计器和可访问性仍未验收；018截图的文字裁切未据此宣称修复，不关闭父项 | [024证据](batches/024.md)、[原评估](../assessments/2026-10-15/README.md) |
+| FND-004 | 🟡 | 018～025完整Demo AOT已真实显示，Enable option复选框0→1，WM_CLOSE正常exit0且记录HWND全部销毁。模态、完整布局/业务交互、设计器和可访问性仍未验收；018截图的文字裁切未据此宣称修复，不关闭父项 | [025证据](batches/025.md)、[原评估](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
 
@@ -18,8 +18,8 @@
 | ID | 状态 | 任务细节与验收 |
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
-| FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，Form-16b修默认COMPOSITED影响失效矩形。外部NCDESTROY回调/清理双错保留、全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
-| FND-012 | 🟡 | 002/018/019释放首范围、022借用Font/每控件HFONT保留；024完成BackgroundImage借用与独立父Graphics/DC状态寿命。Dispose遇关闭错误仍中断后续Parent/托管树/Site/Disposed清理；其余图像/菜单/派生资源、异常事务/事件解绑与竞态仍缺 |
+| FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
+| FND-012 | 🟡 | 002/018/019释放首范围、022借用Font/每控件HFONT保留；024完成BackgroundImage借用与独立父Graphics/DC状态寿命，025补Control/Form native清理逐项继续执行。Dispose遇关闭错误后的Parent/托管树/Site/Disposed事务、其余图像/菜单/派生资源、异常事务/事件解绑与竞态仍缺 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha。Application/Site/ActiveX ambient、RightToLeft/Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
 | FND-014 | 🟡 | 009～020基础Bounds/通知/客户区/MinMax/构造和事务保留；021完成Control-09d基础默认Dock/Anchor/AutoSize、PreferredSize和必要容器内容测量。完整派生测量/RTL/DPI/布局重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次025：FND-002/004/011/012按普通Drain和native callback边界实际完成范围更新；保留InvokeAsync关闭、Dispose后续托管事务、完整Control/Form/Designer/资源与GTK4/AppKit缺口。8场景参考/JIT/AOT全部正常退出，4项真实差异保留，不由测试数或局部边界关闭父项，见[025](batches/025.md)。
 
 - 2026-10-16 · 批次024：FND-002/011/012/013/023按04b/14b实际完成范围更新，修正“Close仍中断余队列”“背景图像与可见透明全缺”的过时描述。独立列出普通Drain、InvokeAsync关闭、Dispose后续托管清理和原生双错缺口；本批Windows屏幕证据不扩为Designer/全派生/跨平台验收，ID及固定分母不变，见[024](batches/024.md)。
 

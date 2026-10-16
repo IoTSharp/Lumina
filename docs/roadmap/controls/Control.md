@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～023明确子范围保留；024完成04b关闭队列收尾及14b背景图像/五种布局、真实HWND透明/alpha绘制。21场景307行JIT与实际AOT全同；相对固定10.0.11仍有16行有意关闭修复差异，严格比较失败保留。普通Drain完成失败、InvokeAsync关闭悬挂、完整输入/绘制/资源、ambient/RTL/Cursor、DPI/全部派生布局、Designer和GTK4/AppKit仍缺，整Control继续部分，详见[024](../batches/024.md)。
+🟡 **当前状态：**002～024明确子范围保留；025完成04c普通Drain、07b/17b native异常边界。025固定参考/JIT/AOT各8场景全部正常退出，4场景严格相同，4项真实差异保留；完整Control继续部分。`InvokeAsync`关闭悬挂、Dispose后续托管事务、并发释放同一wait、完整输入/绘制/资源、ambient/RTL/Cursor、DPI/全部派生布局、Designer和GTK4/AppKit仍缺，详见[025](../batches/025.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -21,16 +21,18 @@
 | ✅ | P0 / Control-02c | 批次 010：标准 BoundsSpecified、四/五参数 SetBounds 的 x/y 名称与 protected virtual SetBoundsCore 实际接入；None/组合/未知位、重复值、属性标志、派生覆盖与直接 core 有 2,034 条固定参考/JIT/实际 AOT 对照，新增 60 项回归通过。外层保留未指定分量，core 接完整矩形，原始 specified 不丢；保留02b尺寸/创建语义。基础Min/Max、通知及客户区见已完成09a/c、10a；完整布局/全部派生约束/外部自主通知仍缺。 |
 | 🟡 | P0 / Control-03 | 批次003完成现有HWND/创建线程与父级句柄查找（03a）；018接入真实Parent/Form标准链，019内部查询改用不创建句柄的NativeHandle并保留重建投递。未启动/已退出消息循环和完整句柄重建竞态仍待对照。 |
 | ✅ | P0 / Control-03a | 批次 003：InvokeRequired 查询 HWND 创建线程，沿 Parent 及当前 Owner 找已有投递句柄；无句柄返回 false，Invoke/BeginInvoke 无句柄不创建并抛标准异常；父级/Owner 回退有实际线程对照。 |
-| 🟡 | P0 / Control-04 | 003首范围04a、019重建保留队列及024关闭收尾04b完成。普通Drain遇完成Set失败仍可能中断余队列/跳过回调错误报告，等待期间并发释放同一wait、完整关闭/重建/线程退出竞态及参数全部边界未关闭。 |
+| 🟡 | P0 / Control-04 | 003首范围04a、019重建保留队列、024关闭收尾04b及025普通Drain收尾04c完成。`InvokeAsync`关闭终止、等待期间并发释放同一wait、完整关闭/重建/线程退出竞态及参数全部边界仍未关闭。 |
 | ✅ | P0 / Control-04b | 批次024：Close及Enqueue/AttachWindow失败投递先完成全部已接收Invocation，再传播单原错/多错聚合；Post原Win32错误保留第一项及各EndInvoke。DestroyHandle遇Close错误仍真实销毁HWND。10项独立回归及同源JIT/AOT指定关闭场景通过，相对10.0.11的16行收尾差异明确保留。仅队列/实际HWND保证，不承诺Dispose后续托管树/Site/事件事务，普通Drain/InvokeAsync包装及全部竞态归父项。 |
+| ✅ | P0 / Control-04c | 批次025：普通 `Drain` 在 `Invocation.Complete.Set` 失败后继续执行 FIFO 余队列，Drain 结束后传播单/多完成信号异常；完成信号成功时仍按标准路径报告未观察 callback 异常，重复 `EndInvoke` 保留原异常。4项独立队列回归通过；InvokeAsync关闭终止、并发释放和完整竞态仍归父项。 |
 | ✅ | P0 / Control-04a | 批次 003：真实 PostMessage 队列、同线程 FIFO/EndInvoke、跨线程返回与异常、ExecutionContext、IAsyncResult 和销毁待执行项唤醒；69 条指定观测在固定 WinForms 10.0.11、JIT、AOT 相同。null Delegate 保护与默认异常 UI 的明确差异见修改历史，不等于父任务完整验收。 |
 | 🟡 | P0 / Control-05 | 批次 004～007 完成 Action/Func<T>、ValueTask 两族入口及旧路径排队、显式/default context 与 callback await 恢复首范围；完整关闭/重建/退出及多 UI/模态竞态仍保留，不随子范围关闭。 |
 | ✅ | P0 / Control-05a | 批次 004：标准 Action/Func<T> 在自身 HWND 线程排队，返回值、原异常及取消保留；旧单 Action/Task 回调也排队。固定 WinForms 10.0.11、JIT、AOT 59 条观测相同，另有旧 Task 路径专项检查；ValueTask/同步上下文与完整关闭竞态未关闭。 |
 | ✅ | P0 / Control-05b | 批次 005：标准 Func<CancellationToken,ValueTask> / ValueTask<T> 在 UI 队列首次调用并单次消费，90 条固定参考/JIT/AOT 观测相同；原异常/结果/token、取消后继续消费及 async lambda 选择已检。同步上下文安装、callback 内 await 后 UI 恢复和完整关闭竞态另列，不代表完整异步兼容。 |
 | 🟡 | P0 / Control-06 | 018完成06a标准父子集合与Windows重挂首范围；Form直接子项Parent为真实Form，共用ControlCollection。019修复隐藏父级重挂时中间VisibleChanged，原391行参考/JIT现全部相同；018原始失败记录保留。020已接基础布局事务；完整布局引擎/继承属性通知、派生重入全部组合与三平台仍缺。 |
 | ✅ | P0 / Control-06a | 批次018：ControlCollection/ArrangedElementCollection、Parent可设与含parent构造、Add/AddRange/Remove/Clear/Find/键和索引/复制/枚举/Clone/排序、ParentChanged与ControlAdded/Removed、Contains/FindForm/TopLevelControl完成；重复添加/循环父子/线程限制、直接Form父级、真实HWND移动/停放/重挂保留句柄和Z序有固定参考。精确范围与运行证据见018；完整布局/ambient通知和Handle延迟/重建另列。 |
-| 🟡 | P1 / Control-07 | 019的07a及023的17a保留，024的04b保证预先Close失败仍销毁实际HWND。外部WM_NCDESTROY回调与清理同时失败的原错保留仍缺；所有派生重建属性/焦点/资源恢复、全部关闭/线程竞态与GTK4/AppKit生命周期仍待原任务及17～19。 |
+| 🟡 | P1 / Control-07 | 019的07a、023的17a及025的07b保留，024的04b保证预先Close失败仍销毁实际HWND。native双错边界已覆盖有限范围；所有派生重建属性/焦点/资源恢复、全部关闭/线程竞态与GTK4/AppKit生命周期仍待原任务及17～19。 |
 | ✅ | P1 / Control-07a | 批次019：get-only延迟Handle、独立Created/IsHandleCreated/RecreatingHandle、CreateControl与protected CreateHandle/DestroyHandle/RecreateHandle、OnCreateControl/OnHandleCreated/OnHandleDestroyed及查找映射完成。Windows普通/隐藏/可见树、直接/外部销毁、父子重建、销毁事件中的映射寿命、重挂可见消息、已排队回调保留、创建重入/原异常/Dispose覆盖首范围有204行固定10.0.11/JIT/实际AOT严格对照；完整子范围见019，剩余派生/资源/竞态与平台见父项。 |
+| ✅ | P1 / Control-07b | 批次025：外部 `WM_NCDESTROY` 中 callback 与映射移除、dispatcher/句柄清理异常逐项保留并分别报告；Control/Form 的 GCHandle、资源和窗口状态继续完成收尾。固定探针覆盖 Control/Form 双错场景，Lumina 当前销毁待执行 callback 的 `ObjectDisposedException` 差异保留。完整Dispose事务、重建恢复和关闭竞态仍归父项。 |
 | 🟡 | P1 / Control-08 | 002的08a、018/019父子与句柄清理、022的08b保留；024的14b明确BackgroundImage借用、不克隆/释放。其余Image/菜单全部所有权、完整事件解绑和异常事务仍缺；Dispose遇04b关闭错误时HWND已销毁，但Parent/托管children/Site/Disposed后续清理仍待第二次Dispose，不声明完整事务。 |
 | ✅ | P1 / Control-08b | 批次022：基础Control及必要消费控件各自持有官方Font.ToHfont生成的HFONT，向HWND设置替代句柄后再释放旧句柄，真实销毁及无窗Dispose释放；托管Font保留借用引用不克隆/Dispose。Form重建失败时停放子窗字体仍存活并可更新；TextBox移除隐藏Font与自有释放路径。完整DPI/UserPaint/派生资源/平台仍归父项。 |
 | ✅ | P1 / Control-08a | 批次 002：继承 Component.Dispose 并覆盖 Dispose(bool)，保留派生 OnDisposing；Site 移除、组件容器级联、重复/重入、Dispose(false)、异常传播和状态退出均有回归。5 项生命周期观测与本机 WinForms 10.0.11 相同；不等同完整控件生命周期验收。 |
@@ -53,8 +55,9 @@
 | ✅ | P1 / Control-14a | 批次023明确首范围：ControlStyles默认/组合/未知位、GetStyle/SetStyle/UpdateStyles、DoubleBuffered/ResizeRedraw；Paint/Invalidated/StyleChanged及标准On*/InvokePaint/OnPrint、六个Invalidate重载、Update/Refresh/CreateGraphics，真实WM_PAINT/ERASEBKGND/PRINTCLIENT与缓冲/借用Graphics寿命。公共OnPrint借用Graphics并保留背景回调对其状态的修改，内部native绘制隔离背景状态；标准事件/重入/原异常和原生EDIT路径有指定对照。透明无句柄场景不计为可见合成验收，完整边界仍属14父项。 |
 | ⬜ | P1 / Control-15 | 实现 DataBindings/BindingContext/DataContext 与变化传播、拖放/IDataObject/剪贴板、AccessibleName/Description/Role/AccessibilityObject；各领域引用对应独立任务，不能全部留为存值。 |
 | ⬜ | P1 / Control-16 | DesignerSerializationVisibility/DefaultValue/DefaultEvent、ISupportInitialize、.resx Font/Image/Icon/TypeConverter 的消费和裁剪路径逐项验证；真实 VS 设计器与 Native AOT 运行均有证据。 |
-| 🟡 | P1 / Control-17 | 002～022的USER32/生命周期保留；023完成17a标准消息与必要Form衔接。完整消息反射、创建参数自定义对象AOT封送、所有派生同步/状态恢复及资源/关闭竞态仍缺，不由基础探针关闭整个Windows后端。 |
+| 🟡 | P1 / Control-17 | 002～022的USER32/生命周期保留；023完成17a标准消息与必要Form衔接，025完成17b native callback边界。完整消息反射、创建参数自定义对象AOT封送、所有派生同步/状态恢复及资源/关闭竞态仍缺，不由基础探针关闭整个Windows后端。 |
 | ✅ | P1 / Control-17a | 批次023明确首范围：标准Message/CreateParams、WndProc(ref Message)/DefWndProc、Message.Result回传、原窗口类过程保留、早期创建消息绑定和原生销毁最终清理；CreateParams样式/位置/文本/Parent/Param真实参与Control/Form创建和重建。字符串及显式静态基础值封送已有实现，运行仅覆盖null/string/nint及JIT自定义Payload；自定义Payload/object的AOT明确NotSupportedException。Message.GetLParam(Type)仅验证显式根化Payload，IL3050/任意marshaller、全部其他值与派生类/竞态验收另列。 |
+| ✅ | P1 / Control-17b | 批次025：Control/Form 原生窗口过程先捕获 managed callback 异常，再执行 `WM_NCDESTROY` 清理；回调、映射、句柄、资源和 GCHandle 的独立失败分别进入 `ThreadException`，不让异常越过 unmanaged callback。同步上下文同样在 native 边界内处理。完整消息反射/自定义 Param AOT/关闭竞态仍归父项。 |
 | ⬜ | P2 / Control-18 | Linux 用真实 GtkWidget 和 shared GMainContext；非交互宿主可用 GtkFixed，焦点/输入/可访问性用原生 controller。HWND/WndProc 等 Windows 消息契约单列，普通布局/Font/Image 不任意排除。 |
 | ⬜ | P3 / Control-19 | macOS 用 NSView/NSControl 与 AppKit 主线程，target-action/delegate 映射标准事件；翻转坐标与 key-view loop 统一处理，native 指针不能冒称 HWND。 |
 | ⬜ | 验收 / Control-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -68,6 +71,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次025：完成普通Drain的完成信号失败收尾，以及Control/Form/同步上下文的native callback与`WM_NCDESTROY`双错边界。固定参考/JIT/AOT各8场景全部正常退出；4项真实差异保留，未将增强行为归一化。完整Control、InvokeAsync关闭、Dispose后续托管事务、输入/Designer/资源、Linux/macOS仍未关闭，见[025](../batches/025.md)。
 
 - 2026-10-16 · 批次024：完成04b/14b，关闭失败仍遍历余队列并销毁实际HWND，明确偏离10.0.11的收尾行为。补基础背景图像和真实屏幕透明/alpha证据，Form取消默认COMPOSITED后修复唯一意外失效矩形差异。更新“背景/透明全缺”及“Close必被首个wait打断”的当前描述；普通Drain、Dispose后续清理和native回调/清理双错仍有缺口，父项/历史失败/固定分母不变，见[024](../batches/024.md)。
 

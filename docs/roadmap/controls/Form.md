@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～023标准继承/父子树、句柄/显示、布局、资源与消息绘制明确范围保留；024取消默认WS_EX_COMPOSITED以恢复透明子项引发的真实父失效区域。历史Created事件仍隐藏Control.Created属性，FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/缩放/显示关闭、native回调/清理双错、多UI退出与Designer仍缺，不能由基础衔接关闭整个Form。
+🟡 **现状：**018～024标准继承/父子树、句柄/显示、布局、资源与消息绘制明确范围保留；025完成Form-16c native callback与`WM_NCDESTROY`双错边界。历史Created事件仍隐藏Control.Created属性，FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/缩放/显示关闭、Dispose事务、多UI退出与Designer仍缺，不能由基础衔接关闭整个Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -32,6 +32,7 @@
 | 🟡 | P1 / Form-16 | 已有注册窗口类、USER32过程、真实显示/销毁/重建；022独占HFONT保留，023完成16a标准消息与绘制必要衔接。完整QUERYENDSESSION/DPICHANGED、owner/dialog loop及关闭竞态仍缺，保留原生非客户区/输入。 |
 | ✅ | P1 / Form-16a | 批次023：Form.CreateParams及标准WndProc/ref Message.Result接真实创建/重建；默认绘制进入Control标准入口、DefWndProc保留原生类过程；外层销毁finally清映射/GCHandle/画刷，不依赖派生WndProc调用base。创建参数、虚消息覆盖、Paint及截获/抛销毁消息有指定回归；Param的AOT限制同Control-17a，完整Form生命周期/绘制/关闭仍属父项。 |
 | ✅ | P1 / Form-16b | 批次024必要背景绘制衔接：默认WindowExStyle移除WS_EX_COMPOSITED，保留虚扩展供派生显式选择。真实父失效矩形12,10,8,6与参考一致，STATIC原生类测试去除旧样式补丁仍通过；Demo实际AOT显示/交互/正常关闭有证据。完整Form绘制/缓冲/关闭异常仍属16父项。 |
+| ✅ | P1 / Form-16c | 批次025：Form native窗口过程捕获回调异常后继续逐项释放菜单、palette、句柄、GCHandle和OpenForms注册；清理异常独立报告且不覆盖原回调异常。外部销毁双错场景和实际AOT边界探针通过；完整Close/FormClosing/FormClosed、模态、Dispose事务和多UI退出仍归父项。 |
 | ⬜ | P2 / Form-17 | Linux 使用 GtkWindow/GtkApplicationWindow；close-request/activate/state 适配标准生命周期，模态用 transient-for/modal + 同一 GMainContext。Wayland 任意 Location/全局坐标单列限制。 |
 | ⬜ | P3 / Form-18 | macOS 使用 NSWindow/NSPanel + delegate，NSApplication 主线程；窗口式模态与 sheet 依调用语义选择，firstResponder/close veto 对齐，AppKit 不能原生完整等价 MDI。 |
 | ⬜ | 验收 / Form-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -45,6 +46,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次025：Form-16c补齐外部`WM_NCDESTROY` callback与清理同时失败时的异常边界和资源收尾；callback、清理与窗口过程错误按独立顺序报告。外部销毁的待执行 callback 在Lumina中随HWND销毁而得到`ObjectDisposedException`，该与固定WinForms参考的真实差异保留；完整Form/模态/Designer仍未关闭，见[025](../batches/025.md)。
 
 - 2026-10-16 · 批次024：独立诊断先仅清除真实Form的COMPOSITED位即恢复父失效矩形，随后修正默认样式；不伪造失效区域，也不扩大矩形。继承Control背景图像/透明绘制及04b关闭收尾，16b仅为必要衔接；外部NCDESTROY回调与清理同时失败可能覆盖原异常，完整Form未关闭，见[024](../batches/024.md)。
 

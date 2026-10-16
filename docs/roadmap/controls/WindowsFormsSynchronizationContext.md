@@ -1,6 +1,6 @@
 # WindowsFormsSynchronizationContext
 
-🟡 **现状：**批次 006 实现标准显式投递，批次 007 接入标准 AutoInstall/Uninstall、控件/窗体构造和现有消息循环的默认安装/还原；204 条固定 WinForms 10.0.11、Lumina JIT 与实际 Native AOT 观测相同，含默认 callback 内 await 恢复和无 Form 退出。完整模态、多 UI 线程、关闭/重建/退出竞态仍待后续。
+🟡 **现状：**批次 006 实现标准显式投递，批次 007 接入标准 AutoInstall/Uninstall、控件/窗体构造和现有消息循环的默认安装/还原；025补齐同步上下文 native WindowProc 的 callback/清理异常边界。204 条既有固定观测和025新增边界均通过指定范围，完整模态、多 UI 线程、关闭/重建/退出竞态仍待后续。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/WindowsFormsSynchronizationContext.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -19,6 +19,7 @@
 | 🟡 | P1 / WindowsFormsSynchronizationContext-04 | 批次 006 完成相同目的地的 CreateCopy（含工作线程调用）、本实例 Dispose 后投递无动作、共享实例失效及排队丢弃对照。UI 线程已退出、跨线程释放和全部无句柄/关闭竞态仍待验。 |
 | 🟡 | P1 / WindowsFormsSynchronizationContext-05 | 批次 007 验证默认安装下直接 await、BeginInvoke、ValueTask/带结果回调及工作线程投递后的 UI 恢复；旧 Task 专项也覆盖。多 UI 线程、模态、取消/关闭组合仍待验。 |
 | 🟡 | P1 / WindowsFormsSynchronizationContext-06 | 批次006显式类型复用既有注册消息/dispatcher，静态unmanaged thunk实际AOT通过，异步异常仍在库内转ThreadException；默认安装/还原首范围已由007的01b完成，完整退出资源/模态/多UI/关闭竞态仍待后续。 |
+| ✅ | P1 / WindowsFormsSynchronizationContext-06a | 批次025：native WindowProc 捕获 dispatcher/default-process 异常并保证不越过 unmanaged callback；`WM_NCDESTROY` 继续关闭 dispatcher、清 USERDATA、释放 GCHandle，再分别报告清理失败。同步上下文边界场景在 JIT/AOT 通过；线程退出、多UI、模态和完整关闭竞态仍归父项。 |
 | ⬜ | P2 / WindowsFormsSynchronizationContext-07 | Linux 通过目标 GMainContext 的 invoke/source 投递并唤醒；同步 Send 不在 UI 线程阻塞自己，多个 thread-default context 的归属固定。 |
 | ⬜ | P3 / WindowsFormsSynchronizationContext-08 | macOS 通过 main run loop/dispatch 到 AppKit 主线程；模态 run-loop mode 下也必须能收到任务，不能只在默认 mode 工作。 |
 | ⬜ | 验收 / WindowsFormsSynchronizationContext-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -32,6 +33,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次025：同步上下文的native WindowProc按callback、默认过程、`WM_NCDESTROY`清理分层处理，保留每个异常并保证native边界不被managed异常穿透；完整退出/模态/多UI竞态仍未关闭，见[025](../batches/025.md)。
 
 - 2026-10-16 · 批次016历史回标：任务06的默认安装/还原首范围明确交叉引用007已完成的01b，删除笼统“默认生命周期待后续”；完整退出资源/模态/多UI/关闭竞态仍缺，父项保留部分完成，未新增验收。
 
