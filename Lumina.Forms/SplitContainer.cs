@@ -1,3 +1,7 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
+
 using System.ComponentModel;
 using System.Drawing;
 
@@ -23,7 +27,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
     private int _lastPrimarySize = -1;
     private int _lastPanel1Size;
     private int _lastPanel2Size;
-    private double _splitRatio = 0.5d;
+    private double _splitRatio;
 
     /// <summary>
     /// Initializes a split container with two child panels.
@@ -341,7 +345,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
         Panel2.SuspendLayout();
         try
         {
-            LayoutPanels();
+            LayoutPanels(updateRatio: false);
         }
         finally
         {
@@ -379,7 +383,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
 
     private bool IsVerticalLayout => Orientation == Orientation.Vertical;
 
-    private void LayoutPanels()
+    private void LayoutPanels(bool updateRatio = true)
     {
         if (_initializing)
         {
@@ -397,7 +401,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
 
         try
         {
-            LayoutPanelsCore();
+            LayoutPanelsCore(updateRatio);
         }
         finally
         {
@@ -408,7 +412,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
         }
     }
 
-    private void LayoutPanelsCore()
+    private void LayoutPanelsCore(bool updateRatio)
     {
         Rectangle contentBounds = new(
             Padding.Left,
@@ -428,30 +432,81 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
         Panel1.Visible = true;
         Panel2.Visible = true;
 
-        int desiredDistance = ResolveSplitterDistanceForResize(primarySize, splitterWidth);
+        int desiredDistance = updateRatio ? _splitterDistance : ResolveSplitterDistanceForResize(primarySize, splitterWidth);
         int firstSize = ClampSplitterDistance(desiredDistance, primarySize, splitterWidth);
         _splitterDistance = firstSize;
         int secondSize = Math.Max(0, primarySize - firstSize - splitterWidth);
 
-        if (IsVerticalLayout)
+        Size firstPanelSize = IsVerticalLayout
+            ? new Size(Math.Max(1, firstSize), Math.Max(1, contentBounds.Height))
+            : new Size(Math.Max(1, contentBounds.Width), Math.Max(1, firstSize));
+        Size secondPanelSize = IsVerticalLayout
+            ? new Size(Math.Max(1, secondSize), Math.Max(1, contentBounds.Height))
+            : new Size(Math.Max(1, contentBounds.Width), Math.Max(1, secondSize));
+        Point secondPanelLocation = IsVerticalLayout
+            ? new Point(contentBounds.Left + firstSize + splitterWidth, contentBounds.Top)
+            : new Point(contentBounds.Left, contentBounds.Top + firstSize + splitterWidth);
+
+        if (updateRatio)
         {
-            Panel1.SetBounds(contentBounds.Left, contentBounds.Top, Math.Max(1, firstSize), Math.Max(1, contentBounds.Height));
-            Panel2.SetBounds(contentBounds.Left + firstSize + splitterWidth, contentBounds.Top, Math.Max(1, secondSize), Math.Max(1, contentBounds.Height));
+            // A distance edit updates Panel1 immediately. Panel2's size and
+            // location then form one layout transaction of their own.
+            SetPanelBounds(Panel1, new Rectangle(contentBounds.Location, firstPanelSize));
+            Panel2.SuspendLayout();
+            try
+            {
+                SetPanelBounds(Panel2, new Rectangle(Panel2.Location, secondPanelSize));
+                SetPanelBounds(Panel2, new Rectangle(secondPanelLocation, secondPanelSize));
+            }
+            finally { Panel2.ResumeLayout(); }
         }
         else
         {
-            Panel1.SetBounds(contentBounds.Left, contentBounds.Top, Math.Max(1, contentBounds.Width), Math.Max(1, firstSize));
-            Panel2.SetBounds(contentBounds.Left, contentBounds.Top + firstSize + splitterWidth, Math.Max(1, contentBounds.Width), Math.Max(1, secondSize));
+            // Match the reference's genuine bounds operations: a fixed trailing
+            // panel is resized first; the unfixed leading panel changes its
+            // primary and secondary dimensions separately.
+            if (FixedPanel == FixedPanel.Panel2)
+            {
+                SetPanelBounds(Panel2, new Rectangle(Panel2.Location, secondPanelSize));
+            }
+
+            if (FixedPanel == FixedPanel.Panel1)
+            {
+                SetPanelBounds(Panel1, new Rectangle(Panel1.Location, firstPanelSize));
+            }
+            else
+            {
+                Size primarySizeOnly = IsVerticalLayout
+                    ? new Size(firstPanelSize.Width, Panel1.Height)
+                    : new Size(Panel1.Width, firstPanelSize.Height);
+                SetPanelBounds(Panel1, new Rectangle(Panel1.Location, primarySizeOnly));
+                SetPanelBounds(Panel1, new Rectangle(Panel1.Location, firstPanelSize));
+            }
+
+            if (FixedPanel != FixedPanel.Panel2)
+            {
+                SetPanelBounds(Panel2, new Rectangle(Panel2.Location, secondPanelSize));
+            }
+
+            SetPanelBounds(Panel1, new Rectangle(contentBounds.Location, firstPanelSize));
+            SetPanelBounds(Panel2, new Rectangle(secondPanelLocation, secondPanelSize));
         }
 
         _lastPrimarySize = primarySize;
         _lastPanel1Size = firstSize;
         _lastPanel2Size = secondSize;
-        int usablePrimary = Math.Max(1, primarySize - splitterWidth);
-        _splitRatio = Math.Clamp(firstSize / (double)usablePrimary, 0d, 1d);
+        if (updateRatio && firstSize > 0)
+        {
+            // The reference preserves the ratio of the entire primary axis to
+            // Panel1. Resizing must not replace it with the rounded result.
+            _splitRatio = primarySize / (double)firstSize;
+        }
 
         Invalidate();
     }
+
+    private static void SetPanelBounds(Panel panel, Rectangle bounds)
+        => panel.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
 
     private Rectangle GetSplitterBounds()
     {
@@ -523,7 +578,7 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
         {
             FixedPanel.Panel1 => _lastPanel1Size,
             FixedPanel.Panel2 => Math.Max(0, primarySize - splitterWidth - _lastPanel2Size),
-            _ => (int)Math.Round(Math.Max(0, primarySize - splitterWidth) * _splitRatio),
+            _ => _splitRatio > 0 ? (int)Math.Floor(primarySize / _splitRatio) : _splitterDistance,
         };
     }
 

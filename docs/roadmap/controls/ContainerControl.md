@@ -1,6 +1,6 @@
 # ContainerControl
 
-🟡 **当前状态：**018新增标准ContainerControl : ScrollableControl，Form已使用；活动子控件/显式IContainerControl及嵌套链已实现首范围，原Form缩放迁到此处；020通过ScrollableControl复用Control标准布局事务。完整选择/验证/缩放/键盘与平台仍待实现，不以基类存在计为整控件完成。
+🟡 **当前状态：**018标准ContainerControl : ScrollableControl、活动链及原Form缩放首范围保留；020共用标准事务，021新增布局驱动的首选测量/缓存和边框/Padding消费，Form继承使用。完整焦点/验证/缩放/滚动及全部派生测量与平台未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -38,6 +38,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：补GetPreferredSizeCore经真实LayoutEngine测量内容、边框/Padding和必要缓存，属于Control-09d的容器依赖；未改现有AutoScale算法，未以基础测量关闭完整容器/验证。
 
 - 2026-10-16 · 批次020：随ScrollableControl移除重复布局状态，Form继承统一标准Layout；未修改现有AutoScale算法，也未完成验证/滚动/完整布局。01既有继承完成范围保留，其他父项不随基类完成关闭。
 

@@ -1,6 +1,6 @@
 # StatusStrip
 
-🟡 **当前状态：**已有 ToolStrip 原生 item 宿主、底部布局和状态标签的 Spring 分配等局部实现；SizingGrip 只有表面不足以证明实际窗口缩放命中行为。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
+🟡 **当前状态：**已有 ToolStrip 原生 item 宿主、底部布局和状态标签的 Spring 分配等局部实现；SizingGrip 只有表面不足以证明实际窗口缩放命中行为。020事务与021默认布局必要衔接已完成明确子范围，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -18,7 +18,8 @@
 | ⬜ | P1 / StatusStrip-03 | 实现 Spring 多标签剩余空间分配、AutoSize=false、Margin/Padding、超宽项目、RTL 与 DPI；允许工具条支持的其他 item 类型。 |
 | ⬜ | P1 / StatusStrip-04 | 校准 strip.ItemClicked、item.Click 的触发和键鼠顺序，IsLink=true 的状态标签仍使用标准 item.Click，禁用/隐藏后不可意外激活；状态区不劫持编辑控件焦点。 |
 | ⬜ | P1 / StatusStrip-05 | SizingGrip 的可见、命中区、最大化/不可缩放窗体、RTL、右键菜单与窗体拖动场景均验收，属性切换实时生效。 |
-| 🟡 | P1 / StatusStrip-06 | 020完成06a标准布局事务/直属Form底部定位；ItemAdded/Removed、完整文本可见重排、GetPreferredSize/LayoutCompleted与Dock协作仍待对齐。 |
+| 🟡 | P1 / StatusStrip-06 | 020事务及021父Dock定位完成；ItemAdded/Removed、完整文本可见重排、GetPreferredSize/LayoutCompleted与SizingGrip/Spring仍待对齐。 |
+| ✅ | P1 / StatusStrip-06b | 批次021：移除历史Form底部专用定位，实际父级DefaultLayout消费Dock.Bottom，保留既有item/Spring局部布局。仅父布局衔接完成，完整首选测量/事件/命中及算法仍缺。 |
 | ✅ | P1 / StatusStrip-06a | 批次020：标准OnLayout消费共享暂停/恢复并保留现有item布局；直属Form底部定位经内部入口，嵌套strip不被Form定位。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / StatusStrip-07 | 补状态提示的可访问性 live 文本/角色/子项遍历、.resx 图片和本地化长文本；持续更新时不制造重复 Click 或 UI 线程回调。 |
 | ⬜ | P2 / StatusStrip-08 | Windows 保留原生 Label/ProgressBar 等宿主组合；若使用 msctls_statusbar32 只覆盖证实可等价的简单 parts，不限制 ToolStripItems 任意组合。 |
@@ -39,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：移除历史Form底部专用定位，实际父级DefaultLayout消费Dock.Bottom，保留既有item/Spring局部布局。仅父布局衔接完成，完整首选测量/事件/命中及算法仍缺。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 
 - 2026-10-16 · 批次020：移除重复的OnBoundsChanged/PerformLayout路径，保留原Spring局部算法；完整Spring/首选测量/事件/SizingGrip命中仍待验收。 见[020](../batches/020.md)；父任务保持部分完成。
 

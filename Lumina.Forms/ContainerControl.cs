@@ -1,3 +1,7 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
+
 using System.ComponentModel;
 using System.Drawing;
 
@@ -11,6 +15,21 @@ public class ContainerControl : ScrollableControl, IContainerControl
     private Control? _activeControl;
     private AutoScaleMode _autoScaleMode = AutoScaleMode.Inherit;
     private SizeF _autoScaleDimensions;
+
+    /// <summary>
+    /// Initializes a container that measures its preferred size from its layout.
+    /// </summary>
+    public ContainerControl()
+    {
+        CachePreferredSize = true;
+    }
+
+    internal override Size GetPreferredSizeCore(Size proposedSize)
+    {
+        Size borderSize = SizeFromClientSize(Size.Empty);
+        Size totalPadding = borderSize + new Size(Padding.Horizontal, Padding.Vertical);
+        return LayoutEngine.GetPreferredSize(this, proposedSize - totalPadding) + totalPadding;
+    }
 
     /// <summary>
     /// Gets or sets the active descendant of this container.

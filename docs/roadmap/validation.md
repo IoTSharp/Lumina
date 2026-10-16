@@ -423,3 +423,12 @@ Control-10b及八个必要容器事务子范围代码完成，完整记录见[02
 Demo AOT4,159,488字节、CLR目录0，真实主窗显示、复选框0→1、正常exit0、记录HWND全部失效，无强制清理；既有InheritanceAttribute IL3050保留。首次隐藏Form导致MenuStrip偏移fixture失败的原日志/TRX保留，改为Show后核对真实可见菜单。完整UI/文字裁切/模态/Designer不由单一操作宣布修复。
 
 13项目/17目标仅.NET10，原始Demo/Designer/resx未改，Windows官方Drawing10.0.0且net10.0依赖无WinForms/Resources.Extensions/自有Drawing。Export-Inventory按新公共签名重生成，固定1,095类型/61,240行/187页及unverified保持；Validate-Roadmap -ExportTasks生成逐控件实施列/tasks.csv。所有结果和结构计数见artifacts/compatibility-batch020/evidence.json。Control/FND/容器父项及LayoutEngine/PreferredSize/InitLayout/默认布局/平台仍未关闭，不从测试或任务数量宣称98%。
+
+
+## 批次 021 · 2026-10-16 默认布局与首选尺寸
+
+Control-09d/10c、Panel-03a、Form-10b和六容器明确子范围代码完成，完整边界见[021](batches/021.md)。4,107项测试（新增13核心+11容器）与16旧Control/context驱动全部通过；双目标Release 0错误/464警告。默认布局18独立STA场景512行固定10.0.11参考/JIT/实际AOT严格全同，全部exit0/complete=true/无超时；参考默认AnchorLayoutV2=false，显式true独立进程另测。旧事务394行参考/JIT原七行差异已修，生命周期204行/集合391行参考/JIT同；旧探针AOT本批不重复，集合32行非零下界数组fixture限制继续保留。
+
+默认布局实际AOT3,041,280字节、CLR目录0、无IL2xxx/IL3xxx。Demo实际AOT4,192,256字节、CLR目录0，真实显示/复选框0→1/正常exit0/记录HWND全部失效，无强制清理；既有InheritanceAttribute IL3050保留。最初两个测试失败、探针fixture编译失败及中间9行差异原始记录保留；Splitter旧无Dock构造经独立固定参考确认无效后改为标准Dock/集合顺序，条带旧断言按参考真实几何修正，未降低检查。
+
+13项目/17目标仅.NET10，Windows官方Drawing10.0.0，原始Demo源码/Designer/resx和net10.0依赖边界不变。新增标准API已重生成固定1,095类型/61,240行/187页清单，运行仍unverified；逐控件实施列与tasks.csv重生成。完整路径/进程/PE/警告/计数在artifacts/compatibility-batch021/evidence.json。复杂布局缓存重入、全部派生/DPI/RTL/滚动/FlowTable、完整Windows Control/Designer/资源/模态及Unix未关闭；不由这些数量计算98%。

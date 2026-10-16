@@ -214,30 +214,6 @@ public class MenuStrip : ToolStrip
             | blue;
     }
 
-    internal override void LayoutInParent()
-    {
-        if (UsesNativeMenuBar || Owner is null || !ReferenceEquals(Parent, Owner))
-        {
-            return;
-        }
-
-        int clientWidth = Owner.ClientSize.Width;
-        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
-        {
-            clientWidth = clientRect.Width;
-        }
-
-        int height = Math.Max(1, Height);
-        int width = Math.Max(1, clientWidth);
-
-        if (Left == 0 && Top == 0 && Width == width && Height == height)
-        {
-            return;
-        }
-
-        SetBounds(0, 0, width, height);
-    }
-
     /// <inheritdoc />
     protected override void OnDisposing()
     {

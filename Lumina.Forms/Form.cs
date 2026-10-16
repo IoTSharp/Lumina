@@ -597,16 +597,6 @@ public class Form : ContainerControl
     protected override void OnLayout(LayoutEventArgs e)
     {
         base.OnLayout(e);
-
-        // Preserve the existing form strip placement without requesting layout
-        // on every descendant. A changed strip size raises its own layout.
-        foreach (Control child in ChildControls)
-        {
-            if (child is ToolStrip strip && ReferenceEquals(strip.Parent, this))
-            {
-                strip.LayoutInParent();
-            }
-        }
     }
 
     /// <summary>
@@ -842,29 +832,6 @@ public class Form : ContainerControl
             && NativeHandle != 0
             && _mainMenuStrip is not null
             && _mainMenuStrip.UsesNativeMenuBar;
-
-    internal int GetClientContentTopInset()
-    {
-        int inset = 0;
-
-        if (!UsesNativeMainMenuBar()
-            && _mainMenuStrip is not null
-            && _mainMenuStrip.NativeHandle != 0
-            && _mainMenuStrip.Visible)
-        {
-            inset += Math.Max(0, _mainMenuStrip.Height);
-        }
-
-        foreach (Control control in ChildControls)
-        {
-            if (control is ToolStrip toolStrip && control is not MenuStrip && control is not StatusStrip && control.Visible)
-            {
-                inset += Math.Max(0, toolStrip.Height);
-            }
-        }
-
-        return inset;
-    }
 
     private void ReleaseMainMenuStrip()
     {

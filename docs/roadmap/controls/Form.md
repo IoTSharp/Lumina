@@ -21,8 +21,9 @@
 | ⬜ | P1 / Form-07 | 实现 Close/FormClosing.Cancel、CloseReason、FormClosed、Dispose；用户关闭、owner/MDI 关闭、Application.Exit、系统关机的事件原因与取消作用域不同，不能统一 UserClosing。 |
 | ⬜ | P1 / Form-08 | 补 Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm/Focused、BringToFront/Activate；关闭 owner 的从属窗口与焦点恢复对照。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
-| 🟡 | P1 / Form-10 | 020完成10a标准布局事务接入和直属条带定位。完整Dock/Anchor/AutoSize/AutoSizeMode、MinMax/客户区/AutoScroll及嵌套容器算法仍未完成，不能以事件入口接入关闭布局。 |
-| ✅ | P1 / Form-10a | 批次020：Form复用Control暂停/恢复与标准OnLayout(LayoutEventArgs)，移除重复WM_SIZE布局和无条件子树遍历；保留直属MenuStrip/ToolStrip/StatusStrip定位，嵌套条带不按Form定位。事件/延期/直属条带独立回归通过；完整几何、Designer和模态另列。 |
+| 🟡 | P1 / Form-10 | 020事务10a、021默认布局10b完成；真实父级Dock替代历史条带专用定位。完整Form AutoSize/AutoSizeMode、客户区/MinMax、AutoScroll、全部嵌套测量/DPI/RTL与Designer仍缺。 |
+| ✅ | P1 / Form-10a | 批次020完成共享暂停/恢复/OnLayout入口，移除重复WM_SIZE布局和无条件子树遍历；当时的直属条带专用定位于021被父级DefaultLayout替代。历史事务范围完成保留，几何见10b。 |
+| ✅ | P1 / Form-10b | 批次021：Form继承默认布局/ContainerControl测量，菜单/工具/状态条按实际Controls反序Dock；移除旧专用定位和Control原生Y坐标额外菜单偏移。隐藏/显示、嵌套/取消Dock及实际HWND矩形有固定参考，原Demo源码不改；完整Form布局和Designer仍归父项。 |
 | ⬜ | P1 / Form-11 | 实现 AutoScaleDimensions/CurrentAutoScaleDimensions/PerformAutoScale、Font/Dpi/Inherit/None、DpiChanged 及父子前后通知；跨 96/144/192 DPI 往返和 .resx 基准不重复缩放。 |
 | ⬜ | P1 / Form-12 | 实现 AcceptButton/CancelButton/IButtonControl、KeyPreview、ProcessDialogKey/ProcessCmdKey、输入语言/IME、AutoValidate 和深层 ActiveControl；验证取消时禁止错误关闭对话框。 |
 | ⬜ | P1 / Form-13 | 补 MainMenuStrip、IsMdiContainer/MdiParent/MdiChildren/ActiveMdiChild/LayoutMdi/MdiChildActivate；与 MdiClient 一起验收，不能以普通 owned windows 冒充 MDI。 |
@@ -42,6 +43,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：移除直属条带专用定位及旧GetClientContentTopInset，由标准父级DefaultLayout统一布局；ContainerControl首选测量供Form消费。更新020历史定位描述以免把旧算法当当前行为；Created事件仍隐藏Control.Created，完整模态/资源/设计器未关闭。
 
 - 2026-10-16 · 批次020：标准Layout移到Control并统一事务入口，保留直接子条带定位、移除WM_SIZE重复布局。历史Form.Layout的EventHandler类型和protected无参OnLayout不再保留，消费者改用LayoutEventHandler和OnLayout(LayoutEventArgs)；仓库无旧覆盖消费者，固定Demo源码未变。Form-02/10按实际部分回标，10a为完成的必要衔接；完整Form/几何/Designer不关闭。
 

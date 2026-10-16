@@ -9,7 +9,7 @@
 | FND-001 | 🟡 | 002～018基础构造、ControlCollection/Parent与Form标准链保留；019补Control-07a标准句柄入口/状态/事件及Form必要覆盖。IDropTarget、所有派生默认/完整扩展契约仍缺，不由基类或构造关闭父项 | [Control](controls/Control.md)、[Form](controls/Form.md)、[批次019](batches/019.md) |
 | FND-002 | 🟡 | 003～007同步/Action/Func/ValueTask与显式/default context证据保留；019在句柄重建时保留已有回调并向新HWND重发，普通销毁仍结束队列。完整ApplicationContext/模态、多UI退出与关闭/重建竞态仍缺；null Delegate/Send与默认错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次019](batches/019.md) |
 | FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
-| FND-004 | 🟡 | 018/019/020完整Demo AOT已真实显示，Enable option复选框0→1，WM_CLOSE正常exit0且记录HWND全部销毁。模态、完整布局/业务交互、设计器和可访问性仍未验收；018截图的文字裁切未据此宣称修复，不关闭父项 | [020证据](batches/020.md)、[原评估](../assessments/2026-10-15/README.md) |
+| FND-004 | 🟡 | 018/019/020/021完整Demo AOT已真实显示，Enable option复选框0→1，WM_CLOSE正常exit0且记录HWND全部销毁。模态、完整布局/业务交互、设计器和可访问性仍未验收；018截图的文字裁切未据此宣称修复，不关闭父项 | [021证据](batches/021.md)、[原评估](../assessments/2026-10-15/README.md) |
 | FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
 
@@ -21,8 +21,8 @@
 | FND-011 | 🟡 | 019完成Control-07a与Form-06a：延迟Handle、CreateControl/protected创建销毁重建、标准事件、查找映射、基础可见树及重建回调队列；204行固定参考/JIT/实际AOT全同。全部派生属性/焦点/资源恢复、扩展消息/创建参数、关闭竞态与三平台后端仍缺；Form历史Created事件隐藏属性明确保留差异 |
 | FND-012 | 🟡 | 002的Component释放/Site/Container与018的UI父子级联/重复释放保留；019补DestroyHandle覆盖一次调用、跳过base/抛异常状态及注册窗口回调失败清理。全部异常/关闭竞态、事件解绑及图像/字体/菜单所有权仍缺 |
 | FND-013 | 🟡 | 018补Parent依赖的Enabled/Visible有效值与变化通知；完整Font/BackColor/ForeColor/RightToLeft继承、Reset/ShouldSerialize/设计器继承默认值与其他事件仍缺 |
-| FND-014 | 🟡 | 009～016基础Bounds/指定边界/通知/客户区/换算/MinMax/构造（Control-02b/c、09a/b/c、10a、01b/c）保留；018新增SetChildIndex真实Z序及Form原生移动/尺寸回写。020补布局属性的必要事务通知；Dock/Anchor/AutoSize/GetPreferredSize完整计算、Padding/Margin布局消费、全部派生约束/DPI仍缺 |
-| FND-015 | 🟡 | 020完成Control-10b标准布局事务、LayoutEventArgs/Handler及必要容器衔接，移除ScrollableControl第二份状态；394行JIT/实际AOT同，参考有7行Dock/Split几何差异。LayoutEngine、PreferredSize缓存、完整InitLayout/ResumeLayout(false)引擎初始化及全部几何算法仍缺，FND父项不关闭 |
+| FND-014 | 🟡 | 009～020基础Bounds/通知/客户区/MinMax/构造和事务保留；021完成Control-09d基础默认Dock/Anchor/AutoSize、PreferredSize和必要容器内容测量。完整派生测量/RTL/DPI/布局重入、继承属性和平台仍缺 |
+| FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；AutoScrollPosition/MinSize、横纵滚动、Dock协作、嵌套滚动坐标与平台滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；原全部未开始状态遗漏旧局部实现，现纠正。完整Font/Dpi/None/Inherit、AutoScaleFactor、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018补默认TabStop、添加时TabIndex与嵌套ActiveControl/显式ActivateControl首范围；Select/Focus(bool)、Enter/Leave/验证完整事件、Tab/助记键和默认/取消按钮仍缺 |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次021：FND-014/015按真实默认布局/首选尺寸及引擎缓存子范围更新；CNS-008不再全待办。Control-17的既有Win32实现、Flow/Table有限测量从全待办改部分；020七行差异已修但原始历史保留。全部父项/平台/98%未关闭，见[021](batches/021.md)。
 
 - 2026-10-16 · 批次020：FND-015改为已完成标准事务首范围而保留引擎/缓存/几何缺口，FND-014补必要属性通知。纠正Panel对018标准层/集合的遗漏、Form.Layout的过时状态、CNS事件/集合的历史遗漏；只有明确事务子任务代码完成，完整控件/平台和98%均未关闭，详见[020](batches/020.md)。
 

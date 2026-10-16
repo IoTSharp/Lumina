@@ -1,3 +1,7 @@
+// Layout and preferred-size portions adapted from dotnet/winforms v10.0.11.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses those portions under the MIT license.
+
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -6,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Lumina.Forms.Layout;
 
 namespace Lumina.Forms;
 
@@ -66,6 +71,20 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _layoutDirty;
     private LayoutEventArgs? _cachedLayoutEventArgs;
     private bool _autoSize;
+    private Rectangle? _specifiedBounds;
+    private Size _preferredSizeCache;
+
+    internal bool CachePreferredSize { get; set; }
+    internal bool ParticipatesInLayout => _visible;
+    internal bool LayoutAutoSize => _autoSize;
+    internal DockStyle LayoutDock => _dock;
+    internal AnchorStyles LayoutAnchor => _anchor;
+    internal AutoSizeMode LayoutAutoSizeMode => GetAutoSizeMode();
+    internal Rectangle SpecifiedBounds => _specifiedBounds ?? Bounds;
+    internal DefaultLayout.AnchorInfo? LayoutAnchorInfo { get; set; }
+    internal bool ForceAnchorCalculations { get; set; }
+    internal bool ChildrenNeedAnchorLayout { get; set; }
+    internal void ClearPreferredSizeCache() => _preferredSizeCache = Size.Empty;
 
     /// <summary>
     /// Initializes a control and installs the thread's UI synchronization context when enabled.
@@ -96,6 +115,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _clientWidth = unchecked(_width - nonClient.Width);
             _clientHeight = unchecked(_height - nonClient.Height);
         }
+
+        ClearPreferredSizeCache();
 
         WindowsFormsSynchronizationContext.InstallIfNeeded();
     }
@@ -248,7 +269,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             if (value == AutoSize) { return; }
             _autoSize = value;
-            _parent?.PerformLayout(this, nameof(AutoSize));
+            if (!value) { SetBoundsFromLayout(SpecifiedBounds, BoundsSpecified.None); }
+            if (value && _parent?.LayoutEngine == DefaultLayout.Instance)
+            {
+                _parent.LayoutEngine.InitLayout(this, BoundsSpecified.Size);
+            }
+            RequestLayout(_parent, this, nameof(AutoSize));
             OnAutoSizeChanged(EventArgs.Empty);
         }
     }
@@ -257,6 +283,49 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         get => _autoSizeMode;
         set => _autoSizeMode = value;
+    }
+
+    protected void SetAutoSizeMode(AutoSizeMode mode)
+        => _autoSizeMode = mode == AutoSizeMode.GrowAndShrink ? mode : AutoSizeMode.GrowOnly;
+
+    protected AutoSizeMode GetAutoSizeMode()
+        => _autoSizeMode == AutoSizeMode.GrowAndShrink ? _autoSizeMode : AutoSizeMode.GrowOnly;
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual LayoutEngine LayoutEngine => DefaultLayout.Instance;
+
+    [Browsable(false)]
+    public Size PreferredSize => GetPreferredSize(Size.Empty);
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual Size GetPreferredSize(Size proposedSize)
+    {
+        if (_disposing || _disposed) { return _preferredSizeCache; }
+        proposedSize = ApplySizeConstraints(new Size(
+            proposedSize.Width == 0 ? int.MaxValue : proposedSize.Width,
+            proposedSize.Height == 0 ? int.MaxValue : proposedSize.Height));
+        bool unconstrained = proposedSize == new Size(int.MaxValue, int.MaxValue);
+        if (CachePreferredSize && unconstrained && !_preferredSizeCache.IsEmpty) { return _preferredSizeCache; }
+        Size preferred = ApplySizeConstraints(GetPreferredSizeCore(proposedSize));
+        if (CachePreferredSize && unconstrained) { _preferredSizeCache = preferred; }
+        return preferred;
+    }
+
+    internal virtual Size GetPreferredSizeCore(Size proposedSize) => SpecifiedBounds.Size;
+
+    private Size ApplySizeConstraints(Size proposedSize)
+    {
+        if (MaximumSize != Size.Empty || MinimumSize != Size.Empty)
+        {
+            Size maximum = MaximumSize;
+            proposedSize.Width = Math.Min(proposedSize.Width, maximum.Width == 0 ? int.MaxValue : maximum.Width);
+            proposedSize.Height = Math.Min(proposedSize.Height, maximum.Height == 0 ? int.MaxValue : maximum.Height);
+            Size minimum = MinimumSize;
+            proposedSize.Width = Math.Max(proposedSize.Width, minimum.Width);
+            proposedSize.Height = Math.Max(proposedSize.Height, minimum.Height);
+        }
+        return proposedSize;
     }
 
     public bool AutoScroll
@@ -278,13 +347,19 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             AnchorStyles previous = _anchor;
             if (previous == value) { return; }
-            if (_dock != DockStyle.None) { Dock = DockStyle.None; }
-            _anchor = value;
+            if (_dock != DockStyle.None && ParticipatesInLayout) { SetDockCore(DockStyle.None); }
+            // WinForms stores the translated anchor in a four-bit section.
+            int stored = value == AnchorStyles.None ? 5 : value == (AnchorStyles.Top | AnchorStyles.Left) ? 0 : (int)value;
+            stored &= 15;
+            _anchor = stored == 0 ? AnchorStyles.Top | AnchorStyles.Left : stored == 5 ? AnchorStyles.None : (AnchorStyles)stored;
+            _dock = DockStyle.None;
+            if (_anchor != (AnchorStyles.Top | AnchorStyles.Left) || _autoSize) { DefaultLayout.UpdateAnchorInfo(this); }
+            else { LayoutAnchorInfo = null; }
             if (((previous & ~value) & (AnchorStyles.Right | AnchorStyles.Bottom)) != 0)
             {
-                _parent?._parent?.PerformLayout(this, nameof(Anchor));
+                RequestLayout(_parent?._parent, this, nameof(Anchor));
             }
-            _parent?.PerformLayout(this, nameof(Anchor));
+            RequestLayout(_parent, this, nameof(Anchor));
         }
     }
 
@@ -362,7 +437,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             Size currentSize = Size;
             SetBoundsCore(_left, _top, Math.Min(currentSize.Width, value.Width),
                 Math.Min(currentSize.Height, value.Height), BoundsSpecified.Size);
-            _parent?.PerformLayout(this, nameof(MaximumSize));
+            RequestLayout(_parent, this, nameof(MaximumSize));
         }
     }
 
@@ -400,7 +475,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             {
                 OnPaddingChanged(EventArgs.Empty);
             }
-            if (_layoutDirty) { PerformLayout(this, nameof(Padding)); }
+            if (_layoutDirty) { RequestLayout(this, nameof(Padding)); }
         }
     }
 
@@ -419,7 +494,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
 
             _margin = value;
-            _parent?.PerformLayout(this, nameof(Margin));
+            RequestLayout(_parent, this, nameof(Margin));
             OnMarginChanged(EventArgs.Empty);
         }
     }
@@ -444,14 +519,26 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             SuspendLayout();
             try
             {
-                _dock = value;
-                using (new LayoutTransaction(_parent, this, nameof(Dock)))
-                {
-                    // Dock geometry is handled by the containing layout algorithm.
-                }
+                SetDockCore(value);
                 OnDockChanged(EventArgs.Empty);
             }
             finally { ResumeLayout(); }
+        }
+    }
+
+    internal void SetDockCore(DockStyle value)
+    {
+        bool wasDocked = _dock != DockStyle.None && ParticipatesInLayout;
+        _dock = value;
+        _anchor = AnchorStyles.Top | AnchorStyles.Left;
+        using (new LayoutTransaction(_parent, this, nameof(Dock)))
+        {
+            if (value != DockStyle.None) { SetBoundsFromLayout(SpecifiedBounds, BoundsSpecified.All); }
+            else if (wasDocked)
+            {
+                SetBoundsFromLayout(SpecifiedBounds, BoundsSpecified.None);
+                if (_autoSize) { DefaultLayout.UpdateAnchorInfo(this); }
+            }
         }
     }
 
@@ -887,11 +974,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets the rectangle that represents the logical content area available to child content.
     /// </summary>
-    public virtual Rectangle DisplayRectangle => new(
-        Padding.Left,
-        Padding.Top,
-        Math.Max(0, Width - Padding.Horizontal),
-        Math.Max(0, Height - Padding.Vertical));
+    public virtual Rectangle DisplayRectangle => ClientRectangle;
 
     internal Form? Owner { get; private set; }
 
@@ -1013,8 +1096,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         if (_left != x || _top != y || _width != width || _height != height)
         {
-            SetBoundsCore(x, y, width, height, specified);
-            _parent?.PerformLayout(this, nameof(Bounds));
+            ForceAnchorCalculations = true;
+            try { SetBoundsCore(x, y, width, height, specified); }
+            finally { ForceAnchorCalculations = false; }
+            RequestLayout(_parent, this, nameof(Bounds));
         }
     }
 
@@ -1042,82 +1127,114 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         // balance the suspension on the original parent.
         using LayoutTransaction suspension = new(_parent);
 
-        if (MaximumSize != Size.Empty || MinimumSize != Size.Empty)
-        {
-            // Preserve WinForms' short circuit and repeated virtual reads. A
-            // getter can reenter sizing, change constraints, or throw here.
-            Size maximumSize = MaximumSize;
-            int maximumWidth = maximumSize.Width == 0 ? int.MaxValue : maximumSize.Width;
-            int maximumHeight = maximumSize.Height == 0 ? int.MaxValue : maximumSize.Height;
-            width = Math.Min(width, maximumWidth);
-            height = Math.Min(height, maximumHeight);
-            Size minimumSize = MinimumSize;
-            width = Math.Max(width, minimumSize.Width);
-            height = Math.Max(height, minimumSize.Height);
-        }
-
-        // WinForms preserves requested negative dimensions before a control has its own
-        // HWND. Once created, native window dimensions normalize them to zero.
-        bool hasHandle = NativeHandle != 0;
-        if (hasHandle)
-        {
-            width = Math.Max(0, width);
-            height = Math.Max(0, height);
-        }
-
-        bool locationChanged = _left != x || _top != y;
-        bool sizeChanged = _width != width || _height != height;
-
-        if (hasHandle && !locationChanged && !sizeChanged)
-        {
-            return;
-        }
-
-        // The public entry point filters unspecified components. The virtual core
-        // accepts the resulting rectangle, including adjustments made by overrides.
-        _left = x;
-        _top = y;
-        _width = width;
-        _height = height;
-
-        if (hasHandle)
-        {
-            ApplyBounds();
-        }
-
-        int previousClientWidth = _clientWidth;
-        int previousClientHeight = _clientHeight;
-        UpdateClientSize();
-        sizeChanged |= previousClientWidth != _clientWidth || previousClientHeight != _clientHeight;
-
-        if (!locationChanged && !sizeChanged)
-        {
-            return;
-        }
-
-        OnBoundsChanged();
-
-        // Keep the standard notification chain independent of the historical layout
-        // hook: existing derived controls need not call base.OnBoundsChanged().
-        // Snapshot both changes before callbacks so reentrant setters do not erase
-        // the outer operation's pending notification.
         try
         {
-            if (locationChanged) { OnLocationChanged(EventArgs.Empty); }
-            if (sizeChanged)
+            UpdateSpecifiedBounds(new Rectangle(x, y, width, height), specified);
+
+            if (MaximumSize != Size.Empty || MinimumSize != Size.Empty)
             {
-                OnSizeChanged(EventArgs.Empty);
-                OnClientSizeChanged(EventArgs.Empty);
-                _parent?.PerformLayout(this, nameof(Bounds));
+                // Preserve WinForms' short circuit and repeated virtual reads. A
+                // getter can reenter sizing, change constraints, or throw here.
+                Size maximumSize = MaximumSize;
+                int maximumWidth = maximumSize.Width == 0 ? int.MaxValue : maximumSize.Width;
+                int maximumHeight = maximumSize.Height == 0 ? int.MaxValue : maximumSize.Height;
+                width = Math.Min(width, maximumWidth);
+                height = Math.Min(height, maximumHeight);
+                Size minimumSize = MinimumSize;
+                width = Math.Max(width, minimumSize.Width);
+                height = Math.Max(height, minimumSize.Height);
+            }
+
+            // WinForms preserves requested negative dimensions before a control has its own
+            // HWND. Once created, native window dimensions normalize them to zero.
+            bool hasHandle = NativeHandle != 0;
+            if (hasHandle)
+            {
+                width = Math.Max(0, width);
+                height = Math.Max(0, height);
+            }
+
+            bool locationChanged = _left != x || _top != y;
+            bool sizeChanged = _width != width || _height != height;
+
+            if (hasHandle && !locationChanged && !sizeChanged)
+            {
+                return;
+            }
+
+            // The public entry point filters unspecified components. The virtual core
+            // accepts the resulting rectangle, including adjustments made by overrides.
+            _left = x;
+            _top = y;
+            _width = width;
+            _height = height;
+
+            if (hasHandle)
+            {
+                ApplyBounds();
+            }
+
+            int previousClientWidth = _clientWidth;
+            int previousClientHeight = _clientHeight;
+            UpdateClientSize();
+            sizeChanged |= previousClientWidth != _clientWidth || previousClientHeight != _clientHeight;
+
+            if (!locationChanged && !sizeChanged)
+            {
+                return;
+            }
+
+            OnBoundsChanged();
+
+            // Keep the standard notification chain independent of the historical layout
+            // hook: existing derived controls need not call base.OnBoundsChanged().
+            // Snapshot both changes before callbacks so reentrant setters do not erase
+            // the outer operation's pending notification.
+            try
+            {
+                if (locationChanged) { OnLocationChanged(EventArgs.Empty); }
+                if (sizeChanged)
+                {
+                    OnSizeChanged(EventArgs.Empty);
+                    OnClientSizeChanged(EventArgs.Empty);
+                    ClearPreferredSizeCache();
+                    RequestLayout(_parent, this, nameof(Bounds));
+                }
+            }
+            catch (Exception exception) when (hasHandle)
+            {
+                // WinForms dispatches HWND-backed bounds notifications through its
+                // window procedure. Preserve its thread-exception route while keeping
+                // handleless setters and direct protected calls synchronous.
+                Application.OnThreadException(exception);
             }
         }
-        catch (Exception exception) when (hasHandle)
+        finally
         {
-            // WinForms dispatches HWND-backed bounds notifications through its
-            // window procedure. Preserve its thread-exception route while keeping
-            // handleless setters and direct protected calls synchronous.
-            Application.OnThreadException(exception);
+            if (_parent is { } parent)
+            {
+                parent.ClearPreferredSizeCache();
+                parent.LayoutEngine.InitLayout(this, specified);
+            }
         }
+    }
+
+    internal void SetBoundsFromLayout(Rectangle bounds, BoundsSpecified specified)
+        => SetBoundsCore(bounds.X, bounds.Y, bounds.Width, bounds.Height, specified);
+
+    private void UpdateSpecifiedBounds(Rectangle requested, BoundsSpecified specified)
+    {
+        Rectangle previous = SpecifiedBounds;
+        bool preserveX = (specified & BoundsSpecified.X) == 0 && requested.X != previous.X;
+        bool preserveY = (specified & BoundsSpecified.Y) == 0 && requested.Y != previous.Y;
+        bool preserveWidth = (specified & BoundsSpecified.Width) == 0 && requested.Width != previous.Width;
+        bool preserveHeight = (specified & BoundsSpecified.Height) == 0 && requested.Height != previous.Height;
+        if (preserveX || preserveY || preserveWidth || preserveHeight)
+        {
+            _specifiedBounds = new Rectangle(preserveX ? previous.X : requested.X, preserveY ? previous.Y : requested.Y,
+                preserveWidth ? previous.Width : requested.Width, preserveHeight ? previous.Height : requested.Height);
+        }
+        else { _specifiedBounds = null; }
     }
 
     /// <summary>
@@ -1224,6 +1341,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
         }
         if (!performedLayout) { _clearLayoutArgs = true; }
+        if (!performLayout)
+        {
+            ClearPreferredSizeCache();
+            for (int index = 0; _controls is not null && index < _controls.Count; index++)
+            {
+                Control child = _controls[index];
+                LayoutEngine.InitLayout(child, BoundsSpecified.All);
+                child.ClearPreferredSizeCache();
+            }
+        }
     }
 
     /// <summary>
@@ -1252,6 +1379,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public void PerformLayout(Control? affectedControl, string? affectedProperty)
         => PerformLayout(new LayoutEventArgs(affectedControl, affectedProperty));
 
+    internal void RequestLayout(Control? affectedControl, string? affectedProperty)
+        => RequestLayout(this, affectedControl, affectedProperty);
+
+    private static void RequestLayout(Control? container, Control? affectedControl, string? affectedProperty)
+    {
+        affectedControl?.ClearPreferredSizeCache();
+        container?.ClearPreferredSizeCache();
+        container?.PerformLayout(new LayoutEventArgs(affectedControl, affectedProperty));
+    }
+
     private void PerformLayout(LayoutEventArgs args)
     {
         for (Control? control = this; control is not null; control = control._parent)
@@ -1267,6 +1404,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 _cachedLayoutEventArgs = args;
                 _clearLayoutArgs = false;
             }
+            // The standard suspended path consumes the virtual engine getter.
+            _ = LayoutEngine;
             return;
         }
 
@@ -1279,6 +1418,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _layoutDeferred = false;
             _layoutDirty = false;
             _layoutSuspendCount = 0;
+            if (_parent is { _layoutDirty: true } parent)
+            {
+                parent.RequestLayout(this, nameof(PreferredSize));
+            }
         }
     }
 
@@ -1286,7 +1429,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Raises the <see cref="Layout"/> event.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnLayout(LayoutEventArgs levent) => Layout?.Invoke(this, levent);
+    protected virtual void OnLayout(LayoutEventArgs levent)
+    {
+        Layout?.Invoke(this, levent);
+        if (LayoutEngine.Layout(this, levent) && _parent is not null) { _parent._layoutDirty = true; }
+    }
 
     protected virtual void OnPaddingChanged(EventArgs e) => PaddingChanged?.Invoke(this, e);
     protected virtual void OnMarginChanged(EventArgs e) => MarginChanged?.Invoke(this, e);
@@ -1296,7 +1443,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     // Property transactions queue the original reason before user callbacks.
     // Nested changes therefore preserve the same first-request/Resume behavior
     // as explicit SuspendLayout and PerformLayout calls.
-    private readonly struct LayoutTransaction : IDisposable
+    internal readonly struct LayoutTransaction : IDisposable
     {
         private readonly Control? _container;
 
@@ -1309,7 +1456,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         internal LayoutTransaction(Control? container, Control affectedControl, string property)
             : this(container)
         {
-            container?.PerformLayout(affectedControl, property);
+            affectedControl.ClearPreferredSizeCache();
+            container?.RequestLayout(affectedControl, property);
         }
 
         public void Dispose() => _container?.ResumeLayout();
@@ -1850,7 +1998,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             OnSizeChanged(EventArgs.Empty);
             OnClientSizeChanged(EventArgs.Empty);
-            _parent?.PerformLayout(this, nameof(Bounds));
+            ClearPreferredSizeCache();
+            RequestLayout(_parent, this, nameof(Bounds));
         }
     }
 
@@ -2050,7 +2199,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <param name="e">The event arguments.</param>
     protected virtual void OnResize(EventArgs e)
     {
-        PerformLayout(this, nameof(Bounds));
+        RequestLayout(this, nameof(Bounds));
         Resize?.Invoke(this, e);
     }
 
@@ -2194,6 +2343,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             OnVisibleChanged(EventArgs.Empty);
         }
+        ForceAnchorCalculations = true;
+        try { _parent?.LayoutEngine.InitLayout(this, BoundsSpecified.All); }
+        finally { ForceAnchorCalculations = false; }
     }
 
     protected virtual void OnControlAdded(ControlEventArgs e) => ControlAdded?.Invoke(this, e);
@@ -2642,15 +2794,6 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             int nativeLeft = _left;
             int nativeTop = _top;
 
-            if (Parent is Form
-                && Owner is not null
-                && this is not MenuStrip
-                && this is not ToolStrip
-                && this is not StatusStrip)
-            {
-                nativeTop += Owner.GetClientContentTopInset();
-            }
-
             _applyingBounds = true;
             try
             {
@@ -2798,7 +2941,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             finally { Owner.ResumeLayout(false); }
 
             value.InitLayout();
-            Owner.PerformLayout(value, nameof(Parent));
+            Owner.RequestLayout(value, nameof(Parent));
             Owner.OnControlAdded(new ControlEventArgs(value));
         }
 
@@ -2846,7 +2989,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             value.Owner?.DetachControl(value);
             value.AssignParent(null);
             Owner.OnChildRemoved(value);
-            Owner.PerformLayout(value, nameof(Parent));
+            Owner.RequestLayout(value, nameof(Parent));
             Owner.OnControlRemoved(new ControlEventArgs(value));
             ContainerControl.NotifyControlRemoved(Owner, value);
         }
@@ -2954,7 +3097,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             InnerList.RemoveAt(current);
             InnerList.Insert(newIndex, child);
             child.UpdateChildZOrder();
-            Owner.PerformLayout(child, "ChildIndex");
+            Owner.RequestLayout(child, "ChildIndex");
         }
 
         object ICloneable.Clone()
@@ -3018,6 +3161,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     protected virtual void InitLayout()
     {
+        LayoutEngine.InitLayout(this, BoundsSpecified.All);
         // Preserve the existing container initialization path for tab pages,
         // table cells, and hosted items when their parent is first assigned.
         _parent?.OnChildAdded(this);

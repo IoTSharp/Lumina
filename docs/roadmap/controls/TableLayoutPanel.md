@@ -1,6 +1,6 @@
 # TableLayoutPanel
 
-🟡 **当前状态：**已有行列分配、Absolute/AutoSize/Percent 尺寸与 ColumnSpan 的部分算法；RowStyles/ColumnStyles 当前是 List，缺标准集合与 RowSpan、完整扩展属性/查询 API。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
+🟡 **当前状态：**已有行列分配、Absolute/AutoSize/Percent 尺寸与 ColumnSpan 的部分算法；RowStyles/ColumnStyles 当前是 List，缺标准集合与 RowSpan、完整扩展属性/查询 API。020事务与021默认布局必要衔接已完成明确子范围，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -16,9 +16,10 @@
 | ⬜ | P0 / TableLayoutPanel-01 | 补齐 TableLayoutSettings、TableLayoutControlCollection、TableLayoutColumnStyleCollection/TableLayoutRowStyleCollection，保证设计器代码与公开返回类型正确。 |
 | ⬜ | P0 / TableLayoutPanel-02 | 补 Get/SetColumn、Row、ColumnSpan、RowSpan、CellPosition，以及 GetControlFromPosition/GetPositionFromControl；列出负值、越界、null、重复占格的标准异常。 |
 | ⬜ | P1 / TableLayoutPanel-03 | 校准 ColumnCount/RowCount、GrowStyle、CellBorderStyle 默认与扩容；固定尺寸表满、跨格覆盖和删除控件后占位回收。 |
-| ⬜ | P1 / TableLayoutPanel-04 | 实现 AutoSize/GetPreferredSize、SizeType.Absolute/AutoSize/Percent 的分配顺序、跨行列测量、百分比剩余分配及舍入；不以当前 Width/Height 直接代替首选大小。 |
+| 🟡 | P1 / TableLayoutPanel-04 | 021新增有限行列首选测量及AutoSize（接入范围见06b），绝对列行测量已有固定参考；完整Absolute/AutoSize/Percent顺序、跨行列与舍入仍待对照，保留完整算法任务。 |
 | ⬜ | P1 / TableLayoutPanel-05 | 支持单元内 Dock/Anchor、Margin/Padding、隐藏控件、RTL、AutoScroll；当前 LayoutControlInCell 只落左上角需补齐对齐/拉伸。 |
-| 🟡 | P1 / TableLayoutPanel-06 | 020完成06a标准Layout入口与暂停/恢复衔接；CellPaint、Row/ColumnStyles动态变化、完整SetRowSpan/SetColumnSpan事务及算法仍待实现/对照。 |
+| 🟡 | P1 / TableLayoutPanel-06 | 021接入专用LayoutEngine，保留指定尺寸并增加有限行列首选测量；标准Styles变更通知、完整span/百分比/Anchor/RTL与CellPaint仍缺。 |
+| ✅ | P1 / TableLayoutPanel-06b | 批次021：专用引擎执行既有cell算法并使用内部布局边界；绝对40/60列、20行、Padding2的104×24测量/AutoSize有对照。现有样式列表无变更通知，因此明确禁用PreferredSize缓存，未伪装标准样式集合；完整table算法另列。 |
 | ✅ | P1 / TableLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有table几何，SuspendLayout实际延期；原PerformLayout算法迁入标准OnLayout。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / TableLayoutPanel-07 | 实现 GetColumnWidths/GetRowHeights 与 LayoutSettings 序列化；设计器本地化 .resx 的行列样式和跨格设置可以还原。 |
 | ⬜ | P2 / TableLayoutPanel-08 | Windows 在 Panel 原生宿主上批量移动原生子 HWND；边框绘制属容器装饰，不能将完整表布局改成画布子控件。 |
@@ -39,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：专用引擎执行既有cell算法并使用内部布局边界；绝对40/60列、20行、Padding2的104×24测量/AutoSize有对照。现有样式列表无变更通知，因此明确禁用PreferredSize缓存，未伪装标准样式集合；完整table算法另列。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 
 - 2026-10-16 · 批次020：标准事件先于现有表格算法，保留行列分配局部实现；样式集合/RowSpan/完整扩展属性和首选测量未完成。 见[020](../batches/020.md)；父任务保持部分完成。
 

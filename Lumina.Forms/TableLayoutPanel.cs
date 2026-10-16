@@ -1,4 +1,5 @@
 using System.Drawing;
+using Lumina.Forms.Layout;
 
 namespace Lumina.Forms;
 
@@ -9,6 +10,19 @@ public class TableLayoutPanel : Panel
 {
     private readonly Dictionary<Control, (int Column, int Row)> _cellPositions = [];
     private readonly Dictionary<Control, int> _columnSpans = [];
+
+    /// <summary>
+    /// Initializes a table layout container.
+    /// </summary>
+    public TableLayoutPanel()
+    {
+        // The existing style collections are mutable lists. Until they expose
+        // change notifications, measuring must not reuse an obsolete result.
+        CachePreferredSize = false;
+    }
+
+    /// <inheritdoc />
+    public override LayoutEngine LayoutEngine => TableLayoutEngine.Instance;
 
     /// <summary>
     /// Gets or sets the number of logical columns.
@@ -55,16 +69,20 @@ public class TableLayoutPanel : Panel
     protected override void OnLayout(LayoutEventArgs e)
     {
         base.OnLayout(e);
+    }
+
+    private void LayoutTable()
+    {
+        if (_cellPositions is null)
+        {
+            return;
+        }
 
         int columns = ResolveColumnCount();
         int rows = ResolveInitialRowCount(columns);
         List<CellAssignment> assignments = BuildAssignments(columns, ref rows);
 
-        Rectangle displayBounds = new(
-            Padding.Left,
-            Padding.Top,
-            Math.Max(1, Width - Padding.Horizontal),
-            Math.Max(1, Height - Padding.Vertical));
+        Rectangle displayBounds = DisplayRectangle;
 
         int[] columnWidths = CalculateColumnWidths(columns, assignments, displayBounds.Width);
         int[] rowHeights = CalculateRowHeights(rows, assignments, displayBounds.Height);
@@ -296,7 +314,8 @@ public class TableLayoutPanel : Panel
         {
             if (assignment.Column == column)
             {
-                maxWidth = Math.Max(maxWidth, Math.Max(1, assignment.Control.Width) + assignment.Control.Margin.Horizontal);
+                Size size = GetChildLayoutSize(assignment.Control, new Size(int.MaxValue, int.MaxValue));
+                maxWidth = Math.Max(maxWidth, Math.Max(1, size.Width) + assignment.Control.Margin.Horizontal);
             }
         }
 
@@ -310,7 +329,8 @@ public class TableLayoutPanel : Panel
         {
             if (assignment.Row == row)
             {
-                maxHeight = Math.Max(maxHeight, Math.Max(1, assignment.Control.Height) + assignment.Control.Margin.Vertical);
+                Size size = GetChildLayoutSize(assignment.Control, new Size(int.MaxValue, int.MaxValue));
+                maxHeight = Math.Max(maxHeight, Math.Max(1, size.Height) + assignment.Control.Margin.Vertical);
             }
         }
 
@@ -338,9 +358,151 @@ public class TableLayoutPanel : Panel
             Math.Max(1, cellBounds.Width - control.Margin.Horizontal),
             Math.Max(1, cellBounds.Height - control.Margin.Vertical));
 
-        int width = Math.Max(1, Math.Min(Math.Max(1, control.Width), contentBounds.Width));
-        int height = Math.Max(1, Math.Min(Math.Max(1, control.Height), contentBounds.Height));
-        control.SetBounds(contentBounds.Left, contentBounds.Top, width, height);
+        Size desiredSize = GetChildLayoutSize(control, contentBounds.Size);
+        int width = Math.Max(1, Math.Min(Math.Max(1, desiredSize.Width), contentBounds.Width));
+        int height = Math.Max(1, Math.Min(Math.Max(1, desiredSize.Height), contentBounds.Height));
+        control.SetBoundsFromLayout(new Rectangle(contentBounds.Left, contentBounds.Top, width, height), BoundsSpecified.None);
+    }
+
+    private static Size GetChildLayoutSize(Control control, Size proposedSize)
+        => control.AutoSize ? control.GetPreferredSize(proposedSize) : control.SpecifiedBounds.Size;
+
+    private Size MeasureTable(Size proposedSize)
+    {
+        if (_cellPositions is null)
+        {
+            return Size.Empty;
+        }
+
+        int columns = ResolveColumnCount();
+        int rows = ResolveInitialRowCount(columns);
+        List<CellAssignment> assignments = BuildAssignments(columns, ref rows);
+        int[] widths = new int[columns];
+        int[] heights = new int[rows];
+        for (int column = 0; column < columns; column++)
+        {
+            if (IsAbsoluteColumn(column))
+            {
+                widths[column] = Math.Max(1, (int)Math.Round(ColumnStyles[column].Width, MidpointRounding.AwayFromZero));
+            }
+        }
+
+        for (int row = 0; row < rows; row++)
+        {
+            if (IsAbsoluteRow(row))
+            {
+                heights[row] = Math.Max(1, (int)Math.Round(RowStyles[row].Height, MidpointRounding.AwayFromZero));
+            }
+        }
+
+        foreach (CellAssignment assignment in assignments)
+        {
+            Control child = assignment.Control;
+            if (!child.ParticipatesInLayout)
+            {
+                continue;
+            }
+
+            Size desiredSize = GetChildLayoutSize(child, new Size(
+                Math.Max(1, proposedSize.Width - child.Margin.Horizontal),
+                Math.Max(1, proposedSize.Height - child.Margin.Vertical)));
+            int requiredWidth = Math.Max(1, desiredSize.Width) + child.Margin.Horizontal;
+            int span = Math.Min(Math.Max(1, _columnSpans.GetValueOrDefault(child, 1)), columns - assignment.Column);
+            int availableWidth = 0;
+            int growingColumns = 0;
+            for (int column = assignment.Column; column < assignment.Column + span; column++)
+            {
+                availableWidth += widths[column];
+                if (!IsAbsoluteColumn(column))
+                {
+                    growingColumns++;
+                }
+            }
+
+            int missingWidth = Math.Max(0, requiredWidth - availableWidth);
+            for (int column = assignment.Column; column < assignment.Column + span && growingColumns > 0; column++)
+            {
+                if (IsAbsoluteColumn(column))
+                {
+                    continue;
+                }
+
+                int addition = (int)Math.Ceiling(missingWidth / (double)growingColumns);
+                widths[column] += addition;
+                missingWidth -= addition;
+                growingColumns--;
+            }
+
+            if (!IsAbsoluteRow(assignment.Row))
+            {
+                heights[assignment.Row] = Math.Max(heights[assignment.Row], Math.Max(1, desiredSize.Height) + child.Margin.Vertical);
+            }
+        }
+
+        ExpandPercentSizes(widths, column => column < ColumnStyles.Count && ColumnStyles[column].SizeType == SizeType.Percent
+            ? ColumnStyles[column].Width : 0);
+        ExpandPercentSizes(heights, row => row < RowStyles.Count && RowStyles[row].SizeType == SizeType.Percent
+            ? RowStyles[row].Height : 0);
+        return new Size(widths.Sum(), heights.Sum());
+    }
+
+    private bool IsAbsoluteColumn(int column)
+        => column < ColumnStyles.Count && ColumnStyles[column].SizeType == SizeType.Absolute;
+
+    private bool IsAbsoluteRow(int row)
+        => row < RowStyles.Count && RowStyles[row].SizeType == SizeType.Absolute;
+
+    private static void ExpandPercentSizes(int[] sizes, Func<int, float> getWeight)
+    {
+        double totalWeight = 0;
+        for (int index = 0; index < sizes.Length; index++)
+        {
+            totalWeight += Math.Max(0, getWeight(index));
+        }
+
+        if (totalWeight == 0)
+        {
+            return;
+        }
+
+        double requiredTotal = 0;
+        for (int index = 0; index < sizes.Length; index++)
+        {
+            float weight = getWeight(index);
+            if (weight > 0)
+            {
+                requiredTotal = Math.Max(requiredTotal, sizes[index] * totalWeight / weight);
+            }
+        }
+
+        for (int index = 0; index < sizes.Length; index++)
+        {
+            float weight = getWeight(index);
+            if (weight > 0)
+            {
+                sizes[index] = (int)Math.Ceiling(requiredTotal * weight / totalWeight);
+            }
+        }
+    }
+
+    private sealed class TableLayoutEngine : LayoutEngine
+    {
+        internal static readonly TableLayoutEngine Instance = new();
+
+        public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
+        {
+            ArgumentNullException.ThrowIfNull(container);
+            if (container is not TableLayoutPanel panel)
+            {
+                return base.Layout(container, layoutEventArgs);
+            }
+
+            panel.LayoutTable();
+            return panel.AutoSize;
+        }
+
+        internal override Size GetPreferredSize(Control container, Size proposedSize)
+            => ((TableLayoutPanel)container).MeasureTable(proposedSize);
     }
 
     private static bool[,] GrowRows(bool[,] occupied, int newRowCount, int columns)

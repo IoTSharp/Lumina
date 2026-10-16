@@ -73,3 +73,6 @@ Validate-Roadmap 检查公开Control（含抽象基类）、ToolStripItem、Comm
 
 
 批次020：`./tools/compatibility/Test-ControlLayoutTransaction.ps1 -Variant both -PublishAot` 固定WinForms10.0.11，禁用滚动；24个独立STA场景覆盖布局参数/签名、嵌套延期、缓存/重入/异常/释放、Parent/Controls/Bounds/属性通知与必要容器。支持`-Variant reference`先固定参考；每run保存源码快照/hash、stdout/stderr/退出/timeout/complete及严格comparison。当前394行JIT/实际AOT同，但参考7行Dock/Split几何差异，脚本仍失败；有参考差异时继续完成AOT再报告，不能把aotMatches=true解释为参考全同。临时项目只在artifacts/compatibility-batch020，不进入发布物，原始失败不归一化。完整LayoutEngine/首选尺寸/InitLayout/默认布局与Windows完整Control验收见[020](../../docs/roadmap/batches/020.md)/[021](../../docs/roadmap/batches/021.md)。
+
+
+批次021：`./tools/compatibility/Test-ControlDefaultLayout.ps1 -Variant both -PublishAot` 固定WinForms10.0.11且禁止运行时版本前滚；18个独立STA场景覆盖标准引擎/首选缓存/默认legacy及显式V2 Anchor/Dock/AutoSize/指定边界/必要容器/实际HWND。可先用`-Variant reference`冻结，再用`-Variant lumina -PublishAot`消费匹配源码hash的参考清单。每run保存源码、hash、构建/发布和进程stdout/stderr/退出/超时/完成标志，并严格按行比较，不归一化输出。最终512行参考/JIT/真实AOT全同；021复跑旧020事务394行也已参考/JIT全同，原020七行失败仍保留。完整边界见[021](../../docs/roadmap/batches/021.md)，复杂重入/派生测量/全部容器算法和整Control未完成。

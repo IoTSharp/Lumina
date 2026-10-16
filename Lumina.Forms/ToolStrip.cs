@@ -1,5 +1,11 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
+
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using Lumina.Forms.Layout;
 
 namespace Lumina.Forms;
 
@@ -65,6 +71,81 @@ public class ToolStrip : ContainerControlBase
     public ToolStripLayoutStyle LayoutStyle { get; set; }
 
     /// <inheritdoc />
+    [DefaultValue(DockStyle.Top)]
+    public override DockStyle Dock
+    {
+        get => base.Dock;
+        set
+        {
+            if (value == Dock)
+            {
+                return;
+            }
+
+            if (value < DockStyle.None || value > DockStyle.Fill)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(DockStyle));
+            }
+
+            using (new LayoutTransaction(this, this, nameof(Dock)))
+            using (new LayoutTransaction(Parent, this, nameof(Dock)))
+            {
+                SetDockCore(value);
+                UpdateDockLayoutStyle();
+            }
+
+            OnDockChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>
+    /// Gets the direction in which the strip arranges its items.
+    /// </summary>
+    [Browsable(false)]
+    public Orientation Orientation => LayoutStyle switch
+    {
+        ToolStripLayoutStyle.HorizontalStackWithOverflow => Orientation.Horizontal,
+        ToolStripLayoutStyle.VerticalStackWithOverflow => Orientation.Vertical,
+        _ => Dock is DockStyle.Left or DockStyle.Right ? Orientation.Vertical : Orientation.Horizontal,
+    };
+
+    private void UpdateDockLayoutStyle()
+    {
+        if (LayoutStyle is ToolStripLayoutStyle.HorizontalStackWithOverflow or ToolStripLayoutStyle.VerticalStackWithOverflow)
+        {
+            return;
+        }
+
+        // Dock determines the orientation of the stack. Defer both the strip's
+        // real item layout and the parent's dock arrangement to their enclosing
+        // transactions, then deliver DockChanged after those layouts finish.
+        using (new LayoutTransaction(this, this, nameof(Orientation)))
+        {
+            ClearPreferredSizeCache();
+        }
+
+        Parent?.RequestLayout(this, nameof(Orientation));
+    }
+
+    /// <inheritdoc />
+    public override LayoutEngine LayoutEngine => StripLayoutEngine.Instance;
+
+    /// <inheritdoc />
+    public override Rectangle DisplayRectangle
+    {
+        get
+        {
+            int grip = GripStyle == ToolStripGripStyle.Visible ? 7 : 0;
+            bool vertical = Orientation == Orientation.Vertical;
+            int left = Padding.Left + (vertical ? 0 : grip);
+            int top = Padding.Top + (vertical ? grip : 0);
+            return new Rectangle(left, top,
+                Math.Max(0, ClientSize.Width - Padding.Horizontal - (vertical ? 0 : grip)),
+                Math.Max(0, ClientSize.Height - Padding.Vertical - (vertical ? grip : 0)));
+        }
+    }
+
+    /// <inheritdoc />
     protected override string ClassName => "STATIC";
 
     /// <inheritdoc />
@@ -114,6 +195,10 @@ public class ToolStrip : ContainerControlBase
     protected override void OnLayout(LayoutEventArgs e)
     {
         base.OnLayout(e);
+    }
+
+    private void LayoutStrip()
+    {
         // Default constraints can request layout from Control's constructor,
         // before this constructor has created the logical item collection.
         if (_items is null)
@@ -121,55 +206,25 @@ public class ToolStrip : ContainerControlBase
             return;
         }
 
-        LayoutInParent();
         EnsureItemHosts();
         LayoutItemHosts();
     }
 
-    internal virtual void LayoutInParent()
+    private sealed class StripLayoutEngine : LayoutEngine
     {
-        if (Owner is null || !ReferenceEquals(Parent, Owner))
-        {
-            return;
-        }
+        internal static readonly StripLayoutEngine Instance = new();
 
-        int clientWidth = Owner.ClientSize.Width;
-        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
+        public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
         {
-            clientWidth = clientRect.Width;
-        }
-
-        int top = 0;
-        if (Owner.MainMenuStrip is { Visible: true } menuStrip)
-        {
-            top += Math.Max(0, menuStrip.Height);
-        }
-
-        foreach (Control control in Owner.Controls)
-        {
-            if (ReferenceEquals(control, this))
+            ArgumentNullException.ThrowIfNull(container);
+            if (container is not ToolStrip strip)
             {
-                continue;
+                return base.Layout(container, layoutEventArgs);
             }
 
-            if (control is ToolStrip toolStrip && control is not MenuStrip && control is not StatusStrip && control.Visible)
-            {
-                if (toolStrip.Top <= top)
-                {
-                    top += Math.Max(0, toolStrip.Height);
-                }
-            }
+            strip.LayoutStrip();
+            return strip.AutoSize;
         }
-
-        int height = Math.Max(1, Height);
-        int width = Math.Max(1, clientWidth);
-
-        if (Left == 0 && Top == top && Width == width && Height == height)
-        {
-            return;
-        }
-
-        SetBounds(0, top, width, height);
     }
 
     private void OnItemsChanged()
@@ -301,7 +356,9 @@ public class ToolStrip : ContainerControlBase
     private protected virtual void LayoutItemHosts()
     {
         int x = Padding.Left;
+        int y = Padding.Top;
         int availableHeight = Math.Max(1, Height - Padding.Vertical);
+        bool vertical = Orientation == Orientation.Vertical;
 
         foreach (ToolStripItem item in Items)
         {
@@ -318,9 +375,17 @@ public class ToolStrip : ContainerControlBase
             }
 
             Size hostSize = ResolveHostSize(item, availableHeight);
-            int y = Padding.Top + Math.Max(0, (availableHeight - hostSize.Height) / 2);
-            host.SetBounds(x, y, hostSize.Width, hostSize.Height);
-            x += hostSize.Width + StripItemSpacing;
+            int itemX = vertical ? Padding.Left + Math.Max(0, (Width - Padding.Horizontal - hostSize.Width) / 2) : x;
+            int itemY = vertical ? y : Padding.Top + Math.Max(0, (availableHeight - hostSize.Height) / 2);
+            host.SetBounds(itemX, itemY, hostSize.Width, hostSize.Height);
+            if (vertical)
+            {
+                y += hostSize.Height + StripItemSpacing;
+            }
+            else
+            {
+                x += hostSize.Width + StripItemSpacing;
+            }
         }
     }
 

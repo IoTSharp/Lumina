@@ -5,10 +5,10 @@
 ## 当前接续点
 
 - 调度状态：017已完成并结束原实施轮次。用户随后于2026-10-16直接要求“在新会话中开始实现 [Control] 把 [Control] 完全闭环，确保至少windows下能够验收，其他系统下实现代码”。据此开启Control专项，持续完成必要实现及Windows实际验收；Linux/macOS完成对应代码并单列未取得的真机证据。完整专项目标完成后结束，不以一个局部子范围代替整Control闭环，不恢复无关控件的全路线图循环。
-- 当前编码归属：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目），已创建并只读准备。本归属交接commit成功push并核对实际远端后，旧主另发“开始接管”与交接SHA，新主才可核对并实际写入。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`已完成020实现及推送、三个子任务均停止写入/构建/Git；现在只负责归属交接。确认新主实际接管后旧主立即停止所有写入/构建/Git并归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
+- 当前编码主会话：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main与实际远端refs/heads/main均为已推送交接SHA `c9f4f2880429e648f81e7fbbf487a611547c82d3`。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`及020三个内部子任务已停止写入/构建/Git；旧主只读确认实际接管后立即归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
 - 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
-- 当前范围：[Control任务](docs/roadmap/controls/Control.md)与[逐API清单](docs/roadmap/api/Control.md)的完整剩余工作及必要依赖。018父子集合/Form标准链、019标准句柄生命周期/可见消息和020标准布局事务已完成明确子范围；021沿真实依赖推进默认布局/首选尺寸，再继续完整交互/资源/AOT与平台后端。完整目标不因018/019/020局部完成而结束，不恢复无关控件或全路线图循环。
-- 当前实施批次：[021 · 默认布局与首选尺寸依赖](docs/roadmap/batches/021.md)只读准备，收到独立开始消息并核对归属及交接SHA后才实施；020明确事务子范围代码、必要集成/Windows JIT/AOT及路线图整理已完成并成功推送。完整Control目标仍未闭环。
+- 当前范围：[Control任务](docs/roadmap/controls/Control.md)与[逐API清单](docs/roadmap/api/Control.md)的完整剩余工作及必要依赖。018父子集合、019句柄、020事务和021基础默认布局/首选尺寸明确子范围完成；022继续Control-11字体/颜色继承及必要主题/原生资源，随后完整交互/资源/AOT与平台后端。不是完成一个小范围便结束，也不恢复无关全路线图循环。
+- 当前实施批次：[021 · 默认布局与首选尺寸](docs/roadmap/batches/021.md)明确子范围代码、必要集成/Windows JIT/AOT和路线图整理已完成，三个内部任务冻结。正在完成实现提交推送及[022](docs/roadmap/batches/022.md)只读接续/独立归属交接；完整Control目标仍继续。
 - 最近完成批次：020实现提交`8408fc800ae766dff4eed1ff6a90ebbcb9901d3a`已成功push到origin/main；提交后HEAD、origin/main和实际远端refs/heads/main三者均为该SHA，工作区干净，核对记录在artifacts/compatibility-batch020/implementation-push.json。本归属交接随后另commit/push；新主使用开始消息给出的交接SHA，不能将020实现SHA当交接SHA。019实现`8bf6ebcf4e6ae9b4b3b5d4dcd443f293388fcda9`、018实现`78e43f52cbba8aeb5756b6fd753a434e98c984c8`及历史证据保留。
 - 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
 - 019证据：最终4,027测试全部通过、双目标Release 0错误/428警告；生命周期16场景/204行固定10.0.11参考/JIT/实际AOT严格全同，最终run为`20261016-021319-9490794`。父子集合391行参考/JIT全同，018隐藏重挂的中间VisibleChanged缺口已修复；集合AOT仍有32行非零下界数组fixture明确CopyTo未运行，其余359行同JIT，严格失败保留。16个旧Control/context驱动全通过。Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全部失效；生命周期EXE4,115,456字节、Demo4,156,928字节，CLR目录均0。原始失败/警告/路径见`artifacts/compatibility-batch019/evidence.json`，不由这些记录宣称整Control/98%。
@@ -17,9 +17,17 @@
 - 历史完成批次：[017](docs/roadmap/batches/017.md)，两项代码、必要验证、路线图整理及推送完成；原内部子任务已结束。实现提交`2df2cca120f38b94d5c469b3687cd5cc5a800f15`，结束记录提交`77955c4066b3b8933133742ff7c3c9200b9f0fc6`均已成功推送。创建Control聊天前HEAD/origin/main/实际远端refs/heads/main三者均为77955c4，工作区干净。本次归属交接另行commit/push，成功核对后在开始消息中给出交接SHA，新主不得把017实现或结束记录SHA误作本次交接SHA。
 - 历史实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前边界：018/019/020明确基础子范围已完成，不代表Control整类型完成。Form历史Created事件仍隐藏Control.Created标准bool属性（经Control视图可读）；全部派生重建属性/焦点/资源、完整关闭/线程竞态与标准消息扩展仍缺。资源严格告警门禁有已定位IL3050（标准Container/InheritanceAttribute），生命周期另保留Container.Add的IL2026/TypeConverter的IL3053，FND-006仍部分；文本AOT的DispId删除、图像转换器/中文Designer差异保留。Control完整Windows运行验收仍是完成条件；主窗复选框/退出只完成指定范围，018截图文字裁切/完整布局/模态/Designer未宣布修复；Linux/macOS代码、编译和真机分别记录。
+- 当前边界：完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。 Form.Created仍隐藏标准bool属性；AOT Text DispId、集合非零下界数组fixture、中文Designer及既有资源IL3050仍保留。Demo单次交互/退出不等于完整UI/文字裁切/模态/Designer验收；Linux/macOS实现、编译和真机分别记录。
 
-## 批次020完成证据与剩余依赖
+## 批次021完成证据与剩余依赖
+
+- 021完成Control-09d/10c基础默认布局、首选尺寸/缓存和标准LayoutEngine及必要容器衔接。18场景512行固定10.0.11/JIT/实际AOT严格相同；旧020事务394行参考/JIT七行差异清零，019生命周期204行和父子集合391行参考/JIT同。4,107项测试及16个旧Control/context驱动全部通过，双目标Release 0错误/464警告；Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。布局探针3,041,280字节、Demo4,192,256字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
+- 完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。
+- 默认布局最终run为20261016-074614-3648884，固定参考为20261016-073734-9109514；旧事务run为20261016-074817-1254094，生命周期run为20261016-074822-9151166。完整证据artifacts/compatibility-batch021/evidence.json。核心13项+容器11项新增回归；首轮两个失败、fixture编译失败和中间9行差异保留，最终不做输出归一化。
+- 收尾更正Control-17已存在Win32代码仍全标待办、Flow/Table有限测量及CNS-008引擎仍全待办；父项/平台/98%不关闭，固定分母和187页运行unverified不变。README逐控件实施列及tasks.csv用既有工具重生成，13项目/17目标均.NET10，原Demo源码/Designer/resx未改。
+- 下一批022沿Font/BackColor/ForeColor继承和实际资源/主题消费；Control核心、必要容器资源、独立固定参考三个内部任务，先约定接口；共享interop/文档/API/顺序构建/Git由主独占。完整授权、验收、提交推送/远端核对、只读准备→归属交接→开始接管→确认后归档规则不变。
+
+## 批次020完成证据与剩余依赖（历史快照）
 
 - 020完成Control-10b标准布局事务及Form/Flow/Table/Split/Tab/条带必要衔接；4,083测试、16个旧Control/context驱动、204行生命周期及391行父子集合JIT回归通过。24场景394行JIT/实际AOT严格同；参考有7行Dock/Split几何差异，strictMatches=false，原始失败保留。双目标Release 0错误/454警告；Demo AOT真实显示、复选框0→1、正常exit0且全部记录HWND失效。布局探针2,872,320字节、Demo4,159,488字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
 - 完整LayoutEngine/DefaultLayout、PreferredSize缓存、InitLayout/ResumeLayout(false)引擎初始化、Dock/Anchor/AutoSize及Split比例仍未完成；Control-09/10、FND-014/015和容器父项保持部分。Form.Created、完整Windows Control/Designer/资源/模态及GTK4/AppKit继续待办，不宣称整Control或98%。
@@ -27,6 +35,7 @@
 - 收尾已同步Control/Form/ScrollableControl/ContainerControl/Panel与七容器、FND/CNS及总览历史；纠正Panel对018标准层/集合的遗漏、CNS对018事件/集合的遗漏及布局空入口过时描述。明确子范围才✅，完整父项继续🟡；固定1,095类型/61,240行/187页及unverified不变；409份Markdown、2,046项任务与187行逐控件实施索引校验0错误，整类型代码完成仍为0。
 - 收尾源码复核另发现Dock↔Anchor切换事件边界：当前Anchor setter通过公共Dock=None可能额外触发DockChanged，固定参考走内部SetDock；394行探针未覆盖该组合。后续默认布局需修正并取得独立证据，不将7行已观测几何差异泛化为全部剩余差异。
 - 021先定义实际默认布局/LayoutEngine/首选尺寸范围，再分配核心、必要容器和固定参考三个互斥内部任务；Control/Form/interop重叠串行，主统一顺序构建与Git，完整Control目标和全部交接规则不变。
+- 021内部责任已完成并冻结：default_layout_core负责Control/默认引擎/13测试，default_layout_containers负责10库文件/11测试，default_layout_probe负责18场景固定探针/驱动及只读审查；主独占共享文档/API/索引、旧fixture、集成/Git。旧020聊天已核实归档。
 
 ## 批次017完成证据与结束范围
 

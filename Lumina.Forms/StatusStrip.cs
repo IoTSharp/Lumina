@@ -163,33 +163,6 @@ public class StatusStrip : ToolStrip
         }
     }
 
-    internal override void LayoutInParent()
-    {
-        if (Owner is null || !ReferenceEquals(Parent, Owner))
-        {
-            return;
-        }
-
-        int clientWidth = Owner.ClientSize.Width;
-        int clientHeight = Owner.ClientSize.Height;
-        if (Owner.NativeHandle != 0 && Win32.GetClientRect(Owner.NativeHandle, out var clientRect))
-        {
-            clientWidth = clientRect.Width;
-            clientHeight = clientRect.Height;
-        }
-
-        int height = Math.Max(1, Height);
-        int width = Math.Max(1, clientWidth);
-        int top = Math.Max(0, clientHeight - height);
-
-        if (Left == 0 && Top == top && Width == width && Height == height)
-        {
-            return;
-        }
-
-        SetBounds(0, top, width, height);
-    }
-
     private bool ShouldHandleBlankAreaContextMenu(nint lParam)
     {
         if (lParam == (nint)(-1))

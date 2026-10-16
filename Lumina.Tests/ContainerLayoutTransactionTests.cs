@@ -196,7 +196,7 @@ public class ContainerLayoutTransactionTests
         });
 
     [Fact]
-    public void FormResize_PreservesExistingStripPlacementWithoutWalkingOtherChildren()
+    public void FormResize_DocksStripsInReverseChildOrderWithoutWalkingOtherChildren()
         => OnStaThread(() =>
         {
             using var form = new Form { ClientSize = new Size(320, 180) };
@@ -214,14 +214,15 @@ public class ContainerLayoutTransactionTests
 
             Assert.Equal(420, menu.Width);
             Assert.Equal(420, tool.Width);
-            Assert.Equal(menu.Height, tool.Top);
+            Assert.Equal(0, tool.Top);
+            Assert.Equal(tool.Height, menu.Top);
             Assert.Equal(420, status.Width);
             Assert.Equal(240 - status.Height, status.Top);
             Assert.Equal(0, childLayouts);
         });
 
     [Fact]
-    public void FormLayout_DoesNotPositionNestedStripsAgainstTheForm()
+    public void FormLayout_DocksNestedStripsAgainstTheirImmediateParent()
         => OnStaThread(() =>
         {
             using var form = new Form { ClientSize = new Size(320, 180) };
@@ -233,7 +234,7 @@ public class ContainerLayoutTransactionTests
             form.PerformLayout();
             strip.PerformLayout();
 
-            Assert.Equal(new Rectangle(7, 9, 100, 25), strip.Bounds);
+            Assert.Equal(new Rectangle(0, 0, 140, 25), strip.Bounds);
         });
 
     [Fact]

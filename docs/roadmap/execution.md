@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- |
 | 00 | 基线可追踪 | P0 🟡 | [计量](coverage.md)、[类型/成员](api/types.json)、[全控件索引](README.md) | 清单已生成；行为场景和证据映射仍需建立 |
 | 01 | M0 阻塞 | P0 🟡 | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程/基础构造/启动签名与Form标准链已实现；完整AOT主窗/模态与警告仍未闭环 |
-| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/释放、Parent/Controls/Form标准链首范围完成；标准句柄与布局事务首范围已实现，完整布局/键盘/验证/模态/设计器仍缺 |
+| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/释放、Parent/Controls/Form标准链首范围完成；标准句柄、事务和基础默认布局/首选尺寸已实现明确范围，完整派生布局/继承属性/键盘/验证/模态/设计器仍缺 |
 | 03 | M2a 高频简单控件 | P1 🟡 已有局部代码，开发/验收未完成 | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
 | 04 | M2b 已有确定性薄弱控件 | P1 🟡 已有局部代码，开发/验收未完成 | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
 | 05 | M2c 容器/列表/菜单 | P1 🟡 已有局部代码，开发/验收未完成 | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
@@ -26,9 +26,9 @@
 
 ## 当前接续与每批收尾
 
-2026-10-16：批次020完成Control-10b标准布局事务及Form/Flow/Table/Split/Tab/条带必要衔接；4,083测试、16个旧Control/context驱动、204行生命周期及391行父子集合JIT回归通过。24场景394行JIT/实际AOT严格同；参考有7行Dock/Split几何差异，strictMatches=false，原始失败保留。双目标Release 0错误/454警告；Demo AOT真实显示、复选框0→1、正常exit0且全部记录HWND失效。布局探针2,872,320字节、Demo4,159,488字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整LayoutEngine/DefaultLayout、PreferredSize缓存、InitLayout/ResumeLayout(false)引擎初始化、Dock/Anchor/AutoSize及Split比例仍未完成；Control-09/10、FND-014/015和容器父项保持部分。Form.Created、完整Windows Control/Designer/资源/模态及GTK4/AppKit继续待办，不宣称整Control或98%。 证据见[020](batches/020.md)，M0/M1未关闭。
+2026-10-16：批次021完成Control-09d/10c基础默认布局、首选尺寸/缓存和标准LayoutEngine及必要容器衔接。18场景512行固定10.0.11/JIT/实际AOT严格相同；旧020事务394行参考/JIT七行差异清零，019生命周期204行和父子集合391行参考/JIT同。4,107项测试及16个旧Control/context驱动全部通过，双目标Release 0错误/464警告；Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。布局探针3,041,280字节、Demo4,192,256字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。 见[021](batches/021.md)，M0/M1未关闭。
 
-下批[021](batches/021.md)按[HANDOFF](../../HANDOFF.md)先只读准备后交接。基础事务已完成，沿Control-09/10及CNS-008继续默认LayoutEngine、Dock/Anchor/首选尺寸与必要容器衔接，处理020原始几何差异。完整Control专项仍须Windows实际验收及Linux/macOS对应代码，不以本批子范围结束；暂停巡检/无关循环不恢复，不重启全库评估或新建调度框架。
+下批[022](batches/022.md)按HANDOFF只读准备后交接，推进Control-11基础Font/BackColor/ForeColor继承及必要主题/原生字体消费。先固定参考，核心/资源/探针互斥责任，Win32/共享文档/构建/Git由主负责。完整Control专项继续，暂停巡检及无关循环不恢复。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

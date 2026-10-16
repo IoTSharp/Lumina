@@ -198,16 +198,19 @@ public class ContainerControlTests
             ClientSize = new Size(300, 100),
         };
 
-        var leftPanel = new Panel();
+        form.SuspendLayout();
+        var leftPanel = new Panel { Dock = DockStyle.Left };
         leftPanel.SetBounds(0, 0, 100, 100);
 
         var splitter = new Splitter();
         splitter.SetBounds(100, 0, 3, 100);
 
-        var fillPanel = new Panel();
+        var fillPanel = new Panel { Dock = DockStyle.Fill };
         fillPanel.SetBounds(103, 0, 197, 100);
 
-        form.Controls.AddRange(leftPanel, splitter, fillPanel);
+        // Dock layout consumes the collection in reverse z-order.
+        form.Controls.AddRange(fillPanel, splitter, leftPanel);
+        form.ResumeLayout();
 
         splitter.SplitPosition = 120;
 

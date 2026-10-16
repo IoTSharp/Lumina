@@ -1,4 +1,5 @@
 using System.Drawing;
+using Lumina.Forms.Layout;
 
 namespace Lumina.Forms;
 
@@ -8,6 +9,10 @@ namespace Lumina.Forms;
 public class FlowLayoutPanel : Panel
 {
     private FlowDirection _flowDirection = FlowDirection.LeftToRight;
+    private bool _wrapContents = true;
+
+    /// <inheritdoc />
+    public override LayoutEngine LayoutEngine => FlowLayoutEngine.Instance;
 
     /// <summary>
     /// Gets or sets the direction used to place child controls.
@@ -23,26 +28,37 @@ public class FlowLayoutPanel : Panel
             }
 
             _flowDirection = value;
-            PerformLayout(this, nameof(FlowDirection));
+            RequestLayout(this, nameof(FlowDirection));
         }
     }
 
     /// <summary>
     /// Gets or sets a value indicating whether controls wrap when they reach the container edge.
     /// </summary>
-    public bool WrapContents { get; set; } = true;
+    public bool WrapContents
+    {
+        get => _wrapContents;
+        set
+        {
+            if (_wrapContents == value)
+            {
+                return;
+            }
+
+            _wrapContents = value;
+            RequestLayout(this, nameof(WrapContents));
+        }
+    }
 
     /// <inheritdoc />
     protected override void OnLayout(LayoutEventArgs e)
     {
         base.OnLayout(e);
+    }
 
-        Rectangle displayBounds = new(
-            Padding.Left,
-            Padding.Top,
-            Math.Max(1, Width - Padding.Horizontal),
-            Math.Max(1, Height - Padding.Vertical));
-
+    private void LayoutFlow()
+    {
+        Rectangle displayBounds = DisplayRectangle;
         switch (FlowDirection)
         {
             case FlowDirection.RightToLeft:
@@ -72,13 +88,14 @@ public class FlowLayoutPanel : Panel
 
         foreach (Control child in ChildControls)
         {
-            if (!child.Visible)
+            if (!child.ParticipatesInLayout)
             {
                 continue;
             }
 
-            int childWidth = Math.Max(1, child.Width);
-            int childHeight = Math.Max(1, child.Height);
+            Size childSize = GetChildLayoutSize(child, displayBounds.Size);
+            int childWidth = Math.Max(1, childSize.Width);
+            int childHeight = Math.Max(1, childSize.Height);
             int outerWidth = childWidth + child.Margin.Horizontal;
             int outerHeight = childHeight + child.Margin.Vertical;
 
@@ -99,7 +116,7 @@ public class FlowLayoutPanel : Panel
                 : x - outerWidth + child.Margin.Left;
             int childTop = y + child.Margin.Top;
 
-            child.SetBounds(childLeft, childTop, childWidth, childHeight);
+            child.SetBoundsFromLayout(new Rectangle(childLeft, childTop, childWidth, childHeight), BoundsSpecified.None);
 
             x = leftToRight ? x + outerWidth : x - outerWidth;
             lineHeight = Math.Max(lineHeight, outerHeight);
@@ -116,13 +133,14 @@ public class FlowLayoutPanel : Panel
 
         foreach (Control child in ChildControls)
         {
-            if (!child.Visible)
+            if (!child.ParticipatesInLayout)
             {
                 continue;
             }
 
-            int childWidth = Math.Max(1, child.Width);
-            int childHeight = Math.Max(1, child.Height);
+            Size childSize = GetChildLayoutSize(child, displayBounds.Size);
+            int childWidth = Math.Max(1, childSize.Width);
+            int childHeight = Math.Max(1, childSize.Height);
             int outerWidth = childWidth + child.Margin.Horizontal;
             int outerHeight = childHeight + child.Margin.Vertical;
 
@@ -143,11 +161,78 @@ public class FlowLayoutPanel : Panel
                 ? y + child.Margin.Top
                 : y - outerHeight + child.Margin.Top;
 
-            child.SetBounds(childLeft, childTop, childWidth, childHeight);
+            child.SetBoundsFromLayout(new Rectangle(childLeft, childTop, childWidth, childHeight), BoundsSpecified.None);
 
             y = topDown ? y + outerHeight : y - outerHeight;
             lineWidth = Math.Max(lineWidth, outerWidth);
             firstInLine = false;
         }
+    }
+
+    private static Size GetChildLayoutSize(Control child, Size availableSize)
+        => child.AutoSize
+            ? child.GetPreferredSize(new Size(
+                Math.Max(1, availableSize.Width - child.Margin.Horizontal),
+                Math.Max(1, availableSize.Height - child.Margin.Vertical)))
+            : child.SpecifiedBounds.Size;
+
+    private Size MeasureFlow(Size proposedSize)
+    {
+        bool horizontal = FlowDirection is FlowDirection.LeftToRight or FlowDirection.RightToLeft;
+        int availablePrimary = Math.Max(1, horizontal ? proposedSize.Width : proposedSize.Height);
+        int linePrimary = 0;
+        int lineSecondary = 0;
+        int maximumPrimary = 0;
+        int totalSecondary = 0;
+        bool firstInLine = true;
+
+        foreach (Control child in ChildControls)
+        {
+            if (!child.ParticipatesInLayout)
+            {
+                continue;
+            }
+
+            Size childSize = GetChildLayoutSize(child, proposedSize);
+            int outerWidth = Math.Max(1, childSize.Width) + child.Margin.Horizontal;
+            int outerHeight = Math.Max(1, childSize.Height) + child.Margin.Vertical;
+            int childPrimary = horizontal ? outerWidth : outerHeight;
+            int childSecondary = horizontal ? outerHeight : outerWidth;
+            if (WrapContents && !firstInLine && (long)linePrimary + childPrimary > availablePrimary)
+            {
+                maximumPrimary = Math.Max(maximumPrimary, linePrimary);
+                totalSecondary += lineSecondary;
+                linePrimary = 0;
+                lineSecondary = 0;
+            }
+
+            linePrimary += childPrimary;
+            lineSecondary = Math.Max(lineSecondary, childSecondary);
+            firstInLine = false;
+        }
+
+        maximumPrimary = Math.Max(maximumPrimary, linePrimary);
+        totalSecondary += lineSecondary;
+        return horizontal ? new Size(maximumPrimary, totalSecondary) : new Size(totalSecondary, maximumPrimary);
+    }
+
+    private sealed class FlowLayoutEngine : LayoutEngine
+    {
+        internal static readonly FlowLayoutEngine Instance = new();
+
+        public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
+        {
+            ArgumentNullException.ThrowIfNull(container);
+            if (container is not FlowLayoutPanel panel)
+            {
+                return base.Layout(container, layoutEventArgs);
+            }
+
+            panel.LayoutFlow();
+            return panel.AutoSize;
+        }
+
+        internal override Size GetPreferredSize(Control container, Size proposedSize)
+            => ((FlowLayoutPanel)container).MeasureFlow(proposedSize);
     }
 }

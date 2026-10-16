@@ -1,6 +1,6 @@
 # FlowLayoutPanel
 
-🟡 **当前状态：**已有四方向排列、换行和 Margin/Padding 计算；缺 FlowBreak 扩展属性与标准 FlowLayoutSettings，布局算法仍需官方对照。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
+🟡 **当前状态：**已有四方向排列、换行和 Margin/Padding 计算；缺 FlowBreak 扩展属性与标准 FlowLayoutSettings，布局算法仍需官方对照。020事务与021默认布局必要衔接已完成明确子范围，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -14,11 +14,12 @@
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
 | ⬜ | P0 / FlowLayoutPanel-01 | 实现 LayoutSettings/FlowLayoutSettings、GetFlowBreak/SetFlowBreak/IExtenderProvider；保持设计器生成 SetFlowBreak(child, true) 原样可编译。 |
-| ⬜ | P0 / FlowLayoutPanel-02 | 对齐 FlowDirection=LeftToRight、WrapContents=true、AutoSize/AutoSizeMode、AutoScroll；属性赋值后均应在正确时点请求布局。 |
+| 🟡 | P0 / FlowLayoutPanel-02 | 已有FlowDirection/WrapContents属性与局部排列，021属性变化清首选缓存并请求真实布局。完整标准默认、AutoSizeMode/AutoScroll及所有变更事件仍待对照，不再全标未实现。 |
 | ⬜ | P1 / FlowLayoutPanel-03 | 逐方向校验 LeftToRight/RightToLeft/TopDown/BottomUp 和 RightToLeft 组合；修正现有三元条件优先级造成非预期换行的风险。 |
 | ⬜ | P1 / FlowLayoutPanel-04 | 支持每个子控件 Margin、容器 Padding、FlowBreak、Visible=false、Dock/Anchor 在行/列内的标准约束，避免简单顺序 SetBounds 视作完成。 |
-| ⬜ | P1 / FlowLayoutPanel-05 | 实现 AutoSize/首选大小测量、跨行最大尺寸、边界刚好容纳/差一个像素、超大首项；滚动范围从真实测量结果计算。 |
-| 🟡 | P1 / FlowLayoutPanel-06 | 处理Controls增删/重排、字体/DPI、AutoSize与稳定布局事件数量；020完成06a暂停/恢复与标准事件入口，完整测量/FlowBreak/方向算法仍待对照。 |
+| 🟡 | P1 / FlowLayoutPanel-05 | 021新增有限内容首选测量和AutoSize（明确接入范围见06b）；完整换行边界、超大首项、行列内Dock/Anchor和滚动范围仍缺，不能由两个子项样例关闭全部测量。 |
+| 🟡 | P1 / FlowLayoutPanel-06 | 021接入专用LayoutEngine，旧flow算法不被DefaultLayout覆盖；内部SetBounds保留用户指定尺寸，补有限内容测量/AutoSize、FlowDirection/WrapContents真实清缓存。完整FlowBreak/Settings/RTL/行列内Dock/Anchor算法和字体/DPI仍缺。 |
+| ✅ | P1 / FlowLayoutPanel-06b | 批次021：专用引擎驱动既有flow排列及有限内容测量，避免布局覆盖指定尺寸；方向/换行属性清缓存并请求真实布局。简单两子项58×21测量/AutoSize与换向缓存独立回归通过；仅接入/有限测量，完整标准flow算法不在此范围。 |
 | ✅ | P1 / FlowLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有flow几何；SuspendLayout实际延期现有布局，重复/重入沿共享事务处理。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / FlowLayoutPanel-07 | 保留 TabIndex 与视觉排列不同的键盘顺序；子控件焦点、验证、鼠标事件不被容器吞掉。 |
 | ⬜ | P2 / FlowLayoutPanel-08 | Windows 使用真实子 HWND，托管 flow 算法计算后批量 SetWindowPos；勿引入独立绘制控件树。 |
@@ -39,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：专用引擎驱动既有flow排列及有限内容测量，避免布局覆盖指定尺寸；方向/换行属性清缓存并请求真实布局。简单两子项58×21测量/AutoSize与换向缓存独立回归通过；仅接入/有限测量，完整标准flow算法不在此范围。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 
 - 2026-10-16 · 批次020：标准事件先于既有flow算法，原PerformLayout算法迁入标准OnLayout。原四方向/换行/Margin/Padding局部算法保留；FlowBreak/标准Settings/首选测量/完整算法继续待办。 见[020](../batches/020.md)；父任务保持部分完成。
 

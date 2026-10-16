@@ -14,7 +14,7 @@
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
 | 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入；Panel仍用历史基类，完整Control受保护契约也仍待后续，不关闭父项。 |
-| ✅ | P0 / ScrollableControl-01a | 018建立标准ScrollableControl : Control，实际共享父子集合/客户区/释放，ContainerControl/Form复用；020去掉该层独立暂停状态及无条件子树布局，接入Control标准事务。仅此继承与事务衔接范围完成，Panel迁移和任何滚动行为不在此范围。 |
+| ✅ | P0 / ScrollableControl-01a | 018建立标准ScrollableControl : Control，共享父子集合/客户区/释放，ContainerControl/Form复用；020统一事务，021补Visible时请求自身布局并清首选缓存，再调用base通知。仅继承/事务衔接完成，Panel迁移与任何完整滚动行为不在此范围。 |
 | 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle。AutoScroll、AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties完整状态模型仍待实现。 |
 | ⬜ | P0 / ScrollableControl-03 | 明确 AutoScrollPosition 赋正值、读负偏移的 WinForms 约定；布局、滚动和子控件 Bounds 的逻辑/显示坐标分离，并验证重复滚动不累积误差。 |
 | ⬜ | P1 / ScrollableControl-04 | 实现 ScrollControlIntoView、ScrollToControl、SetAutoScrollMargin；隐藏、负坐标、Dock、Anchor、嵌套控件和超大内容的可滚动区域按基线计算。 |
@@ -39,6 +39,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次021：按官方OnVisibleChanged补Visible时真正请求本体布局/缓存失效，ContainerControl/Form继承消费。原无滚动DisplayRectangle保留，未实现AutoScroll/ScrollProperties，也未迁移Panel；父项继续部分。
 
 - 2026-10-16 · 批次020：移除第二份暂停计数/延期状态与无条件子树遍历，继承Control标准事务，基础恢复不会强制对子孙调用PerformLayout。既有无滚动DisplayRectangle保留；Panel继承、滚动状态/坐标/平台后端仍缺，不能由本改动关闭滚动父项。
 
