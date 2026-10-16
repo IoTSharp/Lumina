@@ -35,17 +35,6 @@ public class MenuStrip : ToolStrip
     /// <inheritdoc />
     protected override bool ShouldCreateNativeHandle => !UsesNativeMenuBar;
 
-    /// <inheritdoc />
-    public override void PerformLayout()
-    {
-        if (!UsesNativeMenuBar)
-        {
-            DockToTop();
-        }
-
-        base.PerformLayout();
-    }
-
     private protected override void LayoutItemHosts()
     {
         int availableHeight = Math.Max(1, Height - Padding.Vertical);
@@ -225,9 +214,9 @@ public class MenuStrip : ToolStrip
             | blue;
     }
 
-    private void DockToTop()
+    internal override void LayoutInParent()
     {
-        if (Owner is null)
+        if (UsesNativeMenuBar || Owner is null || !ReferenceEquals(Parent, Owner))
         {
             return;
         }

@@ -23,7 +23,7 @@ public class FlowLayoutPanel : Panel
             }
 
             _flowDirection = value;
-            PerformLayout();
+            PerformLayout(this, nameof(FlowDirection));
         }
     }
 
@@ -33,8 +33,10 @@ public class FlowLayoutPanel : Panel
     public bool WrapContents { get; set; } = true;
 
     /// <inheritdoc />
-    public override void PerformLayout()
+    protected override void OnLayout(LayoutEventArgs e)
     {
+        base.OnLayout(e);
+
         Rectangle displayBounds = new(
             Padding.Left,
             Padding.Top,
@@ -59,8 +61,6 @@ public class FlowLayoutPanel : Panel
                 LayoutHorizontal(displayBounds, leftToRight: true);
                 break;
         }
-
-        base.PerformLayout();
     }
 
     private void LayoutHorizontal(Rectangle displayBounds, bool leftToRight)

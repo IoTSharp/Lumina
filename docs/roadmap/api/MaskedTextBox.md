@@ -18,7 +18,7 @@
 | API-E3743B0F6C4EF5BF | Constructor | `public MaskedTextBox(System.ComponentModel.MaskedTextProvider maskedTextProvider)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-E71EB02DBD9614B1 | Constructor | `public MaskedTextBox(System.String mask)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-EDF8FDC56977EB86 | Event | `public event System.EventHandler AcceptsTabChanged` | `System.Windows.Forms.MaskedTextBox` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-783C5C98D89F0557 | Event | `public event System.EventHandler AutoSizeChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-783C5C98D89F0557 | Event | `public event System.EventHandler AutoSizeChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-D063363F74F5F9AA | Event | `public event System.EventHandler BackColorChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-15C55C683E098CBA | Event | `public event System.EventHandler BackgroundImageChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-465BE591CAD4C28C | Event | `public event System.EventHandler BackgroundImageLayoutChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -35,7 +35,7 @@
 | API-38C66C1802D6BADB | Event | `public event System.EventHandler CursorChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-9C749F5D5C3E5697 | Event | `public event System.EventHandler DataContextChanged` | `System.Windows.Forms.Control` BrowsableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-8875DEE11FEAC660 | Event | `public event System.EventHandler Disposed` | `System.ComponentModel.Component` BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-7D1053171F07351F | Event | `public event System.EventHandler DockChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-7D1053171F07351F | Event | `public event System.EventHandler DockChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-5C5F5D73445EC440 | Event | `public event System.EventHandler DoubleClick` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-C8BF67AE3947329A | Event | `public event System.EventHandler DpiChangedAfterParent` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-2192E47A5E9FA0AD | Event | `public event System.EventHandler DpiChangedBeforeParent` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -59,11 +59,11 @@
 | API-4236CDDDCE23C87E | Event | `public event System.Windows.Forms.KeyEventHandler KeyDown` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-B2B02C25E2D628B6 | Event | `public event System.Windows.Forms.KeyPressEventHandler KeyPress` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-EBF4E59C567652B0 | Event | `public event System.Windows.Forms.KeyEventHandler KeyUp` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-AD70BA8CE7CEA276 | Event | `public event System.Windows.Forms.LayoutEventHandler Layout` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-AD70BA8CE7CEA276 | Event | `public event System.Windows.Forms.LayoutEventHandler Layout` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-DF930C261FBE5206 | Event | `public event System.EventHandler Leave` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-2E23FE08774AD3E8 | Event | `public event System.EventHandler LocationChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-3EEBA4AA9B27103B | Event | `public event System.EventHandler LostFocus` | `System.Windows.Forms.Control` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-DB23E2E67D514D85 | Event | `public event System.EventHandler MarginChanged` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-DB23E2E67D514D85 | Event | `public event System.EventHandler MarginChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-BA2845A3C688B832 | Event | `public event System.EventHandler MaskChanged` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-8413481D29B4E0DD | Event | `public event System.Windows.Forms.MaskInputRejectedEventHandler MaskInputRejected` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-398BC72859C8AE8D | Event | `public event System.EventHandler ModifiedChanged` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -79,7 +79,7 @@
 | API-A8D28C68975E3DEF | Event | `public event System.Windows.Forms.MouseEventHandler MouseWheel` | `System.Windows.Forms.Control` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-D77545867032F1AA | Event | `public event System.EventHandler Move` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-046D030E17396542 | Event | `public event System.EventHandler MultilineChanged` | `System.Windows.Forms.MaskedTextBox` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-664081BD56D848D9 | Event | `public event System.EventHandler PaddingChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-664081BD56D848D9 | Event | `public event System.EventHandler PaddingChanged` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false); DesignerSerializationVisibilityAttribute(0) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-9081470E6E652C3B | Event | `public event System.Windows.Forms.PaintEventHandler Paint` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-5E18CADA8EE5A659 | Event | `public event System.EventHandler ParentChanged` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-784E4658B0ECDA56 | Event | `public event System.Windows.Forms.PreviewKeyDownEventHandler PreviewKeyDown` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -155,8 +155,8 @@
 | API-F52C97A2DD39F33F | Method | `public System.Drawing.Size LogicalToDeviceUnits(System.Drawing.Size value)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-948AE26966B8DCA0 | Method | `public System.Int32 LogicalToDeviceUnits(System.Int32 value)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-C9EDAF721C906145 | Method | `public System.Void Paste()` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-34AA7C9293AC4B23 | Method | `public System.Void PerformLayout()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-1BC54BA620AD8EB6 | Method | `public System.Void PerformLayout(System.Windows.Forms.Control affectedControl, System.String affectedProperty)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-34AA7C9293AC4B23 | Method | `public System.Void PerformLayout()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-1BC54BA620AD8EB6 | Method | `public System.Void PerformLayout(System.Windows.Forms.Control affectedControl, System.String affectedProperty)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-5E2CACFA66F368F8 | Method | `public System.Drawing.Point PointToClient(System.Drawing.Point p)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-4E8822BF253D62B5 | Method | `public System.Drawing.Point PointToScreen(System.Drawing.Point p)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-35D0E512375C8A33 | Method | `public System.Windows.Forms.PreProcessControlState PreProcessControlMessage(ref System.Windows.Forms.Message msg)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -172,8 +172,8 @@
 | API-A6B581A7C2DE3700 | Method | `public System.Void ResetImeMode()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-19F8D155EB766BC8 | Method | `public virtual System.Void ResetRightToLeft()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-2A0D7CE3964F1A85 | Method | `public virtual System.Void ResetText()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
-| API-42668AFE89F3A07B | Method | `public System.Void ResumeLayout()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-F47CF308BE985D4E | Method | `public System.Void ResumeLayout(System.Boolean performLayout)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-42668AFE89F3A07B | Method | `public System.Void ResumeLayout()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
+| API-F47CF308BE985D4E | Method | `public System.Void ResumeLayout(System.Boolean performLayout)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-B541593CEB6DAE01 | Method | `public System.Void Scale(System.Drawing.SizeF factor)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-5AD1806E6FBD10CD | Method | `public System.Void Scale(System.Single dx, System.Single dy)` | `System.Windows.Forms.Control` ObsoleteAttribute("This method has been deprecated. Use the Scale(SizeF ratio) method instead. https://go.microsoft.com/fwlink/?linkid=14202") | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-81A25C26DE21659C | Method | `public System.Void Scale(System.Single ratio)` | `System.Windows.Forms.Control` ObsoleteAttribute("This method has been deprecated. Use the Scale(SizeF ratio) method instead. https://go.microsoft.com/fwlink/?linkid=14202") | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -187,7 +187,7 @@
 | API-0A1CEBABB66A16EB | Method | `public System.Void SetBounds(System.Int32 x, System.Int32 y, System.Int32 width, System.Int32 height)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-6D2948D144B953B1 | Method | `public System.Void SetBounds(System.Int32 x, System.Int32 y, System.Int32 width, System.Int32 height, System.Windows.Forms.BoundsSpecified specified)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-D973B02B0F10B070 | Method | `public System.Void Show()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-045DED44DF387873 | Method | `public System.Void SuspendLayout()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-045DED44DF387873 | Method | `public System.Void SuspendLayout()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-00E4E862D19305D8 | Method | `public virtual System.String ToString()` | `System.Windows.Forms.MaskedTextBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-6C4038F9E6BDBF9B | Method | `public System.Void Undo()` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-8A21766446FD03CE | Method | `public System.Void Update()` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -200,10 +200,10 @@
 | API-E7F5ACCDE2A0B3DC | Property | `System.Windows.Forms.AccessibleRole AccessibleRole { public get; public set; }` | `System.Windows.Forms.Control` DefaultValueAttribute(-1) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-3566281F7DFD6DB5 | Property | `virtual System.Boolean AllowDrop { public get; public set; }` | `System.Windows.Forms.Control` DefaultValueAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-5EE052DF270FD774 | Property | `System.Boolean AllowPromptAsInput { public get; public set; }` | `System.Windows.Forms.MaskedTextBox` DefaultValueAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-5C13D541D7EAC5B9 | Property | `virtual System.Windows.Forms.AnchorStyles Anchor { public get; public set; }` | `System.Windows.Forms.Control` LocalizableAttribute(true); DefaultValueAttribute(5) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-5C13D541D7EAC5B9 | Property | `virtual System.Windows.Forms.AnchorStyles Anchor { public get; public set; }` | `System.Windows.Forms.Control` LocalizableAttribute(true); DefaultValueAttribute(5) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-0B02376223939F2D | Property | `System.Boolean AsciiOnly { public get; public set; }` | `System.Windows.Forms.MaskedTextBox` DefaultValueAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-6C2CBE5A8132731A | Property | `virtual System.Drawing.Point AutoScrollOffset { public get; public set; }` | `System.Windows.Forms.Control` BrowsableAttribute(false); DefaultValueAttribute(System.Drawing.Point,"0, 0") | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-19C9ADB7BE894C21 | Property | `virtual System.Boolean AutoSize { public get; public set; }` | `System.Windows.Forms.TextBoxBase` DefaultValueAttribute(true); LocalizableAttribute(true); BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-19C9ADB7BE894C21 | Property | `virtual System.Boolean AutoSize { public get; public set; }` | `System.Windows.Forms.TextBoxBase` DefaultValueAttribute(true); LocalizableAttribute(true); BrowsableAttribute(false) | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-FDA2D250C5300A56 | Property | `virtual System.Drawing.Color BackColor { public get; public set; }` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-60FFAD0D6435F691 | Property | `virtual System.Drawing.Image BackgroundImage { public get; public set; }` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-A67F73D62CE31EBF | Property | `virtual System.Windows.Forms.ImageLayout BackgroundImageLayout { public get; public set; }` | `System.Windows.Forms.TextBoxBase` BrowsableAttribute(false) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -346,7 +346,7 @@
 | API-55FF7B558EE1ADE6 | Method | `protected virtual System.Boolean IsInputKey(System.Windows.Forms.Keys keyData)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-999C4340234B1743 | Method | `protected virtual System.Void NotifyInvalidate(System.Drawing.Rectangle invalidatedArea)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-810EDD7AE0F44574 | Method | `protected virtual System.Void OnAcceptsTabChanged(System.EventArgs e)` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-424200B71043D7A1 | Method | `protected virtual System.Void OnAutoSizeChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-424200B71043D7A1 | Method | `protected virtual System.Void OnAutoSizeChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-582E28B6F763918D | Method | `protected virtual System.Void OnBackColorChanged(System.EventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-F7682667454C307B | Method | `protected virtual System.Void OnBackgroundImageChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-89ADC52DC7199691 | Method | `protected virtual System.Void OnBackgroundImageLayoutChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -363,7 +363,7 @@
 | API-5F202160C21D140F | Method | `protected virtual System.Void OnCreateControl()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-EC680F66B8CF4972 | Method | `protected virtual System.Void OnCursorChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-DACA9996167B2C59 | Method | `protected virtual System.Void OnDataContextChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-2B896D5C34DC9675 | Method | `protected virtual System.Void OnDockChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-2B896D5C34DC9675 | Method | `protected virtual System.Void OnDockChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-1C077BA299CBD879 | Method | `protected virtual System.Void OnDoubleClick(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-1980B37564DE33CE | Method | `protected virtual System.Void OnDpiChangedAfterParent(System.EventArgs e)` | `System.Windows.Forms.Control` BrowsableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-C39E8FFE64460696 | Method | `protected virtual System.Void OnDpiChangedBeforeParent(System.EventArgs e)` | `System.Windows.Forms.Control` BrowsableAttribute(true) | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -387,11 +387,11 @@
 | API-6D46E8891375AA08 | Method | `protected virtual System.Void OnKeyDown(System.Windows.Forms.KeyEventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7D8B145F7AE8CBAE | Method | `protected virtual System.Void OnKeyPress(System.Windows.Forms.KeyPressEventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-4F00D7FBEF9C6D05 | Method | `protected virtual System.Void OnKeyUp(System.Windows.Forms.KeyEventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-A4B29A9BB1F38555 | Method | `protected virtual System.Void OnLayout(System.Windows.Forms.LayoutEventArgs levent)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-A4B29A9BB1F38555 | Method | `protected virtual System.Void OnLayout(System.Windows.Forms.LayoutEventArgs levent)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-F5F7C12A7C2A4FBC | Method | `protected internal virtual System.Void OnLeave(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7275B69EE2D856F7 | Method | `protected virtual System.Void OnLocationChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-3276A012E7C31DE9 | Method | `protected virtual System.Void OnLostFocus(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-1BAEF3B9799C406C | Method | `protected virtual System.Void OnMarginChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-1BAEF3B9799C406C | Method | `protected virtual System.Void OnMarginChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-DD0D01E21F8A53E7 | Method | `protected virtual System.Void OnMaskChanged(System.EventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-0C5B7F53AC52FC73 | Method | `protected virtual System.Void OnModifiedChanged(System.EventArgs e)` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-E1B21C1845253A5F | Method | `protected virtual System.Void OnMouseCaptureChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
@@ -407,7 +407,7 @@
 | API-7683E5922A4FF5BB | Method | `protected virtual System.Void OnMove(System.EventArgs e)` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-4AEEAD7BF523D95F | Method | `protected virtual System.Void OnMultilineChanged(System.EventArgs e)` | `System.Windows.Forms.MaskedTextBox`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-2FF82B788A77F265 | Method | `protected virtual System.Void OnNotifyMessage(System.Windows.Forms.Message m)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
-| API-6CA1F3AF8FFC02D9 | Method | `protected virtual System.Void OnPaddingChanged(System.EventArgs e)` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
+| API-6CA1F3AF8FFC02D9 | Method | `protected virtual System.Void OnPaddingChanged(System.EventArgs e)` | `System.Windows.Forms.TextBoxBase`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |
 | API-BB54E1FA8EBCF896 | Method | `protected virtual System.Void OnPaint(System.Windows.Forms.PaintEventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-7F07CB8656CE76CF | Method | `protected virtual System.Void OnPaintBackground(System.Windows.Forms.PaintEventArgs pevent)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |
 | API-235678E5E4B3A90A | Method | `protected virtual System.Void OnParentBackColorChanged(System.EventArgs e)` | `System.Windows.Forms.Control`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

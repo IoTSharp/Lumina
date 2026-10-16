@@ -1,6 +1,6 @@
 # Panel
 
-🟡 **当前状态：**已有 STATIC 原生子窗口、主题应用及 ContainerControlBase 子控件集合；没有独立的 ScrollableControl 继承层。属性存在不代表滚动、Anchor、布局挂起等语义已完成。
+🟡 **当前状态：**已有STATIC原生子窗口、主题应用及ContainerControlBase历史基类，018已共享Control.ControlCollection，020继承Control标准布局事务。ScrollableControl自018已存在，但Panel尚未迁入该标准继承链；完整滚动、Anchor和布局算法仍缺。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -13,9 +13,9 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / Panel-01 | 将继承关系收敛到 Panel : ScrollableControl；Controls 使用兼容 Control.ControlCollection；同一控件转移父级、重复 Add、循环父级、SetChildIndex/Find/Remove/Clear 按官方基线处理。 |
+| 🟡 | P0 / Panel-01 | 018已共享Control.ControlCollection及父子转移/循环检查/排序等基础集合（Control-06a）；Panel仍继承历史ContainerControlBase，需收敛到Panel : ScrollableControl并验证全部派生行为。基类集合完成不等于整Panel完成。 |
 | ⬜ | P0 / Panel-02 | 补齐 BorderStyle、AutoSize、AutoSizeMode、AutoScroll、AutoScrollMargin、AutoScrollMinSize、AutoScrollPosition；记录默认值、非法枚举和 handle 创建前后结果。 |
-| ⬜ | P0 / Panel-03 | 打通 Dock、Anchor、Padding、Margin、DisplayRectangle、GetPreferredSize；SuspendLayout/ResumeLayout(true/false) 能延迟并合并布局，不能继续空实现。 |
+| 🟡 | P0 / Panel-03 | 020继承Control标准SuspendLayout/ResumeLayout/PerformLayout与Layout事件，历史ContainerControlBase不再无条件遍历子树。完整Dock/Anchor/Padding/Margin/DisplayRectangle/GetPreferredSize及滚动协作仍缺，不再把基础事务描述为空实现。 |
 | ⬜ | P1 / Panel-04 | 为 Controls.Add/Remove、可见性/边界/字体变化捕获 ControlAdded/ControlRemoved、ParentChanged、Layout、SizeChanged、Resize 顺序；移除不隐式 Dispose，父容器 Dispose 递归释放。 |
 | ⬜ | P1 / Panel-05 | 验证 AutoSize GrowOnly/GrowAndShrink、嵌套滚动、右下锚定对滚动条的影响，以及 ScrollControlIntoView 后焦点仍正确。 |
 | ⬜ | P1 / Panel-06 | 键盘不把 Panel 变为额外焦点站；Tab/Shift+Tab 穿过子控件，鼠标滚轮、触摸板和 RTL 滚动方向与基线对照。 |
@@ -38,6 +38,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：按实际代码纠正历史“没有独立ScrollableControl层”与“布局暂停空实现”：标准层自018存在但Panel未迁入，集合自018共用，020事务由Control提供。Panel-01/03回标部分，保留继承迁移/几何/滚动缺口；不把基类10b完成转为Panel完成。
 
 - `7d38999`（2026-04-08）：涉及 Panel 的深色主题应用调整。
 - `ce86ab5`（2026-03-31）：接入 BackColor/ForeColor、继承主题和实时刷新。

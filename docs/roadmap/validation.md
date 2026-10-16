@@ -412,3 +412,14 @@ Parent/Controls/Form链、含parent构造、无HWND完整Text/ResetText、native
 本批初次DoEvents编译失败、旧Handle快照触发延迟建窗、外部可见旧预期、六行Form原生可见差异及Dispose覆盖重复调用的原始证据保留；最终GCHandle强根泄漏补真实GC回归。Form历史Created事件仍隐藏标准Control.Created，完整派生/资源/竞态、输入/绘制/绑定/可访问性、GTK4/AppKit及全Windows验收未关闭。018截图可见的文字裁切不因主窗退出成功而视为修复。
 
 日志、TRX、严格差分、PE、项目与依赖证据在本机忽略目录artifacts/compatibility-batch019/evidence.json；生命周期每次运行保存在唯一子目录。未改写原始失败、未全局抑制警告、未从测试数或任务数计算98%。
+
+
+## 批次 020 · 2026-10-16 标准布局事务
+
+Control-10b及八个必要容器事务子范围代码完成，完整记录见[020](batches/020.md)。4,083测试（新增25核心+31容器）、16旧Control/context驱动全部通过；双目标Release 0错误/本次454警告。生命周期204行/父子集合391行参考与JIT同。本批未重跑集合AOT，019的32行非零下界数组fixture限制仍保留。
+
+固定10.0.11参考、JIT、实际AOT各24隔离STA进程，均exit0/complete=true/无超时，源码快照hash一致。布局394行JIT/AOT严格同；参考22个完整场景356行同，总394行387同。2行Dock缺真实几何引起的Bounds布局、5行Split比例及传播差异保留，strictMatches=false/driver exit1；Split延期参数panel2/Bounds已修。探针EXE2,872,320字节，CLR目录0，无IL2xxx/IL3xxx；没有事件伪造、输出归一化或宽泛反射根化。
+
+Demo AOT4,159,488字节、CLR目录0，真实主窗显示、复选框0→1、正常exit0、记录HWND全部失效，无强制清理；既有InheritanceAttribute IL3050保留。首次隐藏Form导致MenuStrip偏移fixture失败的原日志/TRX保留，改为Show后核对真实可见菜单。完整UI/文字裁切/模态/Designer不由单一操作宣布修复。
+
+13项目/17目标仅.NET10，原始Demo/Designer/resx未改，Windows官方Drawing10.0.0且net10.0依赖无WinForms/Resources.Extensions/自有Drawing。Export-Inventory按新公共签名重生成，固定1,095类型/61,240行/187页及unverified保持；Validate-Roadmap -ExportTasks生成逐控件实施列/tasks.csv。所有结果和结构计数见artifacts/compatibility-batch020/evidence.json。Control/FND/容器父项及LayoutEngine/PreferredSize/InitLayout/默认布局/平台仍未关闭，不从测试或任务数量宣称98%。

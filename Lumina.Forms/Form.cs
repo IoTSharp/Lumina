@@ -80,11 +80,6 @@ public class Form : ContainerControl
     public event EventHandler<FormClosingEventArgs>? FormClosing;
 
     /// <summary>
-    /// Occurs when the form performs layout.
-    /// </summary>
-    public event EventHandler? Layout;
-
-    /// <summary>
     /// Gets or sets the window icon. When unset, Lumina.Forms falls back to its built-in logo icon.
     /// </summary>
     public Icon? Icon
@@ -383,17 +378,6 @@ public class Form : ContainerControl
         Location = new Point(left, top);
     }
 
-    public override void PerformLayout()
-    {
-        if (DeferLayout())
-        {
-            return;
-        }
-
-        base.PerformLayout();
-        OnLayout();
-    }
-
     /// <summary>
     /// Applies a Lumina effect to the form and marks it as explicitly overridden from the application default.
     /// </summary>
@@ -609,12 +593,20 @@ public class Form : ContainerControl
         Shown?.Invoke(this, e);
     }
 
-    /// <summary>
-    /// Called when the form should update control layout.
-    /// </summary>
-    protected virtual void OnLayout()
+    /// <inheritdoc />
+    protected override void OnLayout(LayoutEventArgs e)
     {
-        Layout?.Invoke(this, EventArgs.Empty);
+        base.OnLayout(e);
+
+        // Preserve the existing form strip placement without requesting layout
+        // on every descendant. A changed strip size raises its own layout.
+        foreach (Control child in ChildControls)
+        {
+            if (child is ToolStrip strip && ReferenceEquals(strip.Parent, this))
+            {
+                strip.LayoutInParent();
+            }
+        }
     }
 
     /// <summary>
@@ -1175,7 +1167,6 @@ public class Form : ContainerControl
 
             case Win32.WM_SIZE:
                 UpdateBoundsFromNativeWindow();
-                PerformLayout();
                 return 0;
 
             case Win32.WM_CLOSE:

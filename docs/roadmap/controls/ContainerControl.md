@@ -1,6 +1,6 @@
 # ContainerControl
 
-🟡 **当前状态：**018新增标准ContainerControl : ScrollableControl，Form已使用；活动子控件/显式IContainerControl及嵌套链已实现首范围，原Form缩放迁到此处。完整选择/验证/缩放/键盘与平台仍待实现，不以基类存在计为整控件完成。
+🟡 **当前状态：**018新增标准ContainerControl : ScrollableControl，Form已使用；活动子控件/显式IContainerControl及嵌套链已实现首范围，原Form缩放迁到此处；020通过ScrollableControl复用Control标准布局事务。完整选择/验证/缩放/键盘与平台仍待实现，不以基类存在计为整控件完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -38,6 +38,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：随ScrollableControl移除重复布局状态，Form继承统一标准Layout；未修改现有AutoScale算法，也未完成验证/滚动/完整布局。01既有继承完成范围保留，其他父项不随基类完成关闭。
 
 - 2026-10-16 · 批次018：新增标准类与IContainerControl，迁入Form缩放；按固定参考区分公开setter与显式接口、嵌套选择与释放。将历史“同名类不存在”和“Form独立IDisposable”更新为当前事实；02/05/08保持部分，其余验证/键盘/平台未关闭，见[018](../batches/018.md)。
 - 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。

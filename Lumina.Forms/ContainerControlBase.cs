@@ -5,14 +5,4 @@ namespace Lumina.Forms;
 /// </summary>
 public abstract class ContainerControlBase : Control
 {
-    /// <inheritdoc />
-    public override void PerformLayout()
-    {
-        foreach (Control child in ChildControls)
-        {
-            child.PerformLayout();
-        }
-
-        base.PerformLayout();
-    }
 }

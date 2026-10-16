@@ -1,6 +1,6 @@
 # FlowLayoutPanel
 
-🟡 **当前状态：**已有四方向排列、换行和 Margin/Padding 计算；缺 FlowBreak 扩展属性与标准 FlowLayoutSettings，布局算法仍需官方对照。
+🟡 **当前状态：**已有四方向排列、换行和 Margin/Padding 计算；缺 FlowBreak 扩展属性与标准 FlowLayoutSettings，布局算法仍需官方对照。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -18,7 +18,8 @@
 | ⬜ | P1 / FlowLayoutPanel-03 | 逐方向校验 LeftToRight/RightToLeft/TopDown/BottomUp 和 RightToLeft 组合；修正现有三元条件优先级造成非预期换行的风险。 |
 | ⬜ | P1 / FlowLayoutPanel-04 | 支持每个子控件 Margin、容器 Padding、FlowBreak、Visible=false、Dock/Anchor 在行/列内的标准约束，避免简单顺序 SetBounds 视作完成。 |
 | ⬜ | P1 / FlowLayoutPanel-05 | 实现 AutoSize/首选大小测量、跨行最大尺寸、边界刚好容纳/差一个像素、超大首项；滚动范围从真实测量结果计算。 |
-| ⬜ | P1 / FlowLayoutPanel-06 | 处理 Controls 增删/重排、字体与 DPI 改变、子控件 AutoSize 更新；SuspendLayout 后一次性重排并稳定 Layout 事件数量。 |
+| 🟡 | P1 / FlowLayoutPanel-06 | 处理Controls增删/重排、字体/DPI、AutoSize与稳定布局事件数量；020完成06a暂停/恢复与标准事件入口，完整测量/FlowBreak/方向算法仍待对照。 |
+| ✅ | P1 / FlowLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有flow几何；SuspendLayout实际延期现有布局，重复/重入沿共享事务处理。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / FlowLayoutPanel-07 | 保留 TabIndex 与视觉排列不同的键盘顺序；子控件焦点、验证、鼠标事件不被容器吞掉。 |
 | ⬜ | P2 / FlowLayoutPanel-08 | Windows 使用真实子 HWND，托管 flow 算法计算后批量 SetWindowPos；勿引入独立绘制控件树。 |
 | ⬜ | P2 / FlowLayoutPanel-09 | Linux 优先 GtkFixed + 共享 flow 算法；GtkFlowBox 可作为原型对照，但其 selection、均分/行宽规则不能直接取代 WinForms FlowLayoutPanel。 |
@@ -38,6 +39,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：标准事件先于既有flow算法，原PerformLayout算法迁入标准OnLayout。原四方向/换行/Margin/Padding局部算法保留；FlowBreak/标准Settings/首选测量/完整算法继续待办。 见[020](../batches/020.md)；父任务保持部分完成。
 
 - `3323e20`（2026-03-31）：改进 flow 方向与布局交互。
 - `52f5662`（2026-03-31）：加入基础布局控件。

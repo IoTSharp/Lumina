@@ -4,9 +4,9 @@
 
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
-| CNS-001 | P0 ⬜ | 事件参数/委托：准确EventHandler类型、泛型与命名委托区别；Cancel/Handled、旧新值、索引、鼠标键状态、CloseReason等；每个参数类型跟随所属控件任务 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
+| CNS-001 | P0 🟡 | 018已有ControlEventArgs/ControlEventHandler及集合事件，020补LayoutEventArgs/Handler与标准OnLayout。其他准确委托、Cancel/Handled、旧新值、索引、鼠标键状态/CloseReason等仍待所属控件任务，不能由两组参数关闭全部契约 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
 | CNS-002 | P1 🟡 | 批次001已对齐HighDpiMode五值及14组DPI观察（f2d694c），010补BoundsSpecified八值/Flags（Control-02c）；其他Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等名称/数值/别名/组合/默认/无效值仍待逐项核对 | 不因同名枚举值个数大就稀释控件支持率 |
-| CNS-003 | P1 🟡 | 批次006～012完成ListViewSubItem key与公共集合构造/共享view/整数索引/typed增删/非泛型IList/查询复制/枚举首范围（03a、02a～02f）；其他Control/TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/排序/Clone/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
+| CNS-003 | P1 🟡 | 批次006～012完成ListViewSubItem key与公共集合构造/共享view/整数索引/typed增删/非泛型IList/查询复制/枚举首范围（03a、02a～02f）；018另完成ControlCollection/ArrangedElementCollection父子集合首范围（Control-06a），019修复隐藏重挂通知；其他TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
 | CNS-006 | P3 ⬜ | System.Windows.Forms.VisualStyles：VisualStyleRenderer/Element/Information、TextRenderer、ControlPaint、绘制事件参数；Windows主题数据/GDI句柄与扩展点 | Windows完整基线保留；Linux/macOS逐成员判断，不能整个命名空间先全划平台豁免 |
@@ -24,6 +24,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：纠正CNS-001遗漏018 ControlEventArgs/Handler的全待办状态，并加入020 LayoutEventArgs/Handler明确范围；CNS-003补018标准父子集合。CNS-008的LayoutEngine/LayoutSettings仍待实现，不能把布局事件事务当完整布局命名空间；固定分母/历史ID均保留。
 
 2026-10-15：本次新增全类型责任入口和验收要求，未新增上述缺失实现；各已有源文件历史以Git为准。公共类型已有历史名称不重命名，实施时优先标准WinForms契约。
 

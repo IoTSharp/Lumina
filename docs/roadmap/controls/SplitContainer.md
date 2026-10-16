@@ -1,6 +1,6 @@
 # SplitContainer
 
-🟡 **当前状态：**已有拖动、两面板、最小大小、折叠、FixedPanel 和 ISupportInitialize；Panel1/Panel2 公开类型为 Panel，SplitterMoving 使用 SplitterEventHandler，和标准 SplitterPanel/可取消事件类型不一致。
+🟡 **当前状态：**已有拖动、两面板、最小大小、折叠、FixedPanel 和 ISupportInitialize；Panel1/Panel2 公开类型为 Panel，SplitterMoving 使用 SplitterEventHandler，和标准 SplitterPanel/可取消事件类型不一致。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -17,7 +17,8 @@
 | ⬜ | P0 / SplitContainer-02 | 将 SplitterMoving 对齐 SplitterCancelEventHandler/SplitterCancelEventArgs，支持 Cancel；SplitterMoved 保持标准 SplitterEventHandler，处理 MouseDown→Moving→Moved 时序。 |
 | ⬜ | P0 / SplitContainer-03 | 对齐 SplitterDistance/Width/Increment、Panel1MinSize/Panel2MinSize、Orientation、FixedPanel、IsSplitterFixed、BorderStyle 的默认、异常与范围语义。 |
 | ⬜ | P1 / SplitContainer-04 | BeginInit/EndInit 期间允许设计器先赋值再调尺寸，结束时统一校验；不能用永久 clamp 隐藏与官方不同的异常。 |
-| ⬜ | P1 / SplitContainer-05 | 实现 Panel1Collapsed/Panel2Collapsed 的保存/还原，禁止两面板同时塌缩时与官方结果分叉；小尺寸、方向切换及比例/固定面板伸缩独立验收。 |
+| 🟡 | P1 / SplitContainer-05 | 020完成05a标准布局事务衔接；完整折叠保存/还原、禁止同时塌缩、小尺寸/方向/比例/固定面板伸缩仍缺。固定参考的97/101/159与当前98/102/158差异保留。 |
+| ✅ | P1 / SplitContainer-05a | 批次020：标准OnLayout暂停两panel、提交几何后恢复再发自身事件；直接SplitterDistance仍即时改变panel，复用Control暂停状态保留Panel2/Bounds延期参数。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / SplitContainer-06 | 拖动过程支持鼠标捕获、Esc 取消、失去捕获、边界限制、SplitterMoving 中修改 SplitX/SplitY 和 Cancel；仅 MouseUp 触发最终 Moved。 |
 | ⬜ | P1 / SplitContainer-07 | 实现键盘聚焦分隔条、方向键/Tab 导航、IsSplitterFixed 后键盘与鼠标一致；RTL 与多 DPI 下距离坐标一致。 |
 | ⬜ | P2 / SplitContainer-08 | Windows 用子 HWND 两面板 + 原生鼠标捕获/光标；分隔条为托管布局区域，保留现有实现并补语义，无须新建绘制框架。 |
@@ -38,6 +39,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：修复多余Suspend/Resume覆盖延期参数的问题，不硬替换事件参数；构造期Panel尚未初始化有保护。24场景对照保留5行比例几何差异；标准SplitterPanel/事件取消/完整算法不关闭。 见[020](../batches/020.md)；父任务保持部分完成。
 
 - `7d7a67e`（2026-04-08）：Lumina.Forms 实现整合涉及拆分容器。
 - `108ef2b`（2026-04-08）：接入 Win32 深色主题应用。

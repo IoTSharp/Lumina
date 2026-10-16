@@ -52,8 +52,10 @@ public class TableLayoutPanel : Panel
     }
 
     /// <inheritdoc />
-    public override void PerformLayout()
+    protected override void OnLayout(LayoutEventArgs e)
     {
+        base.OnLayout(e);
+
         int columns = ResolveColumnCount();
         int rows = ResolveInitialRowCount(columns);
         List<CellAssignment> assignments = BuildAssignments(columns, ref rows);
@@ -86,8 +88,6 @@ public class TableLayoutPanel : Panel
 
             LayoutControlInCell(assignment.Control, cellBounds);
         }
-
-        base.PerformLayout();
     }
 
     private int ResolveColumnCount()

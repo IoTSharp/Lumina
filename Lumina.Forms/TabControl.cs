@@ -116,19 +116,13 @@ public class TabControl : ContainerControlBase
     }
 
     /// <inheritdoc />
-    protected override void OnBoundsChanged()
+    protected override void OnLayout(LayoutEventArgs e)
     {
-        PerformLayout();
-    }
-
-    /// <inheritdoc />
-    public override void PerformLayout()
-    {
+        base.OnLayout(e);
         SynchronizeTextHandlers();
         SynchronizeNativeTabs();
         EnsureSelection();
         ApplySelectedIndex(raiseChangedEvent: false);
-        base.PerformLayout();
     }
 
     /// <inheritdoc />

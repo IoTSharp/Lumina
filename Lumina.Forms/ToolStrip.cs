@@ -111,23 +111,24 @@ public class ToolStrip : ContainerControlBase
     }
 
     /// <inheritdoc />
-    protected override void OnBoundsChanged()
+    protected override void OnLayout(LayoutEventArgs e)
     {
-        PerformLayout();
-    }
+        base.OnLayout(e);
+        // Default constraints can request layout from Control's constructor,
+        // before this constructor has created the logical item collection.
+        if (_items is null)
+        {
+            return;
+        }
 
-    /// <inheritdoc />
-    public override void PerformLayout()
-    {
-        DockToTopStripBand();
+        LayoutInParent();
         EnsureItemHosts();
         LayoutItemHosts();
-        base.PerformLayout();
     }
 
-    private void DockToTopStripBand()
+    internal virtual void LayoutInParent()
     {
-        if (Owner is null || this is StatusStrip || this is MenuStrip)
+        if (Owner is null || !ReferenceEquals(Parent, Owner))
         {
             return;
         }

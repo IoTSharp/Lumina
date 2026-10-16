@@ -318,12 +318,6 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
     }
 
     /// <inheritdoc />
-    protected override void OnBoundsChanged()
-    {
-        LayoutPanels();
-    }
-
-    /// <inheritdoc />
     protected override void OnDisposing()
     {
         StopDraggingSplitter();
@@ -331,10 +325,31 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
     }
 
     /// <inheritdoc />
-    public override void PerformLayout()
+    protected override void OnLayout(LayoutEventArgs e)
     {
-        LayoutPanels();
-        base.PerformLayout();
+        // Control can raise layout while applying derived default constraints,
+        // before this constructor has created the two panels.
+        if (Panel1 is null || Panel2 is null)
+        {
+            base.OnLayout(e);
+            return;
+        }
+
+        // Resize layout commits both panel bounds before either panel resumes.
+        // Direct splitter-property updates retain their immediate panel updates.
+        Panel1.SuspendLayout();
+        Panel2.SuspendLayout();
+        try
+        {
+            LayoutPanels();
+        }
+        finally
+        {
+            try { Panel1.ResumeLayout(); }
+            finally { Panel2.ResumeLayout(); }
+        }
+
+        base.OnLayout(e);
     }
 
     /// <inheritdoc />
@@ -371,6 +386,30 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
             return;
         }
 
+        // A direct splitter-property update changes both panels immediately.
+        // Reuse an existing transaction so an extra resume cannot clear its
+        // cached reason before a later resize request arrives.
+        bool needsSuspension = LayoutSuspendCount == 0;
+        if (needsSuspension)
+        {
+            SuspendLayout();
+        }
+
+        try
+        {
+            LayoutPanelsCore();
+        }
+        finally
+        {
+            if (needsSuspension)
+            {
+                ResumeLayout(false);
+            }
+        }
+    }
+
+    private void LayoutPanelsCore()
+    {
         Rectangle contentBounds = new(
             Padding.Left,
             Padding.Top,
@@ -412,8 +451,6 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
         _splitRatio = Math.Clamp(firstSize / (double)usablePrimary, 0d, 1d);
 
         Invalidate();
-        Panel1.PerformLayout();
-        Panel2.PerformLayout();
     }
 
     private Rectangle GetSplitterBounds()
@@ -497,14 +534,12 @@ public class SplitContainer : ContainerControlBase, ISupportInitialize
             Panel1.Visible = false;
             Panel2.Visible = true;
             Panel2.SetBounds(contentBounds.Left, contentBounds.Top, contentBounds.Width, contentBounds.Height);
-            Panel2.PerformLayout();
             return;
         }
 
         Panel1.Visible = true;
         Panel2.Visible = false;
         Panel1.SetBounds(contentBounds.Left, contentBounds.Top, contentBounds.Width, contentBounds.Height);
-        Panel1.PerformLayout();
     }
 
     private SplitterEventArgs CreateSplitterEventArgs(Point point, int distance)

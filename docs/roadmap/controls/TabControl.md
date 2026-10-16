@@ -1,6 +1,6 @@
 # TabControl
 
-🟡 **当前状态：**已有 SysTabControl32、选中页同步、TCM_INSERTITEMW/GETCURSEL/ADJUSTRECT 和 SelectedIndexChanged；缺完整 TabPages 标准集合及可取消选择事件链。
+🟡 **当前状态：**已有 SysTabControl32、选中页同步、TCM_INSERTITEMW/GETCURSEL/ADJUSTRECT 和 SelectedIndexChanged；缺完整 TabPages 标准集合及可取消选择事件链。020已完成标准布局事务入口衔接，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -19,7 +19,8 @@
 | ⬜ | P1 / TabControl-04 | 原生选项卡点击时在 TCN_SELCHANGING 阶段允许 Cancel；取消后原页 Visible、焦点、SelectedIndex 和原生索引不能分叉。 |
 | ⬜ | P1 / TabControl-05 | 实现 GetTabRect、SelectTab/DeselectTab 重载、焦点页导航与 Ctrl+Tab/Ctrl+Shift+Tab、方向键行为；TabPage.GetTabPageOfComponent 的静态查询在页类型另行验收。 |
 | ⬜ | P1 / TabControl-06 | 支持 ImageIndex/ImageKey、文字运行时变更、页工具提示和 DrawItem；绘制扩展是兼容能力，非跨平台全自绘默认路线。 |
-| ⬜ | P1 / TabControl-07 | 对齐 DisplayRectangle、页边界、RTL、多行/垂直标签、DPI、隐藏和重建句柄；切换页面不重复创建/销毁业务控件。 |
+| 🟡 | P1 / TabControl-07 | 020完成07a标准布局入口衔接；完整DisplayRectangle/页边界/RTL/多行垂直/DPI/隐藏和重建仍待对照，切页不得重复建销业务控件。 |
+| ✅ | P1 / TabControl-07a | 批次020：现有页布局迁到标准OnLayout，复用Control暂停/恢复并移除重复Bounds布局；独立事务回归通过。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P2 / TabControl-08 | Windows 复用 SysTabControl32，TCM_* 与 TCN_* 双向同步；保存 native item/lParam 归属，删除 item 不悬挂托管页引用。 |
 | ⬜ | P2 / TabControl-09 | Linux 使用 GtkNotebook + 每页原生容器；switch-page 默认非 WinForms 全套可取消链，需在动作提交前路由选择与取消。OwnerDraw/多行标签无完整原生等价项，单列。 |
 | ⬜ | P3 / TabControl-10 | macOS 使用 NSTabView/NSTabViewItem 与 delegate shouldSelectTabViewItem；多行/垂直排列、OwnerDraw 标签和工具提示差异逐项记录，禁止假称全量等价。 |
@@ -38,6 +39,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：现有页定位消费标准OnLayout，完整页边界/选择事件/标准集合与原生切换仍待后续；此批只完成事务衔接。 见[020](../batches/020.md)；父任务保持部分完成。
 
 - 2026-10-16 · 批次018集成：标准Control可见通知开始创建可见子树，暴露本地TabControl在无HWND时也提前切换TabPage.Visible的历史差异；官方SelectedIndex无句柄时只保存索引，读取DisplayRectangle才创建用于精确计算。现有布局测试改为核对实际DisplayRectangle与选中页Bounds一致，不再把本地4/21估计值当标准参考。未扩大本控件实现或关闭选择/布局任务；该差异继续留本页待办。
 

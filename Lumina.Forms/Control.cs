@@ -60,6 +60,12 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _destroyingHandle;
     private bool _handleDestroyedNotified;
     private bool _parentRecreatingHandle;
+    private byte _layoutSuspendCount;
+    private bool _layoutDeferred;
+    private bool _clearLayoutArgs;
+    private bool _layoutDirty;
+    private LayoutEventArgs? _cachedLayoutEventArgs;
+    private bool _autoSize;
 
     /// <summary>
     /// Initializes a control and installs the thread's UI synchronization context when enabled.
@@ -148,6 +154,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     // Native existence checks must never materialize a window.
     internal nint NativeHandle => _handle;
 
+    internal byte LayoutSuspendCount => _layoutSuspendCount;
+
     /// <summary>
     /// Gets or sets an arbitrary user-defined value associated with the control.
     /// </summary>
@@ -233,7 +241,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>
     /// Gets or sets a value indicating whether the control sizes itself to its contents.
     /// </summary>
-    public bool AutoSize { get; set; }
+    public virtual bool AutoSize
+    {
+        get => _autoSize;
+        set
+        {
+            if (value == AutoSize) { return; }
+            _autoSize = value;
+            _parent?.PerformLayout(this, nameof(AutoSize));
+            OnAutoSizeChanged(EventArgs.Empty);
+        }
+    }
 
     public AutoSizeMode AutoSizeMode
     {
@@ -253,10 +271,21 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         set => _autoEllipsis = value;
     }
 
-    public AnchorStyles Anchor
+    public virtual AnchorStyles Anchor
     {
         get => _anchor;
-        set => _anchor = value;
+        set
+        {
+            AnchorStyles previous = _anchor;
+            if (previous == value) { return; }
+            if (_dock != DockStyle.None) { Dock = DockStyle.None; }
+            _anchor = value;
+            if (((previous & ~value) & (AnchorStyles.Right | AnchorStyles.Bottom)) != 0)
+            {
+                _parent?._parent?.PerformLayout(this, nameof(Anchor));
+            }
+            _parent?.PerformLayout(this, nameof(Anchor));
+        }
     }
 
     /// <summary>
@@ -293,6 +322,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
 
             _minimumSize = value;
+            using LayoutTransaction transaction = new(_parent, this, nameof(MinimumSize));
             Size currentSize = Size;
             SetBoundsCore(_left, _top, Math.Max(currentSize.Width, value.Width),
                 Math.Max(currentSize.Height, value.Height), BoundsSpecified.Size);
@@ -332,6 +362,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             Size currentSize = Size;
             SetBoundsCore(_left, _top, Math.Min(currentSize.Width, value.Width),
                 Math.Min(currentSize.Height, value.Height), BoundsSpecified.Size);
+            _parent?.PerformLayout(this, nameof(MaximumSize));
         }
     }
 
@@ -363,8 +394,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 return;
             }
 
-            _padding = value;
-            PerformLayout();
+            _padding = ClampPadding(value);
+            _layoutDirty = true;
+            using (new LayoutTransaction(_parent, this, nameof(Padding)))
+            {
+                OnPaddingChanged(EventArgs.Empty);
+            }
+            if (_layoutDirty) { PerformLayout(this, nameof(Padding)); }
         }
     }
 
@@ -376,13 +412,15 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         get => _margin;
         set
         {
+            value = ClampPadding(value);
             if (_margin == value)
             {
                 return;
             }
 
             _margin = value;
-            Parent?.PerformLayout();
+            _parent?.PerformLayout(this, nameof(Margin));
+            OnMarginChanged(EventArgs.Empty);
         }
     }
 
@@ -394,16 +432,31 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         get => _dock;
         set
         {
-            if (_dock == value)
+            if (Dock == value)
             {
                 return;
             }
 
-            _dock = value;
-            Parent?.PerformLayout();
-            Owner?.PerformLayout();
+            if (value < DockStyle.None || value > DockStyle.Fill)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(DockStyle));
+            }
+            SuspendLayout();
+            try
+            {
+                _dock = value;
+                using (new LayoutTransaction(_parent, this, nameof(Dock)))
+                {
+                    // Dock geometry is handled by the containing layout algorithm.
+                }
+                OnDockChanged(EventArgs.Empty);
+            }
+            finally { ResumeLayout(); }
         }
     }
+
+    private static Padding ClampPadding(Padding value)
+        => new(Math.Max(0, value.Left), Math.Max(0, value.Top), Math.Max(0, value.Right), Math.Max(0, value.Bottom));
 
     /// <summary>
     /// Gets a value indicating whether the control has been disposed.
@@ -459,6 +512,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? VisibleChanged;
     public event ControlEventHandler? ControlAdded;
     public event ControlEventHandler? ControlRemoved;
+    public event LayoutEventHandler? Layout;
+    public event EventHandler? PaddingChanged;
+    public event EventHandler? MarginChanged;
+    public event EventHandler? DockChanged;
+    public event EventHandler? AutoSizeChanged;
 
     protected virtual ControlCollection CreateControlsInstance() => new(this);
 
@@ -767,7 +825,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
         if (value != previous)
         {
-            OnVisibleChanged(EventArgs.Empty);
+            using (new LayoutTransaction(_parent, this, nameof(Visible)))
+            {
+                OnVisibleChanged(EventArgs.Empty);
+            }
         }
     }
 
@@ -953,6 +1014,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (_left != x || _top != y || _width != width || _height != height)
         {
             SetBoundsCore(x, y, width, height, specified);
+            _parent?.PerformLayout(this, nameof(Bounds));
         }
     }
 
@@ -974,6 +1036,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             return;
         }
+
+        // The parent must see the completed size notifications before its
+        // deferred layout runs. Capture it so reparenting callbacks still
+        // balance the suspension on the original parent.
+        using LayoutTransaction suspension = new(_parent);
 
         if (MaximumSize != Size.Empty || MinimumSize != Size.Empty)
         {
@@ -1041,6 +1108,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             {
                 OnSizeChanged(EventArgs.Empty);
                 OnClientSizeChanged(EventArgs.Empty);
+                _parent?.PerformLayout(this, nameof(Bounds));
             }
         }
         catch (Exception exception) when (hasHandle)
@@ -1124,16 +1192,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     }
 
     /// <summary>
-    /// Suspends layout logic for compatibility with designer-generated code.
+    /// Suspends layout until the matching resume operation.
     /// </summary>
-    public virtual void SuspendLayout()
+    public void SuspendLayout()
     {
+        unchecked { _layoutSuspendCount++; }
     }
 
     /// <summary>
     /// Resumes layout logic for compatibility with designer-generated code.
     /// </summary>
-    public virtual void ResumeLayout()
+    public void ResumeLayout()
     {
         ResumeLayout(true);
     }
@@ -1142,19 +1211,108 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Resumes layout logic for compatibility with designer-generated code.
     /// </summary>
     /// <param name="performLayout">Whether layout should be performed immediately.</param>
-    public virtual void ResumeLayout(bool performLayout)
+    public void ResumeLayout(bool performLayout)
     {
-        if (performLayout)
+        bool performedLayout = false;
+        if (_layoutSuspendCount > 0)
         {
-            PerformLayout();
+            _layoutSuspendCount--;
+            if (_layoutSuspendCount == 0 && _layoutDeferred && performLayout)
+            {
+                PerformLayout();
+                performedLayout = true;
+            }
         }
+        if (!performedLayout) { _clearLayoutArgs = true; }
     }
 
     /// <summary>
     /// Performs layout for compatibility with designer-generated code.
     /// </summary>
-    public virtual void PerformLayout()
+    public void PerformLayout()
     {
+        if (_cachedLayoutEventArgs is not null)
+        {
+            PerformLayout(_cachedLayoutEventArgs);
+            // A throwing callback retains the same arguments for the next call.
+            // A suspended call still consumes this cache, as in WinForms.
+            _cachedLayoutEventArgs = null;
+            _clearLayoutArgs = false;
+        }
+        else
+        {
+            PerformLayout(null, null);
+        }
+    }
+
+    /// <summary>
+    /// Requests layout for a change to the specified control and property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public void PerformLayout(Control? affectedControl, string? affectedProperty)
+        => PerformLayout(new LayoutEventArgs(affectedControl, affectedProperty));
+
+    private void PerformLayout(LayoutEventArgs args)
+    {
+        for (Control? control = this; control is not null; control = control._parent)
+        {
+            if (control.Disposing) { return; }
+        }
+
+        if (_layoutSuspendCount > 0)
+        {
+            _layoutDeferred = true;
+            if (_cachedLayoutEventArgs is null || _clearLayoutArgs)
+            {
+                _cachedLayoutEventArgs = args;
+                _clearLayoutArgs = false;
+            }
+            return;
+        }
+
+        // Reentrant requests are cached while the current layout is executing.
+        // They do not recursively execute or automatically start another pass.
+        _layoutSuspendCount = 1;
+        try { OnLayout(args); }
+        finally
+        {
+            _layoutDeferred = false;
+            _layoutDirty = false;
+            _layoutSuspendCount = 0;
+        }
+    }
+
+    /// <summary>
+    /// Raises the <see cref="Layout"/> event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnLayout(LayoutEventArgs levent) => Layout?.Invoke(this, levent);
+
+    protected virtual void OnPaddingChanged(EventArgs e) => PaddingChanged?.Invoke(this, e);
+    protected virtual void OnMarginChanged(EventArgs e) => MarginChanged?.Invoke(this, e);
+    protected virtual void OnDockChanged(EventArgs e) => DockChanged?.Invoke(this, e);
+    protected virtual void OnAutoSizeChanged(EventArgs e) => AutoSizeChanged?.Invoke(this, e);
+
+    // Property transactions queue the original reason before user callbacks.
+    // Nested changes therefore preserve the same first-request/Resume behavior
+    // as explicit SuspendLayout and PerformLayout calls.
+    private readonly struct LayoutTransaction : IDisposable
+    {
+        private readonly Control? _container;
+
+        internal LayoutTransaction(Control? container)
+        {
+            _container = container;
+            container?.SuspendLayout();
+        }
+
+        internal LayoutTransaction(Control? container, Control affectedControl, string property)
+            : this(container)
+        {
+            container?.PerformLayout(affectedControl, property);
+        }
+
+        public void Dispose() => _container?.ResumeLayout();
     }
 
     public virtual object? Invoke(Delegate method)
@@ -1692,6 +1850,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             OnSizeChanged(EventArgs.Empty);
             OnClientSizeChanged(EventArgs.Empty);
+            _parent?.PerformLayout(this, nameof(Bounds));
         }
     }
 
@@ -1891,6 +2050,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <param name="e">The event arguments.</param>
     protected virtual void OnResize(EventArgs e)
     {
+        PerformLayout(this, nameof(Bounds));
         Resize?.Invoke(this, e);
     }
 
@@ -2638,7 +2798,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             finally { Owner.ResumeLayout(false); }
 
             value.InitLayout();
-            Owner.PerformLayout();
+            Owner.PerformLayout(value, nameof(Parent));
             Owner.OnControlAdded(new ControlEventArgs(value));
         }
 
@@ -2686,7 +2846,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             value.Owner?.DetachControl(value);
             value.AssignParent(null);
             Owner.OnChildRemoved(value);
-            Owner.PerformLayout();
+            Owner.PerformLayout(value, nameof(Parent));
             Owner.OnControlRemoved(new ControlEventArgs(value));
             ContainerControl.NotifyControlRemoved(Owner, value);
         }
@@ -2794,7 +2954,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             InnerList.RemoveAt(current);
             InnerList.Insert(newIndex, child);
             child.UpdateChildZOrder();
-            Owner.PerformLayout();
+            Owner.PerformLayout(child, "ChildIndex");
         }
 
         object ICloneable.Clone()

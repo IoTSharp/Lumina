@@ -7,8 +7,6 @@ namespace Lumina.Forms;
 /// </summary>
 public class StatusStrip : ToolStrip
 {
-    private bool _performingStatusLayout;
-
     /// <summary>
     /// Initializes a status strip with the standard status-bar height.
     /// </summary>
@@ -69,17 +67,6 @@ public class StatusStrip : ToolStrip
     }
 
     /// <inheritdoc />
-    protected override void OnBoundsChanged()
-    {
-        if (_performingStatusLayout)
-        {
-            return;
-        }
-
-        PerformLayout();
-    }
-
-    /// <inheritdoc />
     protected override bool HandleWindowMessage(uint message, nint wParam, nint lParam, out nint result)
     {
         if (ContextMenuStrip is not null)
@@ -102,27 +89,6 @@ public class StatusStrip : ToolStrip
         }
 
         return base.HandleWindowMessage(message, wParam, lParam, out result);
-    }
-
-    /// <inheritdoc />
-    public override void PerformLayout()
-    {
-        if (_performingStatusLayout)
-        {
-            return;
-        }
-
-        _performingStatusLayout = true;
-        try
-        {
-            DockToBottom();
-            EnsureItemHosts();
-            base.PerformLayout();
-        }
-        finally
-        {
-            _performingStatusLayout = false;
-        }
     }
 
     private protected override void LayoutItemHosts()
@@ -197,9 +163,9 @@ public class StatusStrip : ToolStrip
         }
     }
 
-    private void DockToBottom()
+    internal override void LayoutInParent()
     {
-        if (Owner is null)
+        if (Owner is null || !ReferenceEquals(Parent, Owner))
         {
             return;
         }

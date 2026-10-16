@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**批次018已建立Form : ContainerControl : ScrollableControl : Control : Component，共用状态、父子树、句柄投递和Dispose。019补protected CreateHandle与标准句柄事件、延迟建窗、Show/Load/排队Shown及直接/外部销毁和重建可见性衔接。历史Created事件仍隐藏Control.Created属性（经Control视图可读），Layout仍为EventHandler、FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/显示/关闭事件和多UI退出仍缺，不能由基础衔接关闭整个Form。
+🟡 **现状：**批次018已建立Form : ContainerControl : ScrollableControl : Control : Component，共用状态、父子树、句柄投递和Dispose。019补protected CreateHandle与标准句柄事件、延迟建窗、Show/Load/排队Shown及直接/外部销毁和重建可见性衔接。历史Created事件仍隐藏Control.Created属性（经Control视图可读），020已继承标准LayoutEventHandler并复用Control布局事务；FormClosing仍为泛型EventHandler；FormClosed/ShowDialog、完整默认/显示/关闭事件和多UI退出仍缺，不能由基础衔接关闭整个Form。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -12,7 +12,7 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | ✅ | P0 / Form-01 | 批次018：建立Form : ContainerControl : ScrollableControl : Control : Component，实际共用Text/Name/Bounds/ClientSize/Handle/Controls/颜色/ISynchronizeInvoke/Dispose；直接子项Parent为Form，移除重复状态与集合。真实窗口移动/尺寸回写及父子释放有运行证据，见018。整Form、容器行为与平台兼容未关闭。 |
-| ⬜ | P0 / Form-02 | 修正 FormClosingEventHandler/FormClosedEventHandler、LayoutEventHandler 等准确类型和事件参数；Created 等历史自有事件不能抵扣 HandleCreated；旧 Closing/Closed 仍按基线保留兼容。 |
+| 🟡 | P0 / Form-02 | 020已移除历史EventHandler Layout，继承Control标准LayoutEventHandler/LayoutEventArgs及OnLayout(LayoutEventArgs)。FormClosingEventHandler/FormClosedEventHandler、旧Closing/Closed仍待对齐；Created历史自有事件不能抵扣标准属性/HandleCreated。 |
 | ⬜ | P0 / Form-03 | 实现 ShowDialog()/ShowDialog(IWin32Window)、Show(owner)、DialogResult、Modal；owner 禁用恢复、嵌套消息循环、Esc/Enter、取消关闭与对话框复用完整验收。 |
 | 🟡 | P0 / Form-04 | 003～007的真实投递/context/await恢复已于018合入Control标准继承路径；019保留句柄重建前已排队回调，直接DestroyHandle/外部销毁不等于Close、不退出消息循环。完整关闭/重建/退出与多UI/模态竞态仍缺。 |
 | 🟡 | P1 / Form-05 | 018已校准空Text、300×300默认Size、TabStop=true和初始Visible=false，并消费共享客户区。StartPosition、完整ClientSize/AutoScaleMode等默认与派生元数据仍待对照，父任务不关闭。 |
@@ -21,7 +21,8 @@
 | ⬜ | P1 / Form-07 | 实现 Close/FormClosing.Cancel、CloseReason、FormClosed、Dispose；用户关闭、owner/MDI 关闭、Application.Exit、系统关机的事件原因与取消作用域不同，不能统一 UserClosing。 |
 | ⬜ | P1 / Form-08 | 补 Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm/Focused、BringToFront/Activate；关闭 owner 的从属窗口与焦点恢复对照。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
-| ⬜ | P1 / Form-10 | 完整 Dock/Anchor/AutoSize/AutoSizeMode、MinimumSize/MaximumSize、ClientSize/AutoScroll、MenuStrip/StatusStrip 与嵌套容器布局；SuspendLayout 必须实际延迟。 |
+| 🟡 | P1 / Form-10 | 020完成10a标准布局事务接入和直属条带定位。完整Dock/Anchor/AutoSize/AutoSizeMode、MinMax/客户区/AutoScroll及嵌套容器算法仍未完成，不能以事件入口接入关闭布局。 |
+| ✅ | P1 / Form-10a | 批次020：Form复用Control暂停/恢复与标准OnLayout(LayoutEventArgs)，移除重复WM_SIZE布局和无条件子树遍历；保留直属MenuStrip/ToolStrip/StatusStrip定位，嵌套条带不按Form定位。事件/延期/直属条带独立回归通过；完整几何、Designer和模态另列。 |
 | ⬜ | P1 / Form-11 | 实现 AutoScaleDimensions/CurrentAutoScaleDimensions/PerformAutoScale、Font/Dpi/Inherit/None、DpiChanged 及父子前后通知；跨 96/144/192 DPI 往返和 .resx 基准不重复缩放。 |
 | ⬜ | P1 / Form-12 | 实现 AcceptButton/CancelButton/IButtonControl、KeyPreview、ProcessDialogKey/ProcessCmdKey、输入语言/IME、AutoValidate 和深层 ActiveControl；验证取消时禁止错误关闭对话框。 |
 | ⬜ | P1 / Form-13 | 补 MainMenuStrip、IsMdiContainer/MdiParent/MdiChildren/ActiveMdiChild/LayoutMdi/MdiChildActivate；与 MdiClient 一起验收，不能以普通 owned windows 冒充 MDI。 |
@@ -41,6 +42,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次020：标准Layout移到Control并统一事务入口，保留直接子条带定位、移除WM_SIZE重复布局。历史Form.Layout的EventHandler类型和protected无参OnLayout不再保留，消费者改用LayoutEventHandler和OnLayout(LayoutEventArgs)；仓库无旧覆盖消费者，固定Demo源码未变。Form-02/10按实际部分回标，10a为完成的必要衔接；完整Form/几何/Designer不关闭。
 
 - 2026-10-16 · 批次019：Form覆盖标准protected CreateHandle并复用Control映射/事件/dispatcher。创建恢复真实ShowWindow时仅抑制内部恢复消息的重复托管通知，外部销毁后Handle重读保持Created=false及子窗未创建；直接销毁/重建不再冒充Close。Shown经UI队列触发；历史Created事件为兼容保留并明确其隐藏属性的差异。Form-06由全部未开始纠正为部分完成，06a为本批明确子范围；Form-02/03/07及完整窗口/设计器/资源/跨平台不关闭，见[019](../batches/019.md)。
 
