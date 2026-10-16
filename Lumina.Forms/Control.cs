@@ -7,7 +7,9 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +50,8 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private AnchorStyles _anchor = AnchorStyles.Top | AnchorStyles.Left;
     private Color _backColor = Color.Empty;
     private Color _foreColor = Color.Empty;
+    private Image? _backgroundImage;
+    private ImageLayout _backgroundImageLayout = ImageLayout.Tile;
     private Font? _font;
     private int? _fontHeight;
     private nint _nativeFontHandle;
@@ -766,6 +770,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public event EventHandler? BackColorChanged;
 
+    /// <summary>Occurs when the background image changes.</summary>
+    [Category("PropertyChanged")]
+    public event EventHandler? BackgroundImageChanged;
+
+    /// <summary>Occurs when the background image layout changes.</summary>
+    [Category("PropertyChanged")]
+    public event EventHandler? BackgroundImageLayoutChanged;
+
     /// <summary>
     /// Occurs when the <see cref="ForeColor"/> property changes.
     /// </summary>
@@ -860,6 +872,45 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _backColor = value;
             if (!previous.Equals(BackColor)) { OnBackColorChanged(EventArgs.Empty); }
             else if (previousLocal != value) { RefreshInheritedColorTheme(background: true); }
+        }
+    }
+
+    /// <summary>Gets or sets the background image. The caller retains ownership of the image.</summary>
+    [Category("Appearance")]
+    [DefaultValue(null)]
+    [Localizable(true)]
+    public virtual Image? BackgroundImage
+    {
+        get => _backgroundImage;
+        set
+        {
+            if (BackgroundImage == value) { return; }
+            _backgroundImage = value;
+            OnBackgroundImageChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Gets or sets how the background image is positioned in the client area.</summary>
+    [Category("Appearance")]
+    [DefaultValue(ImageLayout.Tile)]
+    [Localizable(true)]
+    public virtual ImageLayout BackgroundImageLayout
+    {
+        get => _backgroundImageLayout;
+        set
+        {
+            if (BackgroundImageLayout == value) { return; }
+            if ((uint)value > (uint)ImageLayout.Zoom)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(ImageLayout));
+            }
+            if (value is ImageLayout.Center or ImageLayout.Stretch or ImageLayout.Zoom)
+            {
+                SetStyle(ControlStyles.ResizeRedraw, true);
+                if (IsImageTransparent(BackgroundImage)) { DoubleBuffered = true; }
+            }
+            _backgroundImageLayout = value;
+            OnBackgroundImageLayoutChanged(EventArgs.Empty);
         }
     }
 
@@ -2246,18 +2297,38 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void DestroyHandle()
     {
         if (_handle == 0 || _destroyingHandle) { return; }
-        if (!_recreatingHandle) { _threadDispatcher?.Close(); }
         _destroyingHandle = true;
         try
         {
-            nint handle = _handle;
-            if (!Win32.DestroyWindow(handle))
+            Exception? closeFailure = null;
+            try
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+                if (!_recreatingHandle) { _threadDispatcher?.Close(); }
             }
-            // A failed subclass-registration rollback can leave an owned HWND
-            // with the original native procedure. It has no cleanup callback.
-            if (_handle == handle) { ClearNativeHandle(); }
+            catch (Exception exception) { closeFailure = exception; }
+
+            try
+            {
+                nint handle = _handle;
+                if (handle != 0)
+                {
+                    if (!Win32.DestroyWindow(handle))
+                    {
+                        throw new Win32Exception(Marshal.GetLastWin32Error());
+                    }
+                    // A failed subclass-registration rollback can leave an owned HWND
+                    // with the original native procedure. It has no cleanup callback.
+                    if (_handle == handle) { ClearNativeHandle(); }
+                }
+            }
+            catch (Exception destructionFailure) when (closeFailure is not null)
+            {
+                throw new AggregateException(closeFailure, destructionFailure);
+            }
+
+            // A disposed borrowed wait handle must not prevent native destruction.
+            // Keep the completion error visible after the window has been released.
+            if (closeFailure is not null) { ExceptionDispatchInfo.Capture(closeFailure).Throw(); }
         }
         finally { _destroyingHandle = false; }
     }
@@ -2528,6 +2599,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual void OnMove(EventArgs e)
     {
         Move?.Invoke(this, e);
+        if (GetStyle(ControlStyles.SupportsTransparentBackColor) && BackColor.A < 255) { Invalidate(); }
     }
 
     /// <summary>
@@ -2604,11 +2676,18 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             PaintTransparentBackground(pevent, rectangle);
         }
-        if (color.A != 0)
+        if (BackgroundImage is not null && !IsHighContrastBackground())
         {
-            using SolidBrush brush = new(color);
-            pevent.Graphics.FillRectangle(brush, rectangle);
+            bool imageIsTransparent = IsImageTransparent(BackgroundImage);
+            if (!(GetStyle(ControlStyles.SupportsTransparentBackColor) && color.A < 255)
+                && BackgroundImageLayout == ImageLayout.Tile && imageIsTransparent)
+            {
+                PaintTransparentBackground(pevent, rectangle);
+            }
+            if (imageIsTransparent) { PaintBackColor(pevent, rectangle, color); }
+            DrawBackgroundImage(pevent.Graphics, BackgroundImage!, color, BackgroundImageLayout, ClientRectangle, rectangle);
         }
+        else { PaintBackColor(pevent, rectangle, color); }
     }
 
     protected void InvokePaint(Control c, PaintEventArgs e) => c.OnPaint(e);
@@ -2645,25 +2724,189 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
     }
 
-    private void PaintTransparentBackground(PaintEventArgs e, Rectangle rectangle)
+    private unsafe void PaintTransparentBackground(PaintEventArgs e, Rectangle rectangle)
     {
-        if (_parent is null)
+        Control? parent = _parent;
+        if (parent is null)
         {
-            using SolidBrush brush = new(SystemColors.Control);
-            e.Graphics.FillRectangle(brush, rectangle);
+            PaintBackColor(e, rectangle, SystemColors.Control);
             return;
         }
-        GraphicsState state = e.Graphics.Save();
-        try
+
+        Rectangle parentClip = rectangle;
+        parentClip.Offset(Left, Top);
+        using PaintHdcScope hdc = new(e.Graphics);
+        if (!Win32.OffsetViewportOrgEx(hdc.Handle, -Left, -Top, null))
         {
-            e.Graphics.TranslateTransform(-Left, -Top);
-            Rectangle parentClip = rectangle;
-            parentClip.Offset(Left, Top);
-            using PaintEventArgs parentArgs = new(e.Graphics, parentClip);
-            InvokePaintBackground(_parent, parentArgs);
-            InvokePaint(_parent, parentArgs);
+            throw new Win32Exception(Marshal.GetLastWin32Error());
         }
-        finally { e.Graphics.Restore(state); }
+        using Graphics parentGraphics = Graphics.FromHdc(hdc.Handle);
+        using PaintEventArgs parentArgs = new(parentGraphics, parentClip);
+        InvokePaintBackground(parent, parentArgs);
+        InvokePaint(parent, parentArgs);
+    }
+
+    private static bool IsImageTransparent(Image? image)
+        => image is not null && (image.Flags & (int)ImageFlags.HasAlpha) != 0;
+
+    private static bool IsHighContrastBackground()
+    {
+        Win32.HIGHCONTRASTW highContrast = new() { cbSize = (uint)Marshal.SizeOf<Win32.HIGHCONTRASTW>() };
+        return Win32.SystemParametersInfoW(Win32.SPI_GETHIGHCONTRAST, highContrast.cbSize, ref highContrast, 0)
+            && (highContrast.dwFlags & Win32.HCF_HIGHCONTRASTON) != 0;
+    }
+
+    private static void PaintBackColor(PaintEventArgs e, Rectangle rectangle, Color color)
+    {
+        if (color.A == 255)
+        {
+            using PaintHdcScope hdc = new(e.Graphics);
+            nint brush = Win32.CreateSolidBrush(Win32.ToColorRef(unchecked((uint)color.ToArgb())));
+            if (brush == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
+            try
+            {
+                Win32.RECT bounds = new() { Left = rectangle.Left, Top = rectangle.Top, Right = rectangle.Right, Bottom = rectangle.Bottom };
+                _ = Win32.FillRect(hdc.Handle, ref bounds, brush);
+            }
+            finally { _ = Win32.DeleteObject(brush); }
+        }
+        else if (color.A != 0)
+        {
+            using SolidBrush brush = new(color);
+            e.Graphics.FillRectangle(brush, rectangle);
+        }
+    }
+
+    // Adapted from ControlPaint.DrawBackgroundImage and CalculateBackgroundImageRectangle
+    // in the fixed WinForms source. RTL and scrolling remain with their parent tasks.
+    private static void DrawBackgroundImage(Graphics graphics, Image image, Color backColor, ImageLayout layout,
+        Rectangle bounds, Rectangle clip)
+    {
+        if (layout == ImageLayout.Tile)
+        {
+            using TextureBrush brush = new(image, WrapMode.Tile);
+            graphics.FillRectangle(brush, clip);
+            // GDI+ texture rendering resets an HDC viewport origin. Restore it
+            // before the parent's foreground paints into a transparent child.
+            nint hdc = graphics.GetHdc();
+            graphics.ReleaseHdc(hdc);
+            return;
+        }
+
+        Rectangle imageRectangle = CalculateBackgroundImageRectangle(bounds, image.Size, layout);
+        using (SolidBrush brush = new(backColor)) { graphics.FillRectangle(brush, clip); }
+        if (!clip.Contains(imageRectangle))
+        {
+            if (layout is ImageLayout.Stretch or ImageLayout.Zoom)
+            {
+                imageRectangle.Intersect(clip);
+                graphics.DrawImage(image, imageRectangle);
+            }
+            else if (layout == ImageLayout.None)
+            {
+                imageRectangle.Offset(clip.Location);
+                imageRectangle.Intersect(clip);
+                graphics.DrawImage(image, imageRectangle, 0, 0, imageRectangle.Width, imageRectangle.Height, GraphicsUnit.Pixel);
+            }
+            else
+            {
+                Rectangle visible = Rectangle.Intersect(imageRectangle, clip);
+                graphics.DrawImage(image, visible, visible.X - imageRectangle.X, visible.Y - imageRectangle.Y,
+                    visible.Width, visible.Height, GraphicsUnit.Pixel);
+            }
+        }
+        else
+        {
+            using ImageAttributes attributes = new();
+            attributes.SetWrapMode(WrapMode.TileFlipXY);
+            graphics.DrawImage(image, imageRectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
+        }
+    }
+
+    private static Rectangle CalculateBackgroundImageRectangle(Rectangle bounds, Size imageSize, ImageLayout layout)
+    {
+        Rectangle result = bounds;
+        switch (layout)
+        {
+            case ImageLayout.None:
+                result.Size = imageSize;
+                break;
+            case ImageLayout.Center:
+                result.Size = imageSize;
+                if (bounds.Width > result.Width) { result.X = (bounds.Width - result.Width) / 2; }
+                if (bounds.Height > result.Height) { result.Y = (bounds.Height - result.Height) / 2; }
+                break;
+            case ImageLayout.Zoom:
+                float xRatio = bounds.Width / (float)imageSize.Width;
+                float yRatio = bounds.Height / (float)imageSize.Height;
+                if (xRatio < yRatio)
+                {
+                    result.Width = bounds.Width;
+                    result.Height = (int)(imageSize.Height * xRatio + .5f);
+                    if (bounds.Y >= 0) { result.Y = (bounds.Height - result.Height) / 2; }
+                }
+                else
+                {
+                    result.Height = bounds.Height;
+                    result.Width = (int)(imageSize.Width * yRatio + .5f);
+                    if (bounds.X >= 0) { result.X = (bounds.Width - result.Width) / 2; }
+                }
+                break;
+        }
+        return result;
+    }
+
+    // Graphics.GetHdc does not apply its managed clip or translation. Match
+    // DeviceContextHdcScope while keeping the caller's Graphics borrowed and the
+    // parent callback's Graphics independent, including when a callback throws.
+    private readonly ref struct PaintHdcScope
+    {
+        private readonly Graphics _graphics;
+        private readonly int _savedState;
+        internal nint Handle { get; }
+
+        internal unsafe PaintHdcScope(Graphics graphics)
+        {
+            graphics.GetContextInfo(out PointF offset, out Region? clip);
+            nint region = 0;
+            nint hdc = 0;
+            int savedState = 0;
+            try
+            {
+                if (clip is not null) { region = clip.GetHrgn(graphics); }
+                hdc = graphics.GetHdc();
+                savedState = Win32.SaveDC(hdc);
+                if (savedState == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
+                if (region != 0 && Win32.ExtSelectClipRgn(hdc, region, 1 /* RGN_AND */) == 0)
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+                if (!offset.IsEmpty && !Win32.OffsetViewportOrgEx(hdc, (int)offset.X, (int)offset.Y, null))
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+                _graphics = graphics;
+                Handle = hdc;
+                _savedState = savedState;
+            }
+            catch
+            {
+                if (savedState != 0) { _ = Win32.RestoreDC(hdc, savedState); }
+                if (hdc != 0) { graphics.ReleaseHdc(hdc); }
+                throw;
+            }
+            finally
+            {
+                if (region != 0) { _ = Win32.DeleteObject(region); }
+                clip?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            _ = Win32.RestoreDC(Handle, _savedState);
+            _graphics.ReleaseHdc(Handle);
+        }
     }
 
     private void PaintWithErrorHandling(PaintEventArgs e, bool background)
@@ -2961,6 +3204,32 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         if (_backColor.IsEmpty) { OnBackColorChanged(e); }
     }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnBackgroundImageChanged(EventArgs e)
+    {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        Invalidate();
+        BackgroundImageChanged?.Invoke(this, e);
+        if (_controls is { } children)
+        {
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].OnParentBackgroundImageChanged(e);
+            }
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnBackgroundImageLayoutChanged(EventArgs e)
+    {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        Invalidate();
+        BackgroundImageLayoutChanged?.Invoke(this, e);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnParentBackgroundImageChanged(EventArgs e) => OnBackgroundImageChanged(e);
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnFontChanged(EventArgs e)

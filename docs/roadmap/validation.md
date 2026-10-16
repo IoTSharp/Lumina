@@ -454,3 +454,9 @@ Control-14a/17a、Form-16a明确范围代码完成，父项及整Control保持�
 公共OnPrint借用Graphics并保留背景回调的状态修改；native打印在前景前恢复背景状态。真实背景/前景绘制异常报告原异常并绘制后续错误表面；Form截获或抛NCDESTROY仍清root/映射/画刷，Control完成失败仍释放句柄/HFONT。透明失效回调移除/Dispose子项的重入已有回归。另确认已释放AsyncWaitHandle使WindowThreadDispatcher.Close中断余下队列、DestroyHandle预先Close可能抛出，保留Control-04/FND-002并优先留024。
 
 证据限于明确场景：透明/alpha探针没有HWND，PRINTCLIENT像素为位图，不证明屏幕透明合成；隐藏窗口失效主要核参数/通知。BackgroundImage/Layout、可见透明/完整owner draw/消息反射/缓冲失败回退/压力、完整输入/ambient/DPI/Designer/资源/模态及GTK4/AppKit仍未完成。13项目/17目标均.NET10，原始Demo/Designer/resx未改，Windows官方Drawing及net10.0依赖边界保持；API与任务索引重生成，固定1,095类型/61,240行/187页/运行unverified不变。全部证据和原失败见artifacts/compatibility-batch023/evidence.json及[023](batches/023.md)，不从任务或测试数推导98%。
+
+## 批次 024 · 2026-10-16 投递关闭与背景绘制
+
+批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。
+
+固定参考/JIT/AOT的完整run、源码hash、三端63个进程记录和明确未验范围见[024](batches/024.md)及artifacts/compatibility-batch024/evidence.json。屏幕采样与PRINTCLIENT位图分列，direct无HWND不算绘制验收；高对比设备切换、全派生/Designer/跨平台仍待。首轮定向28/30、首轮17行差异与独立去COMPOSITED诊断原始记录保留；修复fixture与正式样式后仅16行有意关闭差异。7组旧驱动仅重跑JIT，消息/外观/集合旧AOT限制不覆盖。13项目/17目标仅.NET10、官方Drawing/固定双目标/原始Designer资源保持；重新导出API与逐控件状态索引，固定分母与unverified不变，不从测试或任务数推98%。

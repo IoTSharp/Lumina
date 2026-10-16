@@ -26,9 +26,9 @@
 
 ## 当前接续与每批收尾
 
-2026-10-16：批次023完成Control-14a/17a、Form-16a标准消息/创建参数、基础Styles/用户绘制/失效/更新及必要Form衔接。4,158测试（新增20）、双目标Release 0错误/635警告；18场景558行JIT严格同固定10.0.11，实际AOT自定义Param四差异保留，strictMatches=false。外观212行JIT/AOT全同，原10条字体差异由真实UserPaint修复，仍有3条默认palette前景差异；四组旧回归通过。消息探针3,088,896字节、外观探针3,091,968字节、Demo4,265,984字节均CLR目录0；Demo实际显示/复选框0→1/正常exit0/窗口全销毁。Message.GetLParam(Type)与Demo既有IL3050保留。完整背景/透明/派生绘制、输入/ambient/DPI/Designer/资源/模态及GTK4/AppKit仍缺；见[023](batches/023.md)，M0/M1未关闭。
+2026-10-16：批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。见[024](batches/024.md)，M0/M1不关闭。
 
-下批[024](batches/024.md)按HANDOFF只读准备后交接，优先修Control-04已释放AsyncWaitHandle导致Close中断剩余队列/直接DestroyHandle预先Close异常，再沿Control-14补BackgroundImage/Layout与有HWND透明绘制。投递关闭/背景绘制/参考三个内部任务互斥，主负责共享interop、文档/顺序构建/Git；先固定参考与范围，保留023四条AOT参数和三条palette差异。完整Control专项继续，暂停巡检及无关循环不恢复。
+下批[025](batches/025.md)先只读准备并按HANDOFF交接，优先普通Drain完成Set失败后的余队列及原异常传播，再修Control/Form/context的必要native异常边界。执行收尾/原生边界/参考三个内部任务互斥，主独占共享文档、统一顺序构建和Git；InvokeAsync关闭桥接仍归原05并按同文件依赖串行。完整Control专项继续，暂停巡检及无关循环不恢复。
 用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
 
 ## 第一个 90 天

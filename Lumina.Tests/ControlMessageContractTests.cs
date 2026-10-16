@@ -186,13 +186,6 @@ public sealed class ControlMessageContractTests
             {
                 CreateParams parameters = base.CreateParams;
                 parameters.ClassName = NativeClassName;
-                if (NativeClassName is not null)
-                {
-                    // STATIC uses CS_PARENTDC. Windows forbids combining that
-                    // native class style with Form's default WS_EX_COMPOSITED.
-                    // Exercise the original procedure with a valid native pair.
-                    parameters.ExStyle &= ~0x02000000;
-                }
                 return parameters;
             }
         }

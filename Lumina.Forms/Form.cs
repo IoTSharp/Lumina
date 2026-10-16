@@ -138,7 +138,7 @@ public class Form : ContainerControl
     /// <summary>
     /// Gets the Win32 extended window styles used when the form handle is created.
     /// </summary>
-    protected virtual uint WindowExStyle => Win32.WS_EX_APPWINDOW | Win32.WS_EX_COMPOSITED | Win32.WS_EX_CONTROLPARENT;
+    protected virtual uint WindowExStyle => Win32.WS_EX_APPWINDOW | Win32.WS_EX_CONTROLPARENT;
 
     protected override Size DefaultSize => new(300, 300);
 

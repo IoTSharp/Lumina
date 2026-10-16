@@ -5,7 +5,7 @@
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
 | CNS-001 | P0 🟡 | 018已有ControlEventArgs/Handler，020补LayoutEventArgs/Handler，023补PaintEventArgs/Handler、InvalidateEventArgs/Handler及Message/CreateParams明确首范围。其他准确委托、Cancel/Handled、旧新值、索引、鼠标键状态/CloseReason等仍待所属控件任务；动态封送AOT边界单列 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
-| CNS-002 | P1 🟡 | 批次001已对齐HighDpiMode五值及14组DPI观察（f2d694c），010补BoundsSpecified八值/Flags（Control-02c），023补ControlStyles标准值及组合/未知位状态；其他Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等名称/数值/别名/组合/默认/无效值仍待逐项核对 | 不因同名枚举值个数大就稀释控件支持率 |
+| CNS-002 | P1 🟡 | 批次001 HighDpiMode、010 BoundsSpecified、023 ControlStyles保留；024补标准ImageLayout五值及BackgroundImageLayout默认/无效值/样式副作用。其他Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等名称/数值/别名/组合/默认/无效值仍待逐项核对 | 不因同名枚举值个数大就稀释控件支持率 |
 | CNS-003 | P1 🟡 | 批次006～012完成ListViewSubItem key与公共集合构造/共享view/整数索引/typed增删/非泛型IList/查询复制/枚举首范围（03a、02a～02f）；018另完成ControlCollection/ArrangedElementCollection父子集合首范围（Control-06a），019修复隐藏重挂通知；其他TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
@@ -24,6 +24,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-10-16 · 批次024：CNS-002补ImageLayout与实际背景绘制消费，继承页面/API索引同步；五值存在不等于全部枚举或整个Control完成，见[024](batches/024.md)。
 
 - 2026-10-16 · 批次023：CNS-001/002补标准绘制参数/委托、Message/CreateParams和ControlStyles明确首范围，未关闭所有附属契约；GetLParam(Type)/自定义Param动态封送与完整事件/平台仍保留，见[023](batches/023.md)。
 

@@ -1071,6 +1071,20 @@ internal static class Win32
     internal static extern nint SelectObject(nint hdc, nint h);
 
     [DllImport("gdi32.dll", SetLastError = true)]
+    internal static extern int SaveDC(nint hdc);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool RestoreDC(nint hdc, int savedDc);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern unsafe bool OffsetViewportOrgEx(nint hdc, int x, int y, POINT* previousOrigin);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    internal static extern int ExtSelectClipRgn(nint hdc, nint region, int mode);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
     internal static extern uint SetBkColor(nint hdc, uint color);
 
     [DllImport("gdi32.dll", SetLastError = true)]

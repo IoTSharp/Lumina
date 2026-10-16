@@ -183,10 +183,7 @@ internal sealed class WindowThreadDispatcher
         {
             _closed = true;
             _window = 0;
-            while (_callbacks.TryDequeue(out Invocation? invocation))
-            {
-                invocation.CompleteException(new ObjectDisposedException(_owner.GetType().Name));
-            }
+            CompletePendingCallbacks(new ObjectDisposedException(_owner.GetType().Name));
         }
     }
 
@@ -217,11 +214,7 @@ internal sealed class WindowThreadDispatcher
                 var error = new Win32Exception(Marshal.GetLastWin32Error());
                 _closed = true;
                 _window = 0;
-                while (_callbacks.TryDequeue(out Invocation? pending))
-                {
-                    pending.CompleteException(error);
-                }
-                throw error;
+                CompletePendingCallbacks(error, initiatingFailure: error);
             }
         }
     }
@@ -248,12 +241,8 @@ internal sealed class WindowThreadDispatcher
             {
                 var error = new Win32Exception(Marshal.GetLastWin32Error());
                 _closed = true;
-                while (_callbacks.TryDequeue(out Invocation? pending))
-                {
-                    pending.CompleteException(error);
-                }
-
-                throw error;
+                _window = 0;
+                CompletePendingCallbacks(error, initiatingFailure: error);
             }
         }
 
@@ -263,6 +252,36 @@ internal sealed class WindowThreadDispatcher
         }
 
         return invocation;
+    }
+
+    private void CompletePendingCallbacks(Exception exception, Exception? initiatingFailure = null)
+    {
+        // The caller owns _gate and has closed the queue. A caller can dispose
+        // an exposed AsyncWaitHandle, causing Complete to throw after setting
+        // IsCompleted. Finish every accepted item before propagating these
+        // failures so other callers are not orphaned by that disposed handle.
+        // This deliberately strengthens WinForms 10.0.11's failure cleanup.
+        List<Exception>? failures = initiatingFailure is null ? null : [initiatingFailure];
+        while (_callbacks.TryDequeue(out Invocation? pending))
+        {
+            try
+            {
+                pending.CompleteException(exception);
+            }
+            catch (Exception completionFailure)
+            {
+                (failures ??= []).Add(completionFailure);
+            }
+        }
+
+        if (failures is { Count: 1 })
+        {
+            ExceptionDispatchInfo.Capture(failures[0]).Throw();
+        }
+        if (failures is { Count: > 1 })
+        {
+            throw new AggregateException("One or more queued callbacks could not signal completion.", failures);
+        }
     }
 
     private void Wait(Invocation invocation)
