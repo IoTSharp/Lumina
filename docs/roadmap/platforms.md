@@ -42,6 +42,8 @@ XPL-001～XPL-003 继续承担类型、资源和真实运行的进入条件：�
 
 2026-10-16 · 批次027：Windows坐标/捕获与基础鼠标消息/参数已实现明确范围，25共同场景有5项参考差异、1项JIT/AOT异常文本差异。LockScreenBackstopFrame使真实WindowFromPoint命中失败；程序SendMessage/BM_CLICK/Capture与Demo正常关闭可复现，不能替代物理点击验收。Windows两目标继续官方Drawing10.0.0；本批未实现GTK4/AppKit或Wayland全局坐标等平台适配，跨平台运行仍待办，见[027](batches/027.md)。
 
+2026-10-16 · 批次028：Windows程序Focus/Select/原生焦点与嵌套活动链有30场景JIT/实际AOT对照，全部同JIT、18场景严格同参考；额外WM_QUIT与SplitContainer继承差异保留。原Demo AOT显示/复选框/正常关闭通过，Windows两目标官方Drawing10.0.0保持。程序焦点不能替代物理Tab/鼠标验收；GTK4/AppKit原生焦点、资源及本机AOT均仍待实现/验证，XPL父项不关闭，见[028](batches/028.md)。
+
 ## 必须先解决的资源契约
 
 `System.Drawing.Primitives` 的 Point/Size/Rectangle/Color 与 `System.Drawing.Common` 的 Font/Image/Icon/Bitmap/Graphics 不是同一个跨平台问题。现有公开 API、Designer 代码和资源直接使用后者；现代 .NET 的 System.Drawing.Common 是 Windows 专属。仅在内部改用 Cairo 或 CoreGraphics 不能使消费方 `new System.Drawing.Font(...)` 在 Linux/macOS 自动工作。

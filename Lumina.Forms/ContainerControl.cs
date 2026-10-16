@@ -13,6 +13,7 @@ namespace Lumina.Forms;
 public class ContainerControl : ScrollableControl, IContainerControl
 {
     private Control? _activeControl;
+    private Control? _focusedControl;
     private AutoScaleMode _autoScaleMode = AutoScaleMode.Inherit;
     private SizeF _autoScaleDimensions;
 
@@ -21,6 +22,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
     /// </summary>
     public ContainerControl()
     {
+        SetStyle(ControlStyles.ContainerControl, true);
         CachePreferredSize = true;
     }
 
@@ -39,15 +41,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
     public Control? ActiveControl
     {
         get => _activeControl;
-        set
-        {
-            if (value is not null && !IsDescendant(this, value))
-            {
-                throw new ArgumentException("The control is not a child of this container.", nameof(value));
-            }
-
-            SetActiveControl(value, focus: ContainsFocus);
-        }
+        set => SetActiveControl(value);
     }
 
     /// <summary>
@@ -103,79 +97,214 @@ public class ContainerControl : ScrollableControl, IContainerControl
     /// <summary>
     /// Updates the container's active control through the standard interface path.
     /// </summary>
-    bool IContainerControl.ActivateControl(Control active)
+    bool IContainerControl.ActivateControl(Control active) => ActivateControl(active);
+
+    internal bool ActivateControl(Control? control)
     {
         // Unlike the public property setter, this interface does not validate
         // membership or replace a descendant with its nearest container.
-        Control? selected = ReferenceEquals(active, this) ? null : active;
-        AssignActiveControl(selected);
-        if (selected is not null && ContainsFocus)
+        ContainerControl? parentContainer = Parent?.GetContainerControl() as ContainerControl;
+        bool updateParent = parentContainer is not null && !ReferenceEquals(parentContainer.ActiveControl, this);
+        if (ReferenceEquals(control, _activeControl) && !updateParent)
         {
-            _ = selected.Focus();
+            return true;
         }
 
-        return ReferenceEquals(_activeControl, selected);
+        if (updateParent && !parentContainer!.ActivateControl(this))
+        {
+            return false;
+        }
+
+        return AssignActiveControl(ReferenceEquals(control, this) ? null : control);
     }
+
+    internal void SetActiveControl(Control? value) => SetActiveControl(value, focus: true);
 
     private void SetActiveControl(Control? value, bool focus)
     {
-        Control? active = value;
-        if (value is not null)
-        {
-            for (Control? parent = value.Parent; parent is not null && !ReferenceEquals(parent, this); parent = parent.Parent)
-            {
-                if (parent is ContainerControl container)
-                {
-                    container.AssignActiveControl(active);
-                    active = container;
-                }
-            }
-        }
-
-        AssignActiveControl(active);
-        if (value is not null)
-        {
-            NotifyControlFocused(this);
-            if (focus)
-            {
-                _ = value.Focus();
-            }
-        }
-    }
-
-    private void AssignActiveControl(Control? value)
-    {
-        Control? previous = _activeControl;
-        _activeControl = value;
-        if (ReferenceEquals(previous, value))
+        if (ReferenceEquals(_activeControl, value) && (value is null || value.Focused))
         {
             return;
         }
 
-        // A deactivated nested container must release its active descendant.
-        // Keep its selection while the new active control remains in that path.
-        for (Control? current = previous; current is not null && !ReferenceEquals(current, this); current = current.Parent)
+        if (value is not null && !IsDescendant(this, value))
         {
-            if (current is ContainerControl container
-                && !ReferenceEquals(container, value)
-                && (value is null || !IsDescendant(container, value)))
+            throw new ArgumentException("Invisible or disabled control cannot be activated", nameof(value));
+        }
+
+        ContainerControl? container = value is null ? this : value.Parent?.GetContainerControl() as ContainerControl;
+        bool selected = container is not null ? container.ActivateControl(value) : AssignActiveControl(value);
+        if (!focus || container is null || !selected) { return; }
+
+        ContainerControl ancestor = this;
+        while (ancestor.Parent?.GetContainerControl() is ContainerControl parentContainer)
+        {
+            ancestor = parentContainer;
+        }
+
+        if (ancestor.ContainsFocus) { container.FocusActiveControlInternal(); }
+    }
+
+    private bool AssignActiveControl(Control? value)
+    {
+        if (!ReferenceEquals(_activeControl, value))
+        {
+            _activeControl = value;
+            UpdateFocusedControl();
+        }
+        else
+        {
+            _focusedControl = _activeControl;
+        }
+
+        return ReferenceEquals(_activeControl, value);
+    }
+
+    private void UpdateFocusedControl()
+    {
+        // This tracks the logical Enter/Leave path independently of native focus.
+        // Selection can change before any HWND exists, and event handlers can
+        // replace the active control while this walk is in progress.
+        Control? pathControl = _focusedControl;
+        while (!ReferenceEquals(_activeControl, pathControl))
+        {
+            if (pathControl is null || ContainsOrEquals(pathControl, _activeControl))
             {
-                container.AssignActiveControl(null);
+                Control? nextControl = _activeControl;
+                while (true)
+                {
+                    Control? parent = nextControl!.Parent;
+                    if (ReferenceEquals(parent, this) || ReferenceEquals(parent, pathControl)) { break; }
+                    nextControl = parent;
+                }
+
+                _focusedControl = pathControl;
+                pathControl = nextControl;
+                RaiseEnterOrLeave(pathControl!, enter: true);
             }
+            else
+            {
+                ContainerControl innermost = this;
+                while (innermost._focusedControl is ContainerControl inner) { innermost = inner; }
+
+                Control? stopControl = null;
+                if (innermost._focusedControl is not null)
+                {
+                    pathControl = innermost._focusedControl;
+                    stopControl = innermost;
+                    if (!ReferenceEquals(innermost, this))
+                    {
+                        innermost._focusedControl = null;
+                        innermost._activeControl = null;
+                    }
+                }
+                else
+                {
+                    pathControl = innermost;
+                    if (innermost.Parent is { } parent)
+                    {
+                        ContainerControl? container = parent.GetContainerControl() as ContainerControl;
+                        stopControl = container;
+                        if (container is not null && !ReferenceEquals(container, this))
+                        {
+                            container._focusedControl = null;
+                            container._activeControl = null;
+                        }
+                    }
+                }
+
+                do
+                {
+                    Control? leaving = pathControl;
+                    pathControl = pathControl?.Parent;
+                    if (ReferenceEquals(pathControl, this)) { pathControl = null; }
+                    if (leaving is not null) { RaiseEnterOrLeave(leaving, enter: false); }
+                }
+                while (pathControl is not null && !ReferenceEquals(pathControl, stopControl)
+                    && !ContainsOrEquals(pathControl, _activeControl));
+            }
+        }
+
+        _focusedControl = _activeControl;
+    }
+
+    private static bool ContainsOrEquals(Control parent, Control? child)
+        => child is not null && (ReferenceEquals(parent, child) || IsDescendant(parent, child));
+
+    private static void RaiseEnterOrLeave(Control control, bool enter)
+    {
+        try
+        {
+            if (enter) { control.OnEnter(EventArgs.Empty); }
+            else { control.OnLeave(EventArgs.Empty); }
+        }
+        catch (Exception exception)
+        {
+            Application.OnThreadException(exception);
         }
     }
 
-    internal static void NotifyControlFocused(Control control)
+    internal void FocusActiveControlInternal()
     {
-        Control active = control;
-        for (Control? parent = control.Parent; parent is not null; parent = parent.Parent)
+        if (_activeControl is { Visible: true } active)
         {
-            if (parent is ContainerControl container)
+            nint focusHandle = Win32.GetFocus();
+            if (focusHandle == 0 || !ReferenceEquals(FromChildHandle(focusHandle), active))
             {
-                container.AssignActiveControl(active);
-                active = container;
+                _ = Win32.SetFocus(active.Handle);
             }
         }
+        else
+        {
+            ContainerControl? container = this;
+            while (container is not null && !container.Visible && container.Parent is { } parent)
+            {
+                container = parent.GetContainerControl() as ContainerControl;
+            }
+
+            if (container is { Visible: true }) { _ = Win32.SetFocus(container.Handle); }
+        }
+    }
+
+    /// <inheritdoc />
+    protected override void Select(bool directed, bool forward)
+    {
+        bool selected = true;
+        if (Parent?.GetContainerControl() is { } container)
+        {
+            container.ActiveControl = this;
+            selected = ReferenceEquals(container.ActiveControl, this);
+        }
+
+        if (directed && selected)
+        {
+            SelectNextControl(null, forward, tabStopOnly: true, nested: true, wrap: false);
+        }
+    }
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_SETFOCUS)
+        {
+            if (ActiveControl is not null)
+            {
+                if (!ActiveControl.Visible) { InvokeGotFocus(this, EventArgs.Empty); }
+                FocusActiveControlInternal();
+                return;
+            }
+
+            if (Parent?.GetContainerControl() is { } container
+                && !(container is ContainerControl knownContainer
+                    ? knownContainer.ActivateControl(this)
+                    : container.ActivateControl(this)))
+            {
+                return;
+            }
+        }
+
+        base.WndProc(ref m);
     }
 
     internal static void NotifyControlRemoved(Control oldParent, Control removed)
@@ -238,6 +367,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
         }
 
         base.Dispose(disposing);
+        _focusedControl = null;
     }
 
     private static bool IsDescendant(Control parent, Control child)

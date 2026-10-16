@@ -1,3 +1,7 @@
+// Focus selection portions adapted from dotnet/winforms v10.0.11.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses those portions under the MIT license.
+
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -20,6 +24,7 @@ public class Form : ContainerControl
     private bool _showing;
     private bool _restoringNativeVisibility;
     private bool _registeredOpenForm;
+    private bool _nativeActive;
     private EventArgs? _sizeChangedArguments = EventArgs.Empty;
     private int _nextControlId = 1000;
     private bool _effectExplicitlySet;
@@ -327,10 +332,11 @@ public class Form : ContainerControl
         NotifyNativeHandleCreated();
         if (Visible && NativeHandle != 0)
         {
-            // Creating a replacement HWND restores the existing visible state.
-            // It does not run CreateControl or announce a new visibility change.
+            // Restoring a visible HWND is not a new activation request. In
+            // particular, reading Handle after external destruction must not
+            // focus the active child and create that child's handle early.
             _restoringNativeVisibility = true;
-            try { _ = Win32.ShowWindow(NativeHandle, Win32.SW_SHOW); }
+            try { _ = Win32.ShowWindow(NativeHandle, Win32.SW_SHOWNOACTIVATE); }
             finally { _restoringNativeVisibility = false; }
         }
     }
@@ -364,6 +370,27 @@ public class Form : ContainerControl
         else
         {
             Hide();
+        }
+    }
+
+    internal override bool CanSelectCore()
+        => GetStyle(ControlStyles.Selectable) && Enabled && Visible;
+
+    /// <inheritdoc />
+    protected override void Select(bool directed, bool forward)
+    {
+        if (directed)
+        {
+            SelectNextControl(null, forward, tabStopOnly: true, nested: true, wrap: false);
+        }
+
+        if (GetTopLevel())
+        {
+            _ = Win32.SetActiveWindow(Handle);
+        }
+        else if (Parent?.FindForm() is { } form)
+        {
+            form.ActiveControl = this;
         }
     }
 
@@ -1117,6 +1144,7 @@ public class Form : ContainerControl
     private List<Exception>? ReleaseDestroyedFormHandle(nint hwnd)
     {
         if (NativeHandle != hwnd) { return null; }
+        _nativeActive = false;
         List<Exception>? failures = null;
         try { ReleaseMainMenuStrip(); }
         catch (Exception exception) { (failures ??= []).Add(exception); }
@@ -1170,6 +1198,28 @@ public class Form : ContainerControl
 
         switch (message)
         {
+            case Win32.WM_ACTIVATE:
+            {
+                bool active = Win32.LowWord(wParam) != 0;
+                if (_nativeActive != active)
+                {
+                    _nativeActive = active;
+                    if (active)
+                    {
+                        if (ActiveControl is null)
+                        {
+                            SelectNextControl(null, forward: true, tabStopOnly: true, nested: true, wrap: false);
+                        }
+
+                        ContainerControl container = this;
+                        while (container.ActiveControl is ContainerControl nested) { container = nested; }
+                        container.FocusActiveControlInternal();
+                    }
+                }
+
+                return 0;
+            }
+
             case Win32.WM_SHOWWINDOW:
             {
                 DefWndProc(ref managedMessage);

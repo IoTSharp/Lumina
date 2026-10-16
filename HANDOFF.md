@@ -5,7 +5,7 @@
 ## 当前接续点
 
 - 调度状态：017已完成并结束原实施轮次。用户随后于2026-10-16直接要求“在新会话中开始实现 [Control] 把 [Control] 完全闭环，确保至少windows下能够验收，其他系统下实现代码”。据此开启Control专项，持续完成必要实现及Windows实际验收；Linux/macOS完成对应代码并单列未取得的真机证据。完整专项目标完成后结束，不以一个局部子范围代替整Control闭环，不恢复无关控件的全路线图循环。
-- 当前编码归属：028只读准备聊天`01a14527-ef1d-7440-8ca2-fc11b53f515f`（host `local`）已创建，先读HANDOFF/需求/027/028且禁止写入、构建或Git变更。027主`01a144ef-726b-78a3-8b32-d9bd4e73eb2d`负责本独立归属交接commit/push，核对三SHA与干净状态后才发送“开始接管”；之后027主停止所有写入/构建/Git，只读确认新主实际接管后立即归档，不等待028完成。
+- 当前编码归属：028主聊天`01a14527-ef1d-7440-8ca2-fc11b53f515f`（host `local`）于2026-10-16收到单独“开始接管”后，已核实工作区干净、HEAD/origin/main/实际远端refs/heads/main均为独立交接SHA `ab5a23866774d0adc9bae17b20fd5e5b9ab63939`并明确实际接管。027实现SHA为`c87c52849e19098c02dc00898c9960424abf21da`；027旧主`01a144ef-726b-78a3-8b32-d9bd4e73eb2d`已停止写入/构建/Git，并已只读核实归档。
 - 027历史接管：027主聊天`01a144ef-726b-78a3-8b32-d9bd4e73eb2d`（host `local`）于2026-10-16收到单独“开始接管”后，已核实工作区干净、HEAD/origin/main/实际远端refs/heads/main均为交接SHA `32f65b9e411d9838ebcc5c1f0a1af7f61add972b`并实际接管。已只读核实026旧主`01a144c0-6427-79a2-a2cd-55d0dd562990`归档。
 - 026历史接管：01a144c0-6427-79a2-a2cd-55d0dd562990于2026-10-16收到单独开始消息后核实干净状态与三SHA同为f9a3a3e9d737309d45e76a0b263c7126c2b3c64c并实际接管，已核实025旧主归档。026实现与路线图收尾c0f4c3d8bc12e2684cb9ddb6bca765373f8c4c60已成功推送，三个内部任务全部冻结，无后续写入/构建/Git。
 - 024历史接管：01a14443-9c60-7a71-910f-29f6e9368dcd于2026-10-16核实干净状态、HEAD/origin/main/实际远端同为db602797a3b575edca04ca64481d6fa65fbd4973后实际接管，已核实023旧主归档。024实现5784c22610f768e05dc44ccf496bb275df11634e已成功推送并核对三SHA/干净状态；原三个内部任务已完成冻结，不再写入/构建/Git。
@@ -13,8 +13,8 @@
 - 022历史接管归属：01a143be-8230-74b0-aa82-837bcf0b8563于2026-10-16收到开始消息后核实干净状态和HEAD/origin/main/实际远端同为d6644d771521127ee3391133afbcfa4ec0322efc并实际接管，已只读确认021旧主归档。022实现98cde66ca344ccbf8755faaca314e6936788df73已推送，独立交接SHA由本次开始消息及artifacts/compatibility-batch022/handoff-push.json记录。
 - 021历史接管归属：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main与实际远端refs/heads/main均为已推送交接SHA `c9f4f2880429e648f81e7fbbf487a611547c82d3`。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`及020三个内部子任务已停止写入/构建/Git；旧主只读确认实际接管后立即归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
 - 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
-- 当前范围：完整Control专项继续。027完成Control-13a/13b基础坐标、捕获及鼠标路由，五处必要消费共用Click；完整物理点击/派生输入/键盘验证/绘制资源/Designer/平台仍未闭环。下一批028沿原Control-12焦点与选择导航及必要ContainerControl/Form活动链推进，不恢复无关循环。
-- 当前实施批次：[028](docs/roadmap/batches/028.md)只读准备，收到独立开始消息并核对交接SHA后接管焦点/选择导航；[027](docs/roadmap/batches/027.md)代码、验证和路线图整理已成功推送c87c52849e19098c02dc00898c9960424abf21da，三内部任务全部冻结。自动化luminaforms继续PAUSED。
+- 当前范围：完整Control专项继续。028已完成基础选择导航/标准焦点通知与必要ContainerControl/Form/TextBox协作；自动焦点转移/验证/完整派生、物理设备/Designer/资源和平台仍缺。下一批029沿原Control-12/FND-018/019按真实依赖继续，不恢复无关循环。
+- 当前实施批次：[028](docs/roadmap/batches/028.md)代码、必要验证与路线图收尾完成，待本批实现commit/push及独立归属交接；focus_core、focus_containers、reference_probe均冻结，无后续写入/构建/Git。主负责共享interop/文档/API/顺序集成/Git；下一批[029](docs/roadmap/batches/029.md)只读准备后再正式接管。自动化luminaforms保持PAUSED。
 - 最近完成批次：027实现与路线图收尾`c87c52849e19098c02dc00898c9960424abf21da`已成功push；HEAD/origin/main/实际远端refs/heads/main均一致且工作区干净，见artifacts/compatibility-batch027/implementation-push.json。本独立归属交接另行commit/push并记录handoff-push.json，028按开始消息给出的交接SHA核验后实际接管；本地commit不算完成。026实现c0f4c3d8bc12e2684cb9ddb6bca765373f8c4c60及独立交接32f65b9e411d9838ebcc5c1f0a1af7f61add972b历史保留。
 - 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
 - 019证据：最终4,027测试全部通过、双目标Release 0错误/428警告；生命周期16场景/204行固定10.0.11参考/JIT/实际AOT严格全同，最终run为`20261016-021319-9490794`。父子集合391行参考/JIT全同，018隐藏重挂的中间VisibleChanged缺口已修复；集合AOT仍有32行非零下界数组fixture明确CopyTo未运行，其余359行同JIT，严格失败保留。16个旧Control/context驱动全通过。Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全部失效；生命周期EXE4,115,456字节、Demo4,156,928字节，CLR目录均0。原始失败/警告/路径见`artifacts/compatibility-batch019/evidence.json`，不由这些记录宣称整Control/98%。
@@ -23,9 +23,17 @@
 - 历史完成批次：[017](docs/roadmap/batches/017.md)，两项代码、必要验证、路线图整理及推送完成；原内部子任务已结束。实现提交`2df2cca120f38b94d5c469b3687cd5cc5a800f15`，结束记录提交`77955c4066b3b8933133742ff7c3c9200b9f0fc6`均已成功推送。创建Control聊天前HEAD/origin/main/实际远端refs/heads/main三者均为77955c4，工作区干净。本次归属交接另行commit/push，成功核对后在开始消息中给出交接SHA，新主不得把017实现或结束记录SHA误作本次交接SHA。
 - 历史实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
 - 全量进度：[tasks.csv](docs/roadmap/tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](docs/roadmap/api/baseline.json)。
-- 当前边界：027基础鼠标范围完成，LockScreenBackstopFrame导致目标命中失败，物理点击/成功Click命中未验收；四消费者默认样式/事件顺序、AutoCheck/组同步和完整键盘验证仍缺。026有限05c/08c收尾保留；普通Parent/child/Site错误及活HWND失败仍短路，全部Dispose事务/并发wait释放未完。RTL/mirror/滚动/主题透明、owner draw/反射/缓冲、ambient/Cursor、DPI/派生布局/Designer/资源/模态和GTK4/AppKit未完成。旧004/005各两行、025四项、026九项增强、自定义Param AOT四差异/GetLParam IL3050、palette三差异、Form.Created、Text DispId AOT、集合32行fixture/中文Designer/Container.Add IL2026/TypeConverter IL3053及Demo既有IL3050全部保留，不宣称整Control/98%。
+- 当前边界：028自动禁用/隐藏焦点转移、移除候选CanSelect/Selectable、验证取消/键盘/IME与全部派生容器仍缺；关闭多余WM_QUIT和SplitContainer继承投影差异真实保留。027基础鼠标范围完成，LockScreenBackstopFrame导致目标命中失败，物理点击/成功Click命中未验收；四消费者默认样式/事件顺序、AutoCheck/组同步和完整键盘验证仍缺。026有限05c/08c收尾保留；普通Parent/child/Site错误及活HWND失败仍短路，全部Dispose事务/并发wait释放未完。RTL/mirror/滚动/主题透明、owner draw/反射/缓冲、ambient/Cursor、DPI/派生布局/Designer/资源/模态和GTK4/AppKit未完成。旧004/005各两行、025四项、026九项增强、自定义Param AOT四差异/GetLParam IL3050、palette三差异、Form.Created、Text DispId AOT、集合32行fixture/中文Designer/Container.Add IL2026/TypeConverter IL3053及Demo既有IL3050全部保留，不宣称整Control/98%。
 
-## 批次027完成证据与下一依赖
+## 批次028完成证据与下一依赖
+
+- 批次028完成Control-12a基础选择导航、12b标准焦点通知、ContainerControl-02a逻辑活动链、Form-08a必要激活及TextBox-003a通知去重。4,343测试（新增28+26）全通过，双目标Release 0错误/646警告。30场景JIT/实际AOT全同，对固定10.0.11参考18同/12差异：11场景关闭后多出WM_QUIT，另1场景为SplitContainer继承链导致的活动容器投影差异；严格driver exit1保留。旧Focus157/父子集合391/句柄生命周期204行参考JIT全同。探针/Demo AOT为3,119,616/4,305,920字节，CLR目录0；Demo窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0且原HWND全部销毁。13项目/17目标仅.NET10，官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API重新导出且1,095类型/61,240行/187页与运行unverified不变。自动焦点转移/完整派生导航、验证/键盘/IME、物理输入、Designer/资源与GTK4/AppKit仍未完成。
+- 固定参考run `20261016-231510-4119028`；最终JIT/AOT `20261016-232925-3027818`；源码SHA256 `80527FBB6C3C20353A58CC4D105605A67B163CE05BEBA171F332729D4C064555`。参考6,770行/Lumina6,781行，全部exit0、complete标记和原HWND释放齐全；strictMatches=false/aotMatches=true。
+- 11项差异仅增加pump-quit=True，属于既有Form/OpenForms消息循环退出缺口；container-lookup另1行少split:null，属于SplitContainer继承缺口。不得归一化、标成strict全同或把原生程序消息当物理输入。
+- 首轮测试两失败及旧生命周期4行差异保留；Form句柄可见性恢复改SW_SHOWNOACTIVATE，避免早激活创建子HWND。最终4,343测试与旧157/391/204行回归通过，不修改旧期望。焦点探针IL3050、Demo既有IL3050/IL3053及全部历史边界保留。
+- 已同步五个完成子项/未完父项、Form-08/12历史漏标与Focus(bool)误述，并纠正ROADMAP总标题026滞后；417份Markdown、2,088任务、187行逐类型实施索引校验0错误，整类型代码完成0。完整证据artifacts/compatibility-batch028/evidence.json。下一批[029](docs/roadmap/batches/029.md)先固定自动焦点转移/验证前置，不重做全项目评估。
+
+## 批次027完成证据与下一依赖（历史快照）
 
 - 实现已成功推送c87c52849e19098c02dc00898c9960424abf21da，三SHA/干净状态已核；028只读准备聊天01a14527-ef1d-7440-8ca2-fc11b53f515f已创建。本交接另行commit/push/核远端后才发开始，确认实际接管即归档027。
 

@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；Multiline/AcceptsReturn/AcceptsTab/PasswordChar/ScrollBars/WordWrap/PlaceholderText 多为存值，Style 未采用全部值，Select 未建句柄直接返回。错误公开 SelectionChanged（WinForms TextBox 未提供该事件）仍待迁移决策；022已移除隐藏Font及克隆/释放，复用基础继承和借用字体，并补标准颜色默认，详见010a。
+🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；Multiline/AcceptsReturn/AcceptsTab/PasswordChar/ScrollBars/WordWrap/PlaceholderText 多为存值，Style 未采用全部值，Select 未建句柄直接返回。错误公开 SelectionChanged（WinForms TextBox 未提供该事件）仍待迁移决策；022已移除隐藏Font及克隆/释放，复用基础继承和借用字体，并补标准颜色默认，详见010a。028完成003a共享焦点通知衔接，移除旧WM_SETFOCUS/KILLFOCUS直接触发Enter/Leave造成的重复；完整Tab/键盘/验证仍缺。
 
 源码定位：[Lumina.Forms/TextBox.cs](../../../Lumina.Forms/TextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、Control.Text 原生同步、Form.AcceptButton/CancelButton、剪贴板和自动完成关联类型。
 
@@ -18,7 +18,8 @@
 |---|---|---|---|
 | TextBox-001 | P0 | ⬜ | 改为 TextBox : TextBoxBase，共用字体/选择/文本生命周期；现有 SelectionChanged 非 WinForms 成员列迁移兼容决策，避免以扩展成员算基线覆盖。 |
 | TextBox-002 | P1 | 🟡 | Text/Lines、EN_CHANGE→TextChanged 双向同步；程序同值、用户输入、AppendText、Clear、句柄重建各自的通知次数按基线，Select 在建句柄前保留状态。 |
-| TextBox-003 | P1 | ⬜ | Multiline=false、AcceptsReturn=false、AcceptsTab=false：Enter 与 Form.AcceptButton、Tab 与焦点导航配合；多行切换保持文字、选择、修改标志。 |
+| TextBox-003 | P1 | 🟡 | 028完成003a必要焦点通知衔接。Multiline=false、AcceptsReturn=false、AcceptsTab=false的真实输入、Enter/Form.AcceptButton及Tab导航，多行切换的文字/选择/修改标志仍待对照。 |
+| TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
 | TextBox-004 | P1 | ⬜ | WordWrap=true、ScrollBars=None；四种滚动条与换行组合真实生效，水平滚动条在 WordWrap 开启时的表现按基线。 |
 | TextBox-005 | P1 | ⬜ | PasswordChar='\0'、UseSystemPasswordChar=false、ReadOnly=false；运行时更新、系统密码字符优先级、复制限制、辅助技术不泄漏密码。 |
 | TextBox-006 | P1 | ⬜ | PlaceholderText=空字符串，空值规范化、聚焦时显示、清空 Text 后显示、多行支持差异和高对比度；占位文字不进入 Text/绑定值。 |
@@ -43,6 +44,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-10-16 · 批次028：完成003a必要消费，真实EDIT程序焦点切换不重复Enter/Leave，保留Selection更新路径。003按实际子范围改部分，全部文本行为/标准继承/键盘/IME/平台未关闭，见[028](../batches/028.md)。
 
 - 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
 

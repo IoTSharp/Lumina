@@ -1,4 +1,4 @@
-// Layout, appearance, message, painting and mouse input portions adapted from dotnet/winforms v10.0.11.
+// Layout, appearance, message, painting, input and navigation portions adapted from dotnet/winforms v10.0.11.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses those portions under the MIT license.
 
@@ -28,6 +28,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
     private static readonly object s_clickEvent = new();
     private static readonly object s_doubleClickEvent = new();
+    private static readonly object s_enterEvent = new();
+    private static readonly object s_leaveEvent = new();
+    private static readonly object s_gotFocusEvent = new();
+    private static readonly object s_lostFocusEvent = new();
     private static readonly object s_mouseCaptureChangedEvent = new();
     private static readonly object s_mouseClickEvent = new();
     private static readonly object s_mouseDoubleClickEvent = new();
@@ -347,6 +351,24 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool CanFocus => NativeHandle != 0 && Win32.IsWindowVisible(NativeHandle) && Win32.IsWindowEnabled(NativeHandle);
+
+    /// <summary>Gets whether this control and its ancestors allow the control to be selected.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Category("Focus")]
+    [Description("Checks if this control can be selected.")]
+    public bool CanSelect => CanSelectCore();
+
+    internal virtual bool CanSelectCore()
+    {
+        if (!GetStyle(ControlStyles.Selectable)) { return false; }
+        for (Control? control = this; control is not null; control = control._parent)
+        {
+            if (!control.Enabled || !control.Visible) { return false; }
+        }
+        return true;
+    }
 
     /// <summary>
     /// Gets whether the calling thread differs from the thread that created the control's
@@ -803,6 +825,22 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         return null;
     }
 
+    /// <summary>Gets the closest container that manages focus in this control's parent chain.</summary>
+    public IContainerControl? GetContainerControl()
+    {
+        Control? control = IsContainerControl ? _parent : this;
+        while (control is not null && !IsFocusManagingContainerControl(control))
+        {
+            control = control._parent;
+        }
+        return (IContainerControl?)control;
+    }
+
+    internal virtual bool IsContainerControl => false;
+
+    private static bool IsFocusManagingContainerControl(Control control)
+        => control.GetStyle(ControlStyles.ContainerControl) && control is IContainerControl;
+
     protected bool GetTopLevel() => _topLevel;
 
     protected void SetTopLevel(bool value)
@@ -828,8 +866,43 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [Category("Property Changed")]
     [Description("Event raised when the value of the Text property is changed on Control.")]
     public event EventHandler? TextChanged;
-    public event EventHandler? Enter;
-    public event EventHandler? Leave;
+    [Category("Focus")]
+    [Description("Occurs when the control becomes the active control of the form.")]
+    public event EventHandler? Enter
+    {
+        add => Events.AddHandler(s_enterEvent, value);
+        remove => Events.RemoveHandler(s_enterEvent, value);
+    }
+
+    [Category("Focus")]
+    [Description("Occurs when the control is no longer the active control of the form.")]
+    public event EventHandler? Leave
+    {
+        add => Events.AddHandler(s_leaveEvent, value);
+        remove => Events.RemoveHandler(s_leaveEvent, value);
+    }
+
+    /// <summary>Occurs when the control receives keyboard focus.</summary>
+    [Category("Focus")]
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Description("Occurs when the control gets focus.")]
+    public event EventHandler? GotFocus
+    {
+        add => Events.AddHandler(s_gotFocusEvent, value);
+        remove => Events.RemoveHandler(s_gotFocusEvent, value);
+    }
+
+    /// <summary>Occurs when the control loses keyboard focus.</summary>
+    [Category("Focus")]
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [Description("Occurs when the control loses focus.")]
+    public event EventHandler? LostFocus
+    {
+        add => Events.AddHandler(s_lostFocusEvent, value);
+        remove => Events.RemoveHandler(s_lostFocusEvent, value);
+    }
     public event EventHandler? HandleCreated;
     public event EventHandler? HandleDestroyed;
 
@@ -1877,7 +1950,130 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _ = Win32.SetFocus(NativeHandle);
         }
 
+        if (Focused && _parent?.GetContainerControl() is IContainerControl container)
+        {
+            if (container is ContainerControl knownContainer) { knownContainer.SetActiveControl(this); }
+            else { container.ActiveControl = this; }
+        }
+
         return Focused;
+    }
+
+    /// <summary>Activates this control in its focus container.</summary>
+    public void Select() => Select(false, false);
+
+    /// <summary>Activates this control, optionally directing selection through a container.</summary>
+    protected virtual void Select(bool directed, bool forward)
+    {
+        if (GetContainerControl() is IContainerControl container) { container.ActiveControl = this; }
+    }
+
+    /// <summary>Gets the next child control in tab order.</summary>
+    public Control? GetNextControl(Control? ctl, bool forward)
+    {
+        if (!Contains(ctl)) { ctl = this; }
+
+        if (forward)
+        {
+            if ((ctl == this || !IsFocusManagingContainerControl(ctl!))
+                && ctl!.GetFirstChildControlInTabOrder(true) is Control child)
+            {
+                return child;
+            }
+
+            while (ctl != this)
+            {
+                int targetIndex = ctl!._tabIndex;
+                bool passedCurrent = false;
+                Control? found = null;
+                foreach (Control sibling in ctl._parent!.ChildControls)
+                {
+                    if (sibling == ctl) { passedCurrent = true; }
+                    else if (sibling._tabIndex >= targetIndex
+                        && (found is null || found._tabIndex > sibling._tabIndex)
+                        && (sibling._tabIndex != targetIndex || passedCurrent))
+                    {
+                        found = sibling;
+                    }
+                }
+                if (found is not null) { return found; }
+                ctl = ctl._parent;
+            }
+        }
+        else
+        {
+            if (ctl != this)
+            {
+                int targetIndex = ctl!._tabIndex;
+                bool passedCurrent = false;
+                Control? found = null;
+                Control parent = ctl._parent!;
+                ReadOnlySpan<Control> siblings = parent.ChildControls;
+                for (int index = siblings.Length - 1; index >= 0; index--)
+                {
+                    Control sibling = siblings[index];
+                    if (sibling == ctl) { passedCurrent = true; }
+                    else if (sibling._tabIndex <= targetIndex
+                        && (found is null || found._tabIndex < sibling._tabIndex)
+                        && (sibling._tabIndex != targetIndex || passedCurrent))
+                    {
+                        found = sibling;
+                    }
+                }
+                if (found is null) { return parent == this ? null : parent; }
+                ctl = found;
+            }
+
+            while (ctl == this || !IsFocusManagingContainerControl(ctl!))
+            {
+                Control? child = ctl!.GetFirstChildControlInTabOrder(false);
+                if (child is null) { break; }
+                ctl = child;
+            }
+        }
+        return ctl == this ? null : ctl;
+    }
+
+    internal virtual Control? GetFirstChildControlInTabOrder(bool forward)
+    {
+        Control? found = null;
+        ReadOnlySpan<Control> children = ChildControls;
+        for (int index = forward ? 0 : children.Length - 1;
+            forward ? index < children.Length : index >= 0;
+            index += forward ? 1 : -1)
+        {
+            Control child = children[index];
+            if (found is null || (forward ? found._tabIndex > child._tabIndex : found._tabIndex < child._tabIndex))
+            {
+                found = child;
+            }
+        }
+        return found;
+    }
+
+    /// <summary>Selects the next eligible control in tab order.</summary>
+    public bool SelectNextControl(Control? ctl, bool forward, bool tabStopOnly, bool nested, bool wrap)
+    {
+        if (!Contains(ctl) || (!nested && ctl!._parent != this)) { ctl = null; }
+        Control? start = ctl;
+        bool alreadyWrapped = false;
+        do
+        {
+            ctl = GetNextControl(ctl, forward);
+            if (ctl is null)
+            {
+                if (!wrap || alreadyWrapped) { return false; }
+                alreadyWrapped = true;
+            }
+            else if (ctl.CanSelect && (!tabStopOnly || ctl.TabStop)
+                && (nested || ctl._parent == this) && ctl._parent is not ToolStrip)
+            {
+                ctl.Select(true, forward);
+                return true;
+            }
+        }
+        while (ctl != start);
+        return false;
     }
 
     /// <summary>
@@ -2816,15 +3012,27 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         // (notably Form) perform their initial managed creation here.
     }
 
-    protected virtual void OnEnter(EventArgs e)
-    {
-        Enter?.Invoke(this, e);
-    }
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual void OnEnter(EventArgs e) => ((EventHandler?)Events[s_enterEvent])?.Invoke(this, e);
 
-    protected virtual void OnLeave(EventArgs e)
-    {
-        Leave?.Invoke(this, e);
-    }
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual void OnLeave(EventArgs e) => ((EventHandler?)Events[s_leaveEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the target control's GotFocus event through its virtual method.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void InvokeGotFocus(Control? toInvoke, EventArgs e) => toInvoke?.OnGotFocus(e);
+
+    /// <summary>Raises the target control's LostFocus event through its virtual method.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void InvokeLostFocus(Control? toInvoke, EventArgs e) => toInvoke?.OnLostFocus(e);
+
+    /// <summary>Raises the GotFocus event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnGotFocus(EventArgs e) => ((EventHandler?)Events[s_gotFocusEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the LostFocus event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnLostFocus(EventArgs e) => ((EventHandler?)Events[s_lostFocusEvent])?.Invoke(this, e);
 
     /// <summary>Raises the <see cref="Click"/> event.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -3338,9 +3546,6 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         result = 0;
         switch (message)
         {
-            case Win32.WM_SETFOCUS:
-                ContainerControl.NotifyControlFocused(this);
-                break;
             case Win32.WM_COMMAND:
                 if (lParam != 0 && TryGetControlByHandle(lParam, out Control? commandControl) && commandControl is not null)
                 {
@@ -4059,6 +4264,20 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
         switch (m.Msg)
         {
+            case Win32.WM_SETFOCUS:
+                if (GetContainerControl() is IContainerControl container
+                    && !(container is ContainerControl knownContainer
+                        ? knownContainer.ActivateControl(this) : container.ActivateControl(this)))
+                {
+                    return;
+                }
+                DefWndProc(ref m);
+                InvokeGotFocus(this, EventArgs.Empty);
+                return;
+            case Win32.WM_KILLFOCUS:
+                DefWndProc(ref m);
+                InvokeLostFocus(this, EventArgs.Empty);
+                return;
             case Win32.WM_CAPTURECHANGED:
                 OnMouseCaptureChanged(EventArgs.Empty);
                 DefWndProc(ref m);

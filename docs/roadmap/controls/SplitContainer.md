@@ -13,7 +13,7 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / SplitContainer-01 | 校正标准继承关系与 Panel1/Panel2 的 SplitterPanel 返回类型，保证只读固定两面板，外部不能把任意子控件直接加入 SplitContainer.Controls。 |
+| ⬜ | P0 / SplitContainer-01 | 028探针确认现有ContainerControlBase : Control不进入IContainerControl活动投影（参考多出split:null），此真实差异尚未修复；校正标准继承关系与 Panel1/Panel2 的 SplitterPanel 返回类型，保证只读固定两面板，外部不能把任意子控件直接加入 SplitContainer.Controls。 |
 | ⬜ | P0 / SplitContainer-02 | 将 SplitterMoving 对齐 SplitterCancelEventHandler/SplitterCancelEventArgs，支持 Cancel；SplitterMoved 保持标准 SplitterEventHandler，处理 MouseDown→Moving→Moved 时序。 |
 | ⬜ | P0 / SplitContainer-03 | 对齐 SplitterDistance/Width/Increment、Panel1MinSize/Panel2MinSize、Orientation、FixedPanel、IsSplitterFixed、BorderStyle 的默认、异常与范围语义。 |
 | ⬜ | P1 / SplitContainer-04 | BeginInit/EndInit 期间允许设计器先赋值再调尺寸，结束时统一校验；不能用永久 clamp 隐藏与官方不同的异常。 |
@@ -40,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-16 · 批次028：本控件代码未改；container-lookup记录现有ContainerControlBase : Control不具标准ContainerControl身份，活动投影少split:null。保留严格失败并归01标准继承前置；基类导航实现不关闭SplitContainer导航或整个控件，见[028](../batches/028.md)。
 
 - 2026-10-16 · 批次021：正常Vertical/Horizontal尺寸变化使用总轴长/Panel1比例并向下取整，连续缩放不重设已舍入比例；FixedPanel两侧、直接距离/暂停后的真实逐轴Bounds操作保留Panel2/Bounds延期参数。固定探针双方向相关观测及往返测试通过，完整折叠/min/RTL另列。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 

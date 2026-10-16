@@ -482,3 +482,12 @@ Control-05c/08c明确范围完成；全部4,243测试通过（新增28+20），�
 direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler与Lumina.Forms.MouseEventHandler类型名差异，AOT为“Specified cast is not valid.”；四消费者保留默认owner draw/UserMouse/UserPaint、BM_CLICK/MouseUp/Capture顺序，以及CheckBox/RadioButton直接OnClick、AutoCheck/组同步缺口。PictureBox在该fixture仅UserPaint样式不同。锁屏命中诊断为可见但禁用的LockScreenBackstopFrame（0,0,1920,1080）；未获得用户解锁确认，不以置顶/程序坐标移动伪造成功点击。
 
 旧生命周期run `20261016-142310-2252409`、消息绘制run `20261016-142321-3761380`分别保存于019/023驱动的runs目录，两者参考/JIT严格相同，旧AOT本批未重跑。MenuStrip私有宿主事件遮蔽已消除；首轮4,287测试/707警告、WM_COMMAND fixture负ID未截LOWORD的诊断与中间探针均保留。现有IL2026/IL3050/IL3053及旧palette/custom Param/集合/Designer边界不隐藏。详见[027](batches/027.md)、本机artifacts/compatibility-batch027/evidence.json；不由测试或任务数推出98%。
+
+## 批次028 · 2026-10-16 实施结果
+
+批次028完成Control-12a基础选择导航、12b标准焦点通知、ContainerControl-02a逻辑活动链、Form-08a必要激活及TextBox-003a通知去重。4,343测试（新增28+26）全通过，双目标Release 0错误/646警告。30场景JIT/实际AOT全同，对固定10.0.11参考18同/12差异：11场景关闭后多出WM_QUIT，另1场景为SplitContainer继承链导致的活动容器投影差异；严格driver exit1保留。旧Focus157/父子集合391/句柄生命周期204行参考JIT全同。探针/Demo AOT为3,119,616/4,305,920字节，CLR目录0；Demo窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0且原HWND全部销毁。13项目/17目标仅.NET10，官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API重新导出且1,095类型/61,240行/187页与运行unverified不变。自动焦点转移/完整派生导航、验证/键盘/IME、物理输入、Designer/资源与GTK4/AppKit仍未完成。
+
+- 固定参考run `20261016-231510-4119028`，最终JIT/AOT `20261016-232925-3027818`，源码SHA256 `80527FBB6C3C20353A58CC4D105605A67B163CE05BEBA171F332729D4C064555`。参考6,770行、Lumina6,781行，全部进程exit0且原始HWND无残留；strictMatches=false/aotMatches=true。
+- 第一轮4,340测试中两失败、生命周期4行差异原样保留；修正错误的未建句柄fixture判断，Form恢复可见性改SW_SHOWNOACTIVATE，新增延迟重建/后续激活回归。最终4,343全通过，未弱化旧期望。旧Focus157/Parent391/Handle204行全同，旧AOT未重跑。
+- 焦点AOT保留Message.GetLParam/Marshal.PtrToStructure(Type) IL3050；Demo保留既有IL3050和TypeConverter汇总IL3053，未全局抑制。原始Designer/resx未改，未做本批设计器往返；027锁屏下物理命中失败仍待补。
+- 证据汇总 `artifacts/compatibility-batch028/evidence.json`，逐场景差异 `reference-differences.json`；参考/最终原始输出、首轮失败、测试TRX、Release/AOT/PE、Demo正常关闭记录均在该目录。各平台API运行标记仍unverified；详见[028](batches/028.md)。

@@ -25,7 +25,7 @@
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；AutoScrollPosition/MinSize、横纵滚动、Dock协作、嵌套滚动坐标与平台滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；原全部未开始状态遗漏旧局部实现，现纠正。完整Font/Dpi/None/Inherit、AutoScaleFactor、DpiChanged父子通知与96/144/192往返仍缺 |
-| FND-018 | 🟡 | 018补默认TabStop、添加时TabIndex与嵌套ActiveControl/显式ActivateControl首范围；Select/Focus(bool)、Enter/Leave/验证完整事件、Tab/助记键和默认/取消按钮仍缺 |
+| FND-018 | 🟡 | 018默认TabStop/TabIndex与活动链保留；028完成基础CanSelect/Select(bool,bool)/选择导航、标准焦点事件和必要ContainerControl/Form/TextBox协作。自动禁用/隐藏/移除转移、验证取消、真实Tab/助记键、默认/取消按钮及派生容器仍缺。纠正历史Focus(bool)误述：公开Focus只有无参，定向入口为Select(bool,bool) |
 | FND-019 | ⬜ | KeyDown/KeyPress/KeyUp、PreviewKeyDown、ProcessCmdKey/ProcessDialogKey/PreProcessMessage、KeyPreview、抑制按键；中文 IME 组合态、焦点切换与候选窗位置 |
 | FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
 | FND-021 | ⬜ | CausesValidation、AutoValidate、Validating(Cancel)/Validated、Validate/ValidateChildren；取消验证后焦点与提交行为 |
@@ -36,6 +36,8 @@
 | FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
 
 ## 收尾状态整理记录
+
+- 2026-10-16 · 批次028：FND-018补基础选择/事件/活动链范围，FND-019键盘与验证前置仍未完成；纠正非标准Focus(bool)旧表述及Form局部能力漏标。4,343测试/30场景JIT-AOT全同不等于98%；12个参考差异、物理设备/Designer/跨平台边界保留，见[028](batches/028.md)。
 
 - 2026-10-16 · 批次027：FND-020按真实坐标/捕获/鼠标基础实现改部分；CNS补标准参数/枚举，Control-12、CheckBox-004、RadioButton-003及RadioButton父链的过时状态已校正。4,289测试通过、25共同场景保留5项参考/1项AOT差异及锁屏命中限制；不关闭父项/平台，见[027](batches/027.md)。
 

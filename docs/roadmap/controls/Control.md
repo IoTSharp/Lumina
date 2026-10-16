@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～026明确子范围保留；027完成13a坐标/捕获与13b基础鼠标事件、辅助入口及Windows消息跟踪。新增21项核心和25项必要消费回归，全部4,289测试通过；25场景参考/JIT有5项真实差异，JIT/AOT有1项异常文本差异。锁屏导致真实WindowFromPoint命中失败，物理点击未验收。完整键盘/验证、派生输入、绘制/资源、ambient/RTL/Cursor、DPI/派生布局、Designer、全部线程/释放竞态和GTK4/AppKit仍缺，完整Control保持部分，见[027](../batches/027.md)。
+🟡 **当前状态：**002～027明确子范围保留；028完成12a基础选择导航和12b标准焦点通知，容器/Form活动链与TextBox必要消费同步。4,343测试通过；30场景JIT/实际AOT全同，对固定参考18同/12差异，关闭多余WM_QUIT及SplitContainer继承差异保留。自动焦点转移、完整验证/键盘/派生输入、绘制/资源、ambient/RTL/Cursor、DPI/派生布局、Designer、全部线程/释放竞态和GTK4/AppKit仍缺，完整Control保持部分，见[028](../batches/028.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -50,7 +50,9 @@
 | 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承；023实现基础ControlStyles及透明背景调用首范围。Application默认字体/Site/ActiveX ambient、RightToLeft/Cursor、可见透明合成、全部事件与完整native文本同步仍缺；主题默认值与WinForms视觉差异保留，不随子范围关闭。 |
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
-| 🟡 | P1 / Control-12 | 已有Enter/Leave及OnEnter/OnLeave入口、基础Focus查询和局部原生焦点活动链，原全待办遗漏现有代码，027收尾纠正；完整GotFocus/LostFocus/Enter/Leave顺序、Select/CanSelect/Tab/助记键、CausesValidation/Validating/Validated、KeyDown/KeyPress/KeyUp/PreviewKeyDown、ProcessCmdKey/ProcessDialogKey、SuppressKeyPress与IME仍缺。 |
+| 🟡 | P1 / Control-12 | 028完成12a基础选择导航及12b焦点事件/原生路由，Focus原有不创建句柄语义保留。禁用/隐藏当前焦点或祖先后的自动转移、移除候选完整CanSelect语义、全部派生/ToolStripControlHost导航、CausesValidation/Validating/Validated/取消、真实Tab/助记键、键盘预处理/默认按钮与IME仍缺；不关闭整个焦点输入任务。 |
+| ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
+| ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |
 | 🟡 | P1 / Control-13 | 027完成13a坐标/捕获和13b基础鼠标消息/事件；必要消费者共享Click去重。验证取消与点击协作、全部派生反射/默认激活/AutoCheck/组同步、RTL/DPI/非客户区及完整捕获竞态仍待原任务。锁屏下10个参考、20个JIT/AOT命中观察失败，真实命中/物理设备交互未验收，不能由事件入口或消息注入关闭完整输入。 |
 | ✅ | P1 / Control-13a | 批次027：PointToClient/PointToScreen、RectangleToClient/RectangleToScreen按真实MapWindowPoints转换（矩形两点）；Capture查询/获取/转移/释放与MouseCaptureChanged，静态MouseButtons/MousePosition接原生状态。无/有句柄、负坐标、父子、释放与重建指定范围完成；RTL镜像/DPI/Wayland等完整语义与物理设备验收仍归父项。 |
 | ✅ | P1 / Control-13b | 批次027：标准Click/DoubleClick及鼠标事件共用Component.Events、对应虚On*、InvokeOnClick/RaiseMouseEvent/ResetMouseEventArgs；MouseEventArgs.Location/可继承、HandledMouseEventArgs与XButton1/2；五按钮/双击/有符号坐标/滚轮Handled及原生Enter/Hover/Leave跟踪。跟踪在虚WndProc之外，保留直接调用区别、重建pending-enter、有限销毁和Up后的捕获清理。范围限基础Control消息路径及上述契约；验证取消、所有派生路由与设备验收不计完成，原异常文本差异保留。 |
@@ -75,6 +77,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-16 · 批次028：补12a/12b及必要容器合作，54项新增核心/消费回归与全部4,343测试通过。固定参考30场景18同，JIT/AOT全部30同；11个额外WM_QUIT和1个SplitContainer继承投影差异原样保留。修复Form句柄恢复误激活，旧生命周期204行恢复严格全同。基础导航不等于自动转移、验证/键盘或物理设备验收；父项/完整Control不关闭，见[028](../batches/028.md)。
 
 - 2026-10-16 · 批次027：Control-13由全待办改部分，只关闭13a/13b明确代码范围；核心21例、消费25例通过。固定参考25场景20同/5差异，JIT/AOT24同/1异常文本差异；LockScreenBackstopFrame阻止10/20次命中，成功Click命中与物理输入待解锁后验证。Control-12已有Enter/Leave/On*和局部焦点接入，纠正全待办但不关闭完整焦点/键盘。生命周期204、消息绘制558行参考/JIT回归同；旧AOT边界保留，见[027](../batches/027.md)。
 

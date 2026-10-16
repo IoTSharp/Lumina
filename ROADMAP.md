@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～026的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [026结果](docs/roadmap/batches/026.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码，设备不可用时单列未验证范围；完整专项目标完成后结束，暂停巡检不恢复。✅代码完成和🧪兼容验收分开，未完父项保持部分；每批按真实代码/必要检查整理当前与历史状态、重生成索引。固定分母/未完ID保留，不能由签名/基类/局部探针或测试数量得出整控件完成/98%。
+**001～028的明确子范围代码完成；Control整类型专项继续推进。** [当前记录](HANDOFF.md) · [028结果](docs/roadmap/batches/028.md) · [完整任务索引](docs/roadmap/tasks.csv)。Control专项须取得Windows实际验收证据，并完成Linux/macOS对应代码；设备缺失单列未验证范围，暂停巡检不恢复。✅代码完成和🧪兼容验收分开，未完父项保持部分；每批按真实代码/必要检查整理当前与历史状态、重生成索引。固定分母/未完ID保留，不能由签名/基类/局部探针或测试数量得出整控件完成/98%。本次纠正总标题仍停留026而正文已记027的历史滞后。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 用真实WinForms并保留VS设计器；`net10.0` 用Lumina.Forms并保持AOT。静态UI仍由 `.Designer.cs` / `.resx` 管理。
 
-批次027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪及五处必要消费者共享Click子范围。4,289测试（新增21+25）通过，双目标Release 0错误/645警告；25共同场景549行、固定参考20同/5差异，JIT/实际AOT24同/1异常文本差异，所有进程exit0。锁屏导致参考10、JIT/AOT20次WindowFromPoint命中失败，成功命中与物理点击未验收。生命周期204及消息绘制558行参考/JIT回归全同。输入探针/Demo AOT为3,107,840/4,298,752字节且CLR目录0；Demo原生窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0/原HWND全失效，无强制清理。13项目/17目标仅.NET10、官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API已重导出但固定1,095类型/61,240行/187页及运行unverified不变。完整Control/派生输入/键盘验证/资源Designer/平台和旧差异仍未关闭。下一批沿Control-12焦点、选择导航与必要容器链推进，见[验证记录](docs/roadmap/validation.md)、[027](docs/roadmap/batches/027.md)和[028](docs/roadmap/batches/028.md)。
+批次028完成Control-12a基础选择导航、12b标准焦点通知、ContainerControl-02a逻辑活动链、Form-08a必要激活及TextBox-003a通知去重。4,343测试（新增28+26）全通过，双目标Release 0错误/646警告。30场景JIT/实际AOT全同，对固定10.0.11参考18同/12差异：11场景关闭后多出WM_QUIT，另1场景为SplitContainer继承链导致的活动容器投影差异；严格driver exit1保留。旧Focus157/父子集合391/句柄生命周期204行参考JIT全同。探针/Demo AOT为3,119,616/4,305,920字节，CLR目录0；Demo窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0且原HWND全部销毁。13项目/17目标仅.NET10，官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API重新导出且1,095类型/61,240行/187页与运行unverified不变。自动焦点转移/完整派生导航、验证/键盘/IME、物理输入、Designer/资源与GTK4/AppKit仍未完成。下一批[029](docs/roadmap/batches/029.md)沿自动焦点转移及验证前置推进，保留关闭多余WM_QUIT与派生容器继承依赖；见[验证记录](docs/roadmap/validation.md)和[028](docs/roadmap/batches/028.md)。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)

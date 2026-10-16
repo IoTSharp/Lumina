@@ -291,15 +291,6 @@ public class TextBox : Control
     /// <inheritdoc />
     protected override bool HandleWindowMessage(uint message, nint wParam, nint lParam, out nint result)
     {
-        if (message == Win32.WM_SETFOCUS)
-        {
-            OnEnter(EventArgs.Empty);
-        }
-        else if (message == Win32.WM_KILLFOCUS)
-        {
-            OnLeave(EventArgs.Empty);
-        }
-
         if (message is Win32.WM_KEYUP or Win32.WM_LBUTTONUP)
         {
             _ = UpdateSelectionFromHandle();

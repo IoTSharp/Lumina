@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-10-16。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在API附件。批次[001～027](batches/027.md)的明确子范围代码完成；完整Control专项接续[028焦点与选择导航](batches/028.md)，继续取得Windows实际验收并完成Linux/macOS对应代码。017后停止原实施轮次是历史边界，不能当作当前Control专项已停止；无关控件循环和暂停巡检仍不恢复。父任务、设计器资源和三平台整控件验收保持未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-10-16。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含独立任务、三平台原生方案、真实修改历史；精确属性/事件/方法和继承成员在API附件。批次[001～028](batches/028.md)的明确子范围代码完成；完整Control专项接续[029自动焦点转移与验证前置](batches/029.md)，继续取得Windows实际验收并完成Linux/macOS对应代码。017后停止原实施轮次是历史边界，不能当作当前Control专项已停止；无关控件循环和暂停巡检仍不恢复。父任务、设计器资源和三平台整控件验收保持未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -14,15 +14,15 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-13a、Control-13b、Control-14a、Control-14b、Control-17a、Control-17b；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-12a、Control-12b、Control-13a、Control-13b、Control-14a、Control-14b、Control-17a、Control-17b；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-08a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | 🟡 存在 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ WindowsFormsSynchronizationContext-01a、WindowsFormsSynchronizationContext-01b、WindowsFormsSynchronizationContext-06a；其余任务未完成 |
 | [ScrollableControl](controls/ScrollableControl.md) | M1 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ScrollableControl-01a；其余任务未完成 |
-| [ContainerControl](controls/ContainerControl.md) | M1 | 🟡 存在 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ContainerControl-01；其余任务未完成 |
+| [ContainerControl](controls/ContainerControl.md) | M1 | 🟡 存在 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ContainerControl-01、ContainerControl-02a；其余任务未完成 |
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-10a、Form-10b、Form-16a、Form-16b、Form-16c；其余任务未完成 |
+| [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-08a、Form-10a、Form-10b、Form-16a、Form-16b、Form-16c；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -38,7 +38,7 @@
 | [RadioButton](controls/RadioButton.md) | M2 | 🟡 存在 | 103 / 77 / 75 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RadioButton-003a；其余任务未完成 |
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
-| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-010a；其余任务未完成 |
+| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-003a、TextBox-010a；其余任务未完成 |
 | [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
