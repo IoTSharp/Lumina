@@ -1,6 +1,6 @@
 # ContainerControl
 
-🟡 **当前状态：**018～028范围保留；029完成02b标准移除候选及03a基础AutoValidate/Validate/ValidateChildren状态机。程序选择取消、重入/异常与批量后代顺序已有证据；点击提交、真实键鼠、全部派生/缩放/滚动和平台仍未完成。
+🟡 **当前状态：**018～030范围保留；029完成02b标准移除候选及03a基础AutoValidate/Validate/ValidateChildren状态机；031完成05a AutoScaleFactor 和06a ParentForm首范围。程序选择取消、重入/异常与批量后代顺序已有证据；点击提交、真实键鼠、完整嵌套缩放/BindingContext/键盘路由、全部派生和平台仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -20,8 +20,10 @@
 | 🟡 | P0 / ContainerControl-03 | 029完成03a基础验证状态机及批量遍历；CausesValidation、取消/重入/异常和两种enable策略有对照。原生点击提交抑制、全部派生默认/标准继承、Form自身声明元数据及完整输入协作仍缺，不以程序探针关闭全验证任务。 |
 | ✅ | P0 / ContainerControl-03a | 批次029：标准AutoValidate枚举/继承/AmbientValue/Changed、Validate两重载和ValidateChildren两重载实现。保存最深待验证路径，在Enter前验证至共同祖先；Prevent恢复原活动链，Allow仍如实返回验证失败；Disable/显式验证/重入finally/原异常保留。批量默认Selectable按style筛选、后代先行、取消不中断兄弟；普通容器style及TabControl递归消费完成限定范围。 |
 | 🟡 | P1 / ContainerControl-04 | 028程序Select/Focus/原生焦点顺序保留；029补Validating/Validated、取消后活动链与原生焦点、重入/异常对照。物理鼠标/Tab、输入提交及完整派生仍待实现/验收；关闭多余LostFocus单列，不能归一化。 |
-| 🟡 | P1 / ContainerControl-05 | 018已迁入既有AutoScaleMode/Dimensions/CurrentDimensions/PerformAutoScale，保留实际递归缩放及既有测试。AutoScaleFactor、完整嵌套继承/字体/DPI切换和重复缩放仍缺，不以迁移旧算法宣称完整兼容。 |
-| ⬜ | P1 / ContainerControl-06 | 补 ParentForm、BindingContext 传播、ProcessDialogKey/ProcessMnemonic 等派生扩展点；Enter/Escape、助记键和容器内部导航保持标准语义。 |
+| 🟡 | P1 / ContainerControl-05 | 018已迁入既有AutoScaleMode/Dimensions/CurrentDimensions/PerformAutoScale，031补05a受保护AutoScaleFactor。完整嵌套继承/字体/DPI切换和重复缩放仍缺，不以迁移旧算法或比例属性宣称完整兼容。 |
+| ✅ | P1 / ContainerControl-05a | 批次031：受保护 `AutoScaleFactor` 按当前/设计尺寸返回双轴比例，设计基线或单轴缺失时返回中性1.0；不关闭完整字体/DPI/嵌套缩放。 |
+| 🟡 | P1 / ContainerControl-06 | 031完成06a ParentForm动态父级链解析；BindingContext传播、ProcessDialogKey/ProcessMnemonic、Enter/Escape/助记键和容器内部导航仍缺。 |
+| ✅ | P1 / ContainerControl-06a | 批次031：标准 `ParentForm` 按当前父级链动态解析，重新挂载或脱离后立即反映宿主；不冒称BindingContext或键盘路由已完成。 |
 | 🟡 | P1 / ContainerControl-07 | 029指定禁用/隐藏当前或祖先、移除/销毁与嵌套候选、异常验证已有Windows程序探针及AOT证据。自定义UserControl标准继承、混用缩放、全部派生与设备行为仍未完成。 |
 | 🟡 | P2 / ContainerControl-08 | 018～028的原生容器入口保留；029接入自动导航和程序验证。IsDialogMessage/键盘、点击取消消费、完整原生焦点生命周期及关闭多余LostFocus仍待实现。 |
 | ⬜ | P2 / ContainerControl-09 | Linux 用 GtkFixed/GtkBox 原生容器与 GtkEventControllerFocus；兼容层决定验证是否允许转移，再映射 GtkWidget focus；Gtk 自身 focus chain 不等于 ActiveControl。 |
@@ -41,6 +43,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-26 · 批次031：补05a AutoScaleFactor和06a ParentForm的明确代码子范围；完整嵌套缩放、绑定、键盘和平台仍待，见[031](../batches/031.md)。
 
 - 2026-10-17 · 批次029：完成02b/03a有限子范围，将03/07由全待办改部分；移除后恢复可见树创建以维持旧父子集合行为。验证状态机按固定10.0.11源码适配，未将有限验证等同全容器或全部派生兼容，见[029](../batches/029.md)。
 

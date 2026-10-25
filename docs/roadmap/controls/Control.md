@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～028明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件并接入容器验证状态机；030完成12e基础KeyDown/KeyPress/KeyUp消息与事件契约。关闭多余LostFocus/WM_QUIT、PreviewKeyDown/命令路由/IME/全部派生输入、绘制/资源、ambient/RTL/Cursor、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[030](../batches/030.md)。
+🟡 **当前状态：**002～030明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件并接入容器验证状态机；030完成12e基础KeyDown/KeyPress/KeyUp消息与事件契约；031完成11c右到左托管继承、Win32 RTL扩展样式和AutoScrollOffset基础契约。关闭多余LostFocus/WM_QUIT、PreviewKeyDown/命令路由/IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[031](../batches/031.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -47,9 +47,10 @@
 | ✅ | P1 / Control-10b | 批次020完成基础非virtual SuspendLayout/ResumeLayout/PerformLayout入口、protected OnLayout及标准参数/委托、嵌套延期/缓存/重入/原异常及必要属性/父子事务。020原394行JIT/AOT同、参考7行差异保留为历史；021同源394行参考/JIT全同。本子项只计事务状态与调用契约，引擎/缓存由10c补齐。 |
 | ✅ | P1 / Control-10c | 批次021：标准Layout.LayoutEngine及Control.LayoutEngine扩展真实参与布局；OnLayout先事件再引擎，返回true请求父PreferredSize布局；InitLayout、ResumeLayout(false)、子项边界/属性/集合变更协调初始化及首选缓存。自定义引擎调用/返回/异常、默认引擎、缓存与指定边界有512行对照及13项核心回归。非Control arranged对象、复杂缓存共享重入和完整设计器往返另列，不以标准基类默认无几何策略代替实际DefaultLayout。 |
 | ✅ | P1 / Control-10a | 批次 011：标准 LocationChanged/Move、SizeChanged/Resize 与四个 protected virtual On* 已接入七属性/两族 SetBounds/直接 core；重复、指定/未知位、零负尺寸、覆盖/不调 base、重入/原异常和参数轨迹共 2,280 条固定参考/JIT/实际 AOT 相同，99 项新增回归通过。OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数；旧OnBoundsChanged独立保留。基础ClientSizeChanged/客户区见已完成09a，外部原生自主移动/尺寸通知、完整Layout及全部派生约束仍缺。 |
-| 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承；023实现基础ControlStyles及透明背景调用首范围。Application默认字体/Site/ActiveX ambient、RightToLeft/Cursor、可见透明合成、全部事件与完整native文本同步仍缺；主题默认值与WinForms视觉差异保留，不随子范围关闭。 |
+| 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承；023实现基础ControlStyles及透明背景调用首范围；031补11c RightToLeft托管继承、Win32 RTL扩展样式和AutoScrollOffset基础契约。Application默认字体/Site/ActiveX ambient、Cursor、可见透明合成、全部事件与完整native文本同步仍缺；主题默认值、RTL镜像/DPI和WinForms视觉差异保留，不随子范围关闭。 |
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
+| ✅ | P1 / Control-11c | 批次031：标准 `RightToLeft` 枚举、属性、Reset/ShouldSerialize、事件槽和父级继承通知；有效值接入 `WS_EX_LAYOUTRTL`/`WS_EX_RTLREADING`，显式 No 使用 `WS_EX_NOINHERITLAYOUT`，句柄创建/重建保持一致；补齐标准 `AutoScrollOffset` 供滚动容器消费。完整 Cursor、RTL镜像/DPI、ambient/Designer及全部派生控件仍归11父项。 |
 | 🟡 | P1 / Control-12 | 028完成12a基础导航/12b焦点事件；029完成12c自动转移和12d验证前置，030完成12e基础键消息/事件契约，ContainerControl-03a负责程序选择及显式验证取消。全部派生/ToolStripControlHost、取消验证后的点击提交抑制、真实Tab/助记键/键盘预处理/默认按钮/IME仍缺；完整焦点输入不关闭。 |
 | ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
 | ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |

@@ -5,11 +5,17 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；路线图审阅、构建基线和 Control 键盘切片由互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`，本轮开始时 HEAD/origin/main 为 `4b6489f50271537fd42f9a691c1e8032b044c1a4` 且干净。当前未提交改动属于批次030：`Lumina.Forms/Control.cs`、`Lumina.Forms/KeyEventArgs.cs`、`Lumina.Tests/ControlKeyboardEventsTests.cs` 及本批路线图、验证、交接和变更记录；另含一处批次025历史忽略证据链接说明修正，未改变历史结果。
-- 当前实施批次：[030](docs/roadmap/batches/030.md)。FND-019/Control-12e基础KeyDown/KeyPress/KeyUp参数、委托、事件槽和五类Windows键消息分派已完成；4,397项全线测试、Forms双目标Release构建和5项过滤回归通过。完整键盘预处理、PreviewKeyDown、KeyPreview、命令/对话框路由、IME、真实设备、AOT、Designer和跨平台仍为UNKNOWN/NOT_RUN。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次031：Control/ScrollableControl/ContainerControl/UserControl基础与继承链代码、六组新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
+- 当前实施批次：[031](docs/roadmap/batches/031.md)。本批完成Control-11c/FND-013 RightToLeft托管继承与Win32 RTL样式、ScrollableControl-02a～06a托管滚动与受保护契约、ContainerControl-05a/06a AutoScaleFactor/ParentForm、UserControl-01a/02a标准ContainerControl继承；4,419项全线测试、Forms双目标Release构建和路线图校验通过。完整Cursor、真实滚动条消息、BindingContext/键盘路由、Load/Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次030的FND-019/Control-12e基础键消息首范围保留。
 - 忽略的 `bin/`、`obj/` 是本批有界还原/构建生成的验证产物，保留供继续复核，不纳入 Git。实现提交 `8211ec6161cc32f740a8ccd4c7d37951ad4fdbeb` 与交接提交 `33b1c2c6bc094c285fc926743389f2f7e53ff30b` 均已推送；最终 HEAD、tracking 分支和实际远端 ref 三者一致，工作区干净。
 - 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
 
+## 批次031 新增接续记录
+
+- 并行子任务已停止写入：`control_inheritance`完成Control-11c/FND-013托管与Win32 RTL样式；`scrollable_foundation`完成ScrollableControl-02a～05a托管滚动；`container_chain`完成ContainerControl-05a/06a；第二轮完成ScrollableControl-06a受保护契约、`usercontrol_chain`完成UserControl-01a/02a、`rtl_native_bridge`完成RightToLeft原生桥接。主会话复核并修正 `AutoScroll` virtual/`AutoScrollOffset` 标准契约和滚动内容范围逻辑。
+- 验证：Release方案构建0错误；`Lumina.Tests`全量4,419/4,419通过；本批六组新增测试22/22通过；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git -c core.whitespace=cr-at-eol diff --check`通过。既有警告保留。
+- 未运行：Native AOT发布/运行、真实Designer往返、物理设备、完整滚动条消息、Cursor/完整ambient、Linux/macOS、生产/现场。所有父任务和跨平台门禁保持部分或待办，不宣称98%。
+- 待提交状态：实现与共享文档尚未提交/推送；主会话负责只暂存本批拥有路径，完成 commit/push 后回读 HEAD、tracking 分支与实际远端 ref，并更新本段 SHA。
 ## 历史029停止记录
 
 - 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。
@@ -23,7 +29,7 @@
 - 021历史接管归属：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main与实际远端refs/heads/main均为已推送交接SHA `c9f4f2880429e648f81e7fbbf487a611547c82d3`。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`及020三个内部子任务已停止写入/构建/Git；旧主只读确认实际接管后立即归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
 - 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
 - 当前范围：029有限自动焦点转移/程序验证、必要消费者及全部文档收尾；不是整Control完成。实现、测试与AOT结果见[029](docs/roadmap/batches/029.md)，按用户指示本批后停止。
-- 当前实施批次：[029](docs/roadmap/batches/029.md)限定范围代码完成，4,392测试通过；最终严格参考和JIT/AOT关闭通知差异仍保留。本批实现已提交并成功推送`4dd229ee106eec28eed33571752e1e9139fee0b6`，核验HEAD/origin/main/实际远端一致且工作区干净；按用户指示停止，无下一批归属交接。自动化luminaforms保持PAUSED。
+- 当前实施批次：[029](docs/roadmap/batches/029.md)限定范围代码完成，4,392测试通过；按用户指示本批后停止，无下一批归属交接。
 - 028历史完成批次：028实现与路线图收尾`496e632d13e7e4f26dcb649093e69d589c9128d0`已成功push，HEAD/origin/main/实际远端refs/heads/main一致且干净，见artifacts/compatibility-batch028/implementation-push.json。本独立交接另行commit/push并记录handoff-push.json，029按开始消息的交接SHA核验后接管，本地commit不算完成。027实现c87c52849e19098c02dc00898c9960424abf21da及独立交接ab5a23866774d0adc9bae17b20fd5e5b9ab63939保留。
 - 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
 - 019证据：最终4,027测试全部通过、双目标Release 0错误/428警告；生命周期16场景/204行固定10.0.11参考/JIT/实际AOT严格全同，最终run为`20261016-021319-9490794`。父子集合391行参考/JIT全同，018隐藏重挂的中间VisibleChanged缺口已修复；集合AOT仍有32行非零下界数组fixture明确CopyTo未运行，其余359行同JIT，严格失败保留。16个旧Control/context驱动全通过。Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全部失效；生命周期EXE4,115,456字节、Demo4,156,928字节，CLR目录均0。原始失败/警告/路径见`artifacts/compatibility-batch019/evidence.json`，不由这些记录宣称整Control/98%。

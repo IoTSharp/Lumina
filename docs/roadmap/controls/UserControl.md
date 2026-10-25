@@ -1,6 +1,6 @@
 # UserControl
 
-🟡 **当前状态：**已有 STATIC 容器和 AutoScaleMode/AutoScaleDimensions 存值；缺标准 ContainerControl 继承和完整 Load/验证/活动控件语义。
+🟡 **当前状态：**031已将 UserControl 接入标准 ContainerControl 继承链，移除重复 AutoScale 存值属性并保留 STATIC 容器/主题；完整 Load、BorderStyle、设计器、验证/键盘、AOT 与平台语义仍缺。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -13,8 +13,10 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ⬜ | P0 / UserControl-01 | 改为标准 UserControl : ContainerControl；保留消费者无参构造、partial + InitializeComponent 和 IDisposable/Component 容器模式。 |
-| ⬜ | P0 / UserControl-02 | 补齐 AutoSize/AutoSizeMode、AutoScaleMode、AutoScaleDimensions、ActiveControl、AutoValidate、BorderStyle；默认值与 DesignerSerializationVisibility 取固定基线。 |
+| 🟡 | P0 / UserControl-01 | 031完成01a标准 `UserControl : ContainerControl`、STATIC子窗口和释放链；partial/InitializeComponent、完整Designer/resx和全部生命周期仍待。 |
+| ✅ | P0 / UserControl-01a | 批次031：UserControl改为标准ContainerControl派生，保留无参构造、STATIC类名/子窗口样式、主题应用和Component/IDisposable链。 |
+| 🟡 | P0 / UserControl-02 | 031完成02a直接继承ContainerControl的AutoScaleMode/AutoScaleDimensions、ActiveControl、AutoValidate首范围；AutoSize/AutoSizeMode、BorderStyle、默认元数据和DesignerSerializationVisibility仍待。 |
+| ✅ | P0 / UserControl-02a | 批次031：移除重复AutoScale存值属性，UserControl直接消费ContainerControl的ActiveControl/AutoValidate/AutoScale契约；不关闭完整默认值和设计器语义。 |
 | ⬜ | P0 / UserControl-03 | 实现 Load 在第一次展示/句柄生命周期的真实触发边界；对照 HandleCreated/ParentChanged/VisibleChanged/Load，避免每次 Visible=true 重复 Load。 |
 | ⬜ | P1 / UserControl-04 | 实现 GetPreferredSize、MinimumSize/MaximumSize、嵌套 Dock/Anchor、AutoSize 容器反馈；处理用户派生控件覆盖受保护方法的调用顺序。 |
 | ⬜ | P1 / UserControl-05 | 验证 Tab/Shift+Tab、助记键、Enter/Escape、Validating 取消以及将焦点设为内部子控件；活动链应穿透嵌套 UserControl。 |
@@ -38,6 +40,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-26 · 批次031：完成01a标准ContainerControl继承和02a共享容器属性首范围；Load、BorderStyle、Designer/resx、键盘/验证和平台仍待，见[031](../batches/031.md)。
 
 - `70a08e7`（2026-04-09）：加入 UserControl 自动缩放相关属性。
 - `b8a98eb`（2026-04-09）：加入 UserControl 与资源/主题管理支持。

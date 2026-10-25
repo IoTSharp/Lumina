@@ -506,6 +506,14 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 
 ## 批次030 · 2026-10-26 基础键消息与事件契约
 
-批次030完成FND-019/Control-12e首范围：新增 `KeyEventArgs`、`KeyPressEventArgs`、标准键事件委托，Control事件槽与On*，并分派 `WM_KEYDOWN`、`WM_SYSKEYDOWN`、`WM_CHAR`、`WM_KEYUP`、`WM_SYSKEYUP`。`dotnet restore Lumina.slnx`、`dotnet build Lumina.slnx -c Release --no-restore` 及 `dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-restore` 均通过；全线测试4,397/4,397，Forms构建0错误，现有分析器/XML/平台警告保留；新增过滤测试5/5，`git diff --check`通过。
+批次030完成FND-019/Control-12e首范围：新增 `KeyEventArgs`、`KeyPressEventArgs`、标准键事件委托，Control事件槽与On*，并分派 `WM_KEYDOWN`、`WM_SYSKEYDOWN`、`WM_CHAR`、`WM_KEYUP`、`WM_SYSKEYUP`。`dotnet restore Lumina.slnx`、`dotnet build Lumina.slnx -c Release --no-restore` 及 `dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-restore` 均通过；全线测试4,397/4,397，Forms构建0错误，现有分析器/XML/平台警告保留；新增过滤测试5/5，`git -c core.whitespace=cr-at-eol diff --check`通过。
 
 首次不还原直接构建因四个项目缺少 `project.assets.json` 失败，按CI顺序补还原后恢复；这属于工作区依赖准备，不是键盘代码失败。未运行完整Native AOT/真实设备/IME/Designer往返/Linux/macOS/生产验证；PreviewKeyDown、命令/对话框预处理、KeyPreview及完整Tab/助记键路由仍是UNKNOWN/NOT_RUN，不由局部消息注入或测试数量推出完整FND-019、整Control或98%。详见[030](batches/030.md)。
+
+## 批次031 · 2026-10-26 基础与继承链首轮收口
+
+批次031完成四组明确代码子范围：Control-11c/FND-013 的 RightToLeft 托管继承、Win32 RTL 扩展样式和 AutoScrollOffset；ScrollableControl-02a～06a 的 AutoScroll/内容范围/正设负读/ScrollProperties/Scroll 事件/ScrollControlIntoView/受保护状态契约；ContainerControl-05a/06a 的 AutoScaleFactor 与 ParentForm；UserControl-01a/02a 的标准 ContainerControl 继承和共享缩放/验证属性。完整父任务、真实滚动条消息、Cursor、BindingContext/键盘路由、Load/Designer、Native AOT、设备及 GTK4/AppKit 仍未关闭。
+
+`dotnet build Lumina.slnx -c Release --no-restore --nologo`：PASS，0 错误；`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build --no-restore --nologo`：PASS，4,419/4,419；六组新增回归合计22/22 PASS；`Validate-Roadmap.ps1 -ExportTasks`：PASS，2,107项正文/共享任务、0结构错误；`git -c core.whitespace=cr-at-eol diff --check`：PASS。原有 XML/分析器、平台、NU1510/CA1416 警告继续保留。
+
+未运行 Native AOT 发布/运行、VS Designer 往返、物理输入、Win32 `WM_HSCROLL`/`WM_VSCROLL`/SCROLLINFO、Linux/macOS、生产或现场验证；这些门禁保持 UNKNOWN/NOT_RUN，不由构建、回归测试或任务数量推导98%。详见[031](batches/031.md)。

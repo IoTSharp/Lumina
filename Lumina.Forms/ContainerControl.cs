@@ -48,6 +48,19 @@ public class ContainerControl : ScrollableControl, IContainerControl
     }
 
     /// <summary>
+    /// Gets the form that owns this container through its parent chain.
+    /// </summary>
+    /// <remarks>
+    /// The value is resolved from the current parent chain each time it is
+    /// read. This keeps the standard WinForms behavior when a container is
+    /// detached and attached to another form without requiring a cached
+    /// ownership field to be synchronized by every collection operation.
+    /// </remarks>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Form? ParentForm => FindForm();
+
+    /// <summary>
     /// Gets or sets the automatic validation policy used before focus leaves this container.
     /// </summary>
     [Browsable(false)]
@@ -124,6 +137,33 @@ public class ContainerControl : ScrollableControl, IContainerControl
         AutoScaleMode.Font => Win32.GetDefaultFontScaleDimensions(),
         _ => SizeF.Empty,
     };
+
+    /// <summary>
+    /// Gets the ratio between the current and design-time automatic scaling
+    /// dimensions.
+    /// </summary>
+    /// <remarks>
+    /// A container without a usable design-time baseline has no meaningful
+    /// ratio. WinForms exposes a neutral factor in that state, so callers can
+    /// safely use the value while a form is being constructed or before its
+    /// designer metadata has been applied.
+    /// </remarks>
+    [Browsable(false)]
+    protected SizeF AutoScaleFactor
+    {
+        get
+        {
+            SizeF current = CurrentAutoScaleDimensions;
+            SizeF design = AutoScaleDimensions;
+            float width = current.Width > 0f && design.Width > 0f
+                ? current.Width / design.Width
+                : 1f;
+            float height = current.Height > 0f && design.Height > 0f
+                ? current.Height / design.Height
+                : 1f;
+            return new SizeF(width, height);
+        }
+    }
 
     /// <inheritdoc />
     protected override uint ExStyle => base.ExStyle | Win32.WS_EX_CONTROLPARENT;

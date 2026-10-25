@@ -49,6 +49,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly object s_keyDownEvent = new();
     private static readonly object s_keyPressEvent = new();
     private static readonly object s_keyUpEvent = new();
+    private static readonly object s_rightToLeftChangedEvent = new();
     private static readonly Lazy<uint> s_mouseEnterMessage = new(static () =>
     {
         uint message = Win32.RegisterWindowMessageW("Lumina.Forms.MouseEnter");
@@ -70,6 +71,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _disposed;
     private bool _disposing;
     private bool _autoScroll;
+    private Point _autoScrollOffset;
     private bool _autoEllipsis;
     private AutoSizeMode _autoSizeMode;
     private Padding _padding;
@@ -78,6 +80,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private AnchorStyles _anchor = AnchorStyles.Top | AnchorStyles.Left;
     private Color _backColor = Color.Empty;
     private Color _foreColor = Color.Empty;
+    private RightToLeft _rightToLeft = RightToLeft.Inherit;
     private Image? _backgroundImage;
     private ImageLayout _backgroundImageLayout = ImageLayout.Tile;
     private Font? _font;
@@ -130,6 +133,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private const int WmCharMessage = 0x0102;
     private const int WmSysKeyUp = 0x0105;
+    // WS_EX_LAYOUTRTL mirrors child layout and WS_EX_RTLREADING selects the
+    // right-to-left reading order for native controls. Keep these private so
+    // the public surface continues to use the standard RightToLeft property.
+    private const uint WsExLayoutRtl = 0x00400000;
+    private const uint WsExRtlReading = 0x00002000;
+    private const uint WsExNoInheritLayout = 0x00100000;
+    private const uint RightToLeftExStyleMask = WsExLayoutRtl | WsExRtlReading | WsExNoInheritLayout;
 
     internal bool CachePreferredSize { get; set; }
     internal bool ParticipatesInLayout => _visible;
@@ -476,10 +486,22 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         return proposedSize;
     }
 
-    public bool AutoScroll
+    public virtual bool AutoScroll
     {
         get => _autoScroll;
         set => _autoScroll = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the offset used when this control is brought into view by
+    /// a parent <see cref="ScrollableControl"/>.
+    /// </summary>
+    [Browsable(false)]
+    [DefaultValue(typeof(Point), "0, 0")]
+    public virtual Point AutoScrollOffset
+    {
+        get => _autoScrollOffset;
+        set => _autoScrollOffset = value;
     }
 
     public bool AutoEllipsis
@@ -1025,6 +1047,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     public event EventHandler? ForeColorChanged;
 
     /// <summary>
+    /// Occurs when the effective right-to-left layout value changes.
+    /// </summary>
+    [Category("PropertyChanged")]
+    public event EventHandler? RightToLeftChanged
+    {
+        add => Events.AddHandler(s_rightToLeftChangedEvent, value);
+        remove => Events.RemoveHandler(s_rightToLeftChangedEvent, value);
+    }
+
+    /// <summary>
     /// Occurs when the font changes.
     /// </summary>
     public event EventHandler? FontChanged;
@@ -1300,6 +1332,42 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual void ResetForeColor() => ForeColor = Color.Empty;
+
+    /// <summary>
+    /// Gets or sets whether the control uses right-to-left layout.
+    /// </summary>
+    [Category("Appearance")]
+    [Localizable(true)]
+    [AmbientValue(RightToLeft.Inherit)]
+    public virtual RightToLeft RightToLeft
+    {
+        get => _rightToLeft;
+        set
+        {
+            if ((uint)value > (uint)RightToLeft.Yes)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(RightToLeft));
+            }
+
+            if (_rightToLeft == value) { return; }
+
+            bool previousRenderValue = RenderRightToLeft;
+            _rightToLeft = value;
+            if (previousRenderValue != RenderRightToLeft)
+            {
+                OnRightToLeftChanged(EventArgs.Empty);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Restores the inherited right-to-left layout value.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void ResetRightToLeft() => RightToLeft = RightToLeft.Inherit;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal virtual bool ShouldSerializeRightToLeft() => _rightToLeft != RightToLeft.Inherit;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual bool ShouldSerializeBackColor() => !_backColor.IsEmpty;
@@ -1641,7 +1709,19 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             if (!Enabled) { style |= Win32.WS_DISABLED; }
             if (TabStop) { style |= Win32.WS_TABSTOP; }
             parameters.Style = unchecked((int)style);
-            parameters.ExStyle = unchecked((int)ExStyle);
+            uint extendedStyle = ExStyle & ~RightToLeftExStyleMask;
+            if (RenderRightToLeft)
+            {
+                extendedStyle |= WsExLayoutRtl | WsExRtlReading;
+            }
+            else if (_rightToLeft == RightToLeft.No && _parent?.RenderRightToLeft == true)
+            {
+                // WS_EX_LAYOUTRTL is inherited by child windows. An explicit
+                // RightToLeft.No must opt out so it remains stable after
+                // handle creation and recreation under an RTL parent.
+                extendedStyle |= WsExNoInheritLayout;
+            }
+            parameters.ExStyle = unchecked((int)extendedStyle);
             if (GetStyle(ControlStyles.ContainerControl)) { parameters.ExStyle |= (int)Win32.WS_EX_CONTROLPARENT; }
             parameters.ClassStyle = (int)Win32.CS_DBLCLKS;
             parameters.Parent = _topLevel ? 0 : _parent?.NativeHandle ?? 0;
@@ -1696,6 +1776,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
         OnStyleChanged(EventArgs.Empty);
     }
+
+    /// <summary>
+    /// Gets the effective right-to-left layout value used by native and custom
+    /// rendering. An inherited value follows the nearest parent that supplies
+    /// an explicit setting.
+    /// </summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual bool RenderRightToLeft
+        => _rightToLeft == RightToLeft.Yes
+            || (_rightToLeft == RightToLeft.Inherit && _parent?.RenderRightToLeft == true);
 
     /// <summary>
     /// Gets a value indicating whether this control should materialize a native child window.
@@ -2761,6 +2852,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             _ = Win32.EnableWindow(_handle, Enabled);
             UpdateChildZOrder();
             ApplyTheme();
+            // A child created under an RTL parent can receive the parent's
+            // layout bit from USER32 even when its CreateParams explicitly
+            // requested RightToLeft.No. Reapply the managed extended style
+            // after creation so the explicit override survives recreation.
+            if (RenderRightToLeft || (_rightToLeft == RightToLeft.No && _parent?.RenderRightToLeft == true))
+            {
+                UpdateStyles();
+            }
             NotifyNativeHandleCreated();
             if ((style & Win32.WS_VISIBLE) != 0 && _handle != 0) { _ = Win32.ShowWindow(_handle, Win32.SW_SHOW); }
         }
@@ -3793,6 +3892,33 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     protected virtual void OnParentChanged(EventArgs e) => ParentChanged?.Invoke(this, e);
 
+    /// <summary>
+    /// Raises <see cref="RightToLeftChanged"/> and propagates the ambient
+    /// change to descendants that inherit their value.
+    /// </summary>
+    protected virtual void OnRightToLeftChanged(EventArgs e)
+    {
+        if (GetAnyDisposingInHierarchy()) { return; }
+        if (NativeHandle != 0) { UpdateStyles(); }
+        (Events[s_rightToLeftChangedEvent] as EventHandler)?.Invoke(this, e);
+        if (_controls is { } children)
+        {
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].OnParentRightToLeftChanged(e);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Raises the right-to-left notification for an inherited parent change.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnParentRightToLeftChanged(EventArgs e)
+    {
+        if (_rightToLeft == RightToLeft.Inherit) { OnRightToLeftChanged(e); }
+    }
+
     protected virtual void OnEnabledChanged(EventArgs e)
     {
         if (NativeHandle != 0) { _ = Win32.EnableWindow(NativeHandle, Enabled); }
@@ -3838,6 +3964,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         Font previousFont = Font;
         Color previousForeColor = ForeColor;
         Color previousBackColor = BackColor;
+        bool previousRenderRightToLeft = RenderRightToLeft;
         bool previousEnabled = Enabled;
         bool previousVisible = Visible;
         _parent = value;
@@ -3851,6 +3978,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (previousVisible != visible && !(!previousVisible && visible && _parent is null && !_topLevel))
         {
             OnVisibleChanged(EventArgs.Empty);
+        }
+        if (previousRenderRightToLeft != RenderRightToLeft)
+        {
+            OnRightToLeftChanged(EventArgs.Empty);
         }
         if (!previousFont.Equals(Font)) { OnFontChanged(EventArgs.Empty); }
         if (!previousForeColor.Equals(ForeColor)) { OnForeColorChanged(EventArgs.Empty); }

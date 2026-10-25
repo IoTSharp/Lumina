@@ -1,6 +1,6 @@
 # ScrollableControl
 
-🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；实现客户区DisplayRectangle；020移除独立暂停计数，布局由Control同一事务处理。Panel仍未迁入，AutoScroll状态/滚动条/坐标与平台滚动均未实现，不能把基类存在计为可滚动。 029补01b验证递归所需的标准容器style；完整滚动仍未完成。
+🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；020移除独立暂停计数，029补01b验证递归所需的标准容器style；031完成02a～06a的托管 AutoScroll、内容范围、正设负读位置、ScrollProperties/Scroll 事件、ScrollControlIntoView、受保护状态位与范围刷新首轮。Panel仍未迁入，真实 Win32 滚动条消息、SCROLLINFO、Tab/RTL 组合、平台滚动和完整 API/验收仍未完成，不能把本批代码子范围计为完整滚动。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -16,11 +16,16 @@
 | 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入；Panel仍用历史基类，完整Control受保护契约也仍待后续，不关闭父项。 |
 | ✅ | P0 / ScrollableControl-01a | 018建立标准ScrollableControl : Control，共享父子集合/客户区/释放，ContainerControl/Form复用；020统一事务，021补Visible时请求自身布局并清首选缓存，再调用base通知。仅继承/事务衔接完成，Panel迁移与任何完整滚动行为不在此范围。 |
 | ✅ | P0 / ScrollableControl-01b | 批次029：按固定ScrollableControl源码在构造设置ContainerControl style，使批量验证遍历其子孙；无HWND后代先行回归通过。仅该必要style及消费，其他默认style、滚动/全部派生仍归父项。 |
-| 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle。AutoScroll、AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties完整状态模型仍待实现。 |
-| ⬜ | P0 / ScrollableControl-03 | 明确 AutoScrollPosition 赋正值、读负偏移的 WinForms 约定；布局、滚动和子控件 Bounds 的逻辑/显示坐标分离，并验证重复滚动不累积误差。 |
-| ⬜ | P1 / ScrollableControl-04 | 实现 ScrollControlIntoView、ScrollToControl、SetAutoScrollMargin；隐藏、负坐标、Dock、Anchor、嵌套控件和超大内容的可滚动区域按基线计算。 |
-| ⬜ | P1 / ScrollableControl-05 | 实现 Scroll 事件的 ScrollEventType、OldValue/NewValue、ScrollOrientation；区分程序赋值、滚动条拖动、鼠标滚轮和触摸板导致的事件。 |
-| ⬜ | P1 / ScrollableControl-06 | 实现 OnScroll、AdjustFormScrollbars、SetDisplayRectLocation 等受保护兼容扩展点；不能只让内置 Panel 可用而阻断用户派生控件。 |
+| 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle；031完成02a的AutoScroll/AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties托管范围模型，真实滚动条与完整状态仍待父项。 |
+| ✅ | P0 / ScrollableControl-02a | 批次031：AutoScroll、AutoScrollMargin/MinSize/Position、DisplayRectangle内容范围、H/V ScrollProperties、子控件/尺寸/布局刷新和关闭重置完成；覆盖正值设置、负值读取和范围钳制。真实SCROLLINFO/WM_HSCROLL/WM_VSCROLL仍归02父项。 |
+| 🟡 | P0 / ScrollableControl-03 | 031完成03a正设负读和逻辑/显示坐标分离首范围；嵌套、Dock/Anchor、重复滚动、真实消息和全部派生组合仍待基线对照。 |
+| ✅ | P0 / ScrollableControl-03a | 批次031：AutoScrollPosition 正值设置/负值读取、DisplayRectangle负偏移、范围钳制与重复刷新首范围完成。 |
+| 🟡 | P1 / ScrollableControl-04 | 031完成04a的ScrollControlIntoView、ScrollToControl和SetAutoScrollMargin基础路径；隐藏、负坐标、Dock/Anchor、嵌套控件和完整大内容基线仍待。 |
+| ✅ | P1 / ScrollableControl-04a | 批次031：ScrollControlIntoView/ScrollToControl使用真实子树边界和AutoScrollOffset，SetAutoScrollMargin校验负值并刷新范围；复杂布局和真实滚动条仍归父项。 |
+| 🟡 | P1 / ScrollableControl-05 | 031完成05a程序设置的ScrollEventType/OldValue/NewValue/ScrollOrientation首范围；鼠标滚轮、触摸板、真实滚动条消息和事件聚合仍待。 |
+| ✅ | P1 / ScrollableControl-05a | 批次031：ScrollEventArgs/ScrollEventHandler及双轴程序滚动通知完成，记录旧值/新值和方向；设备消息路径未完成。 |
+| 🟡 | P1 / ScrollableControl-06 | 031完成06a OnScroll、AdjustFormScrollbars、SetDisplayRectLocation、状态位和H/V可见状态首范围；完整派生扩展与原生滚动条仍待。 |
+| ✅ | P1 / ScrollableControl-06a | 批次031：保护状态常量、Get/SetScrollState、HScroll/VScroll、AdjustFormScrollbars、SetDisplayRectLocation和范围刷新接线完成；不代表完整 ScrollableControl。 |
 | ⬜ | P1 / ScrollableControl-07 | 验证 Tab 自动滚动聚焦控件、RTL、水平方向、AutoScroll 关闭重置、尺寸变化滚动条互相挤占和布局重入。 |
 | ⬜ | P2 / ScrollableControl-08 | Windows 统一 SCROLLINFO 与 WM_HSCROLL/WM_VSCROLL，按行/页/thumb 路径转换；Handle 重建恢复位置，避免将 16 位消息 thumb 值当完整范围。 |
 | ⬜ | P2 / ScrollableControl-09 | Linux 使用 GtkScrolledWindow 的 adjustments 与原生滚动条；将调整值映射负 AutoScrollPosition，拦截平滑滚动时保留 WinForms 事件聚合规则。 |
@@ -40,6 +45,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-26 · 批次031：完成02a～06a托管滚动首范围，补正设负读、内容范围、ScrollProperties/事件、受保护状态位和滚动路径；真实Win32滚动条消息、Panel迁移、平台和完整验收仍待，见[031](../batches/031.md)。
 
 - 2026-10-17 · 批次029：完成01b必要验证容器style；标准构造位有固定源码依据，未扩大为完整滚动或默认样式验收，见[029](../batches/029.md)。
 
