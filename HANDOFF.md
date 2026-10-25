@@ -5,9 +5,9 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；路线图审阅、构建基线和 Control 键盘切片由互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次031：Control/ScrollableControl/ContainerControl/UserControl基础与继承链代码、六组新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
-- 当前实施批次：[031](docs/roadmap/batches/031.md)。本批完成Control-11c/FND-013 RightToLeft托管继承与Win32 RTL样式、ScrollableControl-02a～06a托管滚动与受保护契约、ContainerControl-05a/06a AutoScaleFactor/ParentForm、UserControl-01a/02a标准ContainerControl继承；4,419项全线测试、Forms双目标Release构建和路线图校验通过。完整Cursor、真实滚动条消息、BindingContext/键盘路由、Load/Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次030的FND-019/Control-12e基础键消息首范围保留。
-- 忽略的 `bin/`、`obj/` 是本批有界还原/构建生成的验证产物，保留供继续复核，不纳入 Git。实现提交 `8211ec6161cc32f740a8ccd4c7d37951ad4fdbeb` 与交接提交 `33b1c2c6bc094c285fc926743389f2f7e53ff30b` 均已推送；最终 HEAD、tracking 分支和实际远端 ref 三者一致，工作区干净。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次032：Panel/ScrollableControl/UserControl基础与Windows滚动消息代码、三组新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
+- 当前实施批次：[032](docs/roadmap/batches/032.md)。本批完成Panel-01b/02a标准ScrollableControl迁移与共享AutoScroll、UserControl-03a Load一次触发、ScrollableControl-08a Windows滚动消息/SCROLLINFO首范围；4,430项全线测试、Forms双目标Release构建和路线图校验通过。完整Panel属性、真实物理滚轮/触摸板、Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次031基础与继承链子范围保留。
+- 忽略的 `bin/`、`obj/` 是批次031/032有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c81515e7f5e5172ec5e7cb2f80fe42fd06d8d` 与交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f` 已推送并核验；批次032仍待本轮收口。
 - 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
 
 ## 批次031 新增接续记录
@@ -16,6 +16,12 @@
 - 验证：Release方案构建0错误；`Lumina.Tests`全量4,419/4,419通过；本批六组新增测试22/22通过；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git -c core.whitespace=cr-at-eol diff --check`通过。既有警告保留。
 - 未运行：Native AOT发布/运行、真实Designer往返、物理设备、完整滚动条消息、Cursor/完整ambient、Linux/macOS、生产/现场。所有父任务和跨平台门禁保持部分或待办，不宣称98%。
 - 批次031实现提交 `927c81515e7f5e5172ec5e7cb2f80fe42fd06d8d` 已成功推送；后续交接文档收口提交只修改本交接记录，主会话将在其后回读 HEAD、tracking 分支与实际远端 ref，保留完整验证证据。
+## 批次032 新增接续记录
+
+- 并行子任务已停止写入：`panel_scrollable_migration`完成Panel-01b/02a；`usercontrol_load`完成UserControl-03a；`scroll_win32_messages`完成ScrollableControl-08a。主会话修复AutoScroll=false下额外布局请求导致的SplitContainer事件回归。
+- 验证：Release方案构建0错误；`Lumina.Tests`全量4,430/4,430通过；本批三组新增测试11/11通过；路线图校验待本批文档生成后复跑；既有警告保留。
+- 未运行：Native AOT、真实物理滚轮/触摸板、Designer往返、Linux/macOS、生产/现场。Panel/ScrollableControl/UserControl和FND-016父任务继续部分或待办，不宣称98%。
+- 实现与共享文档尚未提交/推送；主会话负责只暂存本批拥有路径，完成 commit/push 后回读 HEAD、tracking 分支与实际远端 ref。
 ## 历史029停止记录
 
 - 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。

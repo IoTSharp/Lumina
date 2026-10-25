@@ -1,6 +1,6 @@
 # Panel
 
-🟡 **当前状态：**018共享ControlCollection，020共享标准事务，021补无滚动Padding内容矩形、默认测量/缓存及显示布局通知。仍继承历史ContainerControlBase，尚未迁入标准ScrollableControl链；滚动、全部派生布局/RTL/DPI和平台验收未完成。 029补01a批量验证后代的容器style；标准继承与全部默认样式仍未完成。
+🟡 **当前状态：**018共享ControlCollection，020共享标准事务，021补无滚动Padding内容矩形/默认测量；029补01a批量验证后代的容器style；032完成Panel-01b标准ScrollableControl继承和02a共享AutoScroll首范围。BorderStyle/AutoSize、完整滚动、全部派生布局/RTL/DPI、设备/Designer/AOT和平台验收仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -13,9 +13,11 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| 🟡 | P0 / Panel-01 | 018已共享Control.ControlCollection及父子转移/循环检查/排序等基础集合（Control-06a）；Panel仍继承历史ContainerControlBase，需收敛到Panel : ScrollableControl并验证全部派生行为。基类集合完成不等于整Panel完成。 |
+| 🟡 | P0 / Panel-01 | 018已共享Control.ControlCollection及父子转移/循环检查/排序等基础集合（Control-06a）；032完成01b迁移到Panel : ScrollableControl并保留Flow/Table/TabPage派生消费。完整派生行为仍待，基类迁移不等于整Panel完成。 |
+| ✅ | P0 / Panel-01b | 批次032：Panel改为标准 `ScrollableControl`，删除重复无滚动 DisplayRectangle/VisibleChanged，保留STATIC样式、主题、PreferredSize、ControlCollection和Dispose；FlowLayoutPanel/TableLayoutPanel/TabPage继续从Panel派生。 |
 | ✅ | P0 / Panel-01a | 批次029：保持历史基类，构造设置标准ContainerControl style，使ValidateChildren可进入Panel/TabPage/FlowLayoutPanel/TableLayoutPanel后代；Panel和TabPage内leaf先于容器验证有无HWND回归。只完成此验证消费，不关闭标准继承/Selectable默认/滚动/全部派生。 |
-| ⬜ | P0 / Panel-02 | 补齐 BorderStyle、AutoSize、AutoSizeMode、AutoScroll、AutoScrollMargin、AutoScrollMinSize、AutoScrollPosition；记录默认值、非法枚举和 handle 创建前后结果。 |
+| 🟡 | P0 / Panel-02 | 032完成02a直接消费共享AutoScroll/AutoScrollMargin/MinSize/Position；BorderStyle、AutoSize/AutoSizeMode、默认值/非法枚举和完整handle行为仍待。 |
+| ✅ | P0 / Panel-02a | 批次032：Panel直接使用ScrollableControl的AutoScroll契约，覆盖正设负读、DisplayRectangle、范围和关闭状态；不关闭Panel完整属性表。 |
 | 🟡 | P0 / Panel-03 | 020基础事务保留；021完成03a无滚动默认布局/内容矩形/首选测量与缓存。Panel仍用ContainerControlBase；标准继承迁移、滚动、完整派生测量/RTL/DPI及设计器待办。 |
 | ✅ | P0 / Panel-03a | 批次021：Padding客户区DisplayRectangle、默认引擎测量子项/边距并加边框和Padding、PreferredSize缓存及Visible显示时真实本体布局完成；Dock/隐藏/改变尺寸、58×21 Flow及104×24 Table必要有限协作有对照。仅无滚动测量/接入范围，标准ScrollableControl继承和完整滚动不在此项。 |
 | ⬜ | P1 / Panel-04 | 为 Controls.Add/Remove、可见性/边界/字体变化捕获 ControlAdded/ControlRemoved、ParentChanged、Layout、SizeChanged、Resize 顺序；移除不隐式 Dispose，父容器 Dispose 递归释放。 |
@@ -40,6 +42,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-26 · 批次032：完成01b标准ScrollableControl迁移和02a共享AutoScroll消费；完整Panel属性、派生布局、真实设备、Designer/AOT和平台仍待，见[032](../batches/032.md)。
 
 - 2026-10-17 · 批次029：完成01a必要验证容器style；未迁移历史基类或宣称整Panel/全部派生完成，见[029](../batches/029.md)。
 

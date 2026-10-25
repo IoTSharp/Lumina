@@ -9,7 +9,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a simple child-control container panel.
 /// </summary>
-public class Panel : ContainerControlBase
+public class Panel : ScrollableControl
 {
     /// <summary>
     /// Initializes a panel whose preferred size is measured from its children.
@@ -20,31 +20,11 @@ public class Panel : ContainerControlBase
         CachePreferredSize = true;
     }
 
-    /// <inheritdoc />
-    public override Rectangle DisplayRectangle => new(
-        Padding.Left,
-        Padding.Top,
-        Math.Max(0, ClientSize.Width - Padding.Horizontal),
-        Math.Max(0, ClientSize.Height - Padding.Vertical));
-
     internal override Size GetPreferredSizeCore(Size proposedSize)
     {
         Size borderSize = SizeFromClientSize(Size.Empty);
         Size totalPadding = borderSize + new Size(Padding.Horizontal, Padding.Vertical);
         return LayoutEngine.GetPreferredSize(this, proposedSize - totalPadding) + totalPadding;
-    }
-
-    /// <inheritdoc />
-    protected override void OnVisibleChanged(EventArgs e)
-    {
-        // Preserve the standard scrollable-container notification while Panel
-        // retains its historical public base type.
-        if (Visible)
-        {
-            RequestLayout(this, nameof(Visible));
-        }
-
-        base.OnVisibleChanged(e);
     }
 
     /// <inheritdoc />

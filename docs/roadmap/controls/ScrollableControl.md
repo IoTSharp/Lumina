@@ -1,6 +1,6 @@
 # ScrollableControl
 
-🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；020移除独立暂停计数，029补01b验证递归所需的标准容器style；031完成02a～06a的托管 AutoScroll、内容范围、正设负读位置、ScrollProperties/Scroll 事件、ScrollControlIntoView、受保护状态位与范围刷新首轮。Panel仍未迁入，真实 Win32 滚动条消息、SCROLLINFO、Tab/RTL 组合、平台滚动和完整 API/验收仍未完成，不能把本批代码子范围计为完整滚动。
+🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；029补01b验证递归所需的标准容器style；031完成02a～06a托管首范围；032完成Panel迁移、UserControl消费和08a Windows滚动消息/SCROLLINFO接线。真实物理滚轮/触摸板、Tab/RTL组合、平台滚动和完整API/验收仍未完成，不能把代码子范围计为完整滚动。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -27,7 +27,8 @@
 | 🟡 | P1 / ScrollableControl-06 | 031完成06a OnScroll、AdjustFormScrollbars、SetDisplayRectLocation、状态位和H/V可见状态首范围；完整派生扩展与原生滚动条仍待。 |
 | ✅ | P1 / ScrollableControl-06a | 批次031：保护状态常量、Get/SetScrollState、HScroll/VScroll、AdjustFormScrollbars、SetDisplayRectLocation和范围刷新接线完成；不代表完整 ScrollableControl。 |
 | ⬜ | P1 / ScrollableControl-07 | 验证 Tab 自动滚动聚焦控件、RTL、水平方向、AutoScroll 关闭重置、尺寸变化滚动条互相挤占和布局重入。 |
-| ⬜ | P2 / ScrollableControl-08 | Windows 统一 SCROLLINFO 与 WM_HSCROLL/WM_VSCROLL，按行/页/thumb 路径转换；Handle 重建恢复位置，避免将 16 位消息 thumb 值当完整范围。 |
+| 🟡 | P2 / ScrollableControl-08 | 032完成08a Windows `WM_HSCROLL`/`WM_VSCROLL`、SCROLLINFO、line/page/thumb/first/last/end和句柄重建同步首范围；真实物理滚轮/触摸板、完整消息/设备组合和平台仍待。 |
+| ✅ | P2 / ScrollableControl-08a | 批次032：补WS_HSCROLL/WS_VSCROLL、SCROLLINFO、Get/SetScrollInfo、ScrollWindowEx及WndProc命令映射；复用托管范围/Scroll事件，Dispose后忽略注入消息。 |
 | ⬜ | P2 / ScrollableControl-09 | Linux 使用 GtkScrolledWindow 的 adjustments 与原生滚动条；将调整值映射负 AutoScrollPosition，拦截平滑滚动时保留 WinForms 事件聚合规则。 |
 | ⬜ | P3 / ScrollableControl-10 | macOS 使用 NSScrollView/NSClipView，观察 bounds 变化而非只监听滚轮；弹性滚动临时越界不能直接写回 WinForms 合法滚动值。 |
 | ⬜ | P1 / ScrollableControl-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -45,6 +46,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-10-26 · 批次032：完成08a Windows滚动消息与SCROLLINFO代码首范围，Panel迁移并消费共享滚动层；真实物理输入、平台后端和完整验收仍待，见[032](../batches/032.md)。
 
 - 2026-10-26 · 批次031：完成02a～06a托管滚动首范围，补正设负读、内容范围、ScrollProperties/事件、受保护状态位和滚动路径；真实Win32滚动条消息、Panel迁移、平台和完整验收仍待，见[031](../batches/031.md)。
 

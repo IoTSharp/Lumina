@@ -23,7 +23,7 @@
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
 | FND-014 | 🟡 | 009～020基础Bounds/通知/客户区/MinMax/构造和事务保留；021完成Control-09d基础默认Dock/Anchor/AutoSize、PreferredSize和必要容器内容测量。完整派生测量/RTL/DPI/布局重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
-| FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成AutoScroll/AutoScrollMargin/MinSize/Position正设负读、H/V ScrollProperties、Scroll事件、ScrollControlIntoView及受保护状态/范围刷新首范围。真实SCROLLINFO/WM_HSCROLL/WM_VSCROLL、Dock/Anchor/Tab/RTL组合、嵌套滚动坐标与平台滚动仍缺 |
+| FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成托管AutoScroll/ScrollProperties/Scroll事件及受保护契约，032补Panel迁移和Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围。真实物理滚轮/触摸板、Dock/Anchor/Tab/RTL组合、嵌套滚动坐标与Linux/macOS滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；031补AutoScaleFactor首范围，纠正原全部未开始状态遗漏旧局部实现。完整Font/Dpi/None/Inherit、嵌套继承、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018～028基础导航/焦点事件保留；029的Control-12c和ContainerControl-02b补禁用/隐藏、移除候选及程序验证协作。全部派生、真实Tab/助记键、默认/取消按钮与关闭焦点差异仍缺；公开Focus无参，定向入口为Select(bool,bool) |
 | FND-019 | 🟡 | 批次030完成Control基础KeyDown/KeyPress/KeyUp事件参数、事件槽、WM_KEYDOWN/WM_SYSKEYDOWN/WM_CHAR/WM_KEYUP/WM_SYSKEYUP分派、修饰键、Handled与SuppressKeyPress首范围；PreviewKeyDown、ProcessCmdKey/ProcessDialogKey/PreProcessMessage、KeyPreview、完整Tab/助记键/默认按钮、中文IME组合态、焦点切换与候选窗位置仍缺 |
@@ -38,6 +38,7 @@
 ## 收尾状态整理记录
 
 - 2026-10-26 · 批次031：FND-013补RightToLeft托管/Win32样式首范围；FND-016补AutoScroll/ScrollProperties/Scroll事件/受保护滚动契约首范围；FND-017补AutoScaleFactor；UserControl接入标准ContainerControl继承。所有父任务仍保持🟡，真实滚动条、Cursor、完整缩放/设计器、派生与平台门禁保留，见[031](batches/031.md)。
+- 2026-10-26 · 批次032：FND-016补Panel迁移与Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围；UserControl补Load一次触发。真实物理设备、完整滚动/Panel属性、Designer/AOT和平台仍待，见[032](batches/032.md)。
 
 - 2026-10-26 · 批次030：FND-019回标为部分完成，新增Control-12e基础键消息/事件契约与5项Windows STA回归；完整键盘预处理、IME、真实设备、Designer、AOT及跨平台仍待办，见[030](batches/030.md)。
 

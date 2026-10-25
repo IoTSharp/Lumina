@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial bounded FND-019 keyboard pipeline: `KeyDown`, `KeyPress`, and `KeyUp` event contracts plus Win32 key-message dispatch in `Control`.
 - Bounded foundation/inheritance slices: `RightToLeft` inheritance and Win32 RTL styles, `ScrollableControl` auto-scroll state and protected contracts, `ContainerControl.ParentForm`/`AutoScaleFactor`, and the standard `UserControl : ContainerControl` chain.
+- Panel now consumes the shared `ScrollableControl` chain; `UserControl.Load` has a one-time creation lifecycle; Windows scroll messages update the shared scroll state and native SCROLLINFO within the bounded batch scope.
 
 ### Verification
-- Release solution build and the full `Lumina.Tests` suite pass for the 031 scope (4,419 tests); IME, command preprocessing, real scrollbar messages, Cursor, Native AOT, designer, device, and cross-platform gates remain open.
+- Release solution build and the full `Lumina.Tests` suite pass for the 032 scope (4,430 tests); IME, command preprocessing, physical wheel/touch input, Cursor, Native AOT, designer, and cross-platform gates remain open.
 
 ### Planned
 - DLL injection into `dwm.exe`

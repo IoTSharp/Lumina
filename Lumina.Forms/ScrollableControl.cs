@@ -82,6 +82,24 @@ public class ScrollableControl : Control
         }
     }
 
+    /// <summary>
+    /// Adds the native horizontal and vertical scroll styles selected by the
+    /// managed range state. The base Control builder still supplies the
+    /// control's normal class, parent, visibility and RTL styles.
+    /// </summary>
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            CreateParams parameters = base.CreateParams;
+            uint style = unchecked((uint)parameters.Style);
+            style = HScroll ? style | Win32.WS_HSCROLL : style & ~Win32.WS_HSCROLL;
+            style = VScroll ? style | Win32.WS_VSCROLL : style & ~Win32.WS_VSCROLL;
+            parameters.Style = unchecked((int)style);
+            return parameters;
+        }
+    }
+
     /// <summary>Gets or sets the margin added around the child content.</summary>
     [Localizable(true)]
     public Size AutoScrollMargin
@@ -259,6 +277,7 @@ public class ScrollableControl : Control
 
     internal void RefreshScrollState(bool requestLayout)
     {
+        requestLayout &= AutoScroll;
         if (_refreshingScrollState) { return; }
         _refreshingScrollState = true;
         try
@@ -271,8 +290,14 @@ public class ScrollableControl : Control
             int maximumY = Math.Max(0, contentHeight - viewportHeight);
             _horizontalScroll.SetRange(0, maximumX, viewportWidth);
             _verticalScroll.SetRange(0, maximumY, viewportHeight);
+            bool previousHScroll = HScroll;
+            bool previousVScroll = VScroll;
             HScroll = AutoScroll && maximumX > 0;
             VScroll = AutoScroll && maximumY > 0;
+            if (previousHScroll != HScroll || previousVScroll != VScroll)
+            {
+                ApplyNativeScrollStyles();
+            }
 
             int x = AutoScroll ? Math.Min(Math.Max(0, _horizontalOffset), maximumX) : 0;
             int y = AutoScroll ? Math.Min(Math.Max(0, _verticalOffset), maximumY) : 0;
@@ -315,6 +340,7 @@ public class ScrollableControl : Control
         if (raiseEvent) { SetScrollState(ScrollStateUserHasScrolled, true); }
         if (oldX != x) { _horizontalScroll.RecordValue(oldX); }
         if (oldY != y) { _verticalScroll.RecordValue(oldY); }
+        ApplyNativeScrollPosition(oldX, oldY, x, y);
         if (requestLayout && !_refreshingScrollState) { RequestLayout(this, nameof(AutoScrollPosition)); }
         if (!raiseEvent) { return; }
         if (oldX != x)
@@ -359,21 +385,21 @@ public class ScrollableControl : Control
     protected override void OnControlAdded(ControlEventArgs e)
     {
         base.OnControlAdded(e);
-        RefreshScrollState(requestLayout: true);
+        RefreshScrollState(requestLayout: AutoScroll);
     }
 
     /// <inheritdoc />
     protected override void OnControlRemoved(ControlEventArgs e)
     {
         base.OnControlRemoved(e);
-        RefreshScrollState(requestLayout: true);
+        RefreshScrollState(requestLayout: AutoScroll);
     }
 
     /// <inheritdoc />
     protected override void OnClientSizeChanged(EventArgs e)
     {
         base.OnClientSizeChanged(e);
-        RefreshScrollState(requestLayout: true);
+        RefreshScrollState(requestLayout: AutoScroll);
     }
 
     /// <inheritdoc />
@@ -381,6 +407,23 @@ public class ScrollableControl : Control
     {
         base.OnLayout(levent);
         RefreshScrollState(requestLayout: false);
+    }
+
+    /// <inheritdoc />
+    protected override void OnHandleCreated(EventArgs e)
+    {
+        base.OnHandleCreated(e);
+        ApplyNativeScrollStyles();
+        ApplyNativeScrollInfo(horizontal: true);
+        ApplyNativeScrollInfo(horizontal: false);
+    }
+
+    /// <inheritdoc />
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_HSCROLL && HandleScrollMessage(ref m, horizontal: true)) { return; }
+        if (m.Msg == Win32.WM_VSCROLL && HandleScrollMessage(ref m, horizontal: false)) { return; }
+        base.WndProc(ref m);
     }
 
     /// <inheritdoc />
@@ -393,4 +436,141 @@ public class ScrollableControl : Control
 
         base.OnVisibleChanged(e);
     }
+
+    private bool HandleScrollMessage(ref Message message, bool horizontal)
+    {
+        if (IsDisposed || Disposing) { return false; }
+
+        int command = unchecked((int)((nuint)message.WParam & 0xFFFF));
+        ScrollProperties properties = horizontal ? _horizontalScroll : _verticalScroll;
+        int current = properties.Value;
+        ScrollEventType eventType;
+        int target;
+
+        switch (command)
+        {
+            case Win32.SB_LINELEFT when horizontal:
+            case Win32.SB_LINEUP when !horizontal:
+                eventType = ScrollEventType.SmallDecrement;
+                target = current - Math.Max(1, properties.SmallChange);
+                break;
+            case Win32.SB_LINERIGHT when horizontal:
+            case Win32.SB_LINEDOWN when !horizontal:
+                eventType = ScrollEventType.SmallIncrement;
+                target = current + Math.Max(1, properties.SmallChange);
+                break;
+            case Win32.SB_PAGELEFT when horizontal:
+            case Win32.SB_PAGEUP when !horizontal:
+                eventType = ScrollEventType.LargeDecrement;
+                target = current - Math.Max(1, properties.LargeChange);
+                break;
+            case Win32.SB_PAGERIGHT when horizontal:
+            case Win32.SB_PAGEDOWN when !horizontal:
+                eventType = ScrollEventType.LargeIncrement;
+                target = current + Math.Max(1, properties.LargeChange);
+                break;
+            case Win32.SB_THUMBPOSITION:
+                eventType = ScrollEventType.ThumbPosition;
+                target = GetNativeTrackPosition(horizontal, HighWord(message.WParam));
+                break;
+            case Win32.SB_THUMBTRACK:
+                eventType = ScrollEventType.ThumbTrack;
+                target = GetNativeTrackPosition(horizontal, HighWord(message.WParam));
+                break;
+            case Win32.SB_TOP when !horizontal:
+            case Win32.SB_LEFT when horizontal:
+                eventType = ScrollEventType.First;
+                target = properties.Minimum;
+                break;
+            case Win32.SB_BOTTOM when !horizontal:
+            case Win32.SB_RIGHT when horizontal:
+                eventType = ScrollEventType.Last;
+                target = properties.Maximum;
+                break;
+            case Win32.SB_ENDSCROLL:
+                OnScroll(new ScrollEventArgs(ScrollEventType.EndScroll, current, current,
+                    horizontal ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical));
+                message.Result = 0;
+                return true;
+            default:
+                return false;
+        }
+
+        target = Math.Clamp(target, properties.Minimum, properties.Maximum);
+        SetScrollValue(horizontal ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical, target, eventType);
+        message.Result = 0;
+        return true;
+    }
+
+    private int GetNativeTrackPosition(bool horizontal, int fallback)
+    {
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0) { return fallback; }
+
+        Win32.SCROLLINFO info = new()
+        {
+            cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<Win32.SCROLLINFO>(),
+            fMask = Win32.SIF_TRACKPOS,
+        };
+        int bar = horizontal ? Win32.SB_HORZ : Win32.SB_VERT;
+        return Win32.GetScrollInfo(NativeHandle, bar, ref info) ? info.nTrackPos : fallback;
+    }
+
+    private void ApplyNativeScrollStyles()
+    {
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0) { return; }
+        UpdateStyles();
+        ApplyNativeScrollInfo(horizontal: true);
+        ApplyNativeScrollInfo(horizontal: false);
+    }
+
+    private void ApplyNativeScrollInfo(bool horizontal)
+    {
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0) { return; }
+
+        ScrollProperties properties = horizontal ? _horizontalScroll : _verticalScroll;
+        int page = Math.Max(0, properties.LargeChange);
+        int nativeMaximum = properties.Maximum;
+        if (page > 0)
+        {
+            nativeMaximum = Math.Min(int.MaxValue, nativeMaximum + page - 1);
+        }
+
+        Win32.SCROLLINFO info = new()
+        {
+            cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<Win32.SCROLLINFO>(),
+            fMask = Win32.SIF_ALL,
+            nMin = properties.Minimum,
+            nMax = nativeMaximum,
+            nPage = (uint)page,
+            nPos = properties.Value,
+            nTrackPos = properties.Value,
+        };
+        _ = Win32.SetScrollInfo(NativeHandle, horizontal ? Win32.SB_HORZ : Win32.SB_VERT, ref info, true);
+    }
+
+    private void ApplyNativeScrollPosition(int oldX, int oldY, int newX, int newY)
+    {
+        if (!OperatingSystem.IsWindows() || NativeHandle == 0) { return; }
+
+        int deltaX = oldX - newX;
+        int deltaY = oldY - newY;
+        if (deltaX != 0 || deltaY != 0)
+        {
+            _ = Win32.ScrollWindowEx(
+                NativeHandle,
+                deltaX,
+                deltaY,
+                0,
+                0,
+                0,
+                0,
+                Win32.SW_SCROLLCHILDREN | Win32.SW_INVALIDATE | Win32.SW_ERASE);
+        }
+
+        if (oldX != newX) { ApplyNativeScrollInfo(horizontal: true); }
+        if (oldY != newY) { ApplyNativeScrollInfo(horizontal: false); }
+    }
+
+    private static int HighWord(nint value)
+        => unchecked((int)(((nuint)value >> 16) & 0xFFFF));
 }

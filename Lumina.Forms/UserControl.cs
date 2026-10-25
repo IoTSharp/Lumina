@@ -5,6 +5,14 @@ namespace Lumina.Forms;
 /// </summary>
 public class UserControl : ContainerControl
 {
+    private bool _loaded;
+
+    /// <summary>
+    /// Occurs the first time the user control and its native child tree are
+    /// created successfully.
+    /// </summary>
+    public event EventHandler? Load;
+
     /// <inheritdoc />
     protected override string ClassName => "STATIC";
 
@@ -23,6 +31,20 @@ public class UserControl : ContainerControl
         base.OnHandleCreated();
         ApplyNativeThemeState();
     }
+
+    /// <inheritdoc />
+    protected override void OnCreateControl()
+    {
+        base.OnCreateControl();
+        if (!_loaded && !IsDisposed)
+        {
+            _loaded = true;
+            OnLoad(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Raises the <see cref="Load"/> event.</summary>
+    protected virtual void OnLoad(EventArgs e) => Load?.Invoke(this, e);
 
     /// <inheritdoc />
     protected override void ApplyTheme()

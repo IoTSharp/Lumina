@@ -517,3 +517,8 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 `dotnet build Lumina.slnx -c Release --no-restore --nologo`：PASS，0 错误；`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build --no-restore --nologo`：PASS，4,419/4,419；六组新增回归合计22/22 PASS；`Validate-Roadmap.ps1 -ExportTasks`：PASS，2,107项正文/共享任务、0结构错误；`git -c core.whitespace=cr-at-eol diff --check`：PASS。原有 XML/分析器、平台、NU1510/CA1416 警告继续保留。
 
 未运行 Native AOT 发布/运行、VS Designer 往返、物理输入、Win32 `WM_HSCROLL`/`WM_VSCROLL`/SCROLLINFO、Linux/macOS、生产或现场验证；这些门禁保持 UNKNOWN/NOT_RUN，不由构建、回归测试或任务数量推导98%。详见[031](batches/031.md)。
+## 批次032 · 2026-10-26 Panel、UserControl 生命周期与 Windows 滚动消息
+
+批次032完成 Panel-01b/02a 标准 ScrollableControl 迁移与共享 AutoScroll 消费、UserControl-03a Load 一次触发生命周期、ScrollableControl-08a Windows `WM_HSCROLL`/`WM_VSCROLL` 与 SCROLLINFO 首范围。`dotnet build Lumina.slnx -c Release --no-restore --nologo`：PASS，0错误；三组新增回归11/11 PASS；`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build --no-restore --nologo`：PASS，4,430/4,430。全量首次回归唯一失败为Panel迁移导致AutoScroll=false尺寸刷新额外布局事件，滚动层关闭额外布局请求后复测通过；不弱化原有断言。
+
+`git -c core.whitespace=cr-at-eol diff --check`：PASS。未运行 Native AOT、真实物理滚轮/触摸板、Designer往返、Linux/macOS、生产或现场验证；完整Panel/ScrollableControl/UserControl父任务和FND-016继续部分或待办，不由本批代码/测试数推导98%。详见[032](batches/032.md)。

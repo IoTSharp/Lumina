@@ -24,6 +24,7 @@ internal static class Win32
     public const uint WS_THICKFRAME = 0x00040000;
     public const uint WS_MINIMIZEBOX = 0x00020000;
     public const uint WS_MAXIMIZEBOX = 0x00010000;
+    public const uint WS_HSCROLL = 0x00100000;
     public const uint WS_VSCROLL = 0x00200000;
     public const uint WS_TABSTOP = 0x00010000;
 
@@ -114,6 +115,8 @@ internal static class Win32
     public const int WM_XBUTTONDBLCLK = 0x020D;
     public const int WM_SETTINGCHANGE = 0x001A;
     public const int WM_COMMAND = 0x0111;
+    public const int WM_HSCROLL = 0x0114;
+    public const int WM_VSCROLL = 0x0115;
     public const int WM_INITDIALOG = 0x0110;
     public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_SYSCHAR = 0x0106;
@@ -157,6 +160,33 @@ internal static class Win32
     public const int SB_SETMINHEIGHT = 0x0408;
     public const int SB_GETRECT = 0x040A;
     public const int SB_SETTEXTW = 0x040B;
+
+    public const int SB_HORZ = 0;
+    public const int SB_VERT = 1;
+    public const int SB_LINELEFT = 0;
+    public const int SB_LINERIGHT = 1;
+    public const int SB_LINEUP = 0;
+    public const int SB_LINEDOWN = 1;
+    public const int SB_PAGELEFT = 2;
+    public const int SB_PAGERIGHT = 3;
+    public const int SB_PAGEUP = 2;
+    public const int SB_PAGEDOWN = 3;
+    public const int SB_THUMBPOSITION = 4;
+    public const int SB_THUMBTRACK = 5;
+    public const int SB_TOP = 6;
+    public const int SB_LEFT = 6;
+    public const int SB_BOTTOM = 7;
+    public const int SB_RIGHT = 7;
+    public const int SB_ENDSCROLL = 8;
+
+    public const uint SIF_RANGE = 0x0001;
+    public const uint SIF_PAGE = 0x0002;
+    public const uint SIF_POS = 0x0004;
+    public const uint SIF_TRACKPOS = 0x0010;
+    public const uint SIF_ALL = SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS;
+    public const uint SW_SCROLLCHILDREN = 0x0001;
+    public const uint SW_INVALIDATE = 0x0002;
+    public const uint SW_ERASE = 0x0004;
 
     public const int TCM_FIRST = 0x1300;
     public const int TCM_GETITEMCOUNT = TCM_FIRST + 4;
@@ -475,6 +505,18 @@ internal static class Win32
         public int Width => Right - Left;
 
         public int Height => Bottom - Top;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SCROLLINFO
+    {
+        public uint cbSize;
+        public uint fMask;
+        public int nMin;
+        public int nMax;
+        public uint nPage;
+        public int nPos;
+        public int nTrackPos;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -915,6 +957,24 @@ internal static class Win32
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool GetClientRect(nint hWnd, out RECT lpRect);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetScrollInfo(nint hWnd, int nBar, ref SCROLLINFO lpsi);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern int SetScrollInfo(nint hWnd, int nBar, ref SCROLLINFO lpsi, [MarshalAs(UnmanagedType.Bool)] bool redraw);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern int ScrollWindowEx(
+        nint hWnd,
+        int dx,
+        int dy,
+        nint prcScroll,
+        nint prcClip,
+        nint hrgnUpdate,
+        nint prcUpdate,
+        uint flags);
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

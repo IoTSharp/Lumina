@@ -19,9 +19,9 @@
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | 🟡 存在 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ WindowsFormsSynchronizationContext-01a、WindowsFormsSynchronizationContext-01b、WindowsFormsSynchronizationContext-06a；其余任务未完成 |
-| [ScrollableControl](controls/ScrollableControl.md) | M1 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ScrollableControl-01a、ScrollableControl-01b、ScrollableControl-02a、ScrollableControl-03a、ScrollableControl-04a、ScrollableControl-05a、ScrollableControl-06a；其余任务未完成 |
+| [ScrollableControl](controls/ScrollableControl.md) | M1 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ScrollableControl-01a、ScrollableControl-01b、ScrollableControl-02a、ScrollableControl-03a、ScrollableControl-04a、ScrollableControl-05a、ScrollableControl-06a、ScrollableControl-08a；其余任务未完成 |
 | [ContainerControl](controls/ContainerControl.md) | M1 | 🟡 存在 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ContainerControl-01、ContainerControl-02a、ContainerControl-02b、ContainerControl-03a、ContainerControl-05a、ContainerControl-06a；其余任务未完成 |
-| [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a；其余任务未完成 |
+| [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a、UserControl-03a；其余任务未完成 |
 | [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-07a、Form-08a、Form-10a、Form-10b、Form-16a、Form-16b、Form-16c；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -55,7 +55,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Panel](controls/Panel.md) | M2 | 🟡 存在 | 93 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Panel-01a、Panel-03a；其余任务未完成 |
+| [Panel](controls/Panel.md) | M2 | 🟡 存在 | 93 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Panel-01a、Panel-01b、Panel-02a、Panel-03a；其余任务未完成 |
 | [GroupBox](controls/GroupBox.md) | M2 | 🟡 存在 | 87 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ GroupBox-07a；其余任务未完成 |
 | [FlowLayoutPanel](controls/FlowLayoutPanel.md) | M2 | 🟡 存在 | 95 / 73 / 78 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ FlowLayoutPanel-06a、FlowLayoutPanel-06b；其余任务未完成 |
 | [TableLayoutPanel](controls/TableLayoutPanel.md) | M2 | 🟡 存在 | 100 / 74 / 90 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TableLayoutPanel-06a、TableLayoutPanel-06b；其余任务未完成 |
