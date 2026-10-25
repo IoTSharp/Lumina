@@ -21,7 +21,7 @@
 - 并行子任务已停止写入：`panel_scrollable_migration`完成Panel-01b/02a；`usercontrol_load`完成UserControl-03a；`scroll_win32_messages`完成ScrollableControl-08a。主会话修复AutoScroll=false下额外布局请求导致的SplitContainer事件回归。
 - 验证：Release方案构建0错误；`Lumina.Tests`全量4,430/4,430通过；本批三组新增测试11/11通过；路线图校验待本批文档生成后复跑；既有警告保留。
 - 未运行：Native AOT、真实物理滚轮/触摸板、Designer往返、Linux/macOS、生产/现场。Panel/ScrollableControl/UserControl和FND-016父任务继续部分或待办，不宣称98%。
-- 实现与共享文档尚未提交/推送；主会话负责只暂存本批拥有路径，完成 commit/push 后回读 HEAD、tracking 分支与实际远端 ref。
+- 批次032实现提交 `3332043b7f9bb4a3a474074aca256bdc14ec965a` 已成功推送；交接文档收口后回读 HEAD、tracking 分支与实际远端 ref，保留全量回归和路线图证据。
 ## 历史029停止记录
 
 - 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。
