@@ -46,6 +46,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly object s_mouseMoveEvent = new();
     private static readonly object s_mouseUpEvent = new();
     private static readonly object s_mouseWheelEvent = new();
+    private static readonly object s_keyDownEvent = new();
+    private static readonly object s_keyPressEvent = new();
+    private static readonly object s_keyUpEvent = new();
     private static readonly Lazy<uint> s_mouseEnterMessage = new(static () =>
     {
         uint message = Win32.RegisterWindowMessageW("Lumina.Forms.MouseEnter");
@@ -123,6 +126,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _mouseEnterPending;
     private bool _mousePressed;
     private bool _doubleClickFired;
+    private bool _suppressKeyPress;
+
+    private const int WmCharMessage = 0x0102;
+    private const int WmSysKeyUp = 0x0105;
 
     internal bool CachePreferredSize { get; set; }
     internal bool ParticipatesInLayout => _visible;
@@ -1128,6 +1135,30 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         add => Events.AddHandler(s_mouseWheelEvent, value);
         remove => Events.RemoveHandler(s_mouseWheelEvent, value);
+    }
+
+    /// <summary>Occurs when the control receives a key-down message.</summary>
+    [Category("Key")]
+    public event KeyEventHandler? KeyDown
+    {
+        add => Events.AddHandler(s_keyDownEvent, value);
+        remove => Events.RemoveHandler(s_keyDownEvent, value);
+    }
+
+    /// <summary>Occurs when the control receives a character message.</summary>
+    [Category("Key")]
+    public event KeyPressEventHandler? KeyPress
+    {
+        add => Events.AddHandler(s_keyPressEvent, value);
+        remove => Events.RemoveHandler(s_keyPressEvent, value);
+    }
+
+    /// <summary>Occurs when the control receives a key-up message.</summary>
+    [Category("Key")]
+    public event KeyEventHandler? KeyUp
+    {
+        add => Events.AddHandler(s_keyUpEvent, value);
+        remove => Events.RemoveHandler(s_keyUpEvent, value);
     }
 
     /// <summary>
@@ -3232,6 +3263,18 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnMouseWheel(MouseEventArgs e) => RaiseMouseEvent(s_mouseWheelEvent, e);
 
+    /// <summary>Raises the <see cref="KeyDown"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnKeyDown(KeyEventArgs e) => ((KeyEventHandler?)Events[s_keyDownEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="KeyPress"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnKeyPress(KeyPressEventArgs e) => ((KeyPressEventHandler?)Events[s_keyPressEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="KeyUp"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnKeyUp(KeyEventArgs e) => ((KeyEventHandler?)Events[s_keyUpEvent])?.Invoke(this, e);
+
     /// <summary>Invokes the target control's virtual click event method.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void InvokeOnClick(Control? toInvoke, EventArgs e) => toInvoke?.OnClick(e);
@@ -4379,6 +4422,55 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         if (!args.Handled) { DefWndProc(ref message); }
     }
 
+    private static Keys KeyDataFromMessage(nint wParam, nint lParam, bool systemKey)
+    {
+        Keys keyData = (Keys)(unchecked((int)(nuint)wParam) & (int)Keys.KeyCode);
+        if (OperatingSystem.IsWindows())
+        {
+            if (Win32.GetKeyState(Win32.VK_SHIFT) < 0) { keyData |= Keys.Shift; }
+            if (Win32.GetKeyState(Win32.VK_CONTROL) < 0) { keyData |= Keys.Control; }
+            if (Win32.GetKeyState(Win32.VK_MENU) < 0) { keyData |= Keys.Alt; }
+        }
+
+        // Bit 29 records the ALT context for injected/system messages even
+        // when the current keyboard state has already changed.
+        if (systemKey || (lParam.ToInt64() & (1L << 29)) != 0) { keyData |= Keys.Alt; }
+        return keyData;
+    }
+
+    private void WmKeyDown(ref Message message, bool systemKey)
+    {
+        KeyEventArgs args = new(KeyDataFromMessage(message.WParam, message.LParam, systemKey));
+        OnKeyDown(args);
+        _suppressKeyPress = args.SuppressKeyPress;
+        if (args.Handled) { message.Result = 0; }
+        else { DefWndProc(ref message); }
+    }
+
+    private void WmChar(ref Message message)
+    {
+        if (_suppressKeyPress)
+        {
+            _suppressKeyPress = false;
+            message.Result = 0;
+            return;
+        }
+
+        KeyPressEventArgs args = new(unchecked((char)(ushort)(nuint)message.WParam));
+        OnKeyPress(args);
+        if (args.Handled) { message.Result = 0; }
+        else { DefWndProc(ref message); }
+    }
+
+    private void WmKeyUp(ref Message message, bool systemKey)
+    {
+        KeyEventArgs args = new(KeyDataFromMessage(message.WParam, message.LParam, systemKey));
+        OnKeyUp(args);
+        _suppressKeyPress = false;
+        if (args.Handled) { message.Result = 0; }
+        else { DefWndProc(ref message); }
+    }
+
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DefWndProc(ref Message m)
     {
@@ -4427,6 +4519,21 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             case Win32.WM_KILLFOCUS:
                 DefWndProc(ref m);
                 InvokeLostFocus(this, EventArgs.Empty);
+                return;
+            case Win32.WM_KEYDOWN:
+                WmKeyDown(ref m, systemKey: false);
+                return;
+            case Win32.WM_SYSKEYDOWN:
+                WmKeyDown(ref m, systemKey: true);
+                return;
+            case WmCharMessage:
+                WmChar(ref m);
+                return;
+            case Win32.WM_KEYUP:
+                WmKeyUp(ref m, systemKey: false);
+                return;
+            case WmSysKeyUp:
+                WmKeyUp(ref m, systemKey: true);
                 return;
             case Win32.WM_CAPTURECHANGED:
                 OnMouseCaptureChanged(EventArgs.Empty);

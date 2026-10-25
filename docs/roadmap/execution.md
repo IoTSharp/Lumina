@@ -28,6 +28,8 @@
 
 批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 当前收尾见[029](batches/029.md)。用户于2026-10-17要求当前批次完成后停止：提交推送和远端核验后结束，不创建030/接续聊天、不恢复luminaforms巡检。未来如获新授权，优先解决关闭焦点与循环归属、派生验证消费，再接FND-019键盘；这只是剩余依赖记录，不自动启动。
 
+2026-10-26新授权恢复实施，批次030完成FND-019/Control-12e基础键消息与事件契约首范围；4,397项全线测试和Forms双目标Release构建通过。完整PreviewKeyDown/命令预处理/KeyPreview/IME/真实设备/AOT/Designer及跨平台仍待办，见[030](batches/030.md)。
+
 2026-10-16：批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。见[024](batches/024.md)，M0/M1不关闭。
 
 历史批次[026](batches/026.md)完成Control-05c/08c：已接受InvokeAsync任务关闭/投递失败终止、实际HWND已销毁后的异常继续正常托管清理；活HWND失败、普通Parent/child/Site短路与已开始异步工作保留。4,243测试（新增48）通过，双目标Release 0错误/643警告；25标准场景16同/9明确增强差异，另7旧Task仅Lumina，32场景JIT/实际AOT全同。探针/Demo PE均无CLR目录，Demo真实交互/WM_CLOSE/原始HWND销毁通过。旧004/005各两行增强差异、025四差异与警告不隐藏。Form-07依据已有Close/取消/Dispose由全待办纠正为部分；父项/设计器/资源/完整竞态/平台不关闭。当时下一批027已完成下述明确范围；保留026历史证据。

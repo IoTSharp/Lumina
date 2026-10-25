@@ -1,8 +1,16 @@
 # LuminaForms 实施交接
 
-更新：2026-10-17。先读本文件、[项目需求](PROJECT_REQUIREMENTS.md)，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
+更新：2026-10-26（Asia/Shanghai）。先读本文件、[项目需求](PROJECT_REQUIREMENTS.md)，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
 
-## 当前接续点
+## 当前接续点（2026-10-26 新授权）
+
+- 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；路线图审阅、构建基线和 Control 键盘切片由互斥子智能体完成，均已停止写入后由主会话复核。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`，本轮开始时 HEAD/origin/main 为 `4b6489f50271537fd42f9a691c1e8032b044c1a4` 且干净。当前未提交改动属于批次030：`Lumina.Forms/Control.cs`、`Lumina.Forms/KeyEventArgs.cs`、`Lumina.Tests/ControlKeyboardEventsTests.cs` 及本批路线图、验证、交接和变更记录；另含一处批次025历史忽略证据链接说明修正，未改变历史结果。
+- 当前实施批次：[030](docs/roadmap/batches/030.md)。FND-019/Control-12e基础KeyDown/KeyPress/KeyUp参数、委托、事件槽和五类Windows键消息分派已完成；4,397项全线测试、Forms双目标Release构建和5项过滤回归通过。完整键盘预处理、PreviewKeyDown、KeyPreview、命令/对话框路由、IME、真实设备、AOT、Designer和跨平台仍为UNKNOWN/NOT_RUN。
+- 忽略的 `bin/`、`obj/` 是本批有界还原/构建生成的验证产物，保留供继续复核，不纳入 Git。当前尚未提交或推送；提交前必须复核归属路径、路线图索引和远端状态。
+- 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
+
+## 历史029停止记录
 
 - 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。
 - 当前编码归属：029主聊天`01a14565-97a2-76f0-8645-317df65705a7`（local）已核实交接`9ff6f26000533469d2b07340bec5ce345b764697`、三SHA一致及工作区干净后实际接管；029实现已成功推送并核验三SHA一致，主及三个内部子任务停止实施；没有新编码主，不发送开始接管。028旧主及更早归档记录作为历史保留。

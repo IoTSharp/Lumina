@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～028明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件，并接入容器验证状态机。关闭多余LostFocus/WM_QUIT、全部派生输入/键盘、绘制/资源、ambient/RTL/Cursor、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[029](../batches/029.md)。
+🟡 **当前状态：**002～028明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件并接入容器验证状态机；030完成12e基础KeyDown/KeyPress/KeyUp消息与事件契约。关闭多余LostFocus/WM_QUIT、PreviewKeyDown/命令路由/IME/全部派生输入、绘制/资源、ambient/RTL/Cursor、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[030](../batches/030.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -50,11 +50,12 @@
 | 🟡 | P1 / Control-11 | 016/017 Text/ResetText、018 Enabled/Visible保留；022完成11b基础Font/BackColor/ForeColor局部值及父级继承；023实现基础ControlStyles及透明背景调用首范围。Application默认字体/Site/ActiveX ambient、RightToLeft/Cursor、可见透明合成、全部事件与完整native文本同步仍缺；主题默认值与WinForms视觉差异保留，不随子范围关闭。 |
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
-| 🟡 | P1 / Control-12 | 028完成12a基础导航/12b焦点事件；029完成12c自动转移和12d验证前置，ContainerControl-03a负责程序选择及显式验证取消。全部派生/ToolStripControlHost、取消验证后的点击提交抑制、真实Tab/助记键/键盘预处理/默认按钮/IME仍缺；完整焦点输入不关闭。 |
+| 🟡 | P1 / Control-12 | 028完成12a基础导航/12b焦点事件；029完成12c自动转移和12d验证前置，030完成12e基础键消息/事件契约，ContainerControl-03a负责程序选择及显式验证取消。全部派生/ToolStripControlHost、取消验证后的点击提交抑制、真实Tab/助记键/键盘预处理/默认按钮/IME仍缺；完整焦点输入不关闭。 |
 | ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
 | ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |
 | ✅ | P1 / Control-12c | 批次029：SelectNextIfFocused从父容器使用标准SelectNextControl；Enabled提交状态后、Visible提交前触发导航，无候选不自造清空。TabStop变更同步WS_TABSTOP并经组件事件槽发TabStopChanged；指定当前/祖先、TabStop/Selectable及嵌套候选轨迹有固定参考/JIT/AOT证据。关闭阶段差异归07/Form-07。 |
 | ✅ | P1 / Control-12d | 批次029：CausesValidation默认true及Changed、Validating/Validated和protected On*接入组件事件槽；验证取消跳过Validated，CausesValidation=false跳过验证，Validating原异常透传，批量Validated原异常透传、普通路径报ThreadException。只完成标准基础消费，完整输入提交/调试异常策略/派生覆盖仍归12及FND-021。 |
+| ✅ | P1 / Control-12e | 批次030：新增KeyEventArgs/KeyPressEventArgs及标准委托，Control事件槽与On*接入WM_KEYDOWN/WM_SYSKEYDOWN/WM_CHAR/WM_KEYUP/WM_SYSKEYUP，保留修饰键、Handled和SuppressKeyPress的基础托管语义。仅完成消息注入首范围；PreviewKeyDown、命令/对话框预处理、KeyPreview、完整Tab/助记键/IME、真实设备和AOT仍归父项与FND-019。 |
 | 🟡 | P1 / Control-13 | 027完成13a坐标/捕获和13b基础鼠标消息/事件；必要消费者共享Click去重。验证取消与点击协作、全部派生反射/默认激活/AutoCheck/组同步、RTL/DPI/非客户区及完整捕获竞态仍待原任务。锁屏下10个参考、20个JIT/AOT命中观察失败，真实命中/物理设备交互未验收，不能由事件入口或消息注入关闭完整输入。 |
 | ✅ | P1 / Control-13a | 批次027：PointToClient/PointToScreen、RectangleToClient/RectangleToScreen按真实MapWindowPoints转换（矩形两点）；Capture查询/获取/转移/释放与MouseCaptureChanged，静态MouseButtons/MousePosition接原生状态。无/有句柄、负坐标、父子、释放与重建指定范围完成；RTL镜像/DPI/Wayland等完整语义与物理设备验收仍归父项。 |
 | ✅ | P1 / Control-13b | 批次027：标准Click/DoubleClick及鼠标事件共用Component.Events、对应虚On*、InvokeOnClick/RaiseMouseEvent/ResetMouseEventArgs；MouseEventArgs.Location/可继承、HandledMouseEventArgs与XButton1/2；五按钮/双击/有符号坐标/滚轮Handled及原生Enter/Hover/Leave跟踪。跟踪在虚WndProc之外，保留直接调用区别、重建pending-enter、有限销毁和Up后的捕获清理。范围限基础Control消息路径及上述契约；验证取消、所有派生路由与设备验收不计完成，原异常文本差异保留。 |
@@ -79,6 +80,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-10-26 · 批次030：补Control-12e基础键消息/事件契约和5项Windows STA回归；4,397项全线测试通过，完整键盘预处理、IME、物理设备、Designer/AOT和跨平台仍未关闭，见[030](../batches/030.md)。
 
 - 2026-10-17 · 批次029：新增49项回归与有限12c/12d实现；最终16场景仅5场景JIT/AOT严格一致，11场景相差关闭LostFocus的33行；对参考保留关闭LostFocus和既有WM_QUIT差异。父子集合初次回归发现可见兄弟句柄未创建，恢复既有创建路径后重新检查；原始失败保留。修正Control-02遗漏028基础Select/CanSelect的历史表述；整Control/98%不关闭，见[029](../batches/029.md)。
 

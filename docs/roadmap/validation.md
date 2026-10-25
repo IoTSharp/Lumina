@@ -503,3 +503,9 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 - 用户明确029完成后停止；本批实现与文档提交推送、远端核验完成后停止，不创建下一聊天或批次，luminaforms保持PAUSED。完整范围及剩余依赖见[029](batches/029.md)。
 
 - 029实现已成功推送 `4dd229ee106eec28eed33571752e1e9139fee0b6`，HEAD/origin/main/实际远端一致且工作区干净；417份Markdown/2,096任务/187行实施索引0错误，整类型代码完成0。停止记录单独提交推送，最终SHA核验见artifacts/compatibility-batch029/stop-push.json。
+
+## 批次030 · 2026-10-26 基础键消息与事件契约
+
+批次030完成FND-019/Control-12e首范围：新增 `KeyEventArgs`、`KeyPressEventArgs`、标准键事件委托，Control事件槽与On*，并分派 `WM_KEYDOWN`、`WM_SYSKEYDOWN`、`WM_CHAR`、`WM_KEYUP`、`WM_SYSKEYUP`。`dotnet restore Lumina.slnx`、`dotnet build Lumina.slnx -c Release --no-restore` 及 `dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-restore` 均通过；全线测试4,397/4,397，Forms构建0错误，现有分析器/XML/平台警告保留；新增过滤测试5/5，`git diff --check`通过。
+
+首次不还原直接构建因四个项目缺少 `project.assets.json` 失败，按CI顺序补还原后恢复；这属于工作区依赖准备，不是键盘代码失败。未运行完整Native AOT/真实设备/IME/Designer往返/Linux/macOS/生产验证；PreviewKeyDown、命令/对话框预处理、KeyPreview及完整Tab/助记键路由仍是UNKNOWN/NOT_RUN，不由局部消息注入或测试数量推出完整FND-019、整Control或98%。详见[030](batches/030.md)。
