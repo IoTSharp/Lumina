@@ -15,7 +15,7 @@
 - 并行子任务已停止写入：`control_inheritance`完成Control-11c/FND-013托管与Win32 RTL样式；`scrollable_foundation`完成ScrollableControl-02a～05a托管滚动；`container_chain`完成ContainerControl-05a/06a；第二轮完成ScrollableControl-06a受保护契约、`usercontrol_chain`完成UserControl-01a/02a、`rtl_native_bridge`完成RightToLeft原生桥接。主会话复核并修正 `AutoScroll` virtual/`AutoScrollOffset` 标准契约和滚动内容范围逻辑。
 - 验证：Release方案构建0错误；`Lumina.Tests`全量4,419/4,419通过；本批六组新增测试22/22通过；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git -c core.whitespace=cr-at-eol diff --check`通过。既有警告保留。
 - 未运行：Native AOT发布/运行、真实Designer往返、物理设备、完整滚动条消息、Cursor/完整ambient、Linux/macOS、生产/现场。所有父任务和跨平台门禁保持部分或待办，不宣称98%。
-- 待提交状态：实现与共享文档尚未提交/推送；主会话负责只暂存本批拥有路径，完成 commit/push 后回读 HEAD、tracking 分支与实际远端 ref，并更新本段 SHA。
+- 批次031实现提交 `927c81515e7f5e5172ec5e7cb2f80fe42fd06d8d` 已成功推送；后续交接文档收口提交只修改本交接记录，主会话将在其后回读 HEAD、tracking 分支与实际远端 ref，保留完整验证证据。
 ## 历史029停止记录
 
 - 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。
