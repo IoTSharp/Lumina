@@ -7,7 +7,7 @@
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；路线图审阅、构建基线和 Control 键盘切片由互斥子智能体完成，均已停止写入后由主会话复核。
 - 工作区是 `D:\GitHub\Lumina`，分支 `main`，本轮开始时 HEAD/origin/main 为 `4b6489f50271537fd42f9a691c1e8032b044c1a4` 且干净。当前未提交改动属于批次030：`Lumina.Forms/Control.cs`、`Lumina.Forms/KeyEventArgs.cs`、`Lumina.Tests/ControlKeyboardEventsTests.cs` 及本批路线图、验证、交接和变更记录；另含一处批次025历史忽略证据链接说明修正，未改变历史结果。
 - 当前实施批次：[030](docs/roadmap/batches/030.md)。FND-019/Control-12e基础KeyDown/KeyPress/KeyUp参数、委托、事件槽和五类Windows键消息分派已完成；4,397项全线测试、Forms双目标Release构建和5项过滤回归通过。完整键盘预处理、PreviewKeyDown、KeyPreview、命令/对话框路由、IME、真实设备、AOT、Designer和跨平台仍为UNKNOWN/NOT_RUN。
-- 忽略的 `bin/`、`obj/` 是本批有界还原/构建生成的验证产物，保留供继续复核，不纳入 Git。当前尚未提交或推送；提交前必须复核归属路径、路线图索引和远端状态。
+- 忽略的 `bin/`、`obj/` 是本批有界还原/构建生成的验证产物，保留供继续复核，不纳入 Git。实现已提交为 `8211ec6161cc32f740a8ccd4c7d37951ad4fdbeb` 并推送；本次交接收尾提交仍需回读最终HEAD、tracking分支和实际远端状态。
 - 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
 
 ## 历史029停止记录
