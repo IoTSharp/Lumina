@@ -20,6 +20,8 @@
 - 036仅关闭上述明确子范围：Control-12i、Form-12c及Button-002b。Button-002b按固定10.0.11源码确认Button.cs原生BN_CLICKED不重复调用验证，真实HWND Prevent/Allow回归通过；Control共享ValidationCancelled父链、鼠标抬起清理和队列字符消息有界移除由主整合。完整Control/ContainerControl/Form/UserControl/Button/平台父项仍保持部分或待办。
 - `git -c core.whitespace=cr-at-eol diff --check`、双目标Release构建、036新增测试、既有14项键盘队列回归和4,514全量测试均通过。固定API库存、AOT发布/运行、VS Designer、物理设备、Linux/macOS、生产/现场及98%继续NOT_RUN/UNKNOWN，不由本批测试数推出兼容率。
 - 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl继续，优先完整IME/派生输入及剩余原生验证组合，再补UserControl完整AutoSize；不重复033～036。批次边界完成后创建只读local接续聊天，归属交接独立commit/push并核验三SHA后发送开始，确认实际接管后本聊天停止写入并归档。
+- 036实现提交 `6683445a550e8a79757fd271bb3892cf6ac9b4a3` 已成功push；提交后HEAD、origin/main、实际远端refs/heads/main三SHA一致且工作区干净。三个036内部任务均completed/冻结，所有有界Cordonix子进程cleanup_complete=true，无本批临时对象。
+- 下一local接续聊天 `01a1b27b-6152-7792-a700-4989923b44a9`（Lumina项目，037 continuation）已创建并处于只读准备；本归属交接独立commit/push并核验三SHA后，036主才发送“开始接管”。037主收到后重新核对交接SHA/HANDOFF并明确实际接管；确认后036主停止共享写入/构建/Git并立即归档，不等037完成。
 
 ## 批次035 实施与收尾
 
