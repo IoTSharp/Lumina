@@ -1,6 +1,14 @@
 # 本轮验证与限制
 
-## 批次041 · 2026-11-07 当前验证
+## 批次042 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增19/19（共享基类8、IME默认路由11）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文318/318、全量4,654/4,654通过，0失败/跳过。首次构建与三组测试均通过，无本批编译或测试失败。[042](batches/042.md)只关闭TextBoxBase-001a及TextBox-001a限定提取/迁移，Control生产代码no-op；测试不关闭完整基类、另外两个派生/真实后端或IME父项。
+
+基类引用实际创建/重建保留文本、选择和native modified，事件槽/虚hook/密码应用顺序及旧便利构造有回归；真实隐藏EDIT程序消息验证组合/SETCONTEXT/候选通知的原参数和默认过程结果。物理输入、候选UI和模态宿主未验收。原始命令/JSON/三个TRX与固定源码保留artifacts/compatibility-batch042，全部有界子树cleanup_complete=true，两个内部任务冻结且无临时对象/打开文档/独占服务，共享bin/obj保留。
+
+固定10.0.11 API引用库存刷新NOT_RUN，旧类型/成员快照不手改；当前TextBoxBase源码与历史“缺失”明确分开。Native AOT发布/运行、Designer、物理设备、Linux/macOS与98%本批NOT_RUN/UNKNOWN。WarningLevel=0不表示分析告警清零；041其他失败HRESULT显式抛出和040 MUI最多一次扩容差异保持。
+
+## 批次041 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增18/18（OLE状态9、语言前置7、真实消息循环2）、相关组合148/148、全量4,635/4,635通过，0失败/跳过。首轮18项中9个内部测试在调用库之前误假定CLR未初始化COM而失败；保留原始JSON/TRX，修正夹具为显式STA/MTA及平衡原生OLE探测后通过，生产实现未为夹具改变。[041](batches/041.md)只关闭Application-11b/12a，不关闭完整context/模态/输入法或平台验收。
 

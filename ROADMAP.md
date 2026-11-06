@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[042](docs/roadmap/batches/042.md)建立标准TextBoxBase共享EDIT首范围及TextBox直接继承，保留原有编辑/重建/密码规则；IME组合/候选通知经固定源码审计后保持原生默认路由。新增19/19、相关318/318、全量4,654/4,654通过，Release固定双目标0错误/2既有NU1510。完整基类、RichTextBox/MaskedTextBox直接继承与真实后端、模态/设备/Designer/AOT/平台/98%仍待。固定API清单保持原分母，历史类型缺失快照与当前源码分别记录；下述041及以前是历史。
+
 当前批次[041](docs/roadmap/batches/041.md)沿040补Application-11b输入语言OLE前置与Application-12a最小线程初始化/退出配对。完整OLE宿主context、模态/组合串/候选窗、TextBoxBase、AutoSize及全部平台验收仍待；其他失败HRESULT显式抛出、MUI最多一次扩容的差异单列，不以局部线程状态称完整InputLanguage兼容。下述040及以前为历史。
 
 当前批次[040](docs/roadmap/batches/040.md)完成Application-11a真实线程HKL服务、Form-12d标准语言事件/参数及Control-12m后代通知/请求取消。新增27/27、IME/焦点组合96/96、全量4,617/4,617，Release双目标0错误/2既有NU1510。固定源码OLE持久前置副作用未实现；模态/组合输入/候选窗、TextBoxBase、AutoSize及设备/Designer/AOT/平台/98%仍待。下述039及以前为历史。
@@ -20,7 +22,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～041的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [041结果](docs/roadmap/batches/041.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～042的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [042结果](docs/roadmap/batches/042.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

@@ -53,6 +53,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 
 ## 修改历史
 
+- 2026-11-07 · 批次042：只读核模态前置，Form.cs no-op。固定Control.Ime的模态失焦恢复依赖真实Modal，当前ShowDialog/owner禁用恢复和模态循环仍缺；不新增假状态或把普通嵌套循环测试算作模态完成。Form-03/12及Application/ApplicationContext依赖保留，见[042](../batches/042.md)。
+
 - 2026-11-07 · 批次040：12d补两组标准输入语言事件与参数/委托，保留组件事件槽、虚派发、订退、原异常和请求取消。Control共享路径先更新IME再向FindForm通知，不另造Form专用输入管线；完整模态/IME/OLE/Designer及平台仍待，见[040](../batches/040.md)。
 
 - 2026-11-07 · 批次039：Form.cs未改；普通Form根不走非Form宿主传播恢复，Form语言事件/取消、InputLanguage服务及模态传播仍缺，不把Control-12l消息接入算作完整Form输入或模态实现，见[039](../batches/039.md)。

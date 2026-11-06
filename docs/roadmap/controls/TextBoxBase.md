@@ -4,9 +4,9 @@
 
 ## 当前证据与依赖
 
-⬜ 无 Lumina.Forms/TextBoxBase.cs。当前TextBox直接继承Control，MaskedTextBox/RichTextBox又继承TextBox，与WinForms共同继承TextBoxBase的层级不同。038在既有TextBox中完成选择/多行生命周期前置；039又将固定基类的只读/密码IME限制及ReadOnlyChanged有限消费放入现有TextBox。不能由这些派生补丁关闭本页任何完整基类任务，恢复层级时须迁移共享成员并保留行为。
+🟡 批次042建立abstract TextBoxBase : Control及TextBox : TextBoxBase，迁入038/039等已有共享EDIT行为。内部无参构造按固定10.0.11保持internal；TextBox保留专属密码/Enter规则和非标准SelectionChanged扩展。MaskedTextBox/RichTextBox仍继承TextBox，直接层级和对应原生后端仍未恢复。新增8项基类回归及全量4,654项通过，只关闭001a限定提取范围，完整基类不关闭，见[042](../batches/042.md)。
 
-源码定位：`Lumina.Forms/TextBoxBase.cs`（尚不存在）；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control.Text/键盘/IME/焦点与验证、剪贴板、字体和 native handle 重建。
+源码定位：[TextBoxBase.cs](../../../Lumina.Forms/TextBoxBase.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control.Text/键盘/IME/焦点与验证、剪贴板、字体和 native handle 重建。
 
 公开成员（含继承的全部属性、事件和方法）逐项见 [TextBoxBase API 清单](../api/TextBoxBase.md)；共同行为、AOT、设计器与计数方法见 [基础任务](../foundations.md)。本表列出具体实现/验收动作，API 清单中余下成员也必须逐条关闭，不能把表外成员当作已支持。
 
@@ -16,15 +16,16 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| TextBoxBase-001 | P0 | ⬜ | 恢复 abstract TextBoxBase : Control，TextBox/RichTextBox/MaskedTextBox 直接继承它；迁移公共成员且不丢已有行为，ISupportInitialize 等按各类型基线放置。 |
-| TextBoxBase-002 | P1 | ⬜ | Text、Lines、TextLength、SelectedText、SelectionStart、SelectionLength、Select/SelectAll/DeselectAll；无句柄时也保存选择，负数/超过文本范围、CRLF、emoji 边界按基线验收。 |
-| TextBoxBase-003 | P1 | ⬜ | ReadOnly=false、Multiline=false、WordWrap=true、AcceptsTab=false、HideSelection=true、MaxLength=32767、ShortcutsEnabled=true 的类型默认值及派生覆盖逐一以基线确认。 |
-| TextBoxBase-004 | P1 | ⬜ | ReadOnlyChanged、MultilineChanged、AcceptsTabChanged、HideSelectionChanged、BorderStyleChanged；同值赋值不重复，重建句柄不伪造用户文本变化。 |
-| TextBoxBase-005 | P1 | ⬜ | Modified / ModifiedChanged、CanUndo、Undo、ClearUndo、Copy/Cut/Paste、Clear、AppendText；用户输入与代码赋值的撤销/修改标记分别对照。 |
-| TextBoxBase-006 | P1 | ⬜ | TextChanged、KeyDown/KeyPress/KeyUp、输入法提交、粘贴、验证取消和失焦的事件顺序；不额外公开基线没有的 SelectionChanged（该事件属于 RichTextBox）。 |
-| TextBoxBase-007 | P1 | ⬜ | BorderStyle、AutoSize、PreferredHeight、GetPreferredSize；单/多行、Font、DPI、滚动条切换后的客户端尺寸和选择/撤销保存。 |
-| TextBoxBase-008 | P2 | ⬜ | GetCharFromPosition、GetCharIndexFromPosition、GetPositionFromCharIndex、GetLineFromCharIndex、GetFirstCharIndexFromLine、GetFirstCharIndexOfCurrentLine、ScrollToCaret；换行和端点规则逐场景测试。 |
-| TextBoxBase-009 | P2 | ⬜ | Tab/Enter、快捷键关闭、只读仍可复制、密码隐藏、RTL、IME 候选窗口和组合输入不被按键拦截破坏；跨平台输入法原生集成验收。 |
+| TextBoxBase-001 | P0 | 🟡 | 042完成001a标准基类及TextBox直接继承/已有行为迁移。RichTextBox/MaskedTextBox直接继承、对应原生实现与共享成员扩面仍待；ISupportInitialize等按各类型基线放置，不由一个派生迁移关闭父项。 |
+| TextBoxBase-001a | P0 | ✅ | 批次042：建立abstract TextBoxBase : Control与internal无参构造，TextBox直接继承；迁移现有文本/选择、多行/只读、Tab、颜色/主题和EDIT句柄状态。TextLength为virtual，密码/Enter及既有SelectionChanged扩展保留TextBox。8项新增基类引用/真实重建/事件/派生hook回归与全量通过；不含另外两个派生直接层级或完整编辑能力。 |
+| TextBoxBase-002 | P1 | 🟡 | 042迁入现有Text/Lines、virtual TextLength、SelectionStart/Length和Select的无句柄缓存/真实创建恢复。SelectedText、SelectAll/DeselectAll、完整CRLF/emoji/端点及Lines语义仍待，不以已有选择前置关闭父项。 |
+| TextBoxBase-003 | P1 | 🟡 | 042迁入ReadOnly=false、Multiline=false、AcceptsTab=false及WordWrap=true字段；WordWrap仍存值，HideSelection/MaxLength/ShortcutsEnabled及派生默认覆盖未补全。完整默认与真实行为逐一以固定基线确认。 |
+| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged组件事件槽与虚On*，同值不重复，保留创建期EN_CHANGE抑制。AcceptsTabChanged、HideSelectionChanged、BorderStyleChanged及完整重入/通知仍待。 |
+| TextBoxBase-005 | P1 | 🟡 | 042迁入既有Clear/AppendText与重建前后的native modified位保存；未新增公开Modified/ModifiedChanged、CanUndo、Undo/ClearUndo、Copy/Cut/Paste。现有AppendText的空值/选择/撤销语义仍需固定对照，不能把迁移旧代码计为完整编辑。 |
+| TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、Control键事件与现有IME前置，标准基类没有SelectionChanged；TextBox非标准扩展暂留原派生。完整输入法提交、粘贴、验证/失焦和RichEdit选择通知仍待。 |
+| TextBoxBase-007 | P1 | 🟡 | 042仅迁入既有颜色/主题与24/48最小原生高度，保留已知差异。BorderStyle、AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的尺寸、选择/撤销保存仍未完整实现。 |
+| TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；未建句柄延期滚动及GetCharFromPosition/GetCharIndexFromPosition/GetPositionFromCharIndex/GetLineFromCharIndex/GetFirstCharIndexFromLine/GetFirstCharIndexOfCurrentLine仍待，换行/端点逐场景验收。 |
+| TextBoxBase-009 | P2 | 🟡 | 042按固定层级拆出共享Tab/编辑键/只读IME限制，Enter与PasswordProtect由TextBox消费；组合/候选通知继续原生默认过程。快捷键关闭、复制/密码完整限制、RTL、物理组合输入/候选窗口与跨平台原生集成仍待。 |
 | TextBoxBase-010 | P2 | ⬜ | 控件焦点与原生编辑子对象同步，辅助技术 text/value/selection/read-only 状态；Dispose 解除 field editor/剪贴板和通知回调。 |
 | TextBoxBase-011 | P3 | ⬜ | 公开/受保护成员完整清单、Designer 文本/Lines/字体资源往返，AOT 下文本、选择、剪贴板与输入法实际操作。 |
 | TextBoxBase-CLOSE | P3 | ⬜ | 对照 API 清单逐个关闭剩余属性、事件、方法/重载与受保护兼容点；属性写入后读回、通知顺序/取消/重入、默认值、异常、未建句柄/重建/释放后行为分别有证据。Windows 与两原生平台各出属性/事件/行为分子分母，未验收项不能标🧪 验收通过。 |
@@ -42,6 +43,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次042：新增001a，001～009依据实际迁入的旧实现由全待办改部分，保留全部原ID/未完能力。基类存在与TextBox迁移不关闭RichTextBox/MaskedTextBox或任何完整编辑任务；旧存值/高度/文本语义差异保留。固定API库存仍是10.0.11历史快照，未改1,095类型/61,240成员行；构建/程序消息不等于AOT/Designer/设备验收，见[042](../batches/042.md)。
 
 - 2026-11-07 · 批次039：现有TextBox消费CanEnableIme/ImeModeBase、ReadOnlyChanged及必要密码同步，但TextBoxBase类仍不存在，001～011/CLOSE全部原状态和ID保留；标准共享编辑/继承恢复另列，见[039](../batches/039.md)。
 

@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-037～038有限派生键/多行EDIT重建及选择/原生modified保存保留；039的005a补只读/密码受限IME、有效模式与缓存分离、标准ReadOnlyChanged和必要密码原生同步。13项新增通过，见[039](../batches/039.md)。完整编辑、其余运行期样式、完整密码安全/辅助技术和TextBoxBase仍缺。
+037～041有限范围保留；042完成001a的TextBox : TextBoxBase，共享现有文本/选择、多行/只读、Tab/IME前置及EDIT句柄/主题路径，TextBox保留密码、Enter与旧非标准SelectionChanged扩展。8项新增基类回归、相关318项和全量4,654项通过，见[042](../batches/042.md)。完整基类、其余运行期样式、密码安全/辅助技术及另外两个派生直接继承仍缺。
 
 🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；038修复多行重建/选择，039补PasswordChar真实回读/消息更新和UseSystemPasswordChar样式/重建优先级，ReadOnlyChanged在IME检查前通知。ScrollBars/WordWrap/PlaceholderText等仍多为存值，Style未采用全部值。错误公开SelectionChanged（WinForms TextBox未提供该事件）仍待迁移决策；022～038范围保留，完整Tab/键盘/验证/编辑与平台仍缺。
 
@@ -18,7 +18,8 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| TextBox-001 | P0 | ⬜ | 改为 TextBox : TextBoxBase，共用字体/选择/文本生命周期；现有 SelectionChanged 非 WinForms 成员列迁移兼容决策，避免以扩展成员算基线覆盖。 |
+| TextBox-001 | P0 | 🟡 | 042的001a已改为TextBox : TextBoxBase并共用旧字体/选择/文本生命周期。完整基类成员与默认/Designer仍缺；现有SelectionChanged非WinForms成员暂留TextBox、不污染标准基类，正式迁移兼容决策仍待，不抵扣基线覆盖。 |
+| TextBox-001a | P0 | ✅ | 批次042：TextBox直接继承标准TextBoxBase，密码/系统密码、AcceptsReturn、ScrollBars、PlaceholderText及SelectionChanged留派生；便利构造保持原始字段初始化时序，选择扩展通过内部连接继续派发原虚On*。基类引用/真实重建/事件/密码与旧相关组通过；完整001父项不关闭。 |
 | TextBox-002 | P1 | 🟡 | 已有Text/Lines和EN_CHANGE双向同步，038的003c补创建前选择缓存、创建/重建恢复及创建期间重复EN_CHANGE抑制。完整用户输入、AppendText/Clear/撤销修改标志及全部通知重入仍待，不能由选择前置关闭父项。 |
 | TextBox-003 | P1 | 🟡 | 028完成003a焦点通知；037的003b补输入键判别与有限对话框路由；038的003c补Multiline真实重建及文本/选择/原生modified位保存。PreferredHeight/AutoSize/布局、撤销栈、其余样式与完整编辑/IME/设备仍待。 |
 | TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
@@ -49,6 +50,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次042：001a迁移直接基类，001改部分；原002/003/005/010范围不重复计数。Multiline、ReadOnly等成员转为继承自TextBoxBase，TextLength为virtual；反射声明位置/基类变化明确记录，二进制/Designer/AOT完整消费仍待。旧SelectionChanged扩展保留在TextBox，不能由其存在计标准API支持，见[042](../batches/042.md)。
 
 - 2026-11-07 · 批次039：005a补只读/密码IME限制及必要原生密码同步，005从全待办纠正为部分，原ReadOnly映射与本批范围分别记账。多行EDIT的显示支持不决定EM_GETPASSWORDCHAR返回值，改用独立原生基线且保留原失败；受限setter缓存配置、设计模式不强制Disable。完整防泄漏/AutoComplete/TextBoxBase仍待，见[039](../batches/039.md)。
 

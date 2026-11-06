@@ -44,6 +44,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次042：源码no-op，随TextBox间接消费新TextBoxBase的共享EDIT首范围；仍直接继承TextBox且原生仍EDIT，RichTextBox-001及富文本功能不关闭。不能把共同基类存在或EM_SETBKGNDCOLOR消息当RichEdit支持，见[042](../batches/042.md)。
+
 以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
 
 - 2026-04-09 · `2fb513a` · feat: 添加异步调用支持，增强 ListView 和 RichTextBox 控件功能，优化 TableLayoutPanel 布局逻辑。

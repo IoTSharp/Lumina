@@ -1,10 +1,10 @@
 # 逐控件任务索引
 
-更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～041](batches/041.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。041沿040补输入语言OLE前置和最小owner线程初始化/退出配对；完整context、父项及全部未完子项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～042](batches/042.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。042新增TextBoxBase共享EDIT首范围及TextBox直接继承，并核IME原生默认消息/模态前置；完整基类、Rich/Masked直接继承和真实后端及所有父项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
-✅=代码完成；🧪=指定范围验收通过；🚧=正在编码；🟡=存在代码/局部实现，未完整验收；⬜=缺失/待验收；🔎=待验证；🚫=平台不等价，不能算完成。下表“存在”只指同名类型。**目前没有控件经完整逐项证据证明达到98%**，两套原生平台也尚未实现。
+✅=代码完成；🧪=指定范围验收通过；🚧=正在编码；🟡=存在代码/局部实现，未完整验收；⬜=缺失/待验收；🔎=待验证；🚫=平台不等价，不能算完成。下表类型列是固定API库存快照，“存在”只指该快照的同名类型；当前实施以最后一列和任务页为准。042已有TextBoxBase源码，其历史“缺失”快照待固定10.0.11引用库存刷新，不手改原1,095类型/61,240成员行。**目前没有控件经完整逐项证据证明达到98%**，两套原生平台也尚未实现。
 
 每个类型另列“代码实施与已完成子任务”：✅ 后的任务 ID 表示该明确子范围代码完成，整行仍为 🟡 时该控件其余任务尚未完成。已有同名类型但没有独立完成记录的控件明确写待实现/待核实；基类任务不会自动算作派生控件完成。Windows/Linux/macOS 验收列独立保留。本列由已复核的控件任务页生成，`Validate-Roadmap.ps1 -ExportTasks` 与 tasks.csv 同步更新；普通校验会报告陈旧行，不由类型存在或测试数量推断完成。
 
@@ -24,7 +24,7 @@
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a、UserControl-02b、UserControl-02c、UserControl-02d、UserControl-03a、UserControl-05a；其余任务未完成 |
 | [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-07a、Form-08a、Form-10a、Form-10b、Form-12a、Form-12b、Form-12c、Form-12d、Form-16a、Form-16b、Form-16c；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
-| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
+| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a；其余任务未完成 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [UpDownBase](controls/UpDownBase.md) | M1 | ⬜ 缺失 | 103 / 74 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ScrollBar](controls/ScrollBar.md) | M1 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -38,7 +38,7 @@
 | [RadioButton](controls/RadioButton.md) | M2 | 🟡 存在 | 103 / 77 / 75 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RadioButton-003a；其余任务未完成 |
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
-| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-003a、TextBox-003b、TextBox-003c、TextBox-005a、TextBox-010a；其余任务未完成 |
+| [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-001a、TextBox-003a、TextBox-003b、TextBox-003c、TextBox-005a、TextBox-010a；其余任务未完成 |
 | [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
