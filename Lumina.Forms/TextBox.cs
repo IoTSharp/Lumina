@@ -13,6 +13,7 @@ namespace Lumina.Forms;
 public class TextBox : Control
 {
     private static readonly object s_multilineChangedEvent = new();
+    private static readonly object s_readOnlyChangedEvent = new();
 
     private bool _multiline;
     private bool _readOnly;
@@ -21,6 +22,7 @@ public class TextBox : Control
     private bool _wordWrap = true;
     private string _placeholderText = string.Empty;
     private char _passwordChar;
+    private bool _useSystemPasswordChar;
     private ScrollBars _scrollBars;
     private int _selectionStart;
     private int _selectionLength;
@@ -131,6 +133,8 @@ public class TextBox : Control
     /// <summary>
     /// Gets or sets a value indicating whether the text box is read-only.
     /// </summary>
+    [DefaultValue(false)]
+    [RefreshProperties(RefreshProperties.Repaint)]
     public bool ReadOnly
     {
         get => _readOnly;
@@ -143,7 +147,26 @@ public class TextBox : Control
                 _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETREADONLY, value ? (nint)1 : 0, 0);
             }
             RefreshTheme();
+            OnReadOnlyChanged(EventArgs.Empty);
+            VerifyImeRestrictedModeChanged();
         }
+    }
+
+    /// <summary>Occurs when the <see cref="ReadOnly"/> property changes.</summary>
+    public event EventHandler? ReadOnlyChanged
+    {
+        add => Events.AddHandler(s_readOnlyChangedEvent, value);
+        remove => Events.RemoveHandler(s_readOnlyChangedEvent, value);
+    }
+
+    /// <inheritdoc />
+    protected override bool CanEnableIme => !ReadOnly && PasswordChar == '\0' && base.CanEnableIme;
+
+    /// <inheritdoc />
+    protected override ImeMode ImeModeBase
+    {
+        get => (DesignMode || CanEnableIme) ? base.ImeModeBase : ImeMode.Disable;
+        set => base.ImeModeBase = value;
     }
 
     public string PlaceholderText
@@ -152,10 +175,43 @@ public class TextBox : Control
         set => _placeholderText = value ?? string.Empty;
     }
 
+    /// <summary>Gets or sets the character used to mask the text box's contents.</summary>
+    [DefaultValue('\0')]
+    [Localizable(true)]
+    [RefreshProperties(RefreshProperties.Repaint)]
     public char PasswordChar
     {
-        get => _passwordChar;
-        set => _passwordChar = value;
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            return (char)Win32.SendMessageW(NativeHandle, Win32.EM_GETPASSWORDCHAR, 0, 0);
+        }
+        set
+        {
+            _passwordChar = value;
+            if (!_useSystemPasswordChar && IsHandleCreated && PasswordChar != value)
+            {
+                _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETPASSWORDCHAR, (nint)value, 0);
+                VerifyImeRestrictedModeChanged();
+                Invalidate();
+            }
+        }
+    }
+
+    /// <summary>Gets or sets whether the system password character takes precedence over <see cref="PasswordChar"/>.</summary>
+    [DefaultValue(false)]
+    [RefreshProperties(RefreshProperties.Repaint)]
+    public bool UseSystemPasswordChar
+    {
+        get => _useSystemPasswordChar;
+        set
+        {
+            if (_useSystemPasswordChar == value) { return; }
+            _useSystemPasswordChar = value;
+            // Creating the replacement EDIT applies its actual password mode
+            // before the IME restriction is checked by OnHandleCreated.
+            RecreateHandle();
+        }
     }
 
     public ScrollBars ScrollBars
@@ -280,6 +336,8 @@ public class TextBox : Control
             {
                 style |= Win32.ES_READONLY;
             }
+
+            if (_useSystemPasswordChar) { style |= Win32.ES_PASSWORD; }
 
             return style;
         }
@@ -411,6 +469,11 @@ public class TextBox : Control
             _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, (nint)1, 0);
         }
         RestoreSelectionOnHandle();
+        if (_passwordChar != '\0' && !_useSystemPasswordChar)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETPASSWORDCHAR, (nint)_passwordChar, 0);
+        }
+        VerifyImeRestrictedModeChanged();
     }
 
     /// <inheritdoc />
@@ -456,6 +519,10 @@ public class TextBox : Control
     /// <summary>Raises the <see cref="MultilineChanged"/> event.</summary>
     protected virtual void OnMultilineChanged(EventArgs e)
         => (Events[s_multilineChangedEvent] as EventHandler)?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="ReadOnlyChanged"/> event.</summary>
+    protected virtual void OnReadOnlyChanged(EventArgs e)
+        => (Events[s_readOnlyChangedEvent] as EventHandler)?.Invoke(this, e);
 
     private void GetSelectionStartAndLength(out int start, out int length)
     {

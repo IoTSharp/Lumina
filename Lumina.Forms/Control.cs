@@ -4852,8 +4852,12 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
                 InvokeGotFocus(this, EventArgs.Empty);
                 return;
             case Win32.WM_KILLFOCUS:
+                WmImeKillFocus();
                 DefWndProc(ref m);
                 InvokeLostFocus(this, EventArgs.Empty);
+                return;
+            case Win32.WM_INPUTLANGCHANGE:
+                WmInputLangChange(ref m);
                 return;
             case Win32.WM_KEYDOWN:
             case Win32.WM_SYSKEYDOWN:

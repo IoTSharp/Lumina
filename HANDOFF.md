@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`于2026-11-07收到“开始接管”，重新核实独立归属交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的HEAD/origin/main/实际远端三SHA一致、工作树干净并已向038主确认实际接管。039为当前唯一编码主；038已确认停止共享写入/构建/Git并按规则归档。039沿TextBox只读/密码IME限制和Control语言消息/非Form宿主传播两个互斥范围继续，主独占共享文档、interop、集成与Git。监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，不恢复可能用户删除的项。下述038及以前归属为历史。
+
 - 038主聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`于2026-11-07收到“开始接管”，重新核实独立归属交接`8c1e746322f22b8d5eefe37d0a50b1f0608c8414`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向037主明确确认实际接管。038为当前唯一编码主；037按规则立即停止共享写入/构建/Git并归档。038继续剩余IME上下文/组合态、TextBox派生编辑输入和UserControl AutoSize的互斥限定子范围；主独占共享文档、interop、集成与Git。监督`luminaforms-30`为NOT_FOUND、038绑定NOT_DONE，不自动恢复可能已被用户删除的项。下面037及更早归属/证据作为历史保留。
 
 - 037主聊天`01a1b27b-6152-7792-a700-4989923b44a9`于2026-11-07收到“开始接管”，重新核实独立交接`1a8fecc4fa761d1bc9b04a84db87b046fc94858f`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向036主明确确认实际接管。037为当前唯一编码主；036随后停止共享写入/构建/Git并归档。当前037沿IME字符消息、TextBox派生输入与嵌套UserControl原生验证三个互斥范围继续；主独占共享文档、interop、集成与Git。下面036归属和验证为历史记录。
@@ -14,7 +16,19 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次038 实施与收尾（当前）
+## 批次039 实施与收尾（当前）
+
+- 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`已重新核验独立交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的三SHA一致/干净并向038确认实际接管，实时已核038归档；本聊天为当前唯一编码主。
+- 两个互斥内部任务完成并冻结：TextBox-005a只读/密码受限IME与必要真实密码同步、Control-12l输入语言消息及非Form宿主传播。主补共享Win32常量、复核固定源码/测试夹具、统一集成与文档；不恢复TextBoxBase或新建框架。
+- 最终Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增22/22（13+9）、含旧028焦点的组合50/50、全量4,590/4,590通过，0失败/跳过。首轮CS0103、定向18/22和全量4,589/4,590均保留；原因与夹具修复见[039](docs/roadmap/batches/039.md)，原行为断言未删，生产代码未为夹具错误改写。
+- TextBox受限时有效ImeMode为Disable，缓存的程序设置在解除限制后恢复；DesignMode读配置。PasswordChar getter创建真实EDIT并回读，系统密码开关真实重建、优先系统字符，关闭恢复自定义字符；ReadOnlyChanged在IME检查前。多行密码按独立系统EDIT实际回读对照，不推断显示/安全验收。
+- Control语言变化先更新上下文、unsupported传播Off，再默认过程；非Form根失焦恢复传播后重置Inherit，忽略通知finally复原。Form语言事件/取消、Application输入语言服务、模态宿主、实际中日韩/组合输入和候选窗仍待，不关闭完整IME。
+- 下一依赖先补标准输入语言服务与Form语言通知/取消的必要闭环，再核组合态/宿主模态/TextBoxBase共享编辑。UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定API10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%保留未完。不重复033～039、不重评整个项目。
+- 监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，未创建/恢复替代项。逐批实施、成功commit/push与三SHA回读、新local只读准备、独立归属交接成功push后开始、确认实际接管后旧主立即停止共享操作并归档授权保留，后来暂停/停止优先。
+- 两个内部任务所有Cordonix外部命令cleanup_complete=true，无临时对象/打开workspace文档/独占服务。主有界构建/测试子树均已清理；本批日志/TRX/固定源码证据及共享bin/obj保留。Windows官方Drawing、固定Demo双目标与静态Designer保持。
+- 039路线图导出/校验PASS：427份Markdown、2,138任务、187实施索引行，0结构错误，整类型代码完成仍0；README实施列/tasks.csv已按真实子范围重生成，固定1,095类型/61,240成员行及原ID保留。TextBox-005全待办遗漏已有ReadOnly映射已纠正为部分。
+
+## 批次038 实施与收尾（历史）
 
 - 当前唯一编码主为038聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`，收到“开始接管”后核实独立交接`8c1e746322f22b8d5eefe37d0a50b1f0608c8414`三SHA一致、工作树干净并向037主确认实际接管；已只读核实037主已归档。
 - 三个互斥内部任务已完成并冻结：Control-12k有效ImeMode/IMM上下文首范围、TextBox-003c多行EDIT重建/选择与原生modified保存、UserControl-02d标准AutoSize属性/事件声明。主补共享LibraryImport声明和销毁通知/IME清理双错保留，不另建框架或恢复TextBoxBase。

@@ -4,9 +4,9 @@
 
 ## 当前证据与依赖
 
-037完成003b有限派生键判别，8项回归通过，见[037](../batches/037.md)。038的003c接入Multiline运行期EDIT重建、标准Changed事件及选择/原生modified位保存；检查见[038](../batches/038.md)。AcceptsReturn/AcceptsTab已参与预处理；完整编辑、其余运行期样式和TextBoxBase仍缺。
+037～038有限派生键/多行EDIT重建及选择/原生modified保存保留；039的005a补只读/密码受限IME、有效模式与缓存分离、标准ReadOnlyChanged和必要密码原生同步。13项新增通过，见[039](../batches/039.md)。完整编辑、其余运行期样式、完整密码安全/辅助技术和TextBoxBase仍缺。
 
-🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；038修复Multiline只存值和Select未建句柄丢状态的缺口。PasswordChar/ScrollBars/WordWrap/PlaceholderText等仍多为存值，Style未采用全部值。错误公开SelectionChanged（WinForms TextBox未提供该事件）仍待迁移决策；022基础字体/颜色、028焦点通知和037输入键首范围保留，完整Tab/键盘/验证仍缺。
+🟡 [TextBox.cs](../../../Lumina.Forms/TextBox.cs) 有 EDIT、EN_CHANGE、ReadOnly 原生映射、AppendText/Select/ScrollToCaret；038修复多行重建/选择，039补PasswordChar真实回读/消息更新和UseSystemPasswordChar样式/重建优先级，ReadOnlyChanged在IME检查前通知。ScrollBars/WordWrap/PlaceholderText等仍多为存值，Style未采用全部值。错误公开SelectionChanged（WinForms TextBox未提供该事件）仍待迁移决策；022～038范围保留，完整Tab/键盘/验证/编辑与平台仍缺。
 
 源码定位：[Lumina.Forms/TextBox.cs](../../../Lumina.Forms/TextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、Control.Text 原生同步、Form.AcceptButton/CancelButton、剪贴板和自动完成关联类型。
 
@@ -25,7 +25,8 @@
 | TextBox-003b | P1 | ✅ | 批次037：现有TextBox消费固定TextBox/TextBoxBase输入键规则：多行Enter/AcceptsReturn、Tab/AcceptsTab/Ctrl、多行Escape、可编辑Back及Home/End/Page；AcceptsTab下Ctrl+Tab去除Ctrl后交父对话框链。8项无句柄/真实EDIT/Form默认按钮回归通过。未恢复TextBoxBase、运行期原生样式重建和完整编辑输入。 |
 | TextBox-003c | P1 | ✅ | 批次038：Multiline变更真实重建EDIT后发MultilineChanged/虚OnMultilineChanged；同值不重建。Select/SelectionStart/SelectionLength支持创建前缓存、参数与有向范围、创建/重建恢复，保留Text及原生modified位并抑制创建中的重复EN_CHANGE。14项回归通过；仍直接继承Control，virtual Multiline为过渡声明，未完成TextBoxBase、尺寸/布局、撤销栈或完整编辑。 |
 | TextBox-004 | P1 | ⬜ | WordWrap=true、ScrollBars=None；四种滚动条与换行组合真实生效，水平滚动条在 WordWrap 开启时的表现按基线。 |
-| TextBox-005 | P1 | ⬜ | PasswordChar='\0'、UseSystemPasswordChar=false、ReadOnly=false；运行时更新、系统密码字符优先级、复制限制、辅助技术不泄漏密码。 |
+| TextBox-005 | P1 | 🟡 | 原已有ReadOnly原生映射，039的005a补只读/密码受限IME、PasswordChar实际回读与消息更新、UseSystemPasswordChar真实样式/重建优先级及ReadOnlyChanged。默认值、创建/重建/组合限制已有13项回归；完整复制限制、密码辅助技术防泄漏、AutoComplete协作和物理IME仍待。 |
+| TextBox-005a | P1 | ✅ | 批次039：CanEnableIme按ReadOnly/实际原生PasswordChar/基类能力判断，ImeModeBase受限时返回Disable但保留设置意图，DesignMode读配置；ReadOnlyChanged/虚On*在原生提交后、IME检查前。PasswordChar getter创建EDIT并回读，setter非系统密码时发EM_SETPASSWORDCHAR；UseSystemPasswordChar重建后优先系统字符，关闭恢复缓存字符，保留文本/选择/modified。13项回归含独立多行原生EDIT对照通过；TextBoxBase、完整密码安全/自动完成/设备仍待。 |
 | TextBox-006 | P1 | ⬜ | PlaceholderText=空字符串，空值规范化、聚焦时显示、清空 Text 后显示、多行支持差异和高对比度；占位文字不进入 Text/绑定值。 |
 | TextBox-007 | P1 | ⬜ | CharacterCasing=Normal、TextAlign=Left、TextAlignChanged；输入/粘贴/程序赋值的大小写转换分别验收，RTL 与对齐不混为一个开关。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
@@ -48,6 +49,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次039：005a补只读/密码IME限制及必要原生密码同步，005从全待办纠正为部分，原ReadOnly映射与本批范围分别记账。多行EDIT的显示支持不决定EM_GETPASSWORDCHAR返回值，改用独立原生基线且保留原失败；受限setter缓存配置、设计模式不强制Disable。完整防泄漏/AutoComplete/TextBoxBase仍待，见[039](../batches/039.md)。
 
 - 2026-11-07 · 批次038：003c修复Multiline只存值及无句柄Select丢状态，新增标准MultilineChanged/OnMultilineChanged；选择与modified恢复在base.OnHandleCreated通知后，按固定源码保持顺序。负start/选择属性负值从旧钳制改为标准参数异常，负length有向选择与极值保留。完整层级、尺寸/布局、撤销和IME仍待，见[038](../batches/038.md)。
 

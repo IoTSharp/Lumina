@@ -47,6 +47,8 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
+- 2026-11-07 · 批次039：ContainerControl.cs未改，继承Control-12l的有限语言消息/非Form根传播；未完成模态宿主、完整输入语言/IME和全部派生验证，父任务状态保留，见[039](../batches/039.md)。
+
 - 2026-11-07 · 批次038：ContainerControl.cs本批no-op；UserControl标准AutoSize声明继续消费共享布局，固定源码无UserControl独立算法。Control有限ImeMode继承/上下文不关闭完整容器输入/验证/缩放与平台，见[038](../batches/038.md)。
 
 - 2026-11-07 · 批次037：UserControl派生新增原生焦点入口，7项真实HWND回归验证共享活动链与Prevent/Allow/CausesValidation、Tab正反导航。ContainerControl.cs本批no-op；有限派生消费不关闭完整03/04/06/07，见[037](../batches/037.md)。

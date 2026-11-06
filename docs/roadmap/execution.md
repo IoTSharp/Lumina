@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[039](batches/039.md)完成TextBox-005a只读/密码CanEnableIme与有效ImeMode、标准ReadOnlyChanged及必要原生密码同步，Control-12l补语言消息/非Form宿主传播。22新增、旧焦点组合50/50及4,590全量通过，Release双目标0错/2既有NU1510。下一依赖先补标准输入语言服务与Form语言通知/取消的必要闭环，再核剩余组合态、宿主模态和TextBoxBase共享编辑；UserControl共享AutoSize/约束、ButtonBase与关闭焦点/WM_QUIT保留原任务。不重复033～039、不重评全项目。下述038及以前是历史快照，设备/Designer/AOT/平台和98%继续待验。
+
 当前[038](batches/038.md)完成Control-12k有效ImeMode与真实IMM上下文首范围、TextBox-003c多行EDIT重建/选择与原生modified保存、UserControl-02d标准AutoSize声明。32新增/4,568全量和Release双目标通过。下一依赖先补TextBox只读/密码IME限制与属性联动，再核语言切换/宿主传播/组合态；TextBoxBase和UserControl共享布局完整约束仍待。完整输入、模态、设备/Designer/AOT/平台和98%不关闭。固定源码排除UserControl独立布局算法；037以下保留历史。
 
 当前[037](batches/037.md)完成Control-12j有限IME字符分流/重复KeyPress抑制、TextBox-003b派生键判别与对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。22新增与4,536全量通过，Release双目标0错/2既有NU1510。下一批先核剩余输入上下文/组合态及派生编辑输入，再补UserControl完整AutoSize；不重复033～037。TextBoxBase、HostedInWin32DialogManager、完整IME、模态、ButtonBase、AOT/Designer/设备/平台/98%均未关闭。036及以下内容保留为历史。

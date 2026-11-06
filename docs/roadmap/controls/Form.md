@@ -52,6 +52,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 
 ## 修改历史
 
+- 2026-11-07 · 批次039：Form.cs未改；普通Form根不走非Form宿主传播恢复，Form语言事件/取消、InputLanguage服务及模态传播仍缺，不把Control-12l消息接入算作完整Form输入或模态实现，见[039](../batches/039.md)。
+
 - 2026-11-07 · 批次038：Form.cs本批no-op，继承Control有限ImeMode/IMM路径；共享销毁通知新增的IME清理与原通知双错均保留。TextBox多行重建和UserControl声明不关闭Form输入/模态/生命周期，完整派生IME和设备仍待，见[038](../batches/038.md)。
 
 - 2026-11-07 · 批次037：TextBox多行Enter/AcceptsReturn通过现有Form.AcceptButton路由，UserControl嵌套活动链消费现有Form验证策略，Form.cs本批no-op。完整IME/模态/生命周期/平台仍待，见[037](../batches/037.md)。

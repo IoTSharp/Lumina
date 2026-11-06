@@ -10,6 +10,7 @@ public partial class Control
 {
     private static readonly object s_imeModeChangedEvent = new();
     private static ImeMode s_propagatingImeMode = ImeMode.Inherit;
+    private static bool s_ignoreWmImeNotify;
     private ImeMode? _imeMode;
     private int _disableImeModeChangedCount;
     private bool _lastCanEnableIme = true;
@@ -180,6 +181,7 @@ public partial class Control
     private void WmImeNotify(ref Message message)
     {
         if (DefaultImeMode != ImeMode.Disable && !DesignMode && CanEnableIme
+            && !s_ignoreWmImeNotify
             && message.WParam is 0x0006 or 0x0008)
         {
             ImeMode actual = NativeImeContext.GetImeMode(NativeHandle, NativeImeContext.CurrentLanguage);
@@ -195,6 +197,49 @@ public partial class Control
             }
         }
         DefWndProc(ref message);
+    }
+
+    private void WmInputLangChange(ref Message message)
+    {
+        UpdateImeContextMode();
+        if (NativeImeContext.CurrentLanguage == ImeLanguage.Unsupported)
+        {
+            SetPropagatingImeMode(ImeMode.Off);
+        }
+
+        // Form input-language events and the public InputLanguage service are
+        // a separate compatibility scope. Retain native propagation here.
+        DefWndProc(ref message);
+    }
+
+    private void WmImeKillFocus()
+    {
+        Control topMostParent = this;
+        for (Control? parent = _parent; parent is not null; parent = parent._parent)
+        {
+            topMostParent = parent;
+        }
+
+        // A non-Form root can be embedded in an unmanaged host. Restore its
+        // propagating mode before leaving that host, then inherit anew on entry.
+        // Modal Form roots require their own lifecycle scope.
+        if (topMostParent is Form || topMostParent.ContainsFocus
+            || s_propagatingImeMode == ImeMode.Inherit)
+        {
+            return;
+        }
+
+        s_ignoreWmImeNotify = true;
+        try
+        {
+            (topMostParent._imeContext ??= new()).SetImeStatus(
+                PropagatingImeMode, topMostParent.Handle, NativeImeContext.CurrentLanguage);
+            SetPropagatingImeMode(ImeMode.Inherit);
+        }
+        finally
+        {
+            s_ignoreWmImeNotify = false;
+        }
     }
 
     private void ReleaseImeContext(nint handle)

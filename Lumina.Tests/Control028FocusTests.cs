@@ -345,13 +345,22 @@ public sealed class Control028FocusTests
     public void KillFocusMessageProcessesTheDefaultProcedureBeforeLostFocusWithoutInventingLeave()
         => OnSta(() =>
         {
-            var calls = new List<string>();
-            using var child = new ProbeControl { NativeCalls = calls };
-            child.LostFocus += (_, _) => calls.Add("lost-event");
-            child.Leave += (_, _) => calls.Add("leave-event");
-            child.Dispatch(0x0008);
-            Assert.Equal(["default:8", "lost-event"], calls);
-            Assert.False(child.IsHandleCreated);
+            // This original no-handle probe assumes an uninitialized IME host
+            // cache. Initialized-host restoration is covered by the IME tests.
+            FieldInfo propagating = typeof(Control).GetField("s_propagatingImeMode", BindingFlags.Static | BindingFlags.NonPublic)!;
+            object? previous = propagating.GetValue(null);
+            try
+            {
+                propagating.SetValue(null, ImeMode.Inherit);
+                var calls = new List<string>();
+                using var child = new ProbeControl { NativeCalls = calls };
+                child.LostFocus += (_, _) => calls.Add("lost-event");
+                child.Leave += (_, _) => calls.Add("leave-event");
+                child.Dispatch(0x0008);
+                Assert.Equal(["default:8", "lost-event"], calls);
+                Assert.False(child.IsHandleCreated);
+            }
+            finally { propagating.SetValue(null, previous); }
         });
 
     private static string[] Walk(Control root, bool forward)

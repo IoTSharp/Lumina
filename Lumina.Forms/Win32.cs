@@ -41,6 +41,7 @@ internal static partial class Win32
     public const uint ES_AUTOVSCROLL = 0x0040;
     public const uint ES_AUTOHSCROLL = 0x0080;
     public const uint ES_READONLY = 0x0800;
+    public const uint ES_PASSWORD = 0x0020;
     public const uint ES_WANTRETURN = 0x1000;
 
     public const uint CBS_DROPDOWNLIST = 0x0003;
@@ -120,6 +121,8 @@ internal static partial class Win32
     public const int WM_INITDIALOG = 0x0110;
     public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_SYSCHAR = 0x0106;
+    public const int WM_INPUTLANGCHANGEREQUEST = 0x0050;
+    public const int WM_INPUTLANGCHANGE = 0x0051;
     public const int WM_IME_STARTCOMPOSITION = 0x010D;
     public const int WM_IME_ENDCOMPOSITION = 0x010E;
     public const int WM_IME_NOTIFY = 0x0282;
@@ -155,6 +158,8 @@ internal static partial class Win32
     public const int EM_SETMODIFY = 0x00B9;
     public const int EM_SCROLLCARET = 0x00B7;
     public const int EM_SETREADONLY = 0x00CF;
+    public const int EM_GETPASSWORDCHAR = 0x00D2;
+    public const int EM_SETPASSWORDCHAR = 0x00CC;
     public const int EM_REPLACESEL = 0x00C2;
     public const int LB_ADDSTRING = 0x0180;
     public const int LB_RESETCONTENT = 0x0184;

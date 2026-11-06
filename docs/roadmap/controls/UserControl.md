@@ -46,6 +46,8 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
+- 2026-11-07 · 批次039：UserControl.cs未改，继续继承有限Control IME路径；未以非Form根消息测试关闭HostedInWin32DialogManager、完整输入或AutoSize/共享约束，父任务保持原状态，见[039](../batches/039.md)。
+
 - 2026-11-07 · 批次038：02d接入标准AutoSize覆盖与事件公开，复用共享状态/布局链。源码审计确认固定UserControl无独立OnLayout/GetPreferredSize算法，不为补属性而新增布局覆盖；完整AutoSize/复杂约束和Designer往返仍归02/04。检查结果见[038](../batches/038.md)。
 
 - 2026-11-07 · 批次037：05a按固定10.0.11接入OnMouseDown/WM_SETFOCUS，7项真实HWND回归通过；完整HostedInWin32DialogManager、输入/验证/AutoSize、Designer/AOT/设备和平台仍待，见[037](../batches/037.md)。

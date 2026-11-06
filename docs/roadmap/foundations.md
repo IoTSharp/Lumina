@@ -1,6 +1,6 @@
 # 公共基础：先修这些，再铺控件
 
-2026-11-07 · 批次035～037的消息循环、默认取消按钮、原生输入/队列抑制和有限IME字符范围保留；038继续ImeMode/IMM上下文、多行EDIT重建/选择和UserControl标准AutoSize声明。父任务与完整输入/布局/平台验收仍待，见[038](batches/038.md)。
+2026-11-07 · 批次035～038范围保留；039继续TextBox只读/密码受限IME、语言消息和非Form宿主传播首范围。父任务与完整输入/布局/平台验收仍待，见[039](batches/039.md)。
 
 依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。
 
@@ -30,7 +30,7 @@
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成托管AutoScroll/ScrollProperties/Scroll事件及受保护契约，032补Panel迁移和Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围，033补已有偏移下的后代可见坐标修正。真实物理滚轮/触摸板、Dock/Anchor/Tab/RTL组合、嵌套滚动事务与Linux/macOS滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；031补AutoScaleFactor首范围，纠正原全部未开始状态遗漏旧局部实现。完整Font/Dpi/None/Inherit、嵌套继承、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018～034导航/焦点范围保留；035补最深活动按钮默认通知与队列Enter/Escape首范围。全部派生、物理Tab/完整助记键/默认按钮生命周期和关闭焦点差异仍缺；公开Focus无参，定向入口为Select(bool,bool) |
-| FND-019 | 🟡 | 030～036键事件/预处理/父预览/Tab、Form/消息循环、原生判别与队列抑制保留；037补IME字符/派生键，038补有效ImeMode/IMM上下文和TextBox多行重建/选择首范围。补齐父项遗漏037子范围的滞后记账；完整Tab/助记键/命令、语言切换/宿主传播/组合串/候选窗、全部派生与设备仍缺 |
+| FND-019 | 🟡 | 030～038范围保留；039补TextBox-005a只读/密码受限IME及有效值/缓存值、Control-12l语言消息和非Form宿主传播首范围。完整Tab/助记键/命令、Form语言事件/Application输入语言服务、模态传播/组合串/候选窗、全部派生与设备仍缺，不把有限语言消息接入称为完整语言切换 |
 | FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
 | FND-021 | 🟡 | 029程序验证/关闭前置范围保留；035的Button.PerformClick消费Prevent/Allow/Disable及CausesValidation=false；036补ValidationCancelled父链/鼠标抬起清理，真实HWND按钮Prevent/Allow回归确认原生通知不重复验证。完整物理点击/提交前置、全部派生默认/继承、真实输入及平台行为仍缺 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
@@ -40,6 +40,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次039：FND-019补TextBox-005a与Control-12l，父项仍部分；TextBox-005由全待办改部分，明确此前已有ReadOnly原生映射及本批必要密码同步，完整复制限制/UIA/AutoComplete仍缺。旧028无句柄焦点用例显式隔离/还原未初始化IME传播缓存，保留原断言，非删除历史差异；固定分母/原ID不变。
 
 - 2026-11-07 · 批次038：FND-019新增Control-12k上下文和TextBox-003c生命周期前置，并纠正父表仍遗漏037的记录；FND-014/026明确UserControl-02d仅标准声明/事件与共享布局消费，不关闭完整布局或Designer。TextBoxBase缺失保留，但其“现有TextBox无句柄Select直接返回”旧描述按003c纠正，固定分母/原ID不变。
 

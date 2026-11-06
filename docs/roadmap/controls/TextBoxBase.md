@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-⬜ 无 Lumina.Forms/TextBoxBase.cs。当前TextBox直接继承Control，MaskedTextBox/RichTextBox又继承TextBox，与WinForms共同继承TextBoxBase的层级不同。038在既有TextBox中完成创建前选择缓存、句柄重建恢复和Multiline事件的有限前置；不能由这些派生补丁关闭本页任何完整基类任务。
+⬜ 无 Lumina.Forms/TextBoxBase.cs。当前TextBox直接继承Control，MaskedTextBox/RichTextBox又继承TextBox，与WinForms共同继承TextBoxBase的层级不同。038在既有TextBox中完成选择/多行生命周期前置；039又将固定基类的只读/密码IME限制及ReadOnlyChanged有限消费放入现有TextBox。不能由这些派生补丁关闭本页任何完整基类任务，恢复层级时须迁移共享成员并保留行为。
 
 源码定位：`Lumina.Forms/TextBoxBase.cs`（尚不存在）；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control.Text/键盘/IME/焦点与验证、剪贴板、字体和 native handle 重建。
 
@@ -42,6 +42,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次039：现有TextBox消费CanEnableIme/ImeModeBase、ReadOnlyChanged及必要密码同步，但TextBoxBase类仍不存在，001～011/CLOSE全部原状态和ID保留；标准共享编辑/继承恢复另列，见[039](../batches/039.md)。
 
 - 2026-11-07 · 批次038：TextBox-003c已修复既有TextBox无句柄Select丢状态，并补多行切换的有限句柄/选择/原生modified保存。本页“现有Select直接返回”的当前描述按真实代码纠正；TextBoxBase本身仍缺失，全部原ID/分母/未完任务保留，见[038](../batches/038.md)。
 
