@@ -19,9 +19,11 @@
 - Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增22/22、全量4,536/4,536通过，0失败/跳过；diff --check通过。IME Handled后的重复计数保留固定源码行为，测试证明只消耗一次；不把程序消息/真实HWND当物理输入或完整IME验收。
 - 公共基础/Control-12父项遗漏036完成范围、validation总览遗漏036记录，本批按已有证据补录并纠正；UserControl-05按05a有限实现由全待办改部分。父任务/原ID/分母保留，使用既有Validate-Roadmap.ps1 -ExportTasks重生成索引。
 - 下一依赖先核剩余IME输入上下文/组合态与派生编辑输入，再补UserControl完整AutoSize。TextBoxBase、HostedInWin32DialogManager、ButtonBase、模态、关闭LostFocus/WM_QUIT、固定API引用包、AOT/Designer/设备/Linux/macOS/98%均保留未完；不重复033～037、不重评全项目。
-- 延续成功commit/push/三SHA回读、新local只读准备/独立归属交接成功推送后才开始/确认实际接管后旧主立即归档、30分钟监督及后续停止优先规则。既有heartbeat `luminaforms-30`由036消息确认已绑定037，本批通过app view回读并复用，未重复创建。
+- 延续成功commit/push/三SHA回读、新local只读准备/独立归属交接成功推送后才开始/确认实际接管后旧主立即归档、30分钟监督及后续停止优先规则。036消息称heartbeat `luminaforms-30`已绑定037；037的app view仅显示卡片，不能当成ACTIVE/目标字段回读证据。交接时完整update由app明确返回该automation不存在、可能已被用户手动删除；本机automations目录也未检出该项。监督状态为NOT_FOUND，038绑定NOT_DONE，未新建替代项；新主不得把旧描述当当前已生效，也不得因缺失自动恢复可能被用户删除的监督。
 - 三个内部任务报告所有Cordonix子进程cleanup_complete=true；IME参考源码临时文件已精确删除，其余无临时对象。主的有界构建/测试子树已清理，忽略bin/obj保留。
 - 037收尾使用既有Validate-Roadmap.ps1 -ExportTasks：425份Markdown/2,133任务/187索引行，0结构错误，整类型代码完成仍为0；README实施列/tasks.csv已再生成，源码/任务页/历史/批次/总览边界已同步。
+- 037实现提交`f1521009a40514f32b1efee155dd434efe048999`已成功推送，HEAD/origin/main/实际远端refs/heads/main三SHA一致且工作树干净；暂存仅本批21文件，UTF8严格解码/无NUL/往返和暂存diff检查通过。
+- 下一local只读接续聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`（Lumina batch 038 continuation）已创建。编码归属指定给该聊天：本次独立归属交接commit/push并核验三SHA后，037主才发送“开始接管”；038主收到后重新核SHA/HANDOFF及工作树并明确确认实际接管，确认前只读准备不创建子任务。确认后037主停止共享写入/构建/Git并立即归档，不等038完成。持续逐批实施/成功push/三SHA回读/新local接续/30分钟监督授权保留，后续暂停停止优先。
 
 ## 批次036 实施与收尾（历史）
 
