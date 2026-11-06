@@ -1,6 +1,16 @@
 # 本轮验证与限制
 
-## 批次042 · 2026-11-07 当前验证
+## 批次043 · 2026-11-07 当前验证
+
+首次Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增41/41（共同设置17、滚动条24）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文359/359、全量4,695/4,695通过，0失败/跳过。[043](batches/043.md)仅关闭TextBoxBase-003a和TextBox-004a限定范围；无本批编译或测试失败。
+
+AcceptsTab事件槽/虚hook、同值/重入/原异常及CanRaiseEvents有回归；WordWrap同值缓存失效/AutoSize条件父布局、单双行真实重建/状态保存及EDIT实际行数折行变化通过。四种滚动条与单双行/换行的16组合对比独立系统EDIT，非法值不改状态/不建窗，同值不重建；密码/只读/modified/选择和不重复TextChanged均有证据。None不再强制纵条、关闭WordWrap实际关闭折行是运行行为修正，间接消费该路径的Rich/Masked仍非标准后端。
+
+固定TextBox/布局事务v10.0.11源码、命令JSON和三个TRX保留artifacts/compatibility-batch043，基类固定源码复核042保存的hash。所有有界构建/测试子树cleanup_complete=true；两个内部任务冻结，无临时文件/打开workspace文档/独占服务。一个子任务的末次全局命令子串快照partial/inaccessible=236，不能称全机零进程；自有有界调用清理回执完整。共享bin/obj与证据保留。
+
+固定10.0.11引用库存刷新、Native AOT发布/运行、Designer、物理滚动/输入、Linux/macOS与98%本批NOT_RUN/UNKNOWN。其他对齐/RTL/首选尺寸、HideSelection/BorderStyle/编辑能力及RichEdit/掩码仍未完；旧ES_WANTRETURN/24/48高度等差异保留。WarningLevel=0不表示分析告警清零；041失败HRESULT和040 MUI有界扩容差异保持。
+
+## 批次042 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增19/19（共享基类8、IME默认路由11）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文318/318、全量4,654/4,654通过，0失败/跳过。首次构建与三组测试均通过，无本批编译或测试失败。[042](batches/042.md)只关闭TextBoxBase-001a及TextBox-001a限定提取/迁移，Control生产代码no-op；测试不关闭完整基类、另外两个派生/真实后端或IME父项。
 

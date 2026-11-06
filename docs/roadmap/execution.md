@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[043](batches/043.md)完成共同编辑设置的003a及TextBox滚动条004a；41新增/359相关/4,695全量与固定双目标Release通过。保留WordWrap同值赋值的缓存失效/条件父布局，真实折行与滚动样式生效，已有选择/modified/密码/通知顺序保持。下一依赖继续TextBoxBase标准成员/默认事件，随后按真实后端恢复Rich/Masked直接继承；完整对齐/首选尺寸、模态/OLE宿主、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT和平台门禁仍在原任务，不重复033～043、不重评全项目、不新建context或调度框架。下述042及以前为历史。
+
 当前[042](batches/042.md)先核组合串/候选通知的原生默认消息路径与模态前置，再提取TextBoxBase-001a及TextBox-001a共享EDIT首范围。19新增/318相关/4,654全量通过，固定Demo双目标Release0错/2既有NU1510。固定源码的Form.Modal前置尚缺完整ShowDialog/owner/线程生命周期，不新增假状态或完整context。下一依赖按共享成员、Rich/Masked直接继承及真实后端推进，保留旧存值/默认尺寸/编辑语义差异；ButtonBase、AutoSize、关闭LostFocus/WM_QUIT及所有平台门禁仍待，不重评全项目。下述041及以前是历史。
 
 当前[041](batches/041.md)完成Application-11b输入语言OLE前置与12a最小线程缓存/退出配对，复用现有ExitThread及最外层finally；不建立完整ThreadContext或新调度框架。下一依赖核组合串/候选窗及模态宿主的真实前置，再按共享编辑依赖推进TextBoxBase；完整OLE宿主context、CurrentCulture/UseWaitCursor、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT及全部平台门禁留原任务。其他失败HRESULT策略与MUI有界扩容差异保留。不重复033～041、不重评整个项目；下述040及以前是历史。

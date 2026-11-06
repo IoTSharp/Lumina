@@ -102,10 +102,23 @@ public class TextBox : TextBoxBase
         }
     }
 
+    /// <summary>Gets or sets the scroll bars displayed by a multiline text box.</summary>
+    [Category("Appearance")]
+    [Localizable(true)]
+    [DefaultValue(ScrollBars.None)]
     public ScrollBars ScrollBars
     {
         get => _scrollBars;
-        set => _scrollBars = value;
+        set
+        {
+            if (_scrollBars == value) { return; }
+            if ((uint)value > (uint)ScrollBars.Both)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(ScrollBars));
+            }
+            _scrollBars = value;
+            RecreateHandle();
+        }
     }
 
     /// <summary>
@@ -114,7 +127,25 @@ public class TextBox : TextBoxBase
     public event EventHandler? SelectionChanged;
 
     /// <inheritdoc />
-    protected override uint Style => base.Style | (_useSystemPasswordChar ? Win32.ES_PASSWORD : 0);
+    protected override uint Style
+    {
+        get
+        {
+            uint style = base.Style;
+            if (Multiline)
+            {
+                if ((_scrollBars & ScrollBars.Horizontal) != 0 && !WordWrap)
+                {
+                    style |= Win32.WS_HSCROLL;
+                }
+                if ((_scrollBars & ScrollBars.Vertical) != 0)
+                {
+                    style |= Win32.WS_VSCROLL;
+                }
+            }
+            return style | (_useSystemPasswordChar ? Win32.ES_PASSWORD : 0);
+        }
+    }
 
     /// <inheritdoc />
     protected override void OnHandleCreated(EventArgs e)

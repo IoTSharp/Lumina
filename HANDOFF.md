@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 043主聊天`01a1b2ed-b9ac-74a1-8409-5c2315ee56bb`于2026-11-07收到“开始接管”，重新核实独立归属交接`6a78daf2fc2e2ad9da5de72f9c17dae78a0a7d13`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向042主明确确认实际接管。043为当前唯一编码主；两个互斥内部任务分别负责TextBoxBase标准AcceptsTabChanged/WordWrap原生样式与TextBox.ScrollBars校验/样式/重建，主独占接口整合、interop、共享文档、集成和Git。042实现`bd9f4d2c9f50dee14dc5f1e7a9ba4290d25be7e9`与归属交接分开保留；完整基类/派生后端、模态/IME及平台门禁不关闭。监督`luminaforms-30`保持NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项；下述042及以前归属为历史。
+
 - 042主聊天`01a1b2db-40e3-7262-8536-b2dd17bbbfe4`于2026-11-07收到“开始接管”，重新核实独立归属交接`a561ddb6b44dfdafe376ac4754db5833adc742d7`的HEAD/origin/main/实际远端三SHA一致、main工作树干净，已向041主明确确认实际接管，并实时核实041已归档。042为当前唯一编码主；两个互斥内部任务分别负责标准TextBoxBase共享EDIT首范围与IME原生默认消息转发审计/回归，主独占共享文档、接口整合、interop、集成与Git。模态宿主依赖真实Form.Modal/ShowDialog和线程循环生命周期，不新增假状态或完整context架构；监督`luminaforms-30`保持NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。下述041及以前归属作为历史。
 
 - 041主聊天`01a1b2c7-9ed3-7511-8764-6945f41d3ad5`于2026-11-07收到“开始接管”，重新核实独立归属交接`358538d0afd23ddcf7ad49014690da3630871c0a`的HEAD/origin/main/实际远端三SHA一致、main工作树干净，已向040主明确确认实际接管。041为当前唯一编码主；040已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责最小线程OLE状态和输入语言OLE前置，主独占Application公共入口/退出连接、共享interop/文档、集成和Git。完整context/模态/IME及平台门禁保持，监督`luminaforms-30`为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。下述040及以前归属作为历史。
@@ -22,7 +24,22 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次042 实施与收尾（当前）
+## 批次043 实施与收尾（当前）
+
+- 043路线图导出PASS：431份Markdown、2,147任务、187实施索引行、0结构错误，整类型代码完成仍0。主最后dotnet只读快照0项/inaccessible0，不以此覆盖子任务全局partial快照的限制；全部有界子树有独立清理回执。
+
+- 043已重新核独立归属交接`6a78daf2fc2e2ad9da5de72f9c17dae78a0a7d13`三SHA一致、main干净/+0/-0，向042明确确认实际接管；实时归档列表已核042主归档，本聊天为唯一编码主。
+- 两个互斥内部任务completed冻结：TextBoxBase-003a共同设置/标准通知（17项新测试）、TextBox-004a滚动条校验/样式/重建（24项）。主独占接口/interop/文档/集成/Git；本批无需新增interop，Control/Form/Application/固定Demo源码no-op。
+- AcceptsTabChanged按标准Events槽/虚On*、同值/原异常/重入；WordWrap改变真实EDIT折行/重建，所有赋值清自身首选缓存，AutoSize时含同值参与父布局。ScrollBars合法枚举/标准None默认，变更重建；多行水平条受WordWrap=false限制，纵条按请求。文本/选择/modified/只读/密码/创建事件顺序保持。
+- None不再强制纵条、WordWrap=false实际关闭折行，是原存值行为的运行修正；Rich/Masked间接消费变化但源码不改，标准直接继承/真实后端/默认限制仍待。完整TextBoxBase/TextBox父项不关闭，其他TextAlign/RTL、PreferredSize/AutoSize/编辑/HideSelection/BorderStyle、旧ES_WANTRETURN/24/48高度等差异保留。
+- 首次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增41/41、相关359/359、全量4,695/4,695，0失败/跳过，首次均通过。WarningLevel=0不表示分析告警清零。固定TextBox/布局事务v10.0.11源码、命令JSON和三个TRX在artifacts/compatibility-batch043；042基类固定源码hash复核一致。
+- 本批仅新增003a/004a两个明确子范围；TextBox-004从全待办改部分，TextBoxBase-004交叉引用003a的事件。纠正TextBoxBase历史“尚无实现文件提交”及当前WordWrap/ScrollBars仍存值的过时描述；固定API类型/成员库存、原ID/1,095类型/61,240成员行不改。README实施列/tasks.csv由既有工具生成后校验。
+- 两个内部任务无临时文件/打开workspace文档/独占服务，所有自有有界外部调用及主构建/测试子树cleanup_complete=true；一子任务的全局命令子串快照partial/inaccessible=236，不能据此声称全机零进程。主Cordonix当前父PID52372/创建FILETIME134384768873153663已实时核，不复用旧36000。证据及共享bin/obj保留。
+- 下一真实依赖继续TextBoxBase共同成员/标准默认事件，再按真实后端恢复Rich/Masked直接继承；不因改基类关闭富文本或掩码任务。完整模态/OLE宿主context/COM窗口顺序/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT和固定API引用包/AOT/Designer/设备/Linux/macOS/98%仍在原任务。不重复033～043、不重评全项目、不新增context或调度框架。
+- Windows两目标官方Drawing、固定Demo双目标/静态Designer/resx保持，041其他失败HRESULT显式抛出、040 MUI最多一次扩容差异保持。监督luminaforms-30为NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项。
+- 持续逐批实施、多个互斥内部智能体/一人一任务、主独占共享接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核三SHA，新local先只读准备，独立交接成功push后才发送开始，确认实际接管后旧主立即停止共享写入/构建/Git并归档、不等待下一批结束。完整授权与后来暂停停止优先规则传给下一接续。
+
+## 批次042 实施与收尾（历史）
 
 - 042已核独立归属交接`a561ddb6b44dfdafe376ac4754db5833adc742d7`三SHA一致/干净并向041明确确认实际接管，实时已核041归档；本聊天为唯一编码主。
 - 两个互斥内部任务completed冻结：标准TextBoxBase共享EDIT首范围/8项测试、IME原生默认路由审计/11项测试。主独占接口整合、共享文档、interop、集成与Git。

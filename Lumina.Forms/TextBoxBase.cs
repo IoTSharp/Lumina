@@ -12,6 +12,7 @@ namespace Lumina.Forms;
 /// </summary>
 public abstract class TextBoxBase : Control
 {
+    private static readonly object s_acceptsTabChangedEvent = new();
     private static readonly object s_multilineChangedEvent = new();
     private static readonly object s_readOnlyChangedEvent = new();
 
@@ -64,10 +65,26 @@ public abstract class TextBoxBase : Control
         remove => Events.RemoveHandler(s_multilineChangedEvent, value);
     }
 
+    /// <summary>Gets or sets whether a multiline text box accepts TAB characters.</summary>
+    [Category("Behavior")]
+    [DefaultValue(false)]
     public bool AcceptsTab
     {
         get => _acceptsTab;
-        set => _acceptsTab = value;
+        set
+        {
+            if (_acceptsTab == value) { return; }
+            _acceptsTab = value;
+            OnAcceptsTabChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="AcceptsTab"/> property changes.</summary>
+    [Category("Property Changed")]
+    public event EventHandler? AcceptsTabChanged
+    {
+        add => Events.AddHandler(s_acceptsTabChangedEvent, value);
+        remove => Events.RemoveHandler(s_acceptsTabChangedEvent, value);
     }
 
     /// <inheritdoc />
@@ -145,10 +162,20 @@ public abstract class TextBoxBase : Control
         set => base.ImeModeBase = value;
     }
 
+    /// <summary>Gets or sets whether a multiline text box wraps words to the next line.</summary>
+    [Category("Behavior")]
+    [Localizable(true)]
+    [DefaultValue(true)]
     public bool WordWrap
     {
         get => _wordWrap;
-        set => _wordWrap = value;
+        set
+        {
+            using LayoutTransaction transaction = new(AutoSize ? Parent : null, this, nameof(WordWrap));
+            if (_wordWrap == value) { return; }
+            _wordWrap = value;
+            RecreateHandle();
+        }
     }
 
     /// <summary>
@@ -242,14 +269,12 @@ public abstract class TextBoxBase : Control
     {
         get
         {
-            var style = Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.ES_LEFT;
+            var style = Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.ES_LEFT
+                | Win32.ES_AUTOHSCROLL | Win32.ES_AUTOVSCROLL;
             if (_multiline)
             {
-                style |= Win32.WS_VSCROLL | Win32.ES_MULTILINE | Win32.ES_AUTOVSCROLL | Win32.ES_WANTRETURN;
-            }
-            else
-            {
-                style |= Win32.ES_AUTOHSCROLL;
+                style |= Win32.ES_MULTILINE | Win32.ES_WANTRETURN;
+                if (_wordWrap) { style &= ~Win32.ES_AUTOHSCROLL; }
             }
 
             if (_readOnly)
@@ -426,6 +451,10 @@ public abstract class TextBoxBase : Control
     internal virtual void OnSelectionChangedInternal(EventArgs e)
     {
     }
+
+    /// <summary>Raises the <see cref="AcceptsTabChanged"/> event.</summary>
+    protected virtual void OnAcceptsTabChanged(EventArgs e)
+        => (Events[s_acceptsTabChangedEvent] as EventHandler)?.Invoke(this, e);
 
     /// <summary>Raises the <see cref="MultilineChanged"/> event.</summary>
     protected virtual void OnMultilineChanged(EventArgs e)

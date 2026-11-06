@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或掩码执行/专有限制，全部原任务状态保留。
+
 🟡 [MaskedTextBox.cs](../../../Lumina.Forms/MaskedTextBox.cs) 继承 TextBox，仅 Mask 自动属性；尚无掩码执行、MaskInputRejected、输入状态或类型验证。现有 API 名称出现不代表任何掩码行为已支持。
 
 源码定位：[Lumina.Forms/MaskedTextBox.cs](../../../Lumina.Forms/MaskedTextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、System.ComponentModel.MaskedTextProvider、验证与文化信息；不要另造公开掩码语言。
@@ -42,6 +44,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次043：源码no-op，间接共享真实折行/滚动样式及重建路径，不能据此关闭001或掩码/类型验证；标准直接基类/派生默认仍待，见[043](../batches/043.md)。
 
 - 2026-11-07 · 批次042：源码no-op，随TextBox间接消费新TextBoxBase共享EDIT首范围；仍直接继承TextBox且Mask仅存值，001/掩码执行/类型验证及基线专有限制均未关闭，见[042](../batches/042.md)。
 

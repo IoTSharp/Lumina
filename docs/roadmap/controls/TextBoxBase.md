@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+043完成003a共同设置首范围：AcceptsTabChanged标准事件/虚hook及WordWrap真实样式/句柄重建、同值缓存失效和AutoSize条件父布局。17项新增及4,695项全量通过，见[043](../batches/043.md)。折行由真实EDIT行数验证；HideSelection/BorderStyle/MaxLength/ShortcutsEnabled、完整测量/编辑和派生后端仍待。
+
 🟡 批次042建立abstract TextBoxBase : Control及TextBox : TextBoxBase，迁入038/039等已有共享EDIT行为。内部无参构造按固定10.0.11保持internal；TextBox保留专属密码/Enter规则和非标准SelectionChanged扩展。MaskedTextBox/RichTextBox仍继承TextBox，直接层级和对应原生后端仍未恢复。新增8项基类回归及全量4,654项通过，只关闭001a限定提取范围，完整基类不关闭，见[042](../batches/042.md)。
 
 源码定位：[TextBoxBase.cs](../../../Lumina.Forms/TextBoxBase.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control.Text/键盘/IME/焦点与验证、剪贴板、字体和 native handle 重建。
@@ -19,8 +21,9 @@
 | TextBoxBase-001 | P0 | 🟡 | 042完成001a标准基类及TextBox直接继承/已有行为迁移。RichTextBox/MaskedTextBox直接继承、对应原生实现与共享成员扩面仍待；ISupportInitialize等按各类型基线放置，不由一个派生迁移关闭父项。 |
 | TextBoxBase-001a | P0 | ✅ | 批次042：建立abstract TextBoxBase : Control与internal无参构造，TextBox直接继承；迁移现有文本/选择、多行/只读、Tab、颜色/主题和EDIT句柄状态。TextLength为virtual，密码/Enter及既有SelectionChanged扩展保留TextBox。8项新增基类引用/真实重建/事件/派生hook回归与全量通过；不含另外两个派生直接层级或完整编辑能力。 |
 | TextBoxBase-002 | P1 | 🟡 | 042迁入现有Text/Lines、virtual TextLength、SelectionStart/Length和Select的无句柄缓存/真实创建恢复。SelectedText、SelectAll/DeselectAll、完整CRLF/emoji/端点及Lines语义仍待，不以已有选择前置关闭父项。 |
-| TextBoxBase-003 | P1 | 🟡 | 042迁入ReadOnly=false、Multiline=false、AcceptsTab=false及WordWrap=true字段；WordWrap仍存值，HideSelection/MaxLength/ShortcutsEnabled及派生默认覆盖未补全。完整默认与真实行为逐一以固定基线确认。 |
-| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged组件事件槽与虚On*，同值不重复，保留创建期EN_CHANGE抑制。AcceptsTabChanged、HideSelectionChanged、BorderStyleChanged及完整重入/通知仍待。 |
+| TextBoxBase-003 | P1 | 🟡 | 042迁入ReadOnly/Multiline/AcceptsTab及WordWrap；043的003a补AcceptsTab通知与WordWrap真实折行/重建/条件布局。HideSelection/MaxLength/ShortcutsEnabled、完整默认/元数据及派生覆盖仍待；既有ES_WANTRETURN等完整CreateParams差异保留。 |
+| TextBoxBase-003a | P1 | ✅ | 批次043：AcceptsTab=false、标准AcceptsTabChanged/虚On*、Events槽/同值/重入/原异常；WordWrap=true及Localizable，变更重建，所有赋值清本控件首选缓存，AutoSize时含同值参与父布局。默认AUTOH/AUTOV、多行折行清AUTOH，不再强制纵条；17项回归含真实EDIT折行/状态通过。完整003/004/007父项不关闭。 |
+| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged标准事件槽/虚通知及同值/重入/异常。HideSelectionChanged、BorderStyleChanged及其余完整通知仍待，不能由这三个事件关闭父项。 |
 | TextBoxBase-005 | P1 | 🟡 | 042迁入既有Clear/AppendText与重建前后的native modified位保存；未新增公开Modified/ModifiedChanged、CanUndo、Undo/ClearUndo、Copy/Cut/Paste。现有AppendText的空值/选择/撤销语义仍需固定对照，不能把迁移旧代码计为完整编辑。 |
 | TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、Control键事件与现有IME前置，标准基类没有SelectionChanged；TextBox非标准扩展暂留原派生。完整输入法提交、粘贴、验证/失焦和RichEdit选择通知仍待。 |
 | TextBoxBase-007 | P1 | 🟡 | 042仅迁入既有颜色/主题与24/48最小原生高度，保留已知差异。BorderStyle、AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的尺寸、选择/撤销保存仍未完整实现。 |
@@ -44,6 +47,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次043：003a补共同设置标准事件、真实WordWrap与布局事务；移除基类强制纵条，由TextBox.ScrollBars决定实际条样式。旧WordWrap“仍存值”当前描述已纠正；高度/完整CreateParams/测量/编辑及派生后端保持缺口，不将17项回归当整基类或平台验收，见[043](../batches/043.md)。
+
 - 2026-11-07 · 批次042：新增001a，001～009依据实际迁入的旧实现由全待办改部分，保留全部原ID/未完能力。基类存在与TextBox迁移不关闭RichTextBox/MaskedTextBox或任何完整编辑任务；旧存值/高度/文本语义差异保留。固定API库存仍是10.0.11历史快照，未改1,095类型/61,240成员行；构建/程序消息不等于AOT/Designer/设备验收，见[042](../batches/042.md)。
 
 - 2026-11-07 · 批次039：现有TextBox消费CanEnableIme/ImeModeBase、ReadOnlyChanged及必要密码同步，但TextBoxBase类仍不存在，001～011/CLOSE全部原状态和ID保留；标准共享编辑/继承恢复另列，见[039](../batches/039.md)。
@@ -52,7 +57,7 @@
 
 以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
 
-- 尚无该类型实现文件的提交历史；不将其他控件或本轮规划计为已实现。
+- 2026-11-07 · `bd9f4d2` · 批次042新增TextBoxBase共享EDIT首范围；此前“尚无该类型实现文件的提交历史”随源码存在已失效，本批按实际Git记录纠正。
 - 2026-10-15 · 本轮新增此独立路线图与验收任务，未修改该类型实现；后续实现需在此追加日期、提交、修复范围与验收证据。
 
 ## 官方依据

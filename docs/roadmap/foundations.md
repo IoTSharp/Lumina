@@ -1,6 +1,6 @@
 # 公共基础：先修这些，再铺控件
 
-2026-11-07 · 批次035～041范围保留；042建立TextBoxBase共享EDIT首范围及TextBox直接继承，核组合/候选消息原生默认路由与模态前置。完整编辑基类、派生后端、OLE宿主context、输入/布局及平台验收仍待，见[042](batches/042.md)。
+2026-11-07 · 批次035～042范围保留；043补TextBoxBase共同AcceptsTab通知、WordWrap折行/条件布局及TextBox.ScrollBars真实样式/重建。完整编辑基类、派生后端、OLE宿主context、输入/布局及平台验收仍待，见[043](batches/043.md)。
 
 依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。
 
@@ -25,12 +25,12 @@
 | FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
-| FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
+| FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成托管AutoScroll/ScrollProperties/Scroll事件及受保护契约，032补Panel迁移和Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围，033补已有偏移下的后代可见坐标修正。真实物理滚轮/触摸板、Dock/Anchor/Tab/RTL组合、嵌套滚动事务与Linux/macOS滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；031补AutoScaleFactor首范围，纠正原全部未开始状态遗漏旧局部实现。完整Font/Dpi/None/Inherit、嵌套继承、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018～034导航/焦点范围保留；035补最深活动按钮默认通知与队列Enter/Escape首范围。全部派生、物理Tab/完整助记键/默认按钮生命周期和关闭焦点差异仍缺；公开Focus无参，定向入口为Select(bool,bool) |
-| FND-019 | 🟡 | 030～041范围保留；042共享已有TextBox编辑键/只读密码IME前置，并核组合/SETCONTEXT/候选通知原生默认路由。完整Tab/助记键/命令、OLE宿主context/COM对象寿命、真实模态传播/组合串/候选UI、全部派生与设备仍缺，不由程序消息测试或最小线程状态称完整IME兼容 |
+| FND-019 | 🟡 | 030～041范围保留；042共享已有TextBox编辑键/只读密码IME前置，并核组合/SETCONTEXT/候选通知原生默认路由。043补AcceptsTab标准属性通知，不扩展完整键盘协议。完整Tab/助记键/命令、OLE宿主context/COM对象寿命、真实模态传播/组合串/候选UI、全部派生与设备仍缺，不由程序消息测试或最小线程状态称完整IME兼容 |
 | FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
 | FND-021 | 🟡 | 029程序验证/关闭前置范围保留；035的Button.PerformClick消费Prevent/Allow/Disable及CausesValidation=false；036补ValidationCancelled父链/鼠标抬起清理，真实HWND按钮Prevent/Allow回归确认原生通知不重复验证。完整物理点击/提交前置、全部派生默认/继承、真实输入及平台行为仍缺 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
@@ -40,6 +40,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次043：TextBoxBase-003a补共同设置/标准AcceptsTabChanged，TextBox-004a使滚动条与折行真实生效；同值WordWrap仍清首选缓存并条件参与父布局。FND-014/019及完整继承/编辑/派生后端父项保留部分；不把原生EDIT样式/行数回归称设备/Designer/AOT/平台验收，见[043](batches/043.md)。
 
 - 2026-11-07 · 批次042：FND-001/019按实际TextBoxBase共享首范围与IME原生路由审计更新；TextBoxBase原001～009及TextBox-001由全待办改部分，完整父项不关闭。历史API类型缺失快照与当前源码分开，原ID/1,095类型/61,240成员行保留，见[042](batches/042.md)。
 
