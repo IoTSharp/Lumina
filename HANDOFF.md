@@ -5,7 +5,7 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。034主聊天`01a1b239-e70b-7bb1-ada5-5323cb50aeab`收到“开始接管”后实时核验交接`45115b86a66c38e4297e79a5a13ffe3b753888c1`三SHA一致且干净，实际接管；033原主已归档。当前未提交变更属于034，忽略的bin/obj保留，不纳入Git。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。034主聊天`01a1b239-e70b-7bb1-ada5-5323cb50aeab`收到“开始接管”后核验交接`45115b86a66c38e4297e79a5a13ffe3b753888c1`三SHA一致且干净并实际接管；033原主已归档。034实现`11c811ac1cb6fab4517cabe4f4ac14626755e60b`已成功推送并核三SHA一致，忽略的bin/obj保留。
 - 当前实施批次：[034](docs/roadmap/batches/034.md)。完成Control-12g实际键事件/父预览管线、ContainerControl-06c嵌套Tab边界、UserControl-02b默认尺寸/AutoSizeMode合法名字/BorderStyle、Form-12a KeyPreview/顶层Tab回绕首范围。新增29/29、全量4,468/4,468和双目标Release构建通过。API库存固定10.0.11缺引用包的NOT_RUN边界保留，未换基线。033完成范围保留；完整消息循环预处理/默认取消按钮、IME、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
@@ -17,6 +17,7 @@
 - AutoSizeMode历史数值身份与官方相反未修，留在UserControl-02父任务；固定10.0.11 API引用包缺失，未重跑库存导出、不替换基线。AOT/Designer/物理设备/Linux/macOS/现场仍NOT_RUN/UNKNOWN。
 - 下一依赖：Control消息循环实际预处理→容器验证/导航→Form默认取消按钮与UserControl完整AutoSize；先核对枚举数值身份影响，不重复033/034。仅明确子范围代码完成，父任务和98%不关闭。
 - 本批实现及交接须成功commit/push并核对HEAD/tracking/实际远端；新聊天先只读准备，更新归属交接提交推送后再发送“开始接管”，确认实际接管后旧主停止写入并归档。保持多个互斥智能体、主独占共享文档/集成/Git、有界执行和资源归属规则。
+- 034实现提交`11c811ac1cb6fab4517cabe4f4ac14626755e60b`已成功push且三SHA一致。下一local接续聊天`01a1b247-6da3-7f51-8a25-3e523fca616e`（Lumina项目）已创建，只读准备中；本归属交接独立commit/push核验后，034主才发送“开始接管”。新主以开始消息的交接SHA核验，确认接管后034主停止写入/构建/Git并归档，不等035完成。持续逐批实现/推送/新聊天与30分钟监督授权保留，后来的暂停停止优先。
 
 ## 批次033 新增接续记录
 
