@@ -14,6 +14,9 @@ namespace Lumina.Forms;
 /// </summary>
 public class Form : ContainerControl
 {
+    private static readonly object s_inputLanguageChangedEvent = new();
+    private static readonly object s_inputLanguageChangingEvent = new();
+
     [ThreadStatic]
     private static FormCreationContext? t_creatingForm;
 
@@ -198,6 +201,22 @@ public class Form : ContainerControl
     /// Occurs before the form closes.
     /// </summary>
     public event EventHandler<FormClosingEventArgs>? FormClosing;
+
+    /// <summary>Occurs after the input language of the form has changed.</summary>
+    [Category("Behavior")]
+    public event InputLanguageChangedEventHandler? InputLanguageChanged
+    {
+        add => Events.AddHandler(s_inputLanguageChangedEvent, value);
+        remove => Events.RemoveHandler(s_inputLanguageChangedEvent, value);
+    }
+
+    /// <summary>Occurs when the user attempts to change the form's input language.</summary>
+    [Category("Behavior")]
+    public event InputLanguageChangingEventHandler? InputLanguageChanging
+    {
+        add => Events.AddHandler(s_inputLanguageChangingEvent, value);
+        remove => Events.RemoveHandler(s_inputLanguageChangingEvent, value);
+    }
 
     /// <summary>
     /// Gets or sets the window icon. When unset, Lumina.Forms falls back to its built-in logo icon.
@@ -753,6 +772,24 @@ public class Form : ContainerControl
     {
         Shown?.Invoke(this, e);
     }
+
+    /// <summary>Raises the <see cref="InputLanguageChanged"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnInputLanguageChanged(InputLanguageChangedEventArgs e)
+        => (Events[s_inputLanguageChangedEvent] as InputLanguageChangedEventHandler)?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="InputLanguageChanging"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnInputLanguageChanging(InputLanguageChangingEventArgs e)
+        => (Events[s_inputLanguageChangingEvent] as InputLanguageChangingEventHandler)?.Invoke(this, e);
+
+    // Control forwards a descendant's input-language messages through these
+    // methods so derived forms observe the same virtual event hooks.
+    internal void PerformOnInputLanguageChanged(InputLanguageChangedEventArgs e)
+        => OnInputLanguageChanged(e);
+
+    internal void PerformOnInputLanguageChanging(InputLanguageChangingEventArgs e)
+        => OnInputLanguageChanging(e);
 
     /// <inheritdoc />
     protected override void OnLayout(LayoutEventArgs e)

@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～038明确子范围保留；039补12l输入语言消息及非Form宿主传播首范围。关闭多余LostFocus/WM_QUIT、完整命令对话框、Form语言事件/Application输入语言服务、模态宿主/组合串/候选窗及全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[039](../batches/039.md)。
+🟡 **当前状态：**002～039明确子范围保留；040补12m输入语言消息向Form通知/请求取消与HKL服务必要连接。关闭多余LostFocus/WM_QUIT、完整命令对话框、OLE/完整输入语言服务、模态宿主/组合串/候选窗及全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[040](../batches/040.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,6 +11,7 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
+| ✅ | P1 / Control-12m | 批次040：WM_INPUTLANGCHANGE在已有上下文更新/unsupported传播后向FindForm发标准Changed，再默认过程；WM_INPUTLANGCHANGEREQUEST构造标准Changing参数并可取消，取消结果0且不入默认过程。无Form根保留默认转发，不新建句柄；Form14项及IME/焦点组合96项通过。限定共享消息连接，实际物理切换/组合输入与模态/OLE仍待。 |
 | ✅ | P1 / Control-12l | 批次039：WM_INPUTLANGCHANGE先更新已有IME上下文、unsupported语言传播Off，再沿默认过程；request维持原生默认转发。非Form根失焦时恢复宿主传播模式后重置为Inherit，WM_IME_NOTIFY忽略守卫finally恢复，保持IME收尾→默认过程→LostFocus顺序。9项回归通过；Form语言事件/取消、Application输入语言服务、模态Form及实际中日韩/组合输入仍待，不关闭完整语言切换/宿主传播。 |
 | ✅ | P1 / Control-12k | 批次038：标准ImeMode枚举/属性继承/reset/事件、CanEnableIme/DefaultImeMode/ImeModeBase/PropagatingImeMode扩展；受支持CJK语言的焦点/属性/WM_IME_NOTIFY接真实IMM上下文和转换位，自有HIMC独立清理、系统借用context不销毁，通知/释放双错保留。12项回归通过；TextBox只读/密码限制及属性联动、完整语言切换/宿主模态传播、组合串/候选窗、全部派生与设备仍归父项。 |
 | ✅ | P1 / Control-12j | 批次037：WM_IME_CHAR直接进入ProcessKeyEventArgs而不经父KeyPreview，KeyPress消费/字符修改及原WParam保留；计数避免后续WM_CHAR/WM_SYSCHAR重复事件且保留默认过程，START清零/END关闭计数。7项回归通过；Handled后的计数按固定源码保留一次。ImeMode/context/组合串/候选窗及物理设备仍待，不关闭完整IME。 |
@@ -57,7 +58,7 @@
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
 | ✅ | P1 / Control-11c | 批次031：标准 `RightToLeft` 枚举、属性、Reset/ShouldSerialize、事件槽和父级继承通知；有效值接入 `WS_EX_LAYOUTRTL`/`WS_EX_RTLREADING`，显式 No 使用 `WS_EX_NOINHERITLAYOUT`，句柄创建/重建保持一致；补齐标准 `AutoScrollOffset` 供滚动容器消费。完整 Cursor、RTL镜像/DPI、ambient/Designer及全部派生控件仍归11父项。 |
-| 🟡 | P1 / Control-12 | 028～038范围保留；039的12l补语言消息/非Form宿主传播，TextBox-005a消费受限IME钩子。全部派生/ToolStripControlHost、完整原生验证组合、Tab/助记键/命令、Form语言事件/Application输入语言服务、模态宿主/组合串/候选窗和物理输入仍缺。 |
+| 🟡 | P1 / Control-12 | 028～039范围保留；040的12m补标准Form语言通知/取消，Application-11a提供真实HKL服务。全部派生/ToolStripControlHost、完整原生验证组合、Tab/助记键/命令、OLE/完整输入语言服务、模态宿主/组合串/候选窗和物理输入仍缺。 |
 | ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
 | ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |
 | ✅ | P1 / Control-12c | 批次029：SelectNextIfFocused从父容器使用标准SelectNextControl；Enabled提交状态后、Visible提交前触发导航，无候选不自造清空。TabStop变更同步WS_TABSTOP并经组件事件槽发TabStopChanged；指定当前/祖先、TabStop/Selectable及嵌套候选轨迹有固定参考/JIT/AOT证据。关闭阶段差异归07/Form-07。 |
@@ -88,6 +89,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次040：12m将039语言变化消息接入标准Form通知，并补请求取消与原始参数/默认结果保留；上下文更新、unsupported传播和默认过程先后遵循固定源码。只关闭明确共享消息子范围，模态/OLE/组合串/设备与平台仍待，见[040](../batches/040.md)。
 
 - 2026-11-07 · 批次039：12l接语言消息和非Form宿主传播，普通Form不冒充模态宿主。9项新增、50项组合及4,590全量通过；原始夹具失败保留，旧028无句柄焦点用例隔离并还原未初始化传播缓存，原默认/LostFocus/不建句柄断言保留。完整IME与设备仍待，见[039](../batches/039.md)。
 

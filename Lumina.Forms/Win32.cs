@@ -362,6 +362,7 @@ internal static partial class Win32
     public const uint LVS_EX_HEADERDRAGDROP = 0x00000010;
 
     public const uint SPI_GETHIGHCONTRAST = 0x0042;
+    public const uint SPI_GETDEFAULTINPUTLANG = 0x0059;
     public const uint HCF_HIGHCONTRASTON = 0x00000001;
 
     public const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
@@ -1059,6 +1060,20 @@ internal static partial class Win32
 
     [LibraryImport("user32.dll")]
     internal static partial nint GetKeyboardLayout(uint threadId);
+
+    [LibraryImport("user32.dll")]
+    internal static partial nint ActivateKeyboardLayout(nint layout, uint flags);
+
+    [LibraryImport("user32.dll")]
+    internal static unsafe partial int GetKeyboardLayoutList(int count, nint* layouts);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool SystemParametersInfoW(uint action, uint parameter, ref nint value, uint flags);
+
+    [LibraryImport("advapi32.dll", EntryPoint = "RegLoadMUIStringW", StringMarshalling = StringMarshalling.Utf16)]
+    internal static unsafe partial int RegLoadMUIStringW(nint key, string value, char* output,
+        uint bufferBytes, out uint bytesRequired, uint flags, string? directory);
 
     [LibraryImport("imm32.dll")]
     internal static partial nint ImmGetContext(nint window);

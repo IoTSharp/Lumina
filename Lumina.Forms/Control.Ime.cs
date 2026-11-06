@@ -207,9 +207,25 @@ public partial class Control
             SetPropagatingImeMode(ImeMode.Off);
         }
 
-        // Form input-language events and the public InputLanguage service are
-        // a separate compatibility scope. Retain native propagation here.
+        if (FindForm() is Form form)
+        {
+            form.PerformOnInputLanguageChanged(new InputLanguageChangedEventArgs(
+                new InputLanguage(message.LParam), unchecked((byte)message.WParam)));
+        }
         DefWndProc(ref message);
+    }
+
+    private void WmInputLangChangeRequest(ref Message message)
+    {
+        var e = new InputLanguageChangingEventArgs(
+            new InputLanguage(message.LParam), message.WParam != 0);
+        if (FindForm() is Form form)
+        {
+            form.PerformOnInputLanguageChanging(e);
+        }
+
+        if (e.Cancel) { message.Result = 0; }
+        else { DefWndProc(ref message); }
     }
 
     private void WmImeKillFocus()

@@ -4859,6 +4859,9 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
             case Win32.WM_INPUTLANGCHANGE:
                 WmInputLangChange(ref m);
                 return;
+            case Win32.WM_INPUTLANGCHANGEREQUEST:
+                WmInputLangChangeRequest(ref m);
+                return;
             case Win32.WM_KEYDOWN:
             case Win32.WM_SYSKEYDOWN:
             case WmCharMessage:

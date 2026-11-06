@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`于2026-11-07收到“开始接管”，重新核实独立归属交接`6b7624a64b052080e4390fda4e3d273879c11eb0`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向039主确认实际接管。040为当前唯一编码主；039已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责InputLanguage服务和Form语言事件/参数，主独占Application入口、Control消息连接、共享interop/文档、集成与Git。监督`luminaforms-30`保持NOT_FOUND、040绑定NOT_DONE，不恢复可能用户删除的项；下述039及以前归属作为历史。
+
 - 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`于2026-11-07收到“开始接管”，重新核实独立归属交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的HEAD/origin/main/实际远端三SHA一致、工作树干净并已向038主确认实际接管。039为当前唯一编码主；038已确认停止共享写入/构建/Git并按规则归档。039沿TextBox只读/密码IME限制和Control语言消息/非Form宿主传播两个互斥范围继续，主独占共享文档、interop、集成与Git。监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，不恢复可能用户删除的项。下述038及以前归属为历史。
 
 - 038主聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`于2026-11-07收到“开始接管”，重新核实独立归属交接`8c1e746322f22b8d5eefe37d0a50b1f0608c8414`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向037主明确确认实际接管。038为当前唯一编码主；037按规则立即停止共享写入/构建/Git并归档。038继续剩余IME上下文/组合态、TextBox派生编辑输入和UserControl AutoSize的互斥限定子范围；主独占共享文档、interop、集成与Git。监督`luminaforms-30`为NOT_FOUND、038绑定NOT_DONE，不自动恢复可能已被用户删除的项。下面037及更早归属/证据作为历史保留。
@@ -16,7 +18,19 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次039 实施与收尾（当前）
+## 批次040 实施与收尾（当前）
+
+- 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`已核独立交接`6b7624a64b052080e4390fda4e3d273879c11eb0`三SHA一致/干净并向039确认实际接管；实时已核039归档，本聊天为当前唯一编码主。
+- 两个互斥内部任务completed/冻结：InputLanguage线程HKL服务与只读集合/13项测试；Form标准语言参数/委托/组件事件槽/虚通知及14项测试。主独占Application.CurrentInputLanguage转发、Control共享语言通知/请求取消、Win32 LibraryImport、文档、集成与Git。
+- 首次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增27/27、相关IME/焦点96/96、全量4,617/4,617通过，0失败/跳过。真实HKL读回/可用布局setter/默认复位/线程隔离、MUI名称、参数/事件/顺序/取消/异常和真实HWND消息有回归；程序输入消息不等于物理语言切换/组合输入验收。
+- 代码子范围为Application-11a、Form-12d、Control-12m。Application-11由全待办改部分，CNS/FND/完整Control/Form父项保留；固定分母/原ID不变。固定源码的OleRequired持久初始化前置未实现，不能把直接HKL调用称完整InputLanguage兼容；MUI扩容最多一次，继续增长按原生失败fallback，普通成功/空串/字节长度保持。
+- 下一依赖先核输入语言与OLE初始化/线程退出寿命的最小衔接，再核组合态/候选窗、模态宿主和TextBoxBase共享编辑；UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定10.0.11引用包、Designer/AOT/设备/Linux/macOS/98%继续原任务。不重复033～040、不重评全项目，不新增调度框架或完整context架构。
+- 监督`luminaforms-30`保持NOT_FOUND、040绑定NOT_DONE，不创建或恢复可能用户删除项。持续逐批实施、互斥子任务、主独占文档/interop/集成/Git、实现与独立归属交接成功commit/push及三SHA、新local先只读准备后开始、确认实际接管后旧主立即停止共享操作并归档授权保留；后来暂停/停止优先。
+- 所有有界Cordonix构建/测试子树cleanup_complete=true；两个内部任务无临时对象/打开workspace文档/独占服务。artifacts/compatibility-batch040固定源码、JSON命令回执、三个TRX及共享bin/obj保留。Windows官方Drawing、固定Demo双目标/静态Designer与net10.0 AOT方向保持。
+- 040路线图导出PASS：428份Markdown、2,141任务、187索引行，0结构错误，整类型代码完成仍0；README实施列/tasks.csv由既有工具按真实子范围生成，固定1,095类型/61,240成员行及原ID保留。Application-11全待办遗漏本批服务已纠正为部分。
+- 本批26路径UTF8严格解码/无NUL/字节往返通过；主复核源码及全部新增测试，未新增运行依赖或修改固定Demo/Designer源码。实现与独立归属交接分别commit/push，SHA由成功推送后的回执与交接记录填写，不以本地提交冒充批次完成。
+
+## 批次039 实施与收尾（历史）
 
 - 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`已重新核验独立交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的三SHA一致/干净并向038确认实际接管，实时已核038归档；本聊天为当前唯一编码主。
 - 两个互斥内部任务完成并冻结：TextBox-005a只读/密码受限IME与必要真实密码同步、Control-12l输入语言消息及非Form宿主传播。主补共享Win32常量、复核固定源码/测试夹具、统一集成与文档；不恢复TextBoxBase或新建框架。

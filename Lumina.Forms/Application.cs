@@ -56,6 +56,15 @@ public static class Application
     private static int t_messageLoopDepth;
 
     /// <summary>
+    /// Gets or sets the input language for the current thread.
+    /// </summary>
+    public static InputLanguage CurrentInputLanguage
+    {
+        get => InputLanguage.CurrentInputLanguage;
+        set => InputLanguage.CurrentInputLanguage = value;
+    }
+
+    /// <summary>
     /// Occurs on the UI thread when an asynchronous window callback throws an exception.
     /// </summary>
     public static event ThreadExceptionEventHandler ThreadException

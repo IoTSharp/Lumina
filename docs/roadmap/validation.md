@@ -1,6 +1,16 @@
 # 本轮验证与限制
 
-## 批次039 · 2026-11-07 当前验证
+## 批次040 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增27/27（InputLanguage13/Form14）、含旧028及Control/TextBox IME的组合96/96、全量4,617/4,617通过，0失败/跳过。首次编译及全部测试均通过。[040](batches/040.md)只关闭真实HKL服务、标准语言通知/请求取消的明确代码范围，不由程序消息或测试数推出完整输入法/98%。
+
+真实原生HKL读回、可用布局setter/默认复位、线程隔离、文化与物理布局身份、只读集合、MUI布局名称、标准参数/订退/CanRaiseEvents/虚On*、IME更新→Form事件→默认过程及取消结果0有回归。替代布局分支依赖机器安装布局；SendMessage到真实HWND仍是程序测试，物理中日韩切换/组合串/候选窗未验收。
+
+固定10.0.11的Application.OleRequired持久前置副作用缺完整线程寿命，本批不模拟；MUI字符串扩容最多一次，再次增长按native失败路径fallback，区别于固定wrapper的无界重试。原始命令/JSON/TRX/源码保留artifacts/compatibility-batch040；所有有界子树cleanup_complete=true，两个内部任务completed冻结，无临时对象/打开workspace文档/独占服务，共享bin/obj保留。
+
+WindowsDesktop引用包实时仍仅10.0.14/9.0.22/8.0.33，固定10.0.11库存刷新NOT_RUN、不换基线。完整Application/OLE、模态宿主、TextBoxBase/AutoSize、Designer、Native AOT发布/运行、物理设备、Linux/macOS及98%保持未完；WarningLevel=0不表示分析警告清零。
+
+## 批次039 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；22/22新增（TextBox13/Control9）、包含旧028焦点用例的50/50组合回归及全量4,590/4,590通过，0失败/跳过。[039](batches/039.md)只关闭受限IME/必要密码同步和语言消息/非Form宿主传播的限定代码范围。多行密码字符与独立系统EDIT回读比较，不由显示支持推导返回值；实际中日韩输入法/组合串/候选窗未验收。
 
