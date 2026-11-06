@@ -29,6 +29,8 @@
 - 所有有界Cordonix构建/测试子树cleanup_complete=true；两个内部任务无临时对象/打开workspace文档/独占服务。artifacts/compatibility-batch040固定源码、JSON命令回执、三个TRX及共享bin/obj保留。Windows官方Drawing、固定Demo双目标/静态Designer与net10.0 AOT方向保持。
 - 040路线图导出PASS：428份Markdown、2,141任务、187索引行，0结构错误，整类型代码完成仍0；README实施列/tasks.csv由既有工具按真实子范围生成，固定1,095类型/61,240成员行及原ID保留。Application-11全待办遗漏本批服务已纠正为部分。
 - 本批26路径UTF8严格解码/无NUL/字节往返通过；主复核源码及全部新增测试，未新增运行依赖或修改固定Demo/Designer源码。实现与独立归属交接分别commit/push，SHA由成功推送后的回执与交接记录填写，不以本地提交冒充批次完成。
+- 040实现提交`47cd4c4c54facc439e67b9df1f316a1d6014cf30`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；26文件编码/暂存diff通过，推送回执保留artifacts/compatibility-batch040/implementation-push.json。
+- 下一local只读接续聊天`01a1b2c7-9ed3-7511-8764-6945f41d3ad5`（Lumina batch 041 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后040主才发送“开始接管”；041收到后重新核交接SHA/HANDOFF和干净工作树，并明确向040确认实际接管，确认前只读不建子任务。确认后040立即停止共享写入/构建/Git并归档，不等041完成。持续授权、成功push与三SHA、先只读准备/独立归属交接/确认接管/旧主立即归档及后来暂停停止优先规则保留；监督NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。
 
 ## 批次039 实施与收尾（历史）
 
