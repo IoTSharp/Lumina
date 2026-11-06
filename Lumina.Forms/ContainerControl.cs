@@ -365,6 +365,47 @@ public class ContainerControl : ScrollableControl, IContainerControl
         }
     }
 
+    /// <summary>
+    /// Processes dialog keys for the container, including standard Tab and
+    /// Shift+Tab navigation through the active control path.
+    /// </summary>
+    protected override bool ProcessDialogKey(Keys keyData)
+    {
+        if ((keyData & Keys.KeyCode) == Keys.Tab)
+        {
+            return ProcessTabKey((keyData & Keys.Shift) == Keys.None);
+        }
+
+        return base.ProcessDialogKey(keyData);
+    }
+
+    /// <summary>
+    /// Selects the next selectable control in the requested direction.
+    /// </summary>
+    protected virtual bool ProcessTabKey(bool forward)
+        => SelectNextControl(ActiveControl, forward, tabStopOnly: true, nested: true, wrap: true);
+
+    /// <summary>
+    /// Processes dialog characters by offering descendant controls their
+    /// standard access-key route before delegating to the parent chain.
+    /// </summary>
+    protected override bool ProcessDialogChar(char charCode)
+        => ProcessMnemonic(charCode) || base.ProcessDialogChar(charCode);
+
+    /// <summary>
+    /// Gives descendant controls first chance to handle an access-key mnemonic.
+    /// </summary>
+    protected internal override bool ProcessMnemonic(char charCode)
+    {
+        foreach (Control child in ChildControls)
+        {
+            if (!child.Visible || !child.Enabled) { continue; }
+            if (child.ProcessMnemonic(charCode)) { return true; }
+        }
+
+        return base.ProcessMnemonic(charCode);
+    }
+
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void WndProc(ref Message m)

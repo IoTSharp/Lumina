@@ -49,6 +49,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly object s_keyDownEvent = new();
     private static readonly object s_keyPressEvent = new();
     private static readonly object s_keyUpEvent = new();
+    private static readonly object s_previewKeyDownEvent = new();
     private static readonly object s_rightToLeftChangedEvent = new();
     private static readonly Lazy<uint> s_mouseEnterMessage = new(static () =>
     {
@@ -1191,6 +1192,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         add => Events.AddHandler(s_keyUpEvent, value);
         remove => Events.RemoveHandler(s_keyUpEvent, value);
+    }
+
+    /// <summary>Occurs when keyboard input is preprocessed by the control.</summary>
+    [Category("Key")]
+    public event PreviewKeyDownEventHandler? PreviewKeyDown
+    {
+        add => Events.AddHandler(s_previewKeyDownEvent, value);
+        remove => Events.RemoveHandler(s_previewKeyDownEvent, value);
     }
 
     /// <summary>
@@ -3373,6 +3382,95 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// <summary>Raises the <see cref="KeyUp"/> event.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnKeyUp(KeyEventArgs e) => ((KeyEventHandler?)Events[s_keyUpEvent])?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="PreviewKeyDown"/> event.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        => ((PreviewKeyDownEventHandler?)Events[s_previewKeyDownEvent])?.Invoke(this, e);
+
+    /// <summary>
+    /// Determines whether a key is an input key for this control.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool IsInputKey(Keys keyData) => false;
+
+    /// <summary>
+    /// Determines whether a character is an input character for this control.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool IsInputChar(char charCode) => false;
+
+    /// <summary>Processes a command key through the parent chain.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData)
+        => _parent?.ProcessCmdKey(ref msg, keyData) ?? false;
+
+    /// <summary>Processes a dialog key through the parent chain.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ProcessDialogKey(Keys keyData)
+        => _parent?.ProcessDialogKey(keyData) ?? false;
+
+    /// <summary>Processes a mnemonic through the parent chain.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual bool ProcessMnemonic(char charCode)
+        => _parent?.ProcessMnemonic(charCode) ?? false;
+
+    /// <summary>Allows a parent to preview a key message before dispatch.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ProcessKeyPreview(ref Message msg)
+        => _parent?.ProcessKeyPreview(ref msg) ?? false;
+
+    /// <summary>Dispatches a key message after parent preview processing.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected internal virtual bool ProcessKeyMessage(ref Message msg)
+    {
+        if (ProcessKeyPreview(ref msg)) { return true; }
+        return ProcessKeyEventArgs(ref msg);
+    }
+
+    /// <summary>Dispatches a key message through the control's normal window procedure.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ProcessKeyEventArgs(ref Message msg)
+    {
+        WndProc(ref msg);
+        return msg.Result != 0;
+    }
+
+    /// <summary>
+    /// Gives the control an opportunity to consume a keyboard or character message
+    /// before its normal window procedure runs.
+    /// </summary>
+    public virtual bool PreProcessMessage(ref Message msg)
+    {
+        switch (msg.Msg)
+        {
+            case Win32.WM_KEYDOWN:
+            case Win32.WM_SYSKEYDOWN:
+            {
+                Keys keyData = KeyDataFromMessage(msg.WParam, msg.LParam, msg.Msg == Win32.WM_SYSKEYDOWN);
+                if (ProcessCmdKey(ref msg, keyData)) { return true; }
+
+                PreviewKeyDownEventArgs preview = new(keyData);
+                OnPreviewKeyDown(preview);
+                if (preview.IsInputKey || IsInputKey(keyData)) { return false; }
+                return ProcessDialogKey(keyData);
+            }
+            case WmCharMessage:
+            case Win32.WM_SYSCHAR:
+            {
+                char charCode = unchecked((char)(ushort)(nuint)msg.WParam);
+                if (IsInputChar(charCode)) { return false; }
+                return ProcessDialogChar(charCode);
+            }
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>Processes a dialog character through the parent chain.</summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ProcessDialogChar(char charCode)
+        => _parent?.ProcessDialogChar(charCode) ?? false;
 
     /// <summary>Invokes the target control's virtual click event method.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]

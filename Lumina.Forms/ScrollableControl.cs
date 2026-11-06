@@ -240,10 +240,19 @@ public class ScrollableControl : Control
 
         int x = _horizontalOffset;
         int y = _verticalOffset;
-        if (bounds.Left < viewport.Left) { x -= viewport.Left - bounds.Left; }
-        else if (bounds.Right > viewport.Right) { x += bounds.Right - viewport.Right; }
-        if (bounds.Top < viewport.Top) { y -= viewport.Top - bounds.Top; }
-        else if (bounds.Bottom > viewport.Bottom) { y += bounds.Bottom - viewport.Bottom; }
+        // Compare the descendant's current client coordinates after applying
+        // the existing scroll offset. Comparing content coordinates directly
+        // misses a child that has moved above or to the left of the viewport
+        // after the container was already scrolled.
+        int visibleLeft = bounds.Left - _horizontalOffset;
+        int visibleRight = bounds.Right - _horizontalOffset;
+        if (visibleLeft < viewport.Left) { x -= viewport.Left - visibleLeft; }
+        else if (visibleRight > viewport.Right) { x += visibleRight - viewport.Right; }
+
+        int visibleTop = bounds.Top - _verticalOffset;
+        int visibleBottom = bounds.Bottom - _verticalOffset;
+        if (visibleTop < viewport.Top) { y -= viewport.Top - visibleTop; }
+        else if (visibleBottom > viewport.Bottom) { y += visibleBottom - viewport.Bottom; }
         return new Point(Math.Max(0, x), Math.Max(0, y));
     }
 

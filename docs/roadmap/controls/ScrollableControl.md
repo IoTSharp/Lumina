@@ -1,6 +1,6 @@
 # ScrollableControl
 
-🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；029补01b验证递归所需的标准容器style；031完成02a～06a托管首范围；032完成Panel迁移、UserControl消费和08a Windows滚动消息/SCROLLINFO接线。真实物理滚轮/触摸板、Tab/RTL组合、平台滚动和完整API/验收仍未完成，不能把代码子范围计为完整滚动。
+🟡 **当前状态：**018新增标准ScrollableControl : Control，ContainerControl/Form已接入；029补01b验证递归所需的标准容器style；031完成02a～06a托管首范围；032完成Panel迁移、UserControl消费和08a Windows滚动消息/SCROLLINFO接线；033完成07a聚焦后代可见坐标修正。真实物理滚轮/触摸板、Tab/RTL组合、平台滚动和完整API/验收仍未完成，不能把代码子范围计为完整滚动。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -26,7 +26,8 @@
 | ✅ | P1 / ScrollableControl-05a | 批次031：ScrollEventArgs/ScrollEventHandler及双轴程序滚动通知完成，记录旧值/新值和方向；设备消息路径未完成。 |
 | 🟡 | P1 / ScrollableControl-06 | 031完成06a OnScroll、AdjustFormScrollbars、SetDisplayRectLocation、状态位和H/V可见状态首范围；完整派生扩展与原生滚动条仍待。 |
 | ✅ | P1 / ScrollableControl-06a | 批次031：保护状态常量、Get/SetScrollState、HScroll/VScroll、AdjustFormScrollbars、SetDisplayRectLocation和范围刷新接线完成；不代表完整 ScrollableControl。 |
-| ⬜ | P1 / ScrollableControl-07 | 验证 Tab 自动滚动聚焦控件、RTL、水平方向、AutoScroll 关闭重置、尺寸变化滚动条互相挤占和布局重入。 |
+| 🟡 | P1 / ScrollableControl-07 | 033完成07a已有滚动偏移下的后代可见坐标修正；验证 Tab 自动滚动、RTL、水平方向、AutoScroll 关闭重置、尺寸变化滚动条互相挤占和布局重入仍待。 |
+| ✅ | P1 / ScrollableControl-07a | 批次033：`ScrollControlIntoView` 计算后代当前可见坐标时扣除既有水平/垂直偏移，修复后代移动到视口上方/左侧或嵌套 `AutoScrollOffset` 场景无法重新滚入视口的问题。真实 Tab 聚焦、物理设备、RTL/DPI 组合和平台滚动仍归父项。 |
 | 🟡 | P2 / ScrollableControl-08 | 032完成08a Windows `WM_HSCROLL`/`WM_VSCROLL`、SCROLLINFO、line/page/thumb/first/last/end和句柄重建同步首范围；真实物理滚轮/触摸板、完整消息/设备组合和平台仍待。 |
 | ✅ | P2 / ScrollableControl-08a | 批次032：补WS_HSCROLL/WS_VSCROLL、SCROLLINFO、Get/SetScrollInfo、ScrollWindowEx及WndProc命令映射；复用托管范围/Scroll事件，Dispose后忽略注入消息。 |
 | ⬜ | P2 / ScrollableControl-09 | Linux 使用 GtkScrolledWindow 的 adjustments 与原生滚动条；将调整值映射负 AutoScrollPosition，拦截平滑滚动时保留 WinForms 事件聚合规则。 |

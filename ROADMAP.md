@@ -8,7 +8,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～030的明确子范围代码完成；030已完成FND-019基础键消息/事件契约首范围。** [当前记录](HANDOFF.md) · [030结果](docs/roadmap/batches/030.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；不恢复无关巡检，完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～033的明确子范围代码完成；030已完成FND-019基础键消息/事件契约首范围，033补键盘预处理、容器路由和聚焦滚动首范围。** [当前记录](HANDOFF.md) · [033结果](docs/roadmap/batches/033.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；不恢复无关巡检，完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@
 
 批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 详情见[029](docs/roadmap/batches/029.md)及[验证记录](docs/roadmap/validation.md)。029后停止，未安排030。
 
-批次030完成Control-12e/FND-019基础键消息与事件契约首范围；批次031完成Control-11c/FND-013 RightToLeft托管与Win32样式、ScrollableControl-02a～06a托管滚动首范围、ContainerControl-05a/06a、UserControl-01a/02a；批次032完成Panel-01b/02a、UserControl-03a和ScrollableControl-08a Windows滚动消息首范围。4,430项全线测试、Forms双目标Release构建通过。PreviewKeyDown、命令/对话框预处理、KeyPreview、完整Tab/助记键/IME、真实物理滚轮/触摸板、Cursor、完整缩放/设计器、Native AOT和跨平台仍未完成，不宣称完整基础链或98%。详情见[032](docs/roadmap/batches/032.md)。
+批次030完成Control-12e/FND-019基础键消息与事件契约首范围；批次031完成Control-11c/FND-013 RightToLeft托管与Win32样式、ScrollableControl-02a～06a托管滚动首范围、ContainerControl-05a/06a、UserControl-01a/02a；批次032完成Panel-01b/02a、UserControl-03a和ScrollableControl-08a Windows滚动消息首范围；批次033完成Control-12f/FND-019键盘预处理首范围、ContainerControl-06b Tab/助记键后代路由和ScrollableControl-07a已有偏移下的聚焦滚动修正。4,439项全线测试、Forms双目标Release构建通过。完整命令/对话框协作、KeyPreview、完整Tab/助记键/IME、真实物理滚轮/触摸板、Cursor、完整缩放/设计器、Native AOT和跨平台仍未完成，不宣称完整基础链或98%。详情见[033](docs/roadmap/batches/033.md)。
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 
 [项目价值与重新评估](docs/zh/luminaforms-reassessment-2026-10.md) · [首轮审计](docs/assessments/2026-10-15/README.md) · [此前路线记录](docs/assessments/2026-10-15/roadmap-before-reassessment.md)

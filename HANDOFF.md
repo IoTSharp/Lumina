@@ -1,13 +1,13 @@
 # LuminaForms 实施交接
 
-更新：2026-10-26（Asia/Shanghai）。先读本文件、[项目需求](PROJECT_REQUIREMENTS.md)，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
+更新：2026-11-07（Asia/Shanghai）。先读本文件、[项目需求](PROJECT_REQUIREMENTS.md)，再读 [执行顺序](docs/roadmap/execution.md) 和当前批次；不要重新评估整个项目。
 
 ## 当前接续点（2026-10-26 新授权）
 
-- 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；路线图审阅、构建基线和 Control 键盘切片由互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次032：Panel/ScrollableControl/UserControl基础与Windows滚动消息代码、三组新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
-- 当前实施批次：[032](docs/roadmap/batches/032.md)。本批完成Panel-01b/02a标准ScrollableControl迁移与共享AutoScroll、UserControl-03a Load一次触发、ScrollableControl-08a Windows滚动消息/SCROLLINFO首范围；4,430项全线测试、Forms双目标Release构建和路线图校验通过。完整Panel属性、真实物理滚轮/触摸板、Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次031基础与继承链子范围保留。
-- 忽略的 `bin/`、`obj/` 是批次031/032有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b` 与交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f` 已推送并核验；批次032仍待本轮收口。
+- 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次033：Control/ContainerControl/ScrollableControl代码、三个新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
+- 当前实施批次：[033](docs/roadmap/batches/033.md)。本批完成Control-12f/FND-019键盘预处理首范围、ContainerControl-06b Tab/助记键后代路由、ScrollableControl-07a已有偏移下的聚焦滚动修正；4,439项全线测试、Forms双目标Release构建和差分检查通过。`Export-Inventory.ps1 -ReferenceVersion 10.0.11` 因本机缺少固定 `Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0` 被阻断，未用 SDK 10.0.403 替代；完整命令/对话框协作、IME、真实物理输入、Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次031/032基础与继承链子范围保留。
+- 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033本轮待收口提交和远端核验。
 - 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
 
 ## 批次031 新增接续记录

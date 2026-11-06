@@ -1,6 +1,6 @@
 # ContainerControl
 
-🟡 **当前状态：**018～030范围保留；029完成02b标准移除候选及03a基础AutoValidate/Validate/ValidateChildren状态机；031完成05a AutoScaleFactor 和06a ParentForm首范围。程序选择取消、重入/异常与批量后代顺序已有证据；点击提交、真实键鼠、完整嵌套缩放/BindingContext/键盘路由、全部派生和平台仍未完成。
+🟡 **当前状态：**018～032范围保留；029完成02b标准移除候选及03a基础AutoValidate/Validate/ValidateChildren状态机；031完成05a AutoScaleFactor 和06a ParentForm首范围；033完成06b Tab/助记键后代路由首范围。程序选择取消、重入/异常与批量后代顺序已有证据；点击提交、真实键鼠、完整嵌套缩放/BindingContext/键盘路由、全部派生和平台仍未完成，见[033](../batches/033.md)。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -24,6 +24,7 @@
 | ✅ | P1 / ContainerControl-05a | 批次031：受保护 `AutoScaleFactor` 按当前/设计尺寸返回双轴比例，设计基线或单轴缺失时返回中性1.0；不关闭完整字体/DPI/嵌套缩放。 |
 | 🟡 | P1 / ContainerControl-06 | 031完成06a ParentForm动态父级链解析；BindingContext传播、ProcessDialogKey/ProcessMnemonic、Enter/Escape/助记键和容器内部导航仍缺。 |
 | ✅ | P1 / ContainerControl-06a | 批次031：标准 `ParentForm` 按当前父级链动态解析，重新挂载或脱离后立即反映宿主；不冒称BindingContext或键盘路由已完成。 |
+| ✅ | P1 / ContainerControl-06b | 批次033：`ProcessDialogKey` 将 Tab/Shift+Tab 交给 `ProcessTabKey`，按活动控件路径执行标准选择；`ProcessDialogChar`/`ProcessMnemonic` 遍历可见启用后代，首个处理成功项终止并按父链回退。完整验证取消/点击提交、BindingContext、IsDialogMessage、Enter/Escape、全部派生和真实设备仍待。 |
 | 🟡 | P1 / ContainerControl-07 | 029指定禁用/隐藏当前或祖先、移除/销毁与嵌套候选、异常验证已有Windows程序探针及AOT证据。自定义UserControl标准继承、混用缩放、全部派生与设备行为仍未完成。 |
 | 🟡 | P2 / ContainerControl-08 | 018～028的原生容器入口保留；029接入自动导航和程序验证。IsDialogMessage/键盘、点击取消消费、完整原生焦点生命周期及关闭多余LostFocus仍待实现。 |
 | ⬜ | P2 / ContainerControl-09 | Linux 用 GtkFixed/GtkBox 原生容器与 GtkEventControllerFocus；兼容层决定验证是否允许转移，再映射 GtkWidget focus；Gtk 自身 focus chain 不等于 ActiveControl。 |

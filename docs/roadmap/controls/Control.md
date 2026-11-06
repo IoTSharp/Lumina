@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～030明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件并接入容器验证状态机；030完成12e基础KeyDown/KeyPress/KeyUp消息与事件契约；031完成11c右到左托管继承、Win32 RTL扩展样式和AutoScrollOffset基础契约。关闭多余LostFocus/WM_QUIT、PreviewKeyDown/命令路由/IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[031](../batches/031.md)。
+🟡 **当前状态：**002～032明确子范围保留；029完成12c禁用/隐藏自动导航与TabStop通知、12d标准验证属性/事件并接入容器验证状态机；030完成12e基础KeyDown/KeyPress/KeyUp消息与事件契约；031完成11c右到左托管继承、Win32 RTL扩展样式和AutoScrollOffset基础契约；033完成12f键盘预处理首范围。关闭多余LostFocus/WM_QUIT、完整命令/对话框路由、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[033](../batches/033.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -57,6 +57,7 @@
 | ✅ | P1 / Control-12c | 批次029：SelectNextIfFocused从父容器使用标准SelectNextControl；Enabled提交状态后、Visible提交前触发导航，无候选不自造清空。TabStop变更同步WS_TABSTOP并经组件事件槽发TabStopChanged；指定当前/祖先、TabStop/Selectable及嵌套候选轨迹有固定参考/JIT/AOT证据。关闭阶段差异归07/Form-07。 |
 | ✅ | P1 / Control-12d | 批次029：CausesValidation默认true及Changed、Validating/Validated和protected On*接入组件事件槽；验证取消跳过Validated，CausesValidation=false跳过验证，Validating原异常透传，批量Validated原异常透传、普通路径报ThreadException。只完成标准基础消费，完整输入提交/调试异常策略/派生覆盖仍归12及FND-021。 |
 | ✅ | P1 / Control-12e | 批次030：新增KeyEventArgs/KeyPressEventArgs及标准委托，Control事件槽与On*接入WM_KEYDOWN/WM_SYSKEYDOWN/WM_CHAR/WM_KEYUP/WM_SYSKEYUP，保留修饰键、Handled和SuppressKeyPress的基础托管语义。仅完成消息注入首范围；PreviewKeyDown、命令/对话框预处理、KeyPreview、完整Tab/助记键/IME、真实设备和AOT仍归父项与FND-019。 |
+| ✅ | P1 / Control-12f | 批次033：增加PreviewKeyDown/PreviewKeyDownEventArgs、IsInputKey/IsInputChar、ProcessCmdKey/ProcessDialogKey/ProcessDialogChar/ProcessKeyPreview/ProcessKeyMessage/ProcessKeyEventArgs/ProcessMnemonic及public PreProcessMessage首范围；键消息先命令路由再预览和输入/对话框分派，字符消息按输入字符或对话字符分派。完整KeyPreview、IME、默认/取消按钮、完整Tab/助记键、派生路由和真实设备仍归12/FND-019。 |
 | 🟡 | P1 / Control-13 | 027完成13a坐标/捕获和13b基础鼠标消息/事件；必要消费者共享Click去重。验证取消与点击协作、全部派生反射/默认激活/AutoCheck/组同步、RTL/DPI/非客户区及完整捕获竞态仍待原任务。锁屏下10个参考、20个JIT/AOT命中观察失败，真实命中/物理设备交互未验收，不能由事件入口或消息注入关闭完整输入。 |
 | ✅ | P1 / Control-13a | 批次027：PointToClient/PointToScreen、RectangleToClient/RectangleToScreen按真实MapWindowPoints转换（矩形两点）；Capture查询/获取/转移/释放与MouseCaptureChanged，静态MouseButtons/MousePosition接原生状态。无/有句柄、负坐标、父子、释放与重建指定范围完成；RTL镜像/DPI/Wayland等完整语义与物理设备验收仍归父项。 |
 | ✅ | P1 / Control-13b | 批次027：标准Click/DoubleClick及鼠标事件共用Component.Events、对应虚On*、InvokeOnClick/RaiseMouseEvent/ResetMouseEventArgs；MouseEventArgs.Location/可继承、HandledMouseEventArgs与XButton1/2；五按钮/双击/有符号坐标/滚轮Handled及原生Enter/Hover/Leave跟踪。跟踪在虚WndProc之外，保留直接调用区别、重建pending-enter、有限销毁和Up后的捕获清理。范围限基础Control消息路径及上述契约；验证取消、所有派生路由与设备验收不计完成，原异常文本差异保留。 |
