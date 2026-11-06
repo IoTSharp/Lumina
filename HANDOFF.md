@@ -34,6 +34,8 @@
 - 下一依赖按TextBoxBase共享成员/默认事件及真实派生后端推进，RichTextBox/MaskedTextBox直接继承分批处理；完整模态/OLE宿主context、CurrentCulture/UseWaitCursor、AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT和全部平台/98%继续原任务。不重复033～042、不重评全项目、不新增调度框架。
 - 所有有界构建/测试子树cleanup_complete=true，两个内部任务无临时对象/打开workspace文档/独占服务，证据与共享bin/obj保留。Windows官方Drawing、固定Demo双目标/静态Designer/resx保持；其他失败HRESULT显式抛出与MUI最多一次扩容差异保持。
 - 持续授权、多互斥内部任务/主独占共享文档interop接口集成Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备后开始、确认接管后旧主立即停止共享操作并归档、后来暂停停止优先全部保持。监督luminaforms-30为NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。
+- 042实现提交`bd9f4d2c9f50dee14dc5f1e7a9ba4290d25be7e9`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；20路径UTF8严格解码/无NUL/字节往返和暂存diff通过，回执保留artifacts/compatibility-batch042/implementation-push.json。
+- 下一local只读接续聊天`01a1b2ed-b9ac-74a1-8409-5c2315ee56bb`（Lumina batch 043 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后042主才发送“开始接管”；043收到后重新核交接SHA/HANDOFF/干净工作树，并明确向042确认实际接管，确认前只读不建子任务。确认后042立即停止共享写入/构建/Git并归档，不等043完成。持续授权、成功push/三SHA、只读准备/独立交接/确认/归档及后来暂停停止优先规则保持；监督NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项。
 
 ## 批次041 实施与收尾（历史）
 
