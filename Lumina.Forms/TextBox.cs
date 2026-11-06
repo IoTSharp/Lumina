@@ -11,11 +11,14 @@ namespace Lumina.Forms;
 /// </summary>
 public class TextBox : TextBoxBase
 {
+    private static readonly object s_textAlignChangedEvent = new();
+
     private bool _acceptsReturn;
     private string _placeholderText = string.Empty;
     private char _passwordChar;
     private bool _useSystemPasswordChar;
     private ScrollBars _scrollBars;
+    private HorizontalAlignment _textAlign;
 
     /// <summary>
     /// Initializes a single-line editable text box.
@@ -121,6 +124,34 @@ public class TextBox : TextBoxBase
         }
     }
 
+    /// <summary>Gets or sets the horizontal alignment of text in the text box.</summary>
+    [Category("Appearance")]
+    [Localizable(true)]
+    [DefaultValue(HorizontalAlignment.Left)]
+    public HorizontalAlignment TextAlign
+    {
+        get => _textAlign;
+        set
+        {
+            if (_textAlign == value) { return; }
+            if ((uint)value > 2u)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(HorizontalAlignment));
+            }
+            _textAlign = value;
+            RecreateHandle();
+            OnTextAlignChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="TextAlign"/> property changes.</summary>
+    [Category("Property Changed")]
+    public event EventHandler? TextAlignChanged
+    {
+        add => Events.AddHandler(s_textAlignChangedEvent, value);
+        remove => Events.RemoveHandler(s_textAlignChangedEvent, value);
+    }
+
     /// <summary>
     /// Occurs when the selection changes.
     /// </summary>
@@ -132,9 +163,25 @@ public class TextBox : TextBoxBase
         get
         {
             uint style = base.Style;
+            HorizontalAlignment alignment = _textAlign;
+            if (RenderRightToLeft)
+            {
+                alignment = alignment switch
+                {
+                    HorizontalAlignment.Left => HorizontalAlignment.Right,
+                    HorizontalAlignment.Right => HorizontalAlignment.Left,
+                    _ => alignment
+                };
+            }
+            style |= alignment switch
+            {
+                HorizontalAlignment.Center => Win32.ES_CENTER,
+                HorizontalAlignment.Right => Win32.ES_RIGHT,
+                _ => Win32.ES_LEFT
+            };
             if (Multiline)
             {
-                if ((_scrollBars & ScrollBars.Horizontal) != 0 && !WordWrap)
+                if ((_scrollBars & ScrollBars.Horizontal) != 0 && _textAlign == HorizontalAlignment.Left && !WordWrap)
                 {
                     style |= Win32.WS_HSCROLL;
                 }
@@ -144,6 +191,18 @@ public class TextBox : TextBoxBase
                 }
             }
             return style | (_useSystemPasswordChar ? Win32.ES_PASSWORD : 0);
+        }
+    }
+
+    /// <inheritdoc />
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            CreateParams parameters = base.CreateParams;
+            // WS_EX_RIGHT overrides the EDIT-specific alignment flags.
+            parameters.ExStyle &= ~(int)Win32.WS_EX_RIGHT;
+            return parameters;
         }
     }
 
@@ -160,6 +219,10 @@ public class TextBox : TextBoxBase
     }
 
     internal override void OnSelectionChangedInternal(EventArgs e) => OnSelectionChanged(e);
+
+    /// <summary>Raises the <see cref="TextAlignChanged"/> event.</summary>
+    protected virtual void OnTextAlignChanged(EventArgs e)
+        => (Events[s_textAlignChangedEvent] as EventHandler)?.Invoke(this, e);
 
     /// <summary>
     /// Raises the <see cref="SelectionChanged"/> event.

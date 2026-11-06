@@ -58,8 +58,8 @@ public enum HighDpiMode
 public enum HorizontalAlignment
 {
     Left = 0,
-    Center = 1,
-    Right = 2
+    Right = 1,
+    Center = 2
 }
 
 public enum ScrollBars

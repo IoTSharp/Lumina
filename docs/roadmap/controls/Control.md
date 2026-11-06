@@ -90,6 +90,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 
 ## 修改历史
 
+- 2026-11-07 · 批次044：Control.cs源码no-op。TextBox对齐夹具定位既有RTL创建后UpdateStyles会重新提交USER32规范化过的样式；独立EDIT复现此管线，仅验证TextAlign创建样式消费。原38/42失败保留，完整运行时RTL/镜像视觉及11/17父项不关闭，见[044](../batches/044.md)。
+
 - 2026-11-07 · 批次042：生产Control及Control.Ime均no-op；核固定源码确认组合/SETCONTEXT/候选通知交原生默认过程，新增11项消息参数/结果、去重状态/默认异常及真实隐藏EDIT回传回归。沿12父项记录审计，不新增重复实现子项；物理IME/候选UI、模态与平台仍待，见[042](../batches/042.md)。
 
 - 2026-11-07 · 批次040：12m将039语言变化消息接入标准Form通知，并补请求取消与原始参数/默认结果保留；上下文更新、unsupported传播和默认过程先后遵循固定源码。只关闭明确共享消息子范围，模态/OLE/组合串/设备与平台仍待，见[040](../batches/040.md)。

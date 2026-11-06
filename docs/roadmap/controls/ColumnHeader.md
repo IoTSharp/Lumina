@@ -57,6 +57,8 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 
 ## 修改历史
 
+- 2026-11-07 · 批次044：共享HorizontalAlignment按固定v10.0.11纠正为Left=0、Right=1、Center=2；本类型及列集合源码no-op，按名字重编译保留名字语义，旧二进制常量/按整数持久化的1和2须迁移核查。此枚举修正不关闭ColumnHeader-02/04、标准继承或原生列同步，见[044](../batches/044.md)。
+
 - `2fb513a` · 2026-04-09：ListViewSupport.cs 加入基础 ColumnHeader/集合及 View 枚举；尚无原生列同步。
 - 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
 

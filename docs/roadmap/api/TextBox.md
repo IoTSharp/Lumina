@@ -6,6 +6,8 @@
 
 类型：`System.Windows.Forms.TextBox`；基类：`System.Windows.Forms.TextBoxBase`。Lumina 同名类型：🟡 存在；基类及基线接口形状：⬜ 未匹配。
 
+044当前源码补充：007a新增TextAlign/TextAlignChanged/OnTextAlignChanged与对应EDIT创建样式；共享HorizontalAlignment纠正为Left=0/Right=1/Center=2。042已恢复直接TextBoxBase，但本页类型/成员行仍为固定库存历史快照，未运行10.0.11引用包刷新，不手改原ID/成员状态或据此宣称完整兼容，见[当前任务](../controls/TextBox.md)。
+
 公开属性 **110**，公开事件 **79**，公开方法 **92**；受保护扩展成员 **174**。构造、字段和常量另列，均不能忽略。继承同一成员在每个具体控件上都要验收，但全库统计使用不同口径，见计量规则。
 
 `🟡签名匹配` 仅指规范化命名空间后的元数据形状，**不是实现完成**。所有运行支持状态均为 `⬜未验收`；实际支持须补源码消费、默认值、运行与 AOT 证据。默认值栏是特性元数据，缺少特性不代表默认值不存在。

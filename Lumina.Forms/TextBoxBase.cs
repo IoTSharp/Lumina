@@ -13,12 +13,14 @@ namespace Lumina.Forms;
 public abstract class TextBoxBase : Control
 {
     private static readonly object s_acceptsTabChangedEvent = new();
+    private static readonly object s_hideSelectionChangedEvent = new();
     private static readonly object s_multilineChangedEvent = new();
     private static readonly object s_readOnlyChangedEvent = new();
 
     private bool _multiline;
     private bool _readOnly;
     private bool _acceptsTab;
+    private bool _hideSelection = true;
     private bool _wordWrap = true;
     private int _selectionStart;
     private int _selectionLength;
@@ -85,6 +87,29 @@ public abstract class TextBoxBase : Control
     {
         add => Events.AddHandler(s_acceptsTabChangedEvent, value);
         remove => Events.RemoveHandler(s_acceptsTabChangedEvent, value);
+    }
+
+    /// <summary>Gets or sets whether selected text is hidden when the control loses focus.</summary>
+    [Category("Behavior")]
+    [DefaultValue(true)]
+    public bool HideSelection
+    {
+        get => _hideSelection;
+        set
+        {
+            if (_hideSelection == value) { return; }
+            _hideSelection = value;
+            RecreateHandle();
+            OnHideSelectionChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="HideSelection"/> property changes.</summary>
+    [Category("Property Changed")]
+    public event EventHandler? HideSelectionChanged
+    {
+        add => Events.AddHandler(s_hideSelectionChangedEvent, value);
+        remove => Events.RemoveHandler(s_hideSelectionChangedEvent, value);
     }
 
     /// <inheritdoc />
@@ -282,6 +307,11 @@ public abstract class TextBoxBase : Control
                 style |= Win32.ES_READONLY;
             }
 
+            if (!_hideSelection)
+            {
+                style |= Win32.ES_NOHIDESEL;
+            }
+
             return style;
         }
     }
@@ -455,6 +485,10 @@ public abstract class TextBoxBase : Control
     /// <summary>Raises the <see cref="AcceptsTabChanged"/> event.</summary>
     protected virtual void OnAcceptsTabChanged(EventArgs e)
         => (Events[s_acceptsTabChangedEvent] as EventHandler)?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="HideSelectionChanged"/> event.</summary>
+    protected virtual void OnHideSelectionChanged(EventArgs e)
+        => (Events[s_hideSelectionChangedEvent] as EventHandler)?.Invoke(this, e);
 
     /// <summary>Raises the <see cref="MultilineChanged"/> event.</summary>
     protected virtual void OnMultilineChanged(EventArgs e)

@@ -1,6 +1,16 @@
 # 本轮验证与限制
 
-## 批次043 · 2026-11-07 当前验证
+## 批次044 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增42/42（HideSelection14、TextAlign28）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文/ListView 2,356/2,356、全量4,737/4,737通过，0失败/跳过。首次新测试38/42，4例RTL原生对照失败原JSON/TRX保留；定位为裸CreateWindowEx与既有Control创建后UpdateStyles重新提交样式的生命周期差异，夹具保留RTL扩展位/12组合/原expectedBits并复现该步骤后通过，未改生产Control。
+
+[044](batches/044.md)只关闭TextBoxBase-003b及TextBox-007a：组件事件槽/虚On*、同值/原异常/重入/CanRaiseEvents，真实EDIT重建与文本/选择/modified/只读/密码状态保存；HideSelection四组独立原生样式、TextAlign十二组初始对齐管线样式均有回归。RTL样式位对照不等于固定WinForms完整镜像/视觉对齐或运行时RTL验收。
+
+共享HorizontalAlignment按固定v10.0.11源码纠正Left=0/Right=1/Center=2；旧二进制常量与整数1/2持久化需复核。RichTextBox仅补显式new保留独立存值，Masked源码no-op，完整标准直接继承/后端及掩码限制未完。固定枚举源码743字节SHA256为638f5f648ff50c7d7220939cb070653008aece28f0f8d015306926bcc5da4090；TextBox/Base固定源码复核既有042/043 hash。命令JSON、四个TRX与reference回执保留artifacts/compatibility-batch044。
+
+固定10.0.11引用库存刷新、Native AOT发布/运行、Designer、物理输入/选区视觉、Linux/macOS与98%本批NOT_RUN/UNKNOWN。完整BorderStyle/Modified/SelectedText/编辑、PreferredSize/AutoSize、CharacterCasing、运行时RTL/镜像视觉、模态/OLE宿主、ButtonBase与关闭LostFocus/WM_QUIT仍在原任务。所有自有有界调用清理回执与忽略bin/obj/证据保留；WarningLevel=0不表示分析告警清零。
+
+## 批次043 · 2026-11-07 历史验证
 
 首次Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增41/41（共同设置17、滚动条24）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文359/359、全量4,695/4,695通过，0失败/跳过。[043](batches/043.md)仅关闭TextBoxBase-003a和TextBox-004a限定范围；无本批编译或测试失败。
 

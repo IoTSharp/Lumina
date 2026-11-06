@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+044完成007a：TextAlign标准默认/校验/事件、变更重建及EDIT创建对齐位，初始有效RTL翻译左右，清WS_EX_RIGHT；水平条限逻辑Left。28项新增、42项本批及4,737全量通过，见[044](../batches/044.md)。HorizontalAlignment按固定10.0.11纠正为Left=0/Right=1/Center=2；旧二进制常量及整数1/2持久化需复核。完整运行时RTL/镜像视觉/尺寸及CharacterCasing仍待。
+
 043的004a使ScrollBars按合法枚举/标准默认None更新原生样式并重建，配合基类WordWrap真实切换折行；同值不重建，状态/密码及创建事件顺序保持。24项新增含16组合独立EDIT对照与全量4,695项通过，见[043](../batches/043.md)。完整TextAlign/RTL、滚动条首选尺寸和实际滚动/设备仍待。
 
 037～041有限范围保留；042完成001a的TextBox : TextBoxBase，共享现有文本/选择、多行/只读、Tab/IME前置及EDIT句柄/主题路径，TextBox保留密码、Enter与旧非标准SelectionChanged扩展。8项新增基类回归、相关318项和全量4,654项通过，见[042](../batches/042.md)。完整基类、其余运行期样式、密码安全/辅助技术及另外两个派生直接继承仍缺。
@@ -27,12 +29,13 @@
 | TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
 | TextBox-003b | P1 | ✅ | 批次037：现有TextBox消费固定TextBox/TextBoxBase输入键规则：多行Enter/AcceptsReturn、Tab/AcceptsTab/Ctrl、多行Escape、可编辑Back及Home/End/Page；AcceptsTab下Ctrl+Tab去除Ctrl后交父对话框链。8项无句柄/真实EDIT/Form默认按钮回归通过。未恢复TextBoxBase、运行期原生样式重建和完整编辑输入。 |
 | TextBox-003c | P1 | ✅ | 批次038：Multiline变更真实重建EDIT后发MultilineChanged/虚OnMultilineChanged；同值不重建。Select/SelectionStart/SelectionLength支持创建前缓存、参数与有向范围、创建/重建恢复，保留Text及原生modified位并抑制创建中的重复EN_CHANGE。14项回归通过；仍直接继承Control，virtual Multiline为过渡声明，未完成TextBoxBase、尺寸/布局、撤销栈或完整编辑。 |
-| TextBox-004 | P1 | 🟡 | 043的004a已使None/Horizontal/Vertical/Both与WordWrap及单双行原生样式/运行期重建真实生效，Horizontal在WordWrap时不显示。当前限定默认Left；TextAlign/RTL其他对齐及滚动条首选尺寸、实际滚动行为和全部布局协作仍待，父项不关闭。 |
+| TextBox-004 | P1 | 🟡 | 043的004a使None/Horizontal/Vertical/Both与WordWrap及单双行样式/重建生效；044的007a补对齐创建位、初始有效RTL翻译及逻辑TextAlign.Left水平条限制。完整运行时RTL/镜像视觉、滚动条首选尺寸、实际滚动行为及全部布局协作仍待，父项不关闭。 |
 | TextBox-004a | P1 | ✅ | 批次043：ScrollBars.None默认/Localizable、合法枚举校验及value参数异常；同值no-op、变更保存状态后重建。多行按请求加纵条，水平条须WordWrap=false；保留密码与文本/选择/modified/只读和无重复通知。24项回归含16样式组合/独立EDIT通过；不含其他对齐/RTL/PreferredSize/设备。 |
 | TextBox-005 | P1 | 🟡 | 原已有ReadOnly原生映射，039的005a补只读/密码受限IME、PasswordChar实际回读与消息更新、UseSystemPasswordChar真实样式/重建优先级及ReadOnlyChanged。默认值、创建/重建/组合限制已有13项回归；完整复制限制、密码辅助技术防泄漏、AutoComplete协作和物理IME仍待。 |
 | TextBox-005a | P1 | ✅ | 批次039：CanEnableIme按ReadOnly/实际原生PasswordChar/基类能力判断，ImeModeBase受限时返回Disable但保留设置意图，DesignMode读配置；ReadOnlyChanged/虚On*在原生提交后、IME检查前。PasswordChar getter创建EDIT并回读，setter非系统密码时发EM_SETPASSWORDCHAR；UseSystemPasswordChar重建后优先系统字符，关闭恢复缓存字符，保留文本/选择/modified。13项回归含独立多行原生EDIT对照通过；TextBoxBase、完整密码安全/自动完成/设备仍待。 |
 | TextBox-006 | P1 | ⬜ | PlaceholderText=空字符串，空值规范化、聚焦时显示、清空 Text 后显示、多行支持差异和高对比度；占位文字不进入 Text/绑定值。 |
-| TextBox-007 | P1 | ⬜ | CharacterCasing=Normal、TextAlign=Left、TextAlignChanged；输入/粘贴/程序赋值的大小写转换分别验收，RTL 与对齐不混为一个开关。 |
+| TextBox-007 | P1 | 🟡 | 044的007a补TextAlign=Left、标准TextAlignChanged/虚通知、重建与初始对齐/RTL样式。CharacterCasing=Normal及输入/粘贴/程序赋值的大小写转换、完整运行时RTL/镜像视觉仍待，父项不关闭。 |
+| TextBox-007a | P1 | ✅ | 批次044：TextAlign默认Left/Localizable、合法枚举与value异常、Events槽/虚On*、同值/重入/原异常/CanRaiseEvents；变化保存后重建再通知。创建时左右按有效RTL翻译并清WS_EX_RIGHT，水平条须逻辑Left且不WordWrap。共享枚举纠正Left0/Right1/Center2；28项回归通过。RTL原生对照复现既有Control创建后重提交样式，仅证样式消费，不是固定WinForms完整镜像/物理视觉验收。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
 | TextBox-009 | P2 | ⬜ | Paste(string)、继承 Paste/Copy/Cut/Undo、MaxLength、SelectedText、ShortcutsEnabled；异常、只读、超长粘贴和 UTF-16 端点完整对照。 |
 | TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认；单行PreferredHeight/AutoSize、BorderStyle、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
@@ -53,6 +56,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次044：新增007a，007按实际范围由全待办改部分，004交叉引用对齐/水平条范围。HorizontalAlignment原Center/Right整数反置按固定v10.0.11修正，ColumnHeader等按名字重编译保留名字语义，旧二进制/整数存储须复核。首次42项中4例裸native RTL夹具缺少既有Control创建后UpdateStyles步骤而失败；保留原回执，复现该管线后42项通过。生产Control未改，不以样式位对照关闭完整RTL/视觉或007父项，见[044](../batches/044.md)。
 
 - 2026-11-07 · 批次043：新增004a，004由全待办纠正为部分；ScrollBars不再只存值，None纠正旧强制纵条，WordWrap实际影响折行并保留同值布局/缓存副作用。共享基类保留既有Enter规则/高度，默认Left以外对齐、首选尺寸/Designer/AOT/设备和派生后端仍未验收，见[043](../batches/043.md)。
 

@@ -18,7 +18,7 @@ public class RichTextBox : TextBox
         _ = DarkModeNative.TryEnableDarkScrollBar();
     }
 
-    public bool HideSelection { get; set; } = true;
+    public new bool HideSelection { get; set; } = true;
 
     public Color SelectionColor
     {

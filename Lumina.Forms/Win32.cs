@@ -35,11 +35,15 @@ internal static partial class Win32
     public const uint WS_EX_COMPOSITED = 0x02000000;
     public const uint WS_EX_CLIENTEDGE = 0x00000200;
     public const uint WS_EX_CONTROLPARENT = 0x00010000;
+    public const uint WS_EX_RIGHT = 0x00001000;
 
     public const uint ES_LEFT = 0x0000;
+    public const uint ES_CENTER = 0x0001;
+    public const uint ES_RIGHT = 0x0002;
     public const uint ES_MULTILINE = 0x0004;
     public const uint ES_AUTOVSCROLL = 0x0040;
     public const uint ES_AUTOHSCROLL = 0x0080;
+    public const uint ES_NOHIDESEL = 0x0100;
     public const uint ES_READONLY = 0x0800;
     public const uint ES_PASSWORD = 0x0020;
     public const uint ES_WANTRETURN = 0x1000;

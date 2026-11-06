@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+044仅为既有HideSelection自动属性补显式new，保留独立存值与true默认；通过TextBoxBase引用访问的新标准HideSelection属于另一属性状态，不把隐藏成员声明当RichEdit选区显示已实现。现有错误继承链也会间接暴露TextBox.TextAlign；直接层级、富文本后端和本类型标准成员仍留原任务，见[044](../batches/044.md)。
+
 043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或RichEdit/富文本后端，全部原任务状态保留。
 
 🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前继承 TextBox，构造开启多行但原生类仍 EDIT；SelectionColor、HideSelection 仅存值。给 EDIT 发送 EM_SETBKGNDCOLOR 不能证明 RichEdit 支持。RTF、选区格式、RichEdit 事件、撤销重做尚缺。
@@ -45,6 +47,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次044：HideSelection仅补显式new避免隐藏声明告警，不转发到标准基类，不改变派生存值语义。完整001/007和真实富文本后端仍未完成；通过错误TextBox层级暴露的TextAlign不计本类型标准支持。
 
 - 2026-11-07 · 批次043：源码no-op，间接共享真实折行/滚动样式及重建路径，不能据此关闭001或RichEdit/富文本功能；标准直接基类/派生默认仍待，见[043](../batches/043.md)。
 

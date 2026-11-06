@@ -1,6 +1,6 @@
 # 公共基础：先修这些，再铺控件
 
-2026-11-07 · 批次035～042范围保留；043补TextBoxBase共同AcceptsTab通知、WordWrap折行/条件布局及TextBox.ScrollBars真实样式/重建。完整编辑基类、派生后端、OLE宿主context、输入/布局及平台验收仍待，见[043](batches/043.md)。
+2026-11-07 · 批次035～043范围保留；044补TextBoxBase.HideSelection标准设置/通知和TextBox.TextAlign设置/创建样式，纠正HorizontalAlignment整数身份。完整编辑基类、派生后端、RTL/镜像视觉、OLE宿主context、输入/布局及平台验收仍待，见[044](batches/044.md)。
 
 依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。
 
@@ -40,6 +40,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次044：共同HideSelection标准设置/通知与TextBox对齐创建样式完成明确范围；HorizontalAlignment按固定10.0.11修正，旧二进制/整数1/2持久化须复核。FND-001/013/014/019等父项保持部分，Control源码no-op，原生RTL夹具只证既有创建管线的样式消费；完整设备/Designer/AOT/平台/98%不关闭，见[044](batches/044.md)。
 
 - 2026-11-07 · 批次043：TextBoxBase-003a补共同设置/标准AcceptsTabChanged，TextBox-004a使滚动条与折行真实生效；同值WordWrap仍清首选缓存并条件参与父布局。FND-014/019及完整继承/编辑/派生后端父项保留部分；不把原生EDIT样式/行数回归称设备/Designer/AOT/平台验收，见[043](batches/043.md)。
 
