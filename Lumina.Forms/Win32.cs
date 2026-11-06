@@ -1058,6 +1058,12 @@ internal static partial class Win32
     [DllImport("user32.dll")]
     internal static extern nint GetFocus();
 
+    [LibraryImport("ole32.dll")]
+    internal static partial int OleInitialize(nint reserved);
+
+    [LibraryImport("ole32.dll")]
+    internal static partial void OleUninitialize();
+
     [LibraryImport("user32.dll")]
     internal static partial nint GetKeyboardLayout(uint threadId);
 

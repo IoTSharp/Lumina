@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 041主聊天`01a1b2c7-9ed3-7511-8764-6945f41d3ad5`于2026-11-07收到“开始接管”，重新核实独立归属交接`358538d0afd23ddcf7ad49014690da3630871c0a`的HEAD/origin/main/实际远端三SHA一致、main工作树干净，已向040主明确确认实际接管。041为当前唯一编码主；040已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责最小线程OLE状态和输入语言OLE前置，主独占Application公共入口/退出连接、共享interop/文档、集成和Git。完整context/模态/IME及平台门禁保持，监督`luminaforms-30`为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。下述040及以前归属作为历史。
+
 - 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`于2026-11-07收到“开始接管”，重新核实独立归属交接`6b7624a64b052080e4390fda4e3d273879c11eb0`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向039主确认实际接管。040为当前唯一编码主；039已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责InputLanguage服务和Form语言事件/参数，主独占Application入口、Control消息连接、共享interop/文档、集成与Git。监督`luminaforms-30`保持NOT_FOUND、040绑定NOT_DONE，不恢复可能用户删除的项；下述039及以前归属作为历史。
 
 - 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`于2026-11-07收到“开始接管”，重新核实独立归属交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的HEAD/origin/main/实际远端三SHA一致、工作树干净并已向038主确认实际接管。039为当前唯一编码主；038已确认停止共享写入/构建/Git并按规则归档。039沿TextBox只读/密码IME限制和Control语言消息/非Form宿主传播两个互斥范围继续，主独占共享文档、interop、集成与Git。监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，不恢复可能用户删除的项。下述038及以前归属为历史。
@@ -14,11 +16,24 @@
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
 - 工作区是 `D:\GitHub\Lumina`，分支 `main`。036主聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`收到“开始接管”后重新核验独立交接`8625a569e5731564a5d0b2defac9d1a56d099b47`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管并向035主确认。035主已声明停止共享写入、构建和Git，按规则立即归档；035实现`aabff5a05dd9f64fd0d15285c91cdb9c474280da`保留。忽略的bin/obj保留。
-- 当前实施批次：[036](docs/roadmap/batches/036.md)。完成Control-12i原生输入键/字符判别、队列字符抑制及验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9/9、全量4,514/4,514及Release双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整IME、ButtonBase、模态、AutoSize、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
+- 批次[036](docs/roadmap/batches/036.md)历史快照：完成Control-12i原生输入键/字符判别、队列字符抑制及验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9/9、全量4,514/4,514及Release双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整IME、ButtonBase、模态、AutoSize、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次040 实施与收尾（当前）
+## 批次041 实施与收尾（当前）
+
+- 041已重新核独立交接`358538d0afd23ddcf7ad49014690da3630871c0a`三SHA一致/干净并向040明确确认实际接管，实时已核040归档；041为唯一编码主。
+- 两个互斥内部任务completed冻结：最小线程OLE状态/9项测试；InputLanguage OLE前置/7项测试。主补Application标准入口、无循环ExitThread与最外层finally清理、Win32 LibraryImport及2项真实嵌套循环测试，独占共享文档、集成与Git。
+- 首次/最终Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增18/18、相关输入语言/IME/焦点/消息队列/同步上下文148/148、全量4,635/4,635通过，0失败/跳过。首轮新增9/18通过，另9项在调用库前错误假定CLR COM未初始化；修正显式STA/MTA/平衡原生探测夹具，保留原始JSON/TRX，生产代码未为夹具改变。
+- Application-11b补Current getter/setter的OleRequired前置；12a提供线程缓存/真实S_OK或S_FALSE配对一次、RPC_E_CHANGED_MODE返回MTA而不释放外部引用。真实HWND嵌套循环/回调退出不提前释放、外层返回清理；自然线程终止不新增managed清理，完整ThreadContext/外部宿主/COM对象及窗口销毁顺序/多UI寿命仍缺。
+- 其他失败HRESULT直接抛出、不缓存/不配对，明确区别于固定v10.0.11缓存STA；异常HRESULT未故障注入。040的HKL借用/只读注册表和MUI最多一次扩容/再增长fallback保持，不能把本批称完整InputLanguage/OLE兼容。
+- Application-12由全待办改部分，11/04、CNS-012、FND-019和Control/Form父项保留；原ID与1,095类型/61,240成员行不改。HANDOFF的036“当前批次”滞后已纠正为历史快照。README实施列/tasks.csv由既有工具生成并校验；不由测试数抵扣未完父项或98%。
+- 041路线图导出PASS：429份Markdown、2,143任务、187实施索引行，0结构错误，整类型代码完成仍0。两个新增ID仅代表明确完成子范围，未删除或缩小任何未完项/固定分母。
+- 下一依赖先核组合串/候选窗、模态宿主及真实前置，再按共享编辑依赖推进TextBoxBase；CurrentCulture/UseWaitCursor、完整UserControl AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%留原任务。不重复033～041，不新增完整context架构或调度框架，不重评全项目。
+- 所有Cordonix构建/测试子树cleanup_complete=true，两个内部任务无临时对象/打开workspace文档/独占服务；artifacts/compatibility-batch041固定源码/JSON/四个TRX及共享bin/obj保留。Windows两个目标官方Drawing、Demo固定双目标/静态Designer和net10.0 AOT方向保持。
+- 持续逐批实施、互斥内部任务、主独占文档/interop/集成/Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备后开始、确认接管后旧主立即停止共享操作并归档以及后来暂停停止优先规则保持。监督luminaforms-30为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。
+
+## 批次040 实施与收尾（历史）
 
 - 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`已核独立交接`6b7624a64b052080e4390fda4e3d273879c11eb0`三SHA一致/干净并向039确认实际接管；实时已核039归档，本聊天为当前唯一编码主。
 - 两个互斥内部任务completed/冻结：InputLanguage线程HKL服务与只读集合/13项测试；Form标准语言参数/委托/组件事件槽/虚通知及14项测试。主独占Application.CurrentInputLanguage转发、Control共享语言通知/请求取消、Win32 LibraryImport、文档、集成与Git。

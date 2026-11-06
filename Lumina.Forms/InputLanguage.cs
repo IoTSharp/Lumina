@@ -28,14 +28,14 @@ public sealed class InputLanguage
         get
         {
             EnsureWindows();
-            // This bounded keyboard service reads the native thread HKL. The
-            // WinForms OleRequired initialization side effect requires the
-            // application thread-context lifetime, which is still a separate gap.
+            Application.OleRequired();
             return new InputLanguage(Win32.GetKeyboardLayout(0));
         }
         set
         {
             EnsureWindows();
+            // WinForms initializes OLE before resolving null or activating a layout.
+            Application.OleRequired();
             value ??= DefaultInputLanguage;
             if (Win32.ActivateKeyboardLayout(value.Handle, 0) == 0)
             {

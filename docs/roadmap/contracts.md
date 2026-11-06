@@ -15,7 +15,7 @@
 | CNS-009 | P2/P3 ⬜ | Automation、AccessibleObject派生及相关UIA类型；Com2Interop/ActiveX类型、HtmlDocument/HtmlElement集合、DOM事件；各归所属控件 | 可访问性、OLE/浏览器能力各自验收；没有对应原生能力时公开边界 |
 | CNS-010 | P2 ⬜ | Drawing.Printing：PrintDocument/PrintController/PreviewPrintController、PageSettings/PrinterSettings、PrintPage/QueryPage事件参数及所有集合/枚举 | [打印计划](controls/PrintDocument.md)，字体/Graphics身份、AOT与真实打印链路 |
 | CNS-011 | P3 ⬜ | 旧DataGrid/ToolBar/StatusBar及样式/条目、ContextMenu/MainMenu/MenuItem；历史格式化/帮助/系统对象 | 历史/Obsolete项在清单保留；先对齐.NET10标准异常占位，[探针](../assessments/2026-10-15/legacy-control-probes.json)；恢复旧版UI另列可选扩展，不稀释活跃控件比例 |
-| CNS-012 | P1/P2 🟡 | 批次004/005标准InvokeAsync与007默认callback await范围保留；040补InputLanguage真实线程HKL、安装/默认布局、文化/名称/身份与Application入口。固定源码OLE初始化前置仍缺；ShowAsync/ShowDialogAsync、ICommand/相关事件、完整退出竞态和其余资源/屏幕/光标辅助类型仍待 | 不依赖印象筛掉“新版”成员；既有AOT/取消/线程证据限明确首范围 |
+| CNS-012 | P1/P2 🟡 | 批次004～040明确范围保留；041补InputLanguage Current访问的OLE前置与Application.OleRequired线程缓存/显式退出配对。完整OLE宿主context、ShowAsync/ShowDialogAsync、ICommand/相关事件、完整退出竞态和其余资源/屏幕/光标辅助类型仍待 | 不依赖印象筛掉“新版”成员；既有AOT/取消/线程证据限明确首范围 |
 
 ## 每个附属类型的实际任务
 
@@ -24,6 +24,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次041：CNS-012沿Application-11b/12a补OLE前置及最小owner退出配对；CNS-001/003的040事件/集合保持，未关闭任何完整父项。完整context/模态/输入法及平台仍待，固定源码其他失败HRESULT与MUI有界差异单列，见[041](batches/041.md)。
 
 - 2026-11-07 · 批次040：CNS-001/003/012分别补标准输入语言事件参数/委托、只读集合和HKL服务，行为归Application-11a、Form-12d及Control-12m。所有父任务保持部分，OLE持久前置/完整输入法和平台验收不由新类型存在关闭，见[040](batches/040.md)。
 

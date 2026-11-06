@@ -65,6 +65,17 @@ public static class Application
     }
 
     /// <summary>
+    /// Initializes OLE for the current thread and returns its apartment state.
+    /// </summary>
+    /// <remarks>
+    /// Repeated calls share one initialization. The owning thread releases it
+    /// when its outer LuminaForms message loop exits, or when it calls
+    /// <see cref="ExitThread"/> without a running loop. An existing MTA apartment
+    /// remains owned by its caller.
+    /// </remarks>
+    public static ApartmentState OleRequired() => ApplicationOleState.OleRequired();
+
+    /// <summary>
     /// Occurs on the UI thread when an asynchronous window callback throws an exception.
     /// </summary>
     public static event ThreadExceptionEventHandler ThreadException
@@ -178,6 +189,11 @@ public static class Application
     /// </summary>
     public static void ExitThread()
     {
+        if (t_messageLoopDepth == 0)
+        {
+            ApplicationOleState.ReleaseCurrentThread();
+        }
+
         Win32.PostQuitMessage(0);
     }
 
@@ -248,7 +264,14 @@ public static class Application
                     // HWND dispatch temporarily pushes the window's activation
                     // context. Release ours only after returning from that frame,
                     // on the thread that originally activated its cookie.
-                    DisposeThemedCommonControlsActivation();
+                    try
+                    {
+                        DisposeThemedCommonControlsActivation();
+                    }
+                    finally
+                    {
+                        ApplicationOleState.ReleaseCurrentThread();
+                    }
                 }
             }
         }

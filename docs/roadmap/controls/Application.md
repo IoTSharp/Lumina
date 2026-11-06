@@ -1,6 +1,6 @@
 # Application
 
-🟡 **现状：**已有消息循环、样式activation context和open form跟踪；035键盘队列预处理保留，040补CurrentInputLanguage转发与真实线程HKL服务。Run()/Run(ApplicationContext)、完整消息过滤/退出、OLE线程寿命、CurrentCulture/UseWaitCursor、标准异常对话框与异常模式仍缺。
+🟡 **现状：**已有消息循环、样式activation context和open form跟踪；040线程HKL服务保留，041补OleRequired线程缓存、输入语言OLE前置与显式/最外层退出配对。Run()/Run(ApplicationContext)、完整消息过滤/退出与OLE宿主context、CurrentCulture/UseWaitCursor、标准异常对话框与异常模式仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Application.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -15,7 +15,7 @@
 | ✅ | P0 / Application-01a | 批次 001：Run(Form mainForm) 返回 void，支持相同命名参数调用；null 主窗沿消息循环执行，移除不符基线的空值异常。无界面签名检查和双目标编译通过，消息循环生命周期属于父任务待办。 |
 | ✅ | P0 / Application-02 | SetHighDpiMode 返回真实系统 BOOL/HRESULT 的成功结果，校验枚举，按 OS 能力回退；HighDpiMode 读取当前线程实际 awareness。首次窗口/托盘窗口创建前永久关闭设置入口，manifest/宿主/重复调用失败不假报成功。14 组隔离进程对照通过；旧系统回退、建窗回调、跨屏及真实缩放验收后置。 |
 | 🟡 | P0 / Application-03 | 批次 007 完成现有 Run/RunMessageLoop 与控件/窗体构造的默认 context 安装/还原、默认 callback await UI 恢复；完整 ApplicationContext/模态、多 UI 线程与退出取消/竞态仍缺。 |
-| 🟡 | P1 / Application-04 | 批次007完成现有无Form循环的ExitThread请求退出、最外层finally按线程释放context activation，两个STA固定参考/JIT/AOT有证据（WindowsFormsSynchronizationContext-01b）；Exit()/Exit(CancelEventArgs)、ApplicationExit/ThreadExit、FormClosing取消、ApplicationContext/多个UI线程的完整退出与竞态仍待实现/验收。 |
+| 🟡 | P1 / Application-04 | 批次007完成无Form循环的ExitThread请求/最外层activation释放；041的12a复用现有退出路径配对本库OLE引用。Exit()/Exit(CancelEventArgs)、ApplicationExit/ThreadExit、FormClosing取消、ApplicationContext/多个UI线程的完整退出与竞态仍待，原007两个STA固定参考/JIT/AOT证据保留。 |
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
 | 🟡 | P1 / Application-06 | 035的06a完成键盘队列Control预处理首范围；AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、完整快捷键/IsDialogMessage及WM_QUIT/GetMessage=-1处理仍待，不能由局部接入关闭父任务。 |
 | ✅ | P1 / Application-06a | 批次035/036：GetMessage检索的键盘消息按FromChildHandle找到托管控件，Translate/Dispatch前实际调用PreProcessMessage；消费停止，未消费保留修改的目标/消息/参数，native时空字段保持。035异常报告一次并停止故障消息，036在Control中补队列字符抑制。11项真实队列/直接发送边界回归通过。过滤器、原生判别、模态及完整退出归父项。 |
@@ -24,9 +24,11 @@
 | ✅ | P1 / Application-08a | 批次 003：线程局部订阅、当前 Thread sender、原始异常对象、重入保护和处理器异常后的状态恢复；4 项托管回归及实际 UI 投递事件观测通过。无处理器的 Windows 原生 OK 提示保留可见/继续行为，完整 Quit/Details UI 后置；投递事件处理器再抛在 native 边界前显式终止，区别于 public OnThreadException 的直接传播。 |
 | ⬜ | P1 / Application-09 | EnableVisualStyles、RenderWithVisualStyles/UseVisualStyles/VisualStyleState、SetCompatibleTextRenderingDefault 调用时机和实际控件影响对照；初始化后重复/过晚设置行为一致。 |
 | ⬜ | P1 / Application-10 | 实现 SetDefaultFont、SetColorMode、ColorMode/SystemColorMode/IsDarkModeEnabled 的 .NET10 契约，与现有 Lumina theme 的可选覆盖关系清楚；默认字体/系统颜色消息变化实际传播。 |
-| 🟡 | P1 / Application-11 | 040的11a补CurrentInputLanguage真实线程HKL转发、InputLanguage/只读集合及与Form事件的必要消息连接。固定源码的OleRequired持久初始化前置、CurrentCulture/UseWaitCursor、完整输入法与模态仍缺；部分服务不关闭父项。 |
+| 🟡 | P1 / Application-11 | 040的11a线程HKL/集合/消息连接保留；041的11b补Current getter/setter的真实OleRequired前置。CurrentCulture/UseWaitCursor、完整输入法/模态与OLE宿主context仍缺；部分服务不关闭父项。 |
 | ✅ | P1 / Application-11a | 批次040：InputLanguage的当前/默认/安装HKL、线程切换、文化查找、布局名称、身份与只读集合；Application.CurrentInputLanguage同名转发。只读注册表并借用HKL，不卸载布局；13项服务回归及全量通过。限定范围不含固定源码OleRequired持久初始化副作用，MUI扩容最多一次且再变大时fallback；完整OLE线程context寿命归12，见040。 |
-| ⬜ | P2 / Application-12 | 补 StartupPath/ExecutablePath、CompanyName/ProductName/ProductVersion、各 AppDataPath/Registry、Restart/OleRequired/SetSuspendState/消息循环注册等全部剩余 API；Windows Registry/电源/OLE 专属部分单列，但 Windows 分母保留。 |
+| ✅ | P1 / Application-11b | 批次041：CurrentInputLanguage getter/setter先OleRequired，再读取HKL或解析null默认/激活布局；失败setter也先初始化，Application入口仍直接转发。默认/安装布局和名称不额外初始化；HKL借用/只读注册表及MUI有界扩容保持。明确范围与回归见041，完整输入法/模态不关闭。 |
+| 🟡 | P2 / Application-12 | 041的12a完成OleRequired及现有owner退出配对。StartupPath/ExecutablePath、CompanyName/ProductName/ProductVersion、各AppDataPath/Registry、Restart/SetSuspendState/消息循环注册，以及完整OLE宿主/ThreadContext仍缺；Windows专属部分单列但分母保留。 |
+| ✅ | P2 / Application-12a | 批次041：标准OleRequired返回ApartmentState，线程缓存一次真实OleInitialize；S_OK/S_FALSE配对一次，RPC_E_CHANGED_MODE返回MTA且不释放外部引用。无循环ExitThread与最外层循环finally在原线程清理，嵌套/回调退出延后释放。其他失败HRESULT直接抛出而非固定源码缓存STA；自然线程终止不新增finalizer/FLS，完整context/COM对象/宿主生命周期仍待，见041。 |
 | ⬜ | P1 / Application-13 | Native AOT 全 Demo 真正可见主窗、输入、模态、关闭/退出后进程正常结束；资源/TypeConverter 的 IL2026/IL3053 追具体路径，测试不能只看 publish exit code。 |
 | 🟡 | P1 / Application-14 | 批次 007 将 activation handle/cookie 归属本线程，ExitThread 只请求退出、最外层循环离开 native 回调后释放，修正无 Form 退出的 SEH。完整样式策略/线程退出/多 UI 生命周期与模态仍待后续。 |
 | ⬜ | P2 / Application-15 | Linux 用 GtkApplication/GApplication + GMainContext 投递；Run(Context) 保持 application hold/release 与无窗口托盘模式；不能启动第二个互相竞争的 GTK 主循环。 |
@@ -42,6 +44,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次041：新增11b与12a，12由全待办改部分，保留全部原ID/未完API。最小ThreadStatic OLE状态复用现有退出路径，不引入完整ThreadContext；其他失败HRESULT显式传播是相对固定v10.0.11的明确差异。首轮9个内部服务测试在调用库前误假定CLR未初始化COM，保留失败并修正原生夹具；生产代码未为夹具改变，见[041](../batches/041.md)。
 
 - 2026-11-07 · 批次040：新增11a的真实HKL服务与Application入口，11由全待办改部分。明确保留固定v10.0.11的OleRequired初始化副作用差异与完整线程寿命，未造空OleRequired或假成功；完整11/12、输入法/模态和平台不关闭，见[040](../batches/040.md)。
 

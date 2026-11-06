@@ -1,6 +1,12 @@
 # 本轮验证与限制
 
-## 批次040 · 2026-11-07 当前验证
+## 批次041 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增18/18（OLE状态9、语言前置7、真实消息循环2）、相关组合148/148、全量4,635/4,635通过，0失败/跳过。首轮18项中9个内部测试在调用库之前误假定CLR未初始化COM而失败；保留原始JSON/TRX，修正夹具为显式STA/MTA及平衡原生OLE探测后通过，生产实现未为夹具改变。[041](batches/041.md)只关闭Application-11b/12a，不关闭完整context/模态/输入法或平台验收。
+
+真实OLE S_OK→S_FALSE→S_OK、外部引用保留和嵌套循环/退出回调延迟释放有证据；CLR COM总引用数不由apartment查询推出。其他失败HRESULT直接抛出区别于固定源码，未故障注入；自然线程终止不新增finalizer/FLS。MUI最多一次扩容差异保持。所有有界子树cleanup_complete=true，两个内部任务冻结且无临时对象，固定源码/命令/JSON/四个TRX保留artifacts/compatibility-batch041，共享bin/obj保留。Native AOT、Designer、物理输入和Linux/macOS本批NOT_RUN。
+
+## 批次040 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增27/27（InputLanguage13/Form14）、含旧028及Control/TextBox IME的组合96/96、全量4,617/4,617通过，0失败/跳过。首次编译及全部测试均通过。[040](batches/040.md)只关闭真实HKL服务、标准语言通知/请求取消的明确代码范围，不由程序消息或测试数推出完整输入法/98%。
 

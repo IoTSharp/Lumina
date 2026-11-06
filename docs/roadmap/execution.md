@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[041](batches/041.md)完成Application-11b输入语言OLE前置与12a最小线程缓存/退出配对，复用现有ExitThread及最外层finally；不建立完整ThreadContext或新调度框架。下一依赖核组合串/候选窗及模态宿主的真实前置，再按共享编辑依赖推进TextBoxBase；完整OLE宿主context、CurrentCulture/UseWaitCursor、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT及全部平台门禁留原任务。其他失败HRESULT策略与MUI有界扩容差异保留。不重复033～041、不重评整个项目；下述040及以前是历史。
+
 当前[040](batches/040.md)完成Application-11a线程HKL服务、Form-12d标准语言通知和Control-12m请求取消。27新增、96组合及4,617全量通过，Release固定双目标0错/2既有NU1510。Application-11按实际服务由全待办改部分；固定v10.0.11的OleRequired持久前置副作用仍缺，不能声称完整InputLanguage或Application完成。下一依赖先核输入语言与OLE线程初始化/退出寿命的最小衔接，再核组合态/候选窗、模态宿主及TextBoxBase共享编辑；不新增调度框架或完整context架构。UserControl共享AutoSize/约束、ButtonBase、关闭LostFocus/WM_QUIT及全部设备/Designer/AOT/平台/98%留原任务。不重复033～040、不重评全项目；下述039及以前是历史快照。
 
 当前[039](batches/039.md)完成TextBox-005a只读/密码CanEnableIme与有效ImeMode、标准ReadOnlyChanged及必要原生密码同步，Control-12l补语言消息/非Form宿主传播。22新增、旧焦点组合50/50及4,590全量通过，Release双目标0错/2既有NU1510。下一依赖先补标准输入语言服务与Form语言通知/取消的必要闭环，再核剩余组合态、宿主模态和TextBoxBase共享编辑；UserControl共享AutoSize/约束、ButtonBase与关闭焦点/WM_QUIT保留原任务。不重复033～039、不重评全项目。下述038及以前是历史快照，设备/Designer/AOT/平台和98%继续待验。
