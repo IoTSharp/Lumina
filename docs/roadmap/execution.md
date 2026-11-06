@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[045](batches/045.md)完成TextBoxBase-005a标准Modified/getter观测通知/EN_UPDATE与程序设文守卫，以及TextBox-007b标准CharacterCasing/原生大小写样式；45新增、892相关、4,782全量与Release固定双目标通过。首次两例父Form未建窗而进入停车窗的夹具失败保留，补真实父HWND/托管映射硬断言后通过，生产实现未为夹具改变。下一真实依赖继续TextBoxBase的BorderStyle/标准通知、SelectedText/选择方法、Lines/AppendText/撤销和尺寸，再按真实后端恢复Rich/Masked直接继承。完整RTL/镜像视觉、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁继续原任务；不重复033～045、不重评全项目、不新建context或调度框架。下述044及以前为历史。
+
 当前[044](batches/044.md)完成TextBoxBase-003b共同HideSelection默认/标准通知与TextBox-007a对齐设置/创建样式及水平条逻辑Left条件；最终42新增/2,356相关/4,737全量与Release固定双目标通过。共享HorizontalAlignment整数身份已按固定10.0.11纠正，旧二进制及1/2整数存储需复核；保留首轮4例RTL裸native夹具与既有Control创建后重提交路径不同的失败。下一真实依赖继续TextBoxBase共享编辑/标准默认事件（BorderStyle/Modified/选择文本等按原任务排序），再恢复Rich/Masked标准直接继承及真实后端。完整RTL/镜像视觉、首选尺寸/AutoSize、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁仍留原任务；不重复033～044、不重评全项目、不新增context或调度框架。下述043及以前是历史。
 
 当前[043](batches/043.md)完成共同编辑设置的003a及TextBox滚动条004a；41新增/359相关/4,695全量与固定双目标Release通过。保留WordWrap同值赋值的缓存失效/条件父布局，真实折行与滚动样式生效，已有选择/modified/密码/通知顺序保持。下一依赖继续TextBoxBase标准成员/默认事件，随后按真实后端恢复Rich/Masked直接继承；完整对齐/首选尺寸、模态/OLE宿主、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT和平台门禁仍在原任务，不重复033～043、不重评全项目、不新建context或调度框架。下述042及以前为历史。

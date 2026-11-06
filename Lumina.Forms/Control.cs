@@ -1247,10 +1247,26 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
             _text = newText;
             if (NativeHandle != 0)
             {
-                _ = Win32.SetWindowTextW(NativeHandle, _text);
+                WindowText = _text;
             }
 
             OnTextChanged(EventArgs.Empty);
+        }
+    }
+
+    // Keep the native text submission separate from the public notification.
+    // EDIT controls suppress their reflected notifications only while this
+    // submission runs, allowing edits from a TextChanged handler to notify.
+    internal virtual string WindowText
+    {
+        get => NativeHandle != 0 ? Win32.GetText(NativeHandle) : _text;
+        set
+        {
+            _text = value ?? string.Empty;
+            if (NativeHandle != 0)
+            {
+                _ = Win32.SetWindowTextW(NativeHandle, _text);
+            }
         }
     }
 

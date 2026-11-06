@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次045补TextBoxBase.Modified/ModifiedChanged、EN_UPDATE及程序设文期间的最小内部WindowText守卫，TextBox.CharacterCasing交真实EDIT处理大小写。45新增、892相关和4,782全量通过；完整共同编辑/尺寸、真实派生后端和平台门禁仍待，见[045](batches/045.md)。下述044及以前为历史。
+
 2026-11-07 · 批次035～043范围保留；044补TextBoxBase.HideSelection标准设置/通知和TextBox.TextAlign设置/创建样式，纠正HorizontalAlignment整数身份。完整编辑基类、派生后端、RTL/镜像视觉、OLE宿主context、输入/布局及平台验收仍待，见[044](batches/044.md)。
 
 依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。

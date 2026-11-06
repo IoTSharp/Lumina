@@ -1,6 +1,16 @@
 # 本轮验证与限制
 
-## 批次044 · 2026-11-07 当前验证
+## 批次045 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增45/45（Modified20、CharacterCasing25）、相关文本/IME/焦点/输入语言/OLE/键盘/同步上下文892/892、全量4,782/4,782通过，0失败/跳过。首次新增43/45，两例真实EDIT通知夹具先建子句柄、父Form未建窗而进入原生STATIC停车窗，导致通知不反射；首次JSON/TRX保留。仅修夹具先建父HWND，增加GetParent及Control.FromHandle父映射硬断言，保留原消息与事件序列期望后通过。
+
+[045](batches/045.md)仅关闭TextBoxBase-005a和TextBox-007b。Modified getter差异观测后保存/通知，setter先消费getter；EN_UPDATE同步而EN_CHANGE保持文本路径。内部WindowText仅包原生提交，程序Text最后直接清native modified位，后续getter观测通知；处理器内native编辑不被守卫吞掉。CharacterCasing枚举Normal0/Upper1/Lower2、合法值校验、重建与ES_UPPERCASE/ES_LOWERCASE；单双行WM_CHAR的ASCII/中文和程序设文/替换由独立EDIT对照，不等于物理键盘/剪贴板/完整文化或IME验收。
+
+固定CharacterCasing v10.0.11源码599字节SHA256为6442e9000941e1c594472431862d9819b2a2f2a3faec3a6a7a9bdac8adc38eaf；直连10秒超时后临时7890代理GET200。042基类/043 TextBox源码hash复核一致。两次构建JSON、四个TRX和reference回执保留artifacts/compatibility-batch045。Cordonix有界外部调用cleanup_complete=true，两个内部任务冻结、无临时文件/持久workspace文档/独占服务，证据/bin/obj保留。既有工具导出433MD/2,151任务/187实施索引/0结构错、整类型完成0；23拥有路径UTF8严格解码/无NUL/字节往返通过，主dotnet末次名称快照0项/inaccessible0，仅限该快照。
+
+固定10.0.11引用库存刷新、Native AOT发布/运行、Designer、物理输入/视觉、Linux/macOS与98%本批NOT_RUN/UNKNOWN。完整BorderStyle/尺寸、SelectedText/选择方法、Lines/AppendText/撤销/剪贴板、派生真实后端、运行时RTL/镜像、模态/OLE宿主context和关闭LostFocus/WM_QUIT继续原任务；WarningLevel=0不表示分析告警清零。
+
+## 批次044 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增42/42（HideSelection14、TextAlign28）、相关编辑/IME/焦点/输入语言/OLE/键盘/同步上下文/ListView 2,356/2,356、全量4,737/4,737通过，0失败/跳过。首次新测试38/42，4例RTL原生对照失败原JSON/TRX保留；定位为裸CreateWindowEx与既有Control创建后UpdateStyles重新提交样式的生命周期差异，夹具保留RTL扩展位/12组合/原expectedBits并复现该步骤后通过，未改生产Control。
 

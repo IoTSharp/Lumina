@@ -90,6 +90,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 
 ## 修改历史
 
+- 2026-11-07 · 批次045：为TextBoxBase-005a增加标准内部WindowText扩展点，将现有Text setter的native提交与公开OnTextChanged分开；仅EDIT在native提交期间抑制反射通知，处理器内native编辑仍正常通知。Control公开Text判等/提交/通知规则保持；相关ControlText/编辑等892项与全量4,782项通过。首次两例夹具父Form未建窗被停车窗承载，补真实父HWND和托管映射断言后通过；不改变生产Parent/创建/反射管线，不重复新增Control完成任务，完整11/17与生命周期仍待，见[045](../batches/045.md)。
+
 - 2026-11-07 · 批次044：Control.cs源码no-op。TextBox对齐夹具定位既有RTL创建后UpdateStyles会重新提交USER32规范化过的样式；独立EDIT复现此管线，仅验证TextAlign创建样式消费。原38/42失败保留，完整运行时RTL/镜像视觉及11/17父项不关闭，见[044](../batches/044.md)。
 
 - 2026-11-07 · 批次042：生产Control及Control.Ime均no-op；核固定源码确认组合/SETCONTEXT/候选通知交原生默认过程，新增11项消息参数/结果、去重状态/默认异常及真实隐藏EDIT回传回归。沿12父项记录审计，不新增重复实现子项；物理IME/候选UI、模态与平台仍待，见[042](../batches/042.md)。

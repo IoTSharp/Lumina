@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+045完成005a：标准Modified/ModifiedChanged、native getter观测通知、setter先getter及EN_UPDATE同步；Text/WindowText按固定源码仅在程序native提交期间抑制反射通知，最后清native modified位，由后续getter观测通知。20项新增和4,782项全量通过，见[045](../batches/045.md)。完整撤销/选区编辑/Lines/AppendText、BorderStyle/尺寸及派生真实后端仍待。
+
 044完成003b：HideSelection=true、标准HideSelectionChanged/虚On*及组件Events槽，变更先重建再通知，false加入ES_NOHIDESEL；14项新增与4,737项全量通过，见[044](../batches/044.md)。RichTextBox既有隐藏存值属性保留，其他默认/编辑/尺寸及派生后端仍待。
 
 043完成003a共同设置首范围：AcceptsTabChanged标准事件/虚hook及WordWrap真实样式/句柄重建、同值缓存失效和AutoSize条件父布局。17项新增及4,695项全量通过，见[043](../batches/043.md)。折行由真实EDIT行数验证；HideSelection/BorderStyle/MaxLength/ShortcutsEnabled、完整测量/编辑和派生后端仍待。
@@ -26,9 +28,10 @@
 | TextBoxBase-003 | P1 | 🟡 | 042迁入ReadOnly/Multiline/AcceptsTab及WordWrap；043的003a补AcceptsTab通知与WordWrap真实折行/重建/条件布局，044的003b补HideSelection标准设置/通知/样式。MaxLength/ShortcutsEnabled、完整默认/元数据及派生覆盖仍待；既有ES_WANTRETURN等完整CreateParams差异保留。 |
 | TextBoxBase-003a | P1 | ✅ | 批次043：AcceptsTab=false、标准AcceptsTabChanged/虚On*、Events槽/同值/重入/原异常；WordWrap=true及Localizable，变更重建，所有赋值清本控件首选缓存，AutoSize时含同值参与父布局。默认AUTOH/AUTOV、多行折行清AUTOH，不再强制纵条；17项回归含真实EDIT折行/状态通过。完整003/004/007父项不关闭。 |
 | TextBoxBase-003b | P1 | ✅ | 批次044：HideSelection=true、Behavior/DefaultValue元数据、HideSelectionChanged/虚On*与Events槽；同值不操作，合法变化保存后RecreateHandle再通知，false设置ES_NOHIDESEL。14项回归含独立EDIT样式、通知/重入/原异常/CanRaiseEvents及选择/modified/只读/密码保存通过。物理选区显示、RichEdit派生覆盖和完整003/004父项不关闭。 |
-| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged标准事件槽/虚通知及同值/重入/异常。BorderStyleChanged及其余完整通知仍待，不由这四个事件关闭父项。 |
-| TextBoxBase-005 | P1 | 🟡 | 042迁入既有Clear/AppendText与重建前后的native modified位保存；未新增公开Modified/ModifiedChanged、CanUndo、Undo/ClearUndo、Copy/Cut/Paste。现有AppendText的空值/选择/撤销语义仍需固定对照，不能把迁移旧代码计为完整编辑。 |
-| TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、Control键事件与现有IME前置，标准基类没有SelectionChanged；TextBox非标准扩展暂留原派生。完整输入法提交、粘贴、验证/失焦和RichEdit选择通知仍待。 |
+| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged；045的005a补ModifiedChanged标准事件槽/虚通知及getter观测语义。BorderStyleChanged及其余完整通知仍待，事件子范围不关闭父项。 |
+| TextBoxBase-005 | P1 | 🟡 | 042迁入既有Clear/AppendText和native modified位保存；045的005a补公开Modified/ModifiedChanged、EN_UPDATE与程序设文/创建销毁衔接。CanUndo、Undo/ClearUndo、Copy/Cut/Paste及完整AppendText空值/选择/撤销语义仍待，不把修改标志或迁移旧代码计为完整编辑。 |
+| TextBoxBase-005a | P1 | ✅ | 批次045：Modified默认false、非virtual及Behavior/Browsable(false)/隐藏序列化元数据，Events槽/虚OnModifiedChanged；getter读取真实EDIT状态，差异时保存后通知，setter先消费getter再提交native/缓存/通知。EN_UPDATE同步，程序Text的native提交期间抑制反射通知，TextChanged处理器内native编辑仍可通知；最后直接清native位并延迟至getter通知，创建/重建和销毁观测保存状态。20项回归与全量通过；不含撤销/剪贴板/完整编辑或真实派生后端。 |
+| TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、Control键事件与现有IME前置；045的005a补EN_UPDATE的Modified同步和程序设文守卫。标准基类没有SelectionChanged，TextBox非标准扩展暂留原派生。完整输入法提交、粘贴、验证/失焦和RichEdit选择通知仍待。 |
 | TextBoxBase-007 | P1 | 🟡 | 042仅迁入既有颜色/主题与24/48最小原生高度，保留已知差异。BorderStyle、AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的尺寸、选择/撤销保存仍未完整实现。 |
 | TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；未建句柄延期滚动及GetCharFromPosition/GetCharIndexFromPosition/GetPositionFromCharIndex/GetLineFromCharIndex/GetFirstCharIndexFromLine/GetFirstCharIndexOfCurrentLine仍待，换行/端点逐场景验收。 |
 | TextBoxBase-009 | P2 | 🟡 | 042按固定层级拆出共享Tab/编辑键/只读IME限制，Enter与PasswordProtect由TextBox消费；组合/候选通知继续原生默认过程。快捷键关闭、复制/密码完整限制、RTL、物理组合输入/候选窗口与跨平台原生集成仍待。 |
@@ -49,6 +52,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次045：005a补Modified/ModifiedChanged、EN_UPDATE和程序设文/销毁观测衔接，004/006交叉引用不重复新增事件任务。核固定源码纠正最初“EN_CHANGE后同步”理解：实际为EN_UPDATE分支；程序Text清native位后缓存由getter观测，不用setter提前通知。首次两例父Form无HWND而进入停车窗，补真实父句柄/映射硬断言后原期望通过，生产不为夹具改写。完整005/编辑/尺寸/派生后端仍部分，见[045](../batches/045.md)。
 
 - 2026-11-07 · 批次044：003b补标准HideSelection设置/通知/原生样式及状态恢复；004交叉引用003b，不重复创建事件任务。RichTextBox保留独立存值且仅显式new，基类引用与派生引用状态不同的现状明确披露；BorderStyle/其余编辑/尺寸和真实派生后端仍待，见[044](../batches/044.md)。
 

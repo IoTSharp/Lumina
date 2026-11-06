@@ -41,6 +41,8 @@ internal static partial class Win32
     public const uint ES_CENTER = 0x0001;
     public const uint ES_RIGHT = 0x0002;
     public const uint ES_MULTILINE = 0x0004;
+    public const uint ES_UPPERCASE = 0x0008;
+    public const uint ES_LOWERCASE = 0x0010;
     public const uint ES_AUTOVSCROLL = 0x0040;
     public const uint ES_AUTOHSCROLL = 0x0080;
     public const uint ES_NOHIDESEL = 0x0100;
@@ -147,6 +149,7 @@ internal static partial class Win32
     public const int CBN_SELCHANGE = 1;
     public const int LBN_SELCHANGE = 1;
     public const int EN_CHANGE = 0x0300;
+    public const int EN_UPDATE = 0x0400;
     public const int BM_GETCHECK = 0x00F0;
     public const int BM_SETCHECK = 0x00F1;
     public const int BST_UNCHECKED = 0;

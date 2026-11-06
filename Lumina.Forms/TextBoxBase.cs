@@ -3,6 +3,7 @@
 // Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace Lumina.Forms;
@@ -14,6 +15,7 @@ public abstract class TextBoxBase : Control
 {
     private static readonly object s_acceptsTabChangedEvent = new();
     private static readonly object s_hideSelectionChangedEvent = new();
+    private static readonly object s_modifiedChangedEvent = new();
     private static readonly object s_multilineChangedEvent = new();
     private static readonly object s_readOnlyChangedEvent = new();
 
@@ -27,6 +29,7 @@ public abstract class TextBoxBase : Control
     private bool _restoreSelectionOnHandleCreated;
     private bool _nativeModified;
     private bool _creatingHandle;
+    private bool _codeUpdateText;
 
     internal TextBoxBase()
     {
@@ -110,6 +113,45 @@ public abstract class TextBoxBase : Control
     {
         add => Events.AddHandler(s_hideSelectionChangedEvent, value);
         remove => Events.RemoveHandler(s_hideSelectionChangedEvent, value);
+    }
+
+    /// <summary>Gets or sets whether the text box contents have been modified.</summary>
+    [Category("Behavior")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool Modified
+    {
+        get
+        {
+            if (NativeHandle == 0) { return _nativeModified; }
+            bool current = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0) != 0;
+            if (_nativeModified != current)
+            {
+                _nativeModified = current;
+                OnModifiedChanged(EventArgs.Empty);
+            }
+            return current;
+        }
+        set
+        {
+            // Reading the native state can itself notify before this setter
+            // decides whether another change is required.
+            if (Modified == value) { return; }
+            if (NativeHandle != 0)
+            {
+                _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, value ? (nint)1 : 0, 0);
+            }
+            _nativeModified = value;
+            OnModifiedChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="Modified"/> property changes.</summary>
+    [Category("Property Changed")]
+    public event EventHandler? ModifiedChanged
+    {
+        add => Events.AddHandler(s_modifiedChangedEvent, value);
+        remove => Events.RemoveHandler(s_modifiedChangedEvent, value);
     }
 
     /// <inheritdoc />
@@ -235,6 +277,40 @@ public abstract class TextBoxBase : Control
             ArgumentOutOfRangeException.ThrowIfNegative(value);
             GetSelectionStartAndLength(out int start, out int length);
             if (value != length) { Select(start, value); }
+        }
+    }
+
+    /// <inheritdoc />
+    [Localizable(true)]
+    [AllowNull]
+    public override string Text
+    {
+        get => base.Text;
+        set
+        {
+            if (value != base.Text)
+            {
+                base.Text = value;
+                if (NativeHandle != 0)
+                {
+                    // The native reset is observed by Modified when it is next
+                    // queried; do not replace that observation with a setter.
+                    _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, 0, 0);
+                }
+            }
+        }
+    }
+
+    internal override string WindowText
+    {
+        get => base.WindowText;
+        set
+        {
+            value ??= string.Empty;
+            if (WindowText.Equals(value, StringComparison.Ordinal)) { return; }
+            _codeUpdateText = true;
+            try { base.WindowText = value; }
+            finally { _codeUpdateText = false; }
         }
     }
 
@@ -385,14 +461,25 @@ public abstract class TextBoxBase : Control
     /// <inheritdoc />
     protected override bool OnCommand(int notificationCode)
     {
+        // Native text submitted by code and initial/recreated window text must
+        // not produce another reflected edit notification.
+        if (_codeUpdateText || _creatingHandle)
+        {
+            return notificationCode is Win32.EN_CHANGE or Win32.EN_UPDATE;
+        }
+
+        if (notificationCode == Win32.EN_UPDATE)
+        {
+            _ = Modified;
+            return true;
+        }
+
         if (notificationCode != Win32.EN_CHANGE)
         {
             return false;
         }
 
-        // Initial/recreated window text is not a user edit and must not raise
-        // another TextChanged notification while the handle is being created.
-        return _creatingHandle || UpdateTextFromHandle();
+        return UpdateTextFromHandle();
     }
 
     /// <inheritdoc />
@@ -449,7 +536,7 @@ public abstract class TextBoxBase : Control
     {
         if (NativeHandle != 0)
         {
-            _nativeModified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0) != 0;
+            _nativeModified = Modified;
             _ = UpdateSelectionFromHandle(raiseEvent: false);
             _restoreSelectionOnHandleCreated = true;
         }
@@ -489,6 +576,10 @@ public abstract class TextBoxBase : Control
     /// <summary>Raises the <see cref="HideSelectionChanged"/> event.</summary>
     protected virtual void OnHideSelectionChanged(EventArgs e)
         => (Events[s_hideSelectionChangedEvent] as EventHandler)?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="ModifiedChanged"/> event.</summary>
+    protected virtual void OnModifiedChanged(EventArgs e)
+        => (Events[s_modifiedChangedEvent] as EventHandler)?.Invoke(this, e);
 
     /// <summary>Raises the <see cref="MultilineChanged"/> event.</summary>
     protected virtual void OnMultilineChanged(EventArgs e)

@@ -17,6 +17,7 @@ public class TextBox : TextBoxBase
     private string _placeholderText = string.Empty;
     private char _passwordChar;
     private bool _useSystemPasswordChar;
+    private CharacterCasing _characterCasing;
     private ScrollBars _scrollBars;
     private HorizontalAlignment _textAlign;
 
@@ -105,6 +106,24 @@ public class TextBox : TextBoxBase
         }
     }
 
+    /// <summary>Gets or sets how the text box changes the case of characters entered into it.</summary>
+    [Category("Behavior")]
+    [DefaultValue(CharacterCasing.Normal)]
+    public CharacterCasing CharacterCasing
+    {
+        get => _characterCasing;
+        set
+        {
+            if (_characterCasing == value) { return; }
+            if ((uint)value > (uint)CharacterCasing.Lower)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(CharacterCasing));
+            }
+            _characterCasing = value;
+            RecreateHandle();
+        }
+    }
+
     /// <summary>Gets or sets the scroll bars displayed by a multiline text box.</summary>
     [Category("Appearance")]
     [Localizable(true)]
@@ -163,6 +182,12 @@ public class TextBox : TextBoxBase
         get
         {
             uint style = base.Style;
+            style |= _characterCasing switch
+            {
+                CharacterCasing.Upper => Win32.ES_UPPERCASE,
+                CharacterCasing.Lower => Win32.ES_LOWERCASE,
+                _ => 0
+            };
             HorizontalAlignment alignment = _textAlign;
             if (RenderRightToLeft)
             {
