@@ -22,6 +22,25 @@ public class UserControl : ContainerControl
         SetAutoSizeMode(AutoSizeMode.GrowOnly);
     }
 
+    /// <summary>Gets or sets whether this control sizes itself to its contents.</summary>
+    [Browsable(true)]
+    [EditorBrowsable(EditorBrowsableState.Always)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+    public override bool AutoSize
+    {
+        get => base.AutoSize;
+        set => base.AutoSize = value;
+    }
+
+    /// <summary>Occurs when the <see cref="AutoSize"/> property changes.</summary>
+    [Browsable(true)]
+    [EditorBrowsable(EditorBrowsableState.Always)]
+    public new event EventHandler? AutoSizeChanged
+    {
+        add => base.AutoSizeChanged += value;
+        remove => base.AutoSizeChanged -= value;
+    }
+
     /// <summary>Gets or sets whether automatic sizing can also shrink this control.</summary>
     [Browsable(true)]
     [DefaultValue(AutoSizeMode.GrowOnly)]

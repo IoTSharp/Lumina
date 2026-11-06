@@ -20,7 +20,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Provides the common WinForms-like surface for all LuminaForms controls backed by Win32 child windows.
 /// </summary>
-public class Control : Component, IWin32Window, ISynchronizeInvoke
+public partial class Control : Component, IWin32Window, ISynchronizeInvoke
 {
     private static readonly Lock s_subclassLock = new();
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
@@ -2906,6 +2906,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         if (_handle != handle || _handleDestroyedNotified) { return; }
         _handleDestroyedNotified = true;
+        Exception? notificationFailure = null;
         try
         {
             if (!_recreatingHandle && !_disposing && !_disposed && _trackingMouseEvent)
@@ -2915,11 +2916,18 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
             OnHandleDestroyed(EventArgs.Empty);
         }
+        catch (Exception exception) { notificationFailure = exception; }
+        try { ReleaseImeContext(handle); }
+        catch (Exception cleanupFailure) when (notificationFailure is not null)
+        {
+            throw new AggregateException(notificationFailure, cleanupFailure);
+        }
         finally
         {
             if (_disposing) { _visible = false; }
             else if (!_recreatingHandle) { _created = false; }
         }
+        if (notificationFailure is not null) { ExceptionDispatchInfo.Capture(notificationFailure).Throw(); }
     }
 
     internal void NotifyNativeHandleCreated()
@@ -4839,6 +4847,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 {
                     return;
                 }
+                UpdateImeContextMode();
                 DefWndProc(ref m);
                 InvokeGotFocus(this, EventArgs.Empty);
                 return;
@@ -4867,6 +4876,9 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             case Win32.WM_IME_ENDCOMPOSITION:
                 _imeWmCharsToIgnore = -1;
                 DefWndProc(ref m);
+                return;
+            case Win32.WM_IME_NOTIFY:
+                WmImeNotify(ref m);
                 return;
             case Win32.WM_CAPTURECHANGED:
                 OnMouseCaptureChanged(EventArgs.Empty);

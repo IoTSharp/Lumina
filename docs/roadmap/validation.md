@@ -1,6 +1,12 @@
 # 本轮验证与限制
 
-## 批次037 · 2026-11-07 当前验证
+## 批次038 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；32/32新增定向（IME12/TextBox14/UserControl6）、全量4,568/4,568通过，0失败/跳过。仅证明[038](batches/038.md)的有效ImeMode/IMM上下文、EDIT多行重建/选择和标准AutoSize声明。真实HIMC关联/所有权与程序消息不是实际输入法/候选窗设备验收。
+
+首次编译因转换位元组uint和整数0混用而CS8506/CS8131失败，修正0u后通过。首轮31/4,567通过后，主审查补通知/IME释放同时失败两错保留及第32项回归，再构建/定向/全量通过。原始失败/最终日志和TRX保留在artifacts/compatibility-batch038。固定API引用包、完整派生IME/输入语言切换、AOT、Designer、物理设备、Linux/macOS、生产/现场和98%继续NOT_RUN/UNKNOWN；WarningLevel=0不是分析器告警清零。
+
+## 批次037 · 2026-11-07 历史验证
 
 Release方案及固定Demo双目标0错误/2条既有NU1510；22/22新增定向回归、4,536/4,536全量测试通过，0失败/跳过。IME字符消息7项、TextBox输入键8项、UserControl嵌套原生焦点/验证7项仅证明[037](batches/037.md)明确范围。diff --check通过。没有新的构建/测试失败；首次Release集成及定向/全量均通过。WarningLevel=0不代表告警清零。
 

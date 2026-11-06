@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[038](batches/038.md)完成Control-12k有效ImeMode与真实IMM上下文首范围、TextBox-003c多行EDIT重建/选择与原生modified保存、UserControl-02d标准AutoSize声明。32新增/4,568全量和Release双目标通过。下一依赖先补TextBox只读/密码IME限制与属性联动，再核语言切换/宿主传播/组合态；TextBoxBase和UserControl共享布局完整约束仍待。完整输入、模态、设备/Designer/AOT/平台和98%不关闭。固定源码排除UserControl独立布局算法；037以下保留历史。
+
 当前[037](batches/037.md)完成Control-12j有限IME字符分流/重复KeyPress抑制、TextBox-003b派生键判别与对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。22新增与4,536全量通过，Release双目标0错/2既有NU1510。下一批先核剩余输入上下文/组合态及派生编辑输入，再补UserControl完整AutoSize；不重复033～037。TextBoxBase、HostedInWin32DialogManager、完整IME、模态、ButtonBase、AOT/Designer/设备/平台/98%均未关闭。036及以下内容保留为历史。
 
 当前[036](batches/036.md)完成Control-12i原生输入键/字符判别、队列字符抑制和验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9项、全量4,514项测试和Release双目标构建通过。035范围保留。下一依赖先按真实缺口推进完整IME/派生输入与按钮/容器组合，再补UserControl完整AutoSize；不重做033～035。固定API10.0.11缺引用包继续NOT_RUN，旧AutoSizeMode整数/已编译常量须复核；父任务、ButtonBase、模态、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。

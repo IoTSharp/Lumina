@@ -1,7 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// Color defaults adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
+// Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
 
+using System.ComponentModel;
 using System.Drawing;
 
 namespace Lumina.Forms;
@@ -11,6 +12,8 @@ namespace Lumina.Forms;
 /// </summary>
 public class TextBox : Control
 {
+    private static readonly object s_multilineChangedEvent = new();
+
     private bool _multiline;
     private bool _readOnly;
     private bool _acceptsReturn;
@@ -21,6 +24,9 @@ public class TextBox : Control
     private ScrollBars _scrollBars;
     private int _selectionStart;
     private int _selectionLength;
+    private bool _restoreSelectionOnHandleCreated;
+    private bool _nativeModified;
+    private bool _creatingHandle;
 
     /// <summary>
     /// Initializes a single-line editable text box.
@@ -50,10 +56,26 @@ public class TextBox : Control
     /// <summary>
     /// Gets or sets a value indicating whether the text box is multi-line.
     /// </summary>
-    public bool Multiline
+    [DefaultValue(false)]
+    [Localizable(true)]
+    [RefreshProperties(RefreshProperties.All)]
+    public virtual bool Multiline
     {
         get => _multiline;
-        set => _multiline = value;
+        set
+        {
+            if (_multiline == value) { return; }
+            _multiline = value;
+            RecreateHandle();
+            OnMultilineChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="Multiline"/> property changes.</summary>
+    public event EventHandler? MultilineChanged
+    {
+        add => Events.AddHandler(s_multilineChangedEvent, value);
+        remove => Events.RemoveHandler(s_multilineChangedEvent, value);
     }
 
     public bool AcceptsReturn
@@ -155,23 +177,32 @@ public class TextBox : Control
     {
         get
         {
-            UpdateSelectionFromHandle();
-            return _selectionStart;
+            GetSelectionStartAndLength(out int start, out _);
+            return start;
         }
-        set => Select(value, _selectionLength);
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            Select(value, SelectionLength);
+        }
     }
 
     /// <summary>
     /// Gets the number of characters selected in the text box.
     /// </summary>
-    public int SelectionLength
+    public virtual int SelectionLength
     {
         get
         {
-            UpdateSelectionFromHandle();
-            return _selectionLength;
+            GetSelectionStartAndLength(out _, out int length);
+            return length;
         }
-        set => Select(_selectionStart, value);
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            GetSelectionStartAndLength(out int start, out int length);
+            if (value != length) { Select(start, value); }
+        }
     }
 
     public int TextLength => Text.Length;
@@ -287,21 +318,26 @@ public class TextBox : Control
     /// <param name="length">The number of characters to select.</param>
     public void Select(int start, int length)
     {
-        int safeStart = Math.Max(0, start);
-        int safeLength = Math.Max(0, length);
+        ArgumentOutOfRangeException.ThrowIfNegative(start);
+        int textLength = TextLength;
+        if (start > textLength)
+        {
+            // A directed selection may extend backwards from beyond the text.
+            length = (int)Math.Max(int.MinValue, Math.Min(0L, (long)length + start - textLength));
+            start = textLength;
+        }
 
         if (NativeHandle == 0)
         {
+            _selectionStart = start;
+            _selectionLength = length;
+            _restoreSelectionOnHandleCreated = true;
             return;
         }
 
-        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)safeStart, (nint)(safeStart + safeLength));
-        if (_selectionStart != safeStart || _selectionLength != safeLength)
-        {
-            _selectionStart = safeStart;
-            _selectionLength = safeLength;
-            OnSelectionChanged(EventArgs.Empty);
-        }
+        AdjustSelection(start, length, textLength, out int selectionStart, out int selectionEnd);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)selectionStart, (nint)selectionEnd);
+        _ = UpdateSelectionFromHandle();
     }
 
     /// <summary>
@@ -323,7 +359,9 @@ public class TextBox : Control
             return false;
         }
 
-        return UpdateTextFromHandle();
+        // Initial/recreated window text is not a user edit and must not raise
+        // another TextChanged notification while the handle is being created.
+        return _creatingHandle || UpdateTextFromHandle();
     }
 
     /// <inheritdoc />
@@ -349,6 +387,42 @@ public class TextBox : Control
     {
         base.OnHandleCreated();
         ApplyNativeThemeState();
+    }
+
+    /// <inheritdoc />
+    protected override void CreateHandle()
+    {
+        _creatingHandle = true;
+        try
+        {
+            base.CreateHandle();
+            RestoreSelectionOnHandle();
+        }
+        finally { _creatingHandle = false; }
+    }
+
+    /// <inheritdoc />
+    protected override void OnHandleCreated(EventArgs e)
+    {
+        base.OnHandleCreated(e);
+        if (NativeHandle == 0) { return; }
+        if (_nativeModified)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, (nint)1, 0);
+        }
+        RestoreSelectionOnHandle();
+    }
+
+    /// <inheritdoc />
+    protected override void OnHandleDestroyed(EventArgs e)
+    {
+        if (NativeHandle != 0)
+        {
+            _nativeModified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0) != 0;
+            _ = UpdateSelectionFromHandle(raiseEvent: false);
+            _restoreSelectionOnHandleCreated = true;
+        }
+        base.OnHandleDestroyed(e);
     }
 
     private void ApplyNativeThemeState()
@@ -379,7 +453,42 @@ public class TextBox : Control
         SelectionChanged?.Invoke(this, e);
     }
 
-    private bool UpdateSelectionFromHandle()
+    /// <summary>Raises the <see cref="MultilineChanged"/> event.</summary>
+    protected virtual void OnMultilineChanged(EventArgs e)
+        => (Events[s_multilineChangedEvent] as EventHandler)?.Invoke(this, e);
+
+    private void GetSelectionStartAndLength(out int start, out int length)
+    {
+        if (NativeHandle == 0)
+        {
+            // Keep the original pending range: changing Text back before
+            // creation can make a temporarily out-of-range selection valid.
+            AdjustSelection(_selectionStart, _selectionLength, TextLength, out start, out int end);
+            length = end - start;
+            return;
+        }
+
+        _ = UpdateSelectionFromHandle();
+        start = _selectionStart;
+        length = _selectionLength;
+    }
+
+    private static void AdjustSelection(int start, int length, int textLength, out int selectionStart, out int selectionEnd)
+    {
+        selectionStart = Math.Min(start, textLength);
+        selectionEnd = (int)Math.Clamp((long)selectionStart + length, 0L, textLength);
+    }
+
+    private void RestoreSelectionOnHandle()
+    {
+        if (NativeHandle == 0 || !_restoreSelectionOnHandleCreated) { return; }
+        _restoreSelectionOnHandleCreated = false;
+        AdjustSelection(_selectionStart, _selectionLength, TextLength, out int start, out int end);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)start, (nint)end);
+        _ = UpdateSelectionFromHandle(raiseEvent: false);
+    }
+
+    private bool UpdateSelectionFromHandle(bool raiseEvent = true)
     {
         if (NativeHandle == 0)
         {
@@ -397,7 +506,7 @@ public class TextBox : Control
 
         _selectionStart = normalizedStart;
         _selectionLength = normalizedLength;
-        OnSelectionChanged(EventArgs.Empty);
+        if (raiseEvent) { OnSelectionChanged(EventArgs.Empty); }
         return true;
     }
 

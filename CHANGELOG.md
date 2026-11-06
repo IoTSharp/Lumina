@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Batch 038: standard effective ImeMode contracts and bounded IMM context ownership/readback, TextBox Multiline handle recreation with pending selection and native modified-state preservation, and UserControl AutoSize declarations and event forwarding. Full IME input, TextBoxBase and AutoSize remain open.
 - Batch 037: bounded IME character dispatch and duplicate KeyPress suppression, TextBox input-key/dialog routing using existing AcceptsReturn/AcceptsTab settings, and UserControl native focus entry with nested validation/navigation coverage. Full IME composition, TextBoxBase inheritance and AutoSize remain open.
 - Batch 036: native `WM_GETDLGCODE` input-key and input-character classification, `WM_SYSCHAR` dialog routing, bounded queued character suppression for `SuppressKeyPress`, validation-cancellation cleanup across parent controls, and Form default-button disposal cleanup. Button native-click validation was audited against WinForms 10.0.11 and covered by real HWND regressions without duplicating validation in `Button.cs`.
 - Batch 035: queued keyboard messages now call Control preprocessing before translation/dispatch. Forms route Enter/Escape through standard accept/cancel button contracts, and Button consumes validation policy and writes DialogResult before Click. ButtonBase and modal-loop compatibility remain open.
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bounded keyboard and scrolling slices: `Control` now exposes the standard PreviewKeyDown and preprocessing chain, `ContainerControl` routes Tab/Shift+Tab and descendant mnemonics, and `ScrollableControl.ScrollControlIntoView` accounts for existing offsets in nested content.
 
 ### Verification
+- Batch 038: Release dual-target solution build passes with 0 errors and 2 existing NU1510 warnings; 32 new tests and all 4,568 tests pass. Initial uint tuple inference compilation errors were corrected, and simultaneous handle-notification/IME-release failures retain both errors. Physical IME input, designer, Native AOT and platform acceptance were not run.
 - Batch 037: Release dual-target solution build passes with 0 errors and 2 existing NU1510 warnings; 22 new tests and all 4,536 tests pass. Physical input, designer, Native AOT and platform acceptance were not run.
 - Batch 036: Release solution build passes with 0 errors and 2 existing NU1510 warnings; 9 new tests and all 4,514 tests pass. Existing keyboard queue/event regressions add 14 passing tests. Fixed 10.0.11 API inventory, designer, Native AOT, physical input and platform acceptance remain open.
 - Batch 035: Release solution build passes with 0 errors and 2 existing NU1510 warnings; 37 new tests and all 4,505 tests pass. Fixed 10.0.11 API inventory remains blocked; designer, Native AOT, physical input and platform acceptance were not run. Initial missing Keys.Return compilation and malformed KeyUp fixture failures are recorded in the batch notes.

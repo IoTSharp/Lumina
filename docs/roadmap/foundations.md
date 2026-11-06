@@ -1,6 +1,6 @@
 # 公共基础：先修这些，再铺控件
 
-2026-11-07 · 批次035补实际消息循环预处理、默认/取消按钮与必要验证消费、AutoSizeMode数值身份；036补原生输入键/字符判别、队列字符抑制、验证取消清理和默认按钮释放。父任务与完整输入/布局/平台验收仍待，见[036](batches/036.md)。
+2026-11-07 · 批次035～037的消息循环、默认取消按钮、原生输入/队列抑制和有限IME字符范围保留；038继续ImeMode/IMM上下文、多行EDIT重建/选择和UserControl标准AutoSize声明。父任务与完整输入/布局/平台验收仍待，见[038](batches/038.md)。
 
 依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。
 
@@ -25,21 +25,23 @@
 | FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
-| FND-014 | 🟡 | 009～020基础Bounds/通知/客户区/MinMax/构造和事务保留；021完成Control-09d基础默认Dock/Anchor/AutoSize、PreferredSize和必要容器内容测量。完整派生测量/RTL/DPI/布局重入、继承属性和平台仍缺 |
+| FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成托管AutoScroll/ScrollProperties/Scroll事件及受保护契约，032补Panel迁移和Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围，033补已有偏移下的后代可见坐标修正。真实物理滚轮/触摸板、Dock/Anchor/Tab/RTL组合、嵌套滚动事务与Linux/macOS滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；031补AutoScaleFactor首范围，纠正原全部未开始状态遗漏旧局部实现。完整Font/Dpi/None/Inherit、嵌套继承、DpiChanged父子通知与96/144/192往返仍缺 |
 | FND-018 | 🟡 | 018～034导航/焦点范围保留；035补最深活动按钮默认通知与队列Enter/Escape首范围。全部派生、物理Tab/完整助记键/默认按钮生命周期和关闭焦点差异仍缺；公开Focus无参，定向入口为Select(bool,bool) |
-| FND-019 | 🟡 | 030～035基础键事件/预处理/父预览/嵌套Tab、Form消费和实际消息循环保留；036补WM_GETDLGCODE原生输入键/字符判别、WM_SYSCHAR分流和有界队列字符抑制。完整Tab/助记键/命令、中文IME组合态、派生输入、焦点切换/候选窗位置和设备仍缺；纠正父项遗漏036已实现子范围的滞后描述 |
+| FND-019 | 🟡 | 030～036键事件/预处理/父预览/Tab、Form/消息循环、原生判别与队列抑制保留；037补IME字符/派生键，038补有效ImeMode/IMM上下文和TextBox多行重建/选择首范围。补齐父项遗漏037子范围的滞后记账；完整Tab/助记键/命令、语言切换/宿主传播/组合串/候选窗、全部派生与设备仍缺 |
 | FND-020 | 🟡 | 027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪，必要原生消费者共用Click且避免重复。验证取消、全部派生反射/默认样式/AutoCheck/组同步、RTL/DPI及物理设备仍缺；锁屏造成WindowFromPoint命中失败，不把程序消息结果计作成功设备点击 |
 | FND-021 | 🟡 | 029程序验证/关闭前置范围保留；035的Button.PerformClick消费Prevent/Allow/Disable及CausesValidation=false；036补ValidationCancelled父链/鼠标抬起清理，真实HWND按钮Prevent/Allow回归确认原生通知不重复验证。完整物理点击/提交前置、全部派生默认/继承、真实输入及平台行为仍缺 |
 | FND-022 | ⬜ | DataBindings、BindingContext、BindingSource：属性写回/通知/错误，保留现有 API；AOT 绑定策略先通过真实绑定样例再推广 |
 | FND-023 | 🟡 | 023消息/样式/基础Paint保留；024的14b补背景图像五布局、真实屏幕透明/alpha及父Graphics/DC状态、失效传播，21场景307行JIT/AOT全同（参考关闭差异16行另列）。RTL/mirror、滚动/主题透明、完整owner draw/反射/派生绘制、缓冲失败与资源压力仍缺，父项不关闭 |
 | FND-024 | ⬜ | AllowDrop/DragEnter/Over/Leave/Drop、DoDragDrop、GiveFeedback/QueryContinueDrag、Clipboard/DataObject；平台格式与内存所有权有测试 |
 | FND-025 | ⬜ | AccessibleName/Description/Role、AccessibilityObject/CreateAccessibilityInstance、键盘焦点与选择通知；UIA/AT-SPI/NSAccessibility 均由对应后端验证 |
-| FND-026 | ⬜ | ISupportInitialize/BeginInit/EndInit、IExtenderProvider、DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化、图像和图标；保存/关闭/重开设计器并编译双目标 |
+| FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次038：FND-019新增Control-12k上下文和TextBox-003c生命周期前置，并纠正父表仍遗漏037的记录；FND-014/026明确UserControl-02d仅标准声明/事件与共享布局消费，不关闭完整布局或Designer。TextBoxBase缺失保留，但其“现有TextBox无句柄Select直接返回”旧描述按003c纠正，固定分母/原ID不变。
 
 - 2026-11-07 · 批次037：FND-019补Control-12j有限IME字符消息与TextBox-003b派生键规则；FND-021由UserControl-05a覆盖嵌套焦点/验证有限组合。补录036原生输入判别、字符队列抑制与验证取消清理，纠正公共父项滞后，未关闭完整IME/验证/平台。
 

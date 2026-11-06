@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[038](docs/roadmap/batches/038.md)完成Control-12k有限ImeMode/IMM上下文、TextBox-003c多行切换与选择恢复、UserControl-02d标准AutoSize声明。32新增/4,568全量通过，Release双目标0错/2既有NU1510。完整IME/派生限制、TextBoxBase、AutoSize、模态、ButtonBase、关闭焦点/退出、设备/Designer/AOT/平台和98%仍未完成。下述037及以前为历史证据。
+
 当前批次[037](docs/roadmap/batches/037.md)完成Control-12j有限IME字符消息、TextBox-003b输入键/对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。新增22/22、全量4,536/4,536、Release双目标0错误/2条既有NU1510。033～036范围保留；完整IME组合态/context/候选窗、TextBoxBase、AutoSize、ButtonBase、模态、AOT、Designer、设备和平台/98%仍待。下述036为历史快照。
 
 当前批次[036](docs/roadmap/batches/036.md)完成Control-12i原生输入键/字符判别与队列字符抑制、Form-12c默认按钮托管释放清理，并完成Button-002b原生点击验证前置源码审计与真实HWND回归；Button.cs无需算法改动。新增9/9、全量4,514/4,514测试通过，Release双目标构建0错误/2条既有NU1510。035范围保留。固定10.0.11 API库存缺引用包仍NOT_RUN；完整IME、全部派生输入、模态、ButtonBase、AutoSize、设备、Designer、AOT及平台仍未关闭，不宣称完整控件或98%。
@@ -12,7 +14,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～037的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [037结果](docs/roadmap/batches/037.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～038的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [038结果](docs/roadmap/batches/038.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

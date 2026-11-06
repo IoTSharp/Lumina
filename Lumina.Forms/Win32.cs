@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Lumina.Forms;
 
-internal static class Win32
+internal static partial class Win32
 {
     public const int CW_USEDEFAULT = unchecked((int)0x80000000);
 
@@ -122,6 +122,7 @@ internal static class Win32
     public const int WM_SYSCHAR = 0x0106;
     public const int WM_IME_STARTCOMPOSITION = 0x010D;
     public const int WM_IME_ENDCOMPOSITION = 0x010E;
+    public const int WM_IME_NOTIFY = 0x0282;
     public const int WM_IME_CHAR = 0x0286;
     public const int WM_SYSKEYDOWN = 0x0104;
     public const int WM_DESTROY = 0x0002;
@@ -150,6 +151,8 @@ internal static class Win32
     public const int CB_SETCURSEL = 0x014E;
     public const int EM_SETSEL = 0x00B1;
     public const int EM_GETSEL = 0x00B0;
+    public const int EM_GETMODIFY = 0x00B8;
+    public const int EM_SETMODIFY = 0x00B9;
     public const int EM_SCROLLCARET = 0x00B7;
     public const int EM_SETREADONLY = 0x00CF;
     public const int EM_REPLACESEL = 0x00C2;
@@ -1048,6 +1051,42 @@ internal static class Win32
 
     [DllImport("user32.dll")]
     internal static extern nint GetFocus();
+
+    [LibraryImport("user32.dll")]
+    internal static partial nint GetKeyboardLayout(uint threadId);
+
+    [LibraryImport("imm32.dll")]
+    internal static partial nint ImmGetContext(nint window);
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmReleaseContext(nint window, nint context);
+
+    [LibraryImport("imm32.dll")]
+    internal static partial nint ImmAssociateContext(nint window, nint context);
+
+    [LibraryImport("imm32.dll")]
+    internal static partial nint ImmCreateContext();
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmDestroyContext(nint context);
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmGetOpenStatus(nint context);
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmSetOpenStatus(nint context, [MarshalAs(UnmanagedType.Bool)] bool open);
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmGetConversionStatus(nint context, out uint conversion, out uint sentence);
+
+    [LibraryImport("imm32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool ImmSetConversionStatus(nint context, uint conversion, uint sentence);
 
     [DllImport("user32.dll", ExactSpelling = true)]
     internal static extern nint SetActiveWindow(nint hWnd);
