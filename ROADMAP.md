@@ -2,7 +2,7 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
-当前批次[035](docs/roadmap/batches/035.md)完成Control-12h/Application-06a实际消息循环预处理、ContainerControl-06d/Form-12b默认取消按钮与必要验证消费、UserControl-02c AutoSizeMode数值身份及Button必要子范围。新增37/37、全量4,505/4,505测试通过，Release双目标构建0错误/2条既有NU1510。034范围保留。固定10.0.11 API库存缺引用包仍NOT_RUN；完整原生输入/点击验证、IME、全部AutoSize、模态、设备、Designer、AOT及平台仍未关闭，不宣称完整控件或98%。
+当前批次[036](docs/roadmap/batches/036.md)完成Control-12i原生输入键/字符判别与队列字符抑制、Form-12c默认按钮托管释放清理，并完成Button-002b原生点击验证前置源码审计与真实HWND回归；Button.cs无需算法改动。新增9/9、全量4,514/4,514测试通过，Release双目标构建0错误/2条既有NU1510。035范围保留。固定10.0.11 API库存缺引用包仍NOT_RUN；完整IME、全部派生输入、模态、ButtonBase、AutoSize、设备、Designer、AOT及平台仍未关闭，不宣称完整控件或98%。
 
 实施遵循根目录 [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)。Drawing 已确定为 **Windows 两个目标都用官方 System.Drawing.Common，Linux 使用自有 Lumina.Drawing.Common 包并保留 System.Drawing 源码消费方式**；优先验证同名程序集 System.Drawing.Common，通过 XPL-002 后冻结完整身份与发布方案。按目标 OS/RID 选择完整依赖图，保留原生控件、Designer 资源和 AOT；先做实际必需范围与 Linux 原型，不承诺先重写全套 Drawing。身份、资源与平台运行须有独立证据，不能把需求定案当作实现完成。
 
@@ -10,7 +10,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～035的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [035结果](docs/roadmap/batches/035.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～036的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [036结果](docs/roadmap/batches/036.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
@@ -30,6 +30,8 @@
 
 批次030完成Control-12e/FND-019基础键消息与事件契约首范围；批次031完成Control-11c/FND-013 RightToLeft托管与Win32样式、ScrollableControl-02a～06a托管滚动首范围、ContainerControl-05a/06a、UserControl-01a/02a；批次032完成Panel-01b/02a、UserControl-03a和ScrollableControl-08a Windows滚动消息首范围；批次033完成Control-12f/FND-019键盘预处理首范围、ContainerControl-06b Tab/助记键后代路由和ScrollableControl-07a已有偏移下的聚焦滚动修正。4,439项全线测试、Forms双目标Release构建通过。完整命令/对话框协作、KeyPreview、完整Tab/助记键/IME、真实物理滚轮/触摸板、Cursor、完整缩放/设计器、Native AOT和跨平台仍未完成，不宣称完整基础链或98%。详情见[033](docs/roadmap/batches/033.md)。
 批次034/035继续补键事件父预览、嵌套导航、实际消息循环和默认取消按钮验证首范围；AutoSizeMode改为GrowAndShrink=0/GrowOnly=1，基础Control显式保持GrowOnly。旧二进制常量或按整数持久化的0/1需复核，按名字源码重编译保留对应名字语义。完整输入、模态、AutoSize和平台仍待。
+
+批次036完成Control-12i原生 `WM_GETDLGCODE` 输入键/字符判别、`WM_SYSCHAR` 对话字符分流、队列字符消息有界移除及验证取消状态递归/鼠标抬起清理；Form-12c在托管Dispose时清理默认/接受/取消按钮引用并撤销默认通知；Button-002b完成固定源码审计和真实HWND点击验证回归，确认Button.cs的BN_CLICKED路径无需重复注入验证。新增9项、全量4,514项通过，Release双目标构建0错误/2条既有NU1510。完整IME、ButtonBase、模态、设备、Designer、Native AOT、平台与98%仍未完成，详情见[036](docs/roadmap/batches/036.md)。
 
 首轮90天先做M0/M1及高频迁移阻塞，再依据真实样本重估；不把完整Windows98%和两个原生后端承诺在90天完成。详细排序与估算在[执行计划](docs/roadmap/execution.md)。
 

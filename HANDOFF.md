@@ -5,10 +5,21 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。035主聊天`01a1b247-6da3-7f51-8a25-3e523fca616e`收到“开始接管”后重新核验交接`7f7e352a828a054ffaa820959b7c0c8e790c043d`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管。034主已声明停止共享写入、构建和Git，按规则立即归档。034实现`11c811ac1cb6fab4517cabe4f4ac14626755e60b`保留；忽略的bin/obj保留。
-- 当前实施批次：[035](docs/roadmap/batches/035.md)。完成Control-12h/Application-06a真实消息循环预处理、ContainerControl-06d/Form-12b默认取消按钮与必要验证消费、UserControl-02c枚举身份及Button必要子范围。新增37/37、全量4,505/4,505及Release方案/固定Demo双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整原生输入/点击验证、IME、全部AutoSize、模态、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。036主聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`收到“开始接管”后重新核验独立交接`8625a569e5731564a5d0b2defac9d1a56d099b47`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管并向035主确认。035主已声明停止共享写入、构建和Git，按规则立即归档；035实现`aabff5a05dd9f64fd0d15285c91cdb9c474280da`保留。忽略的bin/obj保留。
+- 当前实施批次：[036](docs/roadmap/batches/036.md)。完成Control-12i原生输入键/字符判别、队列字符抑制及验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9/9、全量4,514/4,514及Release双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整IME、ButtonBase、模态、AutoSize、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
+
+## 批次036 实施与收尾
+
+- 036是当前唯一编码主；三个互斥内部任务已完成并冻结：Control原生输入判别、Button原生点击验证源码审计/真实HWND回归、Form默认按钮生命周期；主完成共享interop、队列字符抑制、验证取消清理、文档和集成验证。Button.cs本批为no-op，避免重复注入验证。
+- 沿035已确认的输入判别→队列抑制→点击验证/默认生命周期依赖完成明确范围。完整AutoSize、ButtonBase/模态、IME及平台留在原任务，不重复033～035、不重评整个项目。
+- 已读盘核实heartbeat `luminaforms-30`为ACTIVE，target_thread_id为036聊天；复用现有监督，不新建。持续逐批实施/commit与push/三SHA回读/只读接续准备/独立归属交接/确认后旧主立即归档授权保留，后来的暂停停止优先。
+- 036验证：新增9/9，既有键盘/队列14/14，全量4,514/4,514；Release双目标构建0错误、2条既有NU1510。首次集成构建发现缺少Win32.WM_IME_CHAR常量并已修复后重跑通过；固定API10.0.11引用包缺失、枚举整数迁移、AOT/Designer/设备/平台/98%边界保留。
+
+- 036仅关闭上述明确子范围：Control-12i、Form-12c及Button-002b。Button-002b按固定10.0.11源码确认Button.cs原生BN_CLICKED不重复调用验证，真实HWND Prevent/Allow回归通过；Control共享ValidationCancelled父链、鼠标抬起清理和队列字符消息有界移除由主整合。完整Control/ContainerControl/Form/UserControl/Button/平台父项仍保持部分或待办。
+- `git -c core.whitespace=cr-at-eol diff --check`、双目标Release构建、036新增测试、既有14项键盘队列回归和4,514全量测试均通过。固定API库存、AOT发布/运行、VS Designer、物理设备、Linux/macOS、生产/现场及98%继续NOT_RUN/UNKNOWN，不由本批测试数推出兼容率。
+- 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl继续，优先完整IME/派生输入及剩余原生验证组合，再补UserControl完整AutoSize；不重复033～036。批次边界完成后创建只读local接续聊天，归属交接独立commit/push并核验三SHA后发送开始，确认实际接管后本聊天停止写入并归档。
 
 ## 批次035 实施与收尾
 

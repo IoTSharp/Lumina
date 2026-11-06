@@ -26,11 +26,13 @@
 
 ## 当前接续与每批收尾
 
-当前[035](batches/035.md)完成真实消息循环预处理、默认/取消按钮与必要验证消费、AutoSizeMode数值身份及命名默认保留；新增37项、全量4,505项测试和Release双目标构建通过。034范围保留。下一依赖先处理原生输入键/字符判别与队列字符抑制、原生按钮点击验证前置/默认按钮生命周期，再按已有任务补UserControl完整AutoSize；不重做033～035。固定API10.0.11缺引用包继续NOT_RUN，旧AutoSizeMode整数/已编译常量须复核；父任务、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。
+当前[036](batches/036.md)完成Control-12i原生输入键/字符判别、队列字符抑制和验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9项、全量4,514项测试和Release双目标构建通过。035范围保留。下一依赖先按真实缺口推进完整IME/派生输入与按钮/容器组合，再补UserControl完整AutoSize；不重做033～035。固定API10.0.11缺引用包继续NOT_RUN，旧AutoSizeMode整数/已编译常量须复核；父任务、ButtonBase、模态、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。
 
 批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 当前收尾见[029](batches/029.md)。用户于2026-10-17要求当前批次完成后停止：提交推送和远端核验后结束，不创建030/接续聊天、不恢复luminaforms巡检。未来如获新授权，优先解决关闭焦点与循环归属、派生验证消费，再接FND-019键盘；这只是剩余依赖记录，不自动启动。
 
 2026-10-26新授权恢复实施，批次030完成FND-019/Control-12e基础键消息与事件契约首范围；批次031完成FND-013/016/017及Control、ScrollableControl、ContainerControl、UserControl的明确基础与继承链子范围；批次032补Panel迁移、UserControl Load和Windows滚动消息首范围；批次033补FND-019/Control-12f键盘预处理、ContainerControl-06b Tab/助记键后代路由和ScrollableControl-07a已有偏移下的聚焦滚动修正。4,439项全线测试和Forms双目标Release构建通过。完整KeyPreview/命令与对话框协作、IME、真实物理输入、Cursor、完整缩放/设计器、Native AOT及跨平台仍待办，见[033](batches/033.md)。
+
+批次036完成Control-12i原生 `WM_GETDLGCODE` 输入键/字符判别、`WM_SYSCHAR` 对话字符分流、队列字符消息有界移除和验证取消状态清理；Form-12c清理托管Dispose后的默认/接受/取消按钮引用并撤销默认通知；Button-002b按固定10.0.11源码审计原生点击前置，确认现有Button.cs不应重复验证，并以真实HWND回归覆盖Prevent/Allow。新增9项、全量4,514项通过，Release双目标0错误/2条既有NU1510，详见[036](batches/036.md)。完整IME、ButtonBase、模态、AutoSize、AOT、Designer、设备和平台仍待。
 
 2026-10-16：批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。见[024](batches/024.md)，M0/M1不关闭。
 

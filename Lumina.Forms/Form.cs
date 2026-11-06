@@ -855,6 +855,19 @@ public class Form : ContainerControl
     /// </summary>
     protected override void Dispose(bool disposing)
     {
+        IButtonControl? defaultButton = null;
+        if (disposing)
+        {
+            // The default/accept/cancel references are form-owned state. Clear
+            // them before the container tears down children so a disposed form
+            // cannot retain controls or expose a stale default-button state.
+            defaultButton = _defaultButton;
+            _defaultButton = null;
+            _acceptButton = null;
+            _cancelButton = null;
+            defaultButton?.NotifyDefault(false);
+        }
+
         try
         {
             base.Dispose(disposing);

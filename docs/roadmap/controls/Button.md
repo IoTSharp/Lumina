@@ -4,7 +4,7 @@
 
 ## 当前证据与依赖
 
-🟡 [Button.cs](../../../Lumina.Forms/Button.cs) 仍直接继承 Control；027统一Click事件入口，035补IButtonControl/DialogResult、NotifyDefault及PerformClick必要验证/默认按钮消费。ButtonBase、完整物理点击前置/命令/样式/辅助技术与生命周期仍缺，不能把有限默认按钮协作当完整兼容。
+🟡 [Button.cs](../../../Lumina.Forms/Button.cs) 仍直接继承 Control；027统一Click事件入口，035补IButtonControl/DialogResult、NotifyDefault及PerformClick必要验证/默认按钮消费，036按固定源码审计原生点击验证前置并以真实HWND回归确认Button.cs无需重复注入。ButtonBase、完整物理点击前置/命令/样式/辅助技术与生命周期仍缺，不能把有限默认按钮协作当完整兼容。
 
 源码定位：[Lumina.Forms/Button.cs](../../../Lumina.Forms/Button.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：ButtonBase、Control 输入路由、Form.AcceptButton / CancelButton / DialogResult、验证与焦点链。
 
@@ -20,6 +20,7 @@
 | Button-001a | P0 | ✅ | 批次035：标准IButtonControl三成员与Button实现，DialogResult/NotifyDefault/PerformClick实际消费；ButtonBase继承仍待，不自造替代接口。 |
 | Button-002 | P1 | 🟡 | 027统一Click入口，035的002a实现PerformClick可选/验证策略首范围；完整物理点击前置、命令/原生焦点与全部重入异常组合仍待，程序激活不关闭全部行为。 |
 | Button-002a | P1 | ✅ | 批次035：PerformClick按CanSelect和ValidateActiveControl结果、允许焦点变化策略及ValidationCancelled决定是否激活；覆盖不可选、三种AutoValidate和CausesValidation=false。原生BN_CLICKED仅补取消守卫，完整物理点击验证前置仍待。 |
+| Button-002b | P1 | ✅ | 批次036：按固定10.0.11源码核对Control鼠标按下→焦点/验证→BN_CLICKED顺序，确认Button.WndProc/OnCommand不应重复调用验证；真实HWND Prevent/Allow点击回归分别验证取消时不Click、允许时Validating后Click。完整物理设备和派生组合仍待。 |
 | Button-003 | P1 | 🟡 | 035的003a补默认None/合法值与点击写回Form结果；完整ShowDialog/Modal、模态关闭/取消及所有生命周期组合仍待。 |
 | Button-003a | P1 | ✅ | 批次035：Button.DialogResult合法值与默认None，属性变更不关闭窗体；点击经FindForm先写结果再发Click，嵌套容器/无父和非模态范围有回归。DialogResult补齐Abort/Retry/Ignore/TryAgain/Continue，8/9仍非法；不宣称模态已实现。 |
 | Button-004 | P1 | 🟡 | 035的004a补NotifyDefault与Form默认/取消首范围；IsDefault/完整ButtonBase、原生焦点切换、移除/Dispose全部组合及默认样式交互仍待。固定WinForms允许仍被AcceptButton引用的孤立按钮，不自行添加所有权限制。 |
@@ -48,6 +49,8 @@
 ## 修改历史
 
 - 2026-11-07 · 批次035：实现001a/002a/003a/004a作为Form-12b必要消费者，18项按钮/默认路由新测试和1项真实队列集成通过。Button仍继承Control，001/003/004按实际局部实现由全待办改部分；原生点击前置、完整ButtonBase/模态/移除释放组合、辅助技术及平台仍缺，见[035](../batches/035.md)。
+
+- 2026-11-07 · 批次036：完成002b源码审计和真实HWND鼠标按下/抬起回归；Button.cs保留官方BN_CLICKED仅检查ValidationCancelled的路径，未添加重复验证，验证取消/父链清理由Control共享实现。完整ButtonBase、设备、样式、辅助技术和模态仍待，见[036](../batches/036.md)。
 
 - 2026-10-16 · 批次027：移除遮蔽Control的独立Click事件，OnClick覆盖转发base，PerformClick/BN_CLICKED进入同一虚事件槽；StandardClick/StandardDoubleClick关闭以避免base鼠标重复激活。只关闭该必要接入，ButtonBase/FlatStyle/验证/默认按钮仍缺。 027完成005a共享Click/原生通知衔接；鼠标与空格/Enter/Alt助记键、辅助技术、命令/验证/FormClosing完整顺序仍待对照。默认owner draw/UserMouse与当前native样式及BM_CLICK顺序差异保留。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 

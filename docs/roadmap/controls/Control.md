@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～034明确子范围保留；035完成12h实际消息循环预处理及默认/取消按钮必要验证消费。关闭多余LostFocus/WM_QUIT、原生输入键判别/完整命令对话框、队列字符抑制、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[035](../batches/035.md)。
+🟡 **当前状态：**002～035明确子范围保留；036完成12i原生输入键/字符判别、队列字符抑制及验证取消状态清理。关闭多余LostFocus/WM_QUIT、完整命令对话框、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[036](../batches/036.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -12,6 +12,7 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | ✅ | P1 / Control-12h | 批次035：Application实际键盘队列在Translate/Dispatch前按FromChildHandle调用PreProcessMessage，消费后停止、未消费保留四字段修改；异常经ThreadException报告。补内部ValidateActiveControl供Button消费；9项实际消息队列回归含默认取消按钮集成通过。直接SendMessage仍走WndProc，原生输入键/字符判别、队列字符抑制、IME和物理输入仍待。 |
+| ✅ | P1 / Control-12i | 批次036：按固定10.0.11实现IsInputKey的Alt/Tab/箭头/默认WM_GETDLGCODE判别、IsInputChar的字符/Tab判别及WM_SYSCHAR直达对话字符；队列KeyDown的SuppressKeyPress按消息类型有界移除WM_CHAR/WM_SYSCHAR/WM_IME_CHAR，直接WndProc保留现有单次兼容路径。补ValidationCancelled父链读取、鼠标抬起取消点击守卫和状态清理；5项输入判别、2项真实按钮验证所需共享回归及既有键盘队列通过。完整IME/队列边界、全部派生和物理输入仍归父项。 |
 | ✅ | P1 / Control-12g | 批次034：六类普通/system键消息经ProcessKeyMessage→父预览→ProcessKeyEventArgs，事件返回Handled且默认过程只在未消费时执行，KeyChar修改回写WParam；基础ProcessMnemonic默认false终止后代回父递归。7项新增回归通过；完整IME/队列字符抑制/物理输入与全部命令路由仍归12父项。 |
 | 🟡 | P0 / Control-01 | 已完成Component/IWin32Window（01a）、ISynchronizeInvoke、基础DefaultSize/构造约束（01b）、无parent文本构造（01c）；018含parent构造和Controls归06a。IDropTarget、全部派生默认/扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
@@ -86,6 +87,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 ## 修改历史
 
 - 2026-11-07 · 批次035：12h接入真实消息循环，默认按钮消费复用内部验证结果；AutoSizeMode修正数值身份时将基础字段显式初始化GrowOnly，保留原命名默认。旧整数0/1及已编译常量须复核，不以新增队列用例关闭完整键盘/Control，见[035](../batches/035.md)。
+
+- 2026-11-07 · 批次036：12i按固定WinForms 10.0.11源码补原生WM_GETDLGCODE判别和WM_SYSCHAR分流；SuppressKeyPress在真实队列中有界移除字符消息，直接消息测试仍保持兼容；验证取消状态按父链读取，并在鼠标抬起后清理。新增5项输入测试、真实HWND按钮验证2项及既有键盘14项通过；完整IME、派生路由、设备和平台仍未验收，见[036](../batches/036.md)。
 
 - 2026-11-07 · 批次034：完成12g键事件实际消息管线首范围，修复033中WndProc绕过预览、Handled返回误判及默认助记键回父递归；保留033已完成预处理范围，完整IME/队列字符抑制/设备及命令对话框仍待，见[034](../batches/034.md)。
 

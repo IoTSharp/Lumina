@@ -120,6 +120,7 @@ internal static class Win32
     public const int WM_INITDIALOG = 0x0110;
     public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_SYSCHAR = 0x0106;
+    public const int WM_IME_CHAR = 0x0286;
     public const int WM_SYSKEYDOWN = 0x0104;
     public const int WM_DESTROY = 0x0002;
     public const int WM_SHOWWINDOW = 0x0018;
@@ -867,6 +868,10 @@ internal static class Win32
 
     [DllImport("user32.dll", EntryPoint = "GetMessageW", SetLastError = true)]
     internal static extern int GetMessage(out MSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+    [DllImport("user32.dll", EntryPoint = "PeekMessageW", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool PeekMessage(out MSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

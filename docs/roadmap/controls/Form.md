@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～034范围保留；035补12b默认/取消按钮、结果和Enter/Escape必要验证消费。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、IME/原生输入、Activated/Deactivate、owner/MDI/模态、资源事务/多UI退出及Designer仍缺。
+🟡 **现状：**018～035范围保留；036补12c托管Dispose时默认/接受/取消按钮引用清理和默认通知撤销。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、IME/原生输入、Activated/Deactivate、owner/MDI/模态、资源事务/多UI退出及Designer仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -12,6 +12,7 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | ✅ | P1 / Form-12b | 批次035：AcceptButton/CancelButton/IButtonControl、合法DialogResult、最深活动按钮默认通知及无Ctrl/Alt的Enter/Escape路由；Button先写结果再Click并消费CanSelect/验证策略。18项新按钮回归及1项实际队列集成通过。属性保存结果不等于实现ShowDialog/Modal；ButtonBase、全部生命周期/原生点击、IME/设备仍待。 |
+| ✅ | P1 / Form-12c | 批次036：托管Dispose(true)先清理_defaultButton、AcceptButton、CancelButton并对原默认按钮发送NotifyDefault(false)；Dispose(false)不改变托管按钮状态，保留AcceptButton允许孤立引用。2项生命周期回归通过；模态、完整关闭事件/原因、多UI和设计器仍待。 |
 | ✅ | P1 / Form-12a | 批次034：KeyPreview默认false，启用后在子项之前触发窗体键事件、消费或按父链回退；ProcessTabKey在顶层正反回绕。3项回归覆盖嵌套字符修改、Handled和真实可见窗口程序导航；完整默认/取消按钮、IME/物理输入及消息循环预处理仍归12父项。 |
 | ✅ | P0 / Form-01 | 批次018：建立Form : ContainerControl : ScrollableControl : Control : Component，实际共用Text/Name/Bounds/ClientSize/Handle/Controls/颜色/ISynchronizeInvoke/Dispose；直接子项Parent为Form，移除重复状态与集合。真实窗口移动/尺寸回写及父子释放有运行证据，见018。整Form、容器行为与平台兼容未关闭。 |
 | 🟡 | P0 / Form-02 | 020已移除历史EventHandler Layout，继承Control标准LayoutEventHandler/LayoutEventArgs及OnLayout(LayoutEventArgs)。FormClosingEventHandler/FormClosedEventHandler、旧Closing/Closed仍待对齐；Created历史自有事件不能抵扣标准属性/HandleCreated。 |
@@ -52,6 +53,8 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 ## 修改历史
 
 - 2026-11-07 · 批次035：12b实现标准默认/取消路由和结果消费；保留固定源码CancelButton重复赋值的None→Cancel及非Control接口Enter消费语义，不自造所有权限制。首轮编译发现当前Keys无Return别名，改用同值Enter，别名仍归附属契约缺口；模态/Designer/AOT仍待，见[035](../batches/035.md)。
+
+- 2026-11-07 · 批次036：12c按固定WinForms Dispose顺序清理默认/接受/取消按钮引用并撤销默认通知；Dispose(false)保持托管状态，未扩大为移除/隐藏/禁用自动清空。2项生命周期回归通过，模态、完整关闭与平台仍待，见[036](../batches/036.md)。
 
 - 2026-11-07 · 批次034：完成12a KeyPreview父链消费、可修改字符和顶层Tab正反回绕；默认隐藏窗体不可选择，测试改为真实可见HWND后通过，不以程序导航冒充物理键盘。完整默认/取消按钮、IME、Designer及AOT仍待，见[034](../batches/034.md)。
 

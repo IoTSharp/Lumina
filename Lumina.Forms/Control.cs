@@ -130,10 +130,16 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _mouseEnterPending;
     private bool _mousePressed;
     private bool _doubleClickFired;
+    private bool _validationCancelled;
     private bool _suppressKeyPress;
 
     private const int WmCharMessage = 0x0102;
     private const int WmSysKeyUp = 0x0105;
+    private const int WmGetDialogCode = 0x0087;
+    private const int DialogCodeWantArrows = 0x0001;
+    private const int DialogCodeWantTab = 0x0002;
+    private const int DialogCodeWantAllKeys = 0x0004;
+    private const int DialogCodeWantChars = 0x0080;
     // WS_EX_LAYOUTRTL mirrors child layout and WS_EX_RTLREADING selects the
     // right-to-left reading order for native controls. Keep these private so
     // the public surface continues to use the standard RightToLeft property.
@@ -568,7 +574,11 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         }
     }
 
-    internal bool ValidationCancelled { get; set; }
+    internal bool ValidationCancelled
+    {
+        get => _validationCancelled || (_parent?.ValidationCancelled ?? false);
+        set => _validationCancelled = value;
+    }
 
     /// <summary>
     /// Gets the default background color of a top-level control.
@@ -3392,13 +3402,35 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     /// Determines whether a key is an input key for this control.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual bool IsInputKey(Keys keyData) => false;
+    protected virtual bool IsInputKey(Keys keyData)
+    {
+        if ((keyData & Keys.Alt) == Keys.Alt) { return false; }
+
+        int mask = (keyData & Keys.KeyCode) switch
+        {
+            Keys.Tab => DialogCodeWantAllKeys | DialogCodeWantTab,
+            Keys.Left or Keys.Right or Keys.Up or Keys.Down => DialogCodeWantAllKeys | DialogCodeWantArrows,
+            _ => DialogCodeWantAllKeys
+        };
+
+        // Unlike character classification, the standard key query must not
+        // materialize a native window solely to discover its dialog code.
+        return IsHandleCreated
+            && (unchecked((int)Win32.SendMessageW(Handle, WmGetDialogCode, 0, 0)) & mask) != 0;
+    }
 
     /// <summary>
     /// Determines whether a character is an input character for this control.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual bool IsInputChar(char charCode) => false;
+    protected virtual bool IsInputChar(char charCode)
+    {
+        int mask = charCode == '\t'
+            ? DialogCodeWantChars | DialogCodeWantAllKeys | DialogCodeWantTab
+            : DialogCodeWantChars | DialogCodeWantAllKeys;
+
+        return (unchecked((int)Win32.SendMessageW(Handle, WmGetDialogCode, 0, 0)) & mask) != 0;
+    }
 
     /// <summary>Processes a command key through the parent chain.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -3466,7 +3498,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             case Win32.WM_SYSCHAR:
             {
                 char charCode = unchecked((char)(ushort)(nuint)msg.WParam);
-                if (IsInputChar(charCode)) { return false; }
+                if (msg.Msg == WmCharMessage && IsInputChar(charCode)) { return false; }
                 return ProcessDialogChar(charCode);
             }
             default:
@@ -4635,6 +4667,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             }
 
             bool fireClick = GetStyle(ControlStyles.StandardClick) && _mousePressed && !IsDisposed
+                && !ValidationCancelled
                 && Win32.WindowFromPoint(new Win32.POINT { x = screen.X, y = screen.Y }) == Handle;
             if (fireClick)
             {
@@ -4655,6 +4688,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         {
             _doubleClickFired = false;
             _mousePressed = false;
+            _validationCancelled = false;
             Capture = false;
         }
     }
@@ -4689,8 +4723,33 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         KeyEventArgs args = new(KeyDataFromMessage(message.WParam, message.LParam, systemKey));
         OnKeyDown(args);
-        _suppressKeyPress = args.SuppressKeyPress;
+        _suppressKeyPress = args.SuppressKeyPress && !RemovePendingCharacterMessages();
         return args.Handled;
+    }
+
+    private bool RemovePendingCharacterMessages()
+    {
+        if (NativeHandle == 0 || IsDisposed) { return false; }
+
+        bool removed = false;
+        const int maximumMessages = 256;
+        for (int i = 0; i < maximumMessages && Win32.PeekMessage(out _, NativeHandle,
+                 unchecked((uint)WmCharMessage), unchecked((uint)WmCharMessage), 1); i++)
+        {
+            removed = true;
+        }
+        for (int i = 0; i < maximumMessages && Win32.PeekMessage(out _, NativeHandle,
+                 unchecked((uint)Win32.WM_SYSCHAR), unchecked((uint)Win32.WM_SYSCHAR), 1); i++)
+        {
+            removed = true;
+        }
+        for (int i = 0; i < maximumMessages && Win32.PeekMessage(out _, NativeHandle,
+                 unchecked((uint)Win32.WM_IME_CHAR), unchecked((uint)Win32.WM_IME_CHAR), 1); i++)
+        {
+            removed = true;
+        }
+
+        return removed;
     }
 
     private bool WmChar(ref Message message)
