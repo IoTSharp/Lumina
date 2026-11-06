@@ -1,6 +1,6 @@
 # UserControl
 
-🟡 **当前状态：**031标准继承及032 Load首范围保留；034补02b默认尺寸、AutoSizeMode合法名字/布局和BorderStyle样式。AutoSizeMode数值身份、完整AutoSize/设计器、验证/键盘、AOT与平台语义仍缺，见[034](../batches/034.md)。
+🟡 **当前状态：**031～034范围保留；035补02c AutoSizeMode数值身份并保持命名默认。完整AutoSize/设计器、验证/键盘、AOT与平台语义仍缺，见[035](../batches/035.md)。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -13,14 +13,15 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
+| ✅ | P0 / UserControl-02c | 批次035：AutoSizeMode修正为GrowAndShrink=0/GrowOnly=1，Control字段显式GrowOnly，UserControl已有构造/setter按名字保持正确无需改算法。10项数值/四类默认/元数据和实际基础/复合布局回归通过。旧二进制及整数持久化0/1需复核；完整02/04不关闭。 |
 | ✅ | P0 / UserControl-02b | 批次034：DefaultSize=150×150，AutoSizeMode合法名字校验与父/自身AutoSize布局请求；BorderStyle校验、CreateParams边框位及UpdateStyles保持现有句柄。10项新增回归含真实HWND样式回读通过。范围不含AutoSizeMode枚举数值身份修正、完整AutoSize或Designer元数据；这些仍归02父项。 |
 | 🟡 | P0 / UserControl-01 | 031完成01a标准 `UserControl : ContainerControl`、STATIC子窗口和释放链；partial/InitializeComponent、完整Designer/resx和全部生命周期仍待。 |
 | ✅ | P0 / UserControl-01a | 批次031：UserControl改为标准ContainerControl派生，保留无参构造、STATIC类名/子窗口样式、主题应用和Component/IDisposable链。 |
-| 🟡 | P0 / UserControl-02 | 031完成02a共享容器属性，034完成02b默认尺寸、AutoSizeMode合法名字校验/布局与BorderStyle原生样式；AutoSizeMode枚举数值身份与官方相反的历史缺口、完整AutoSize/默认元数据和DesignerSerializationVisibility仍待。 |
+| 🟡 | P0 / UserControl-02 | 031～034的02a/02b保留；035的02c修复AutoSizeMode数值身份并保持GrowOnly命名默认。完整AutoSize/默认元数据和DesignerSerializationVisibility仍待，完整02/04不随枚举修复关闭。 |
 | ✅ | P0 / UserControl-02a | 批次031：移除重复AutoScale存值属性，UserControl直接消费ContainerControl的ActiveControl/AutoValidate/AutoScale契约；不关闭完整默认值和设计器语义。 |
-| ⬜ | P0 / UserControl-03 | 实现 Load 在第一次展示/句柄生命周期的真实触发边界；对照 HandleCreated/ParentChanged/VisibleChanged/Load，避免每次 Visible=true 重复 Load。 |
+| 🟡 | P0 / UserControl-03 | 032的03a已实现成功OnCreateControl后一次Load，重复Visible/重建不重复；035纠正父项仍全待办的历史状态。完整首次展示、嵌套创建/父级可见性、Designer与所有异常生命周期边界仍待对照。 |
 | ✅ | P0 / UserControl-03a | 批次032：增加标准Load/OnLoad，首次成功OnCreateControl后一次触发；重复Visible切换和句柄重建不重复，创建失败不伪造成功，处理器异常原样传播。 |
-| ⬜ | P1 / UserControl-04 | 实现 GetPreferredSize、MinimumSize/MaximumSize、嵌套 Dock/Anchor、AutoSize 容器反馈；处理用户派生控件覆盖受保护方法的调用顺序。 |
+| 🟡 | P1 / UserControl-04 | 已继承ContainerControl内容首选测量和基础MinMax/默认布局；035以明确数值模式验证有限AutoSize父反馈。完整嵌套Dock/Anchor、派生覆盖顺序/复杂反馈、缩放和Designer仍待，不由基类/局部布局用例关闭完整AutoSize。 |
 | ⬜ | P1 / UserControl-05 | 验证 Tab/Shift+Tab、助记键、Enter/Escape、Validating 取消以及将焦点设为内部子控件；活动链应穿透嵌套 UserControl。 |
 | ⬜ | P1 / UserControl-06 | 校准 AutoScaleMode.Font/Dpi/Inherit/None、父容器字体继承、独立设计基准尺寸和跨 DPI 移动，无二次缩放。 |
 | ⬜ | P1 / UserControl-07 | 实现 ControlAdded/Removed、BindingContextChanged 和用户数据绑定传播；Controls.Clear 与 Dispose 的资源归属分别验收。 |
@@ -42,6 +43,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-11-07 · 批次035：02c修复历史数值反置，并显式保留基础Control的GrowOnly默认；UserControl.cs按名字实现本已正确，本批不重复修改。03父项仍全待办遗漏032的03a，04遗漏已有内容测量/基础布局，按真实局部实现纠正为部分并保留剩余范围。旧持久化整数和已编译枚举常量须复核；按名字源码重编译保持名字语义。10项限定回归通过，不关闭完整AutoSize，见[035](../batches/035.md)。
 
 - 2026-11-07 · 批次034：完成02b默认150×150、GrowOnly名字默认、AutoSizeMode合法值/布局通知和BorderStyle参数/真实HWND样式更新。CompatibilityEnums中AutoSizeMode数值身份与官方相反未修改，明确保留父项；完整AutoSize、Designer、AOT与平台仍待，见[034](../batches/034.md)。
 

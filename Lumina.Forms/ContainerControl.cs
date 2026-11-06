@@ -225,6 +225,10 @@ public class ContainerControl : ScrollableControl, IContainerControl
         {
             _activeControl = value;
             UpdateFocusedControl();
+            if (ReferenceEquals(_activeControl, value))
+            {
+                FindForm()?.UpdateDefaultButton();
+            }
         }
         else
         {
@@ -388,6 +392,14 @@ public class ContainerControl : ScrollableControl, IContainerControl
         => SelectNextControl(ActiveControl, forward, tabStopOnly: true, nested: true, wrap: false);
 
     /// <summary>
+    /// Allows a derived container to update its default button after the active
+    /// control changes. Containers without a default button need no action.
+    /// </summary>
+    protected virtual void UpdateDefaultButton()
+    {
+    }
+
+    /// <summary>
     /// Processes dialog characters by offering descendant controls their
     /// standard access-key route before delegating to the parent chain.
     /// </summary>
@@ -525,7 +537,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
     /// <summary>Validates the current control, optionally honoring disabled automatic validation.</summary>
     public bool Validate(bool checkAutoValidate) => ValidateInternal(checkAutoValidate, out _);
 
-    private bool ValidateInternal(bool checkAutoValidate, out bool allowsFocusChange)
+    internal bool ValidateInternal(bool checkAutoValidate, out bool allowsFocusChange)
     {
         allowsFocusChange = false;
         if (AutoValidate != AutoValidate.EnablePreventFocusChange

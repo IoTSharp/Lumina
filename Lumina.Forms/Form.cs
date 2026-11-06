@@ -3,6 +3,7 @@
 // The .NET Foundation licenses those portions under the MIT license.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -50,6 +51,10 @@ public class Form : ContainerControl
     private uint _controlBackgroundColorRef;
     private Icon? _icon;
     private FormWindowState _windowState = FormWindowState.Normal;
+    private IButtonControl? _acceptButton;
+    private IButtonControl? _cancelButton;
+    private IButtonControl? _defaultButton;
+    private DialogResult _dialogResult;
 
     /// <summary>
     /// Initializes a new top-level LuminaForms window.
@@ -63,6 +68,96 @@ public class Form : ContainerControl
     /// <summary>Gets or sets whether the form receives key events before the focused control.</summary>
     [System.ComponentModel.DefaultValue(false)]
     public bool KeyPreview { get; set; }
+
+    /// <summary>Gets or sets the button activated when the user presses Enter.</summary>
+    [DefaultValue(null)]
+    public IButtonControl? AcceptButton
+    {
+        get => _acceptButton;
+        set
+        {
+            if (ReferenceEquals(_acceptButton, value)) { return; }
+            _acceptButton = value;
+            UpdateDefaultButton();
+        }
+    }
+
+    /// <summary>Gets or sets the button activated when the user presses Escape.</summary>
+    [DefaultValue(null)]
+    public IButtonControl? CancelButton
+    {
+        get => _cancelButton;
+        set
+        {
+            _cancelButton = value;
+            if (value is not null && value.DialogResult == DialogResult.None)
+            {
+                value.DialogResult = DialogResult.Cancel;
+            }
+        }
+    }
+
+    /// <summary>Gets or sets the result returned by a dialog.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public DialogResult DialogResult
+    {
+        get => _dialogResult;
+        set
+        {
+            if (!Enum.IsDefined(value))
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(DialogResult));
+            }
+            _dialogResult = value;
+        }
+    }
+
+    /// <inheritdoc />
+    protected override bool ProcessDialogKey(Keys keyData)
+    {
+        if ((keyData & (Keys.Alt | Keys.Control)) == Keys.None)
+        {
+            switch (keyData & Keys.KeyCode)
+            {
+                case Keys.Enter when _defaultButton is not null:
+                    if (_defaultButton is Control) { _defaultButton.PerformClick(); }
+                    return true;
+                case Keys.Escape when _cancelButton is not null:
+                    // Escape activates cancellation without moving the active control.
+                    _cancelButton.PerformClick();
+                    return true;
+            }
+        }
+
+        return base.ProcessDialogKey(keyData);
+    }
+
+    /// <inheritdoc />
+    protected override void UpdateDefaultButton()
+    {
+        ContainerControl container = this;
+        // Each step follows a strict descendant in the existing active-control tree.
+        while (container.ActiveControl is ContainerControl nested)
+        {
+            if (nested is Form)
+            {
+                container = this;
+                break;
+            }
+            container = nested;
+        }
+
+        SetDefaultButton(container.ActiveControl as IButtonControl ?? AcceptButton);
+    }
+
+    private void SetDefaultButton(IButtonControl? button)
+    {
+        if (ReferenceEquals(_defaultButton, button)) { return; }
+        _defaultButton?.NotifyDefault(false);
+        _defaultButton = button;
+        button?.NotifyDefault(true);
+    }
 
     /// <inheritdoc />
     protected override bool ProcessKeyPreview(ref Message m)

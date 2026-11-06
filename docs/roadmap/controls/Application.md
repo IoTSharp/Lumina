@@ -1,6 +1,6 @@
 # Application
 
-🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪。批次 001 已对齐启动/DPI；批次 003 补线程局部 ThreadException/OnThreadException，异步投递异常不静默丢失。缺 Run()/Run(ApplicationContext)、完整消息过滤/退出、标准异常对话框与异常模式。
+🟡 **现状：**已有 GetMessage/TranslateMessage/DispatchMessage、样式 activation context 与 open form 跟踪；035补键盘队列的Control预处理。001启动/DPI、003线程局部异常报告保留。Run()/Run(ApplicationContext)、完整消息过滤/退出、标准异常对话框与异常模式仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Application.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -17,7 +17,8 @@
 | 🟡 | P0 / Application-03 | 批次 007 完成现有 Run/RunMessageLoop 与控件/窗体构造的默认 context 安装/还原、默认 callback await UI 恢复；完整 ApplicationContext/模态、多 UI 线程与退出取消/竞态仍缺。 |
 | 🟡 | P1 / Application-04 | 批次007完成现有无Form循环的ExitThread请求退出、最外层finally按线程释放context activation，两个STA固定参考/JIT/AOT有证据（WindowsFormsSynchronizationContext-01b）；Exit()/Exit(CancelEventArgs)、ApplicationExit/ThreadExit、FormClosing取消、ApplicationContext/多个UI线程的完整退出与竞态仍待实现/验收。 |
 | ⬜ | P1 / Application-05 | 实现 OpenForms 的标准 FormCollection、可见/隐藏/释放窗口登记、索引与名称查询；不得直接暴露内部 HashSet 改变枚举契约。 |
-| ⬜ | P1 / Application-06 | 实现 AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、消息预处理/快捷键/IsDialogMessage；WM_QUIT/GetMessage=-1 处理明确，不能只做 Translate/Dispatch。 |
+| 🟡 | P1 / Application-06 | 035的06a完成键盘队列Control预处理首范围；AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter、完整快捷键/IsDialogMessage及WM_QUIT/GetMessage=-1处理仍待，不能由局部接入关闭父任务。 |
+| ✅ | P1 / Application-06a | 批次035：GetMessage检索的键盘消息按FromChildHandle找到托管控件，Translate/Dispatch前实际调用PreProcessMessage；消费停止，未消费保留修改的目标/消息/参数，native时空字段保持。异常报告一次并停止故障消息；9项真实队列/直接发送边界回归通过。过滤器、原生判别、模态及完整退出归父项。 |
 | ⬜ | P1 / Application-07 | 实现 Idle/RaiseIdle、DoEvents、EnterThreadModal/LeaveThreadModal、MessageLoop/AllowQuit；DoEvents 的重入遵循标准，不用 Task.Run 代替消息泵。 |
 | 🟡 | P1 / Application-08 | 批次 003 完成线程局部 ThreadException/OnThreadException 与异步投递错误报告（Application-08a）；SetUnhandledExceptionMode、标准 ThreadExceptionDialog、其余消息回调的完整异常策略仍待实现。 |
 | ✅ | P1 / Application-08a | 批次 003：线程局部订阅、当前 Thread sender、原始异常对象、重入保护和处理器异常后的状态恢复；4 项托管回归及实际 UI 投递事件观测通过。无处理器的 Windows 原生 OK 提示保留可见/继续行为，完整 Quit/Details UI 后置；投递事件处理器再抛在 native 边界前显式终止，区别于 public OnThreadException 的直接传播。 |
@@ -40,6 +41,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次035：06a接入实际键盘队列预处理，补Tab、KeyPreview、Enter/Escape、异常及原生子窗映射限定证据；首轮改写KeyUp测试缺transition位导致真实Translate额外WM_CHAR，修正有效消息后保持原断言通过。既有WM_QUIT/多UI退出差异不因本批关闭，见[035](../batches/035.md)。
 
 - 2026-10-17 · 批次029：程序验证接入未修改Application退出实现；15个场景仍多出WM_QUIT，继续归01/04与Form-07。另有关闭LostFocus差异，不混为同一根因；用户要求本批后停止，见[029](../batches/029.md)。
 

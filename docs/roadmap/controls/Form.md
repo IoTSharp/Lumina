@@ -1,6 +1,6 @@
 # Form
 
-🟡 **现状：**018～029范围保留；034补12a KeyPreview及顶层Tab回绕。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、默认取消按钮/IME、Activated/Deactivate、owner/MDI/模态、资源事务/多UI退出及Designer仍缺。
+🟡 **现状：**018～034范围保留；035补12b默认/取消按钮、结果和Enter/Escape必要验证消费。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、IME/原生输入、Activated/Deactivate、owner/MDI/模态、资源事务/多UI退出及Designer仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Form.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,6 +11,7 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
+| ✅ | P1 / Form-12b | 批次035：AcceptButton/CancelButton/IButtonControl、合法DialogResult、最深活动按钮默认通知及无Ctrl/Alt的Enter/Escape路由；Button先写结果再Click并消费CanSelect/验证策略。18项新按钮回归及1项实际队列集成通过。属性保存结果不等于实现ShowDialog/Modal；ButtonBase、全部生命周期/原生点击、IME/设备仍待。 |
 | ✅ | P1 / Form-12a | 批次034：KeyPreview默认false，启用后在子项之前触发窗体键事件、消费或按父链回退；ProcessTabKey在顶层正反回绕。3项回归覆盖嵌套字符修改、Handled和真实可见窗口程序导航；完整默认/取消按钮、IME/物理输入及消息循环预处理仍归12父项。 |
 | ✅ | P0 / Form-01 | 批次018：建立Form : ContainerControl : ScrollableControl : Control : Component，实际共用Text/Name/Bounds/ClientSize/Handle/Controls/颜色/ISynchronizeInvoke/Dispose；直接子项Parent为Form，移除重复状态与集合。真实窗口移动/尺寸回写及父子释放有运行证据，见018。整Form、容器行为与平台兼容未关闭。 |
 | 🟡 | P0 / Form-02 | 020已移除历史EventHandler Layout，继承Control标准LayoutEventHandler/LayoutEventArgs及OnLayout(LayoutEventArgs)。FormClosingEventHandler/FormClosedEventHandler、旧Closing/Closed仍待对齐；Created历史自有事件不能抵扣标准属性/HandleCreated。 |
@@ -28,7 +29,7 @@
 | ✅ | P1 / Form-10a | 批次020完成共享暂停/恢复/OnLayout入口，移除重复WM_SIZE布局和无条件子树遍历；当时的直属条带专用定位于021被父级DefaultLayout替代。历史事务范围完成保留，几何见10b。 |
 | ✅ | P1 / Form-10b | 批次021：Form继承默认布局/ContainerControl测量，菜单/工具/状态条按实际Controls反序Dock；移除旧专用定位和Control原生Y坐标额外菜单偏移。隐藏/显示、嵌套/取消Dock及实际HWND矩形有固定参考，原Demo源码不改；完整Form布局和Designer仍归父项。 |
 | 🟡 | P1 / Form-11 | 历史AutoScaleDimensions/PerformAutoScale局部算法已于018迁入ContainerControl，原全待办遗漏继承实现，现更正；022继承基础Font链但未完成字体自动缩放。完整CurrentAutoScaleDimensions、Font/Dpi/Inherit/None、DpiChanged父子通知与96/144/192往返和.resx基准仍待对照。 |
-| 🟡 | P1 / Form-12 | 018/028活动链与029验证首范围保留；034完成12a KeyPreview和顶层Tab回绕首范围。验证自身override及Browsable元数据、AcceptButton/CancelButton/IButtonControl、完整命令/对话框、IME/全部原生输入与验证提交仍缺。 |
+| 🟡 | P1 / Form-12 | 018～034活动链/验证、12a KeyPreview和顶层Tab回绕保留；035的12b补默认/取消按钮及结果/必要验证消费。验证自身override及Browsable元数据、完整命令/模态对话框、IME/全部原生输入与点击提交仍缺。 |
 | ⬜ | P1 / Form-13 | 补 MainMenuStrip、IsMdiContainer/MdiParent/MdiChildren/ActiveMdiChild/LayoutMdi/MdiChildActivate；与 MdiClient 一起验收，不能以普通 owned windows 冒充 MDI。 |
 | ⬜ | P2 / Form-14 | 实现 Opacity/TransparencyKey/Region/RightToLeftLayout/AllowTransparency 与 .NET10 标题/边框颜色相关 API；平台差异逐条披露，不能删除普通颜色/图像契约。 |
 | ⬜ | P1 / Form-15 | NativeFormsDemo .Designer.cs/.resx 静态布局、资源、本地化与继承 Form，可在 VS 双向保存；AOT 主窗可见、业务操作、模态、正常退出为发布验收。 |
@@ -49,6 +50,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次035：12b实现标准默认/取消路由和结果消费；保留固定源码CancelButton重复赋值的None→Cancel及非Control接口Enter消费语义，不自造所有权限制。首轮编译发现当前Keys无Return别名，改用同值Enter，别名仍归附属契约缺口；模态/Designer/AOT仍待，见[035](../batches/035.md)。
 
 - 2026-11-07 · 批次034：完成12a KeyPreview父链消费、可修改字符和顶层Tab正反回绕；默认隐藏窗体不可选择，测试改为真实可见HWND后通过，不以程序导航冒充物理键盘。完整默认/取消按钮、IME、Designer及AOT仍待，见[034](../batches/034.md)。
 

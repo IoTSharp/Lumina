@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～033明确子范围保留；034完成12g实际键消息/父预览/Handled管线与基础助记键终止。关闭多余LostFocus/WM_QUIT、完整消息循环预处理/命令/对话框路由、队列字符抑制、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[034](../batches/034.md)。
+🟡 **当前状态：**002～034明确子范围保留；035完成12h实际消息循环预处理及默认/取消按钮必要验证消费。关闭多余LostFocus/WM_QUIT、原生输入键判别/完整命令对话框、队列字符抑制、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[035](../batches/035.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,6 +11,7 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
+| ✅ | P1 / Control-12h | 批次035：Application实际键盘队列在Translate/Dispatch前按FromChildHandle调用PreProcessMessage，消费后停止、未消费保留四字段修改；异常经ThreadException报告。补内部ValidateActiveControl供Button消费；9项实际消息队列回归含默认取消按钮集成通过。直接SendMessage仍走WndProc，原生输入键/字符判别、队列字符抑制、IME和物理输入仍待。 |
 | ✅ | P1 / Control-12g | 批次034：六类普通/system键消息经ProcessKeyMessage→父预览→ProcessKeyEventArgs，事件返回Handled且默认过程只在未消费时执行，KeyChar修改回写WParam；基础ProcessMnemonic默认false终止后代回父递归。7项新增回归通过；完整IME/队列字符抑制/物理输入与全部命令路由仍归12父项。 |
 | 🟡 | P0 / Control-01 | 已完成Component/IWin32Window（01a）、ISynchronizeInvoke、基础DefaultSize/构造约束（01b）、无parent文本构造（01c）；018含parent构造和Controls归06a。IDropTarget、全部派生默认/扩展仍待实现，不随子项关闭。 |
 | ✅ | P0 / Control-01a | 批次 002：真实无参构造、Component/IComponent/IDisposable/IWin32Window 消费与派生覆盖通过；基础 HWND 由原生 IsWindow/文本长度消费并在释放后失效。完整继承/构造/接口与延迟句柄语义另列待办，兼容验收后置。 |
@@ -52,7 +53,7 @@
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
 | ✅ | P1 / Control-11c | 批次031：标准 `RightToLeft` 枚举、属性、Reset/ShouldSerialize、事件槽和父级继承通知；有效值接入 `WS_EX_LAYOUTRTL`/`WS_EX_RTLREADING`，显式 No 使用 `WS_EX_NOINHERITLAYOUT`，句柄创建/重建保持一致；补齐标准 `AutoScrollOffset` 供滚动容器消费。完整 Cursor、RTL镜像/DPI、ambient/Designer及全部派生控件仍归11父项。 |
-| 🟡 | P1 / Control-12 | 028完成12a基础导航/12b焦点事件；029完成12c自动转移和12d验证前置，030完成12e基础键消息/事件契约，ContainerControl-03a负责程序选择及显式验证取消。全部派生/ToolStripControlHost、取消验证后的点击提交抑制、真实Tab/助记键/键盘预处理/默认按钮/IME仍缺；完整焦点输入不关闭。 |
+| 🟡 | P1 / Control-12 | 028～034导航/焦点/验证、键事件/预处理/父预览范围保留；035的12h接实际消息循环并补默认按钮验证消费。全部派生/ToolStripControlHost、原生点击提交抑制、原生输入键判别、完整Tab/助记键/队列字符抑制/IME及物理输入仍缺；完整焦点输入不关闭。 |
 | ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
 | ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |
 | ✅ | P1 / Control-12c | 批次029：SelectNextIfFocused从父容器使用标准SelectNextControl；Enabled提交状态后、Visible提交前触发导航，无候选不自造清空。TabStop变更同步WS_TABSTOP并经组件事件槽发TabStopChanged；指定当前/祖先、TabStop/Selectable及嵌套候选轨迹有固定参考/JIT/AOT证据。关闭阶段差异归07/Form-07。 |
@@ -83,6 +84,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次035：12h接入真实消息循环，默认按钮消费复用内部验证结果；AutoSizeMode修正数值身份时将基础字段显式初始化GrowOnly，保留原命名默认。旧整数0/1及已编译常量须复核，不以新增队列用例关闭完整键盘/Control，见[035](../batches/035.md)。
 
 - 2026-11-07 · 批次034：完成12g键事件实际消息管线首范围，修复033中WndProc绕过预览、Handled返回误判及默认助记键回父递归；保留033已完成预处理范围，完整IME/队列字符抑制/设备及命令对话框仍待，见[034](../batches/034.md)。
 

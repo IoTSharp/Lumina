@@ -74,7 +74,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _autoScroll;
     private Point _autoScrollOffset;
     private bool _autoEllipsis;
-    private AutoSizeMode _autoSizeMode;
+    private AutoSizeMode _autoSizeMode = AutoSizeMode.GrowOnly;
     private Padding _padding;
     private Padding _margin = new(3);
     private DockStyle _dock;
@@ -3472,6 +3472,17 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             default:
                 return false;
         }
+    }
+
+    internal bool ValidateActiveControl(out bool validatedControlAllowsFocusChange)
+    {
+        validatedControlAllowsFocusChange = false;
+        if (CausesValidation && GetContainerControl() is ContainerControl container)
+        {
+            return container.ValidateInternal(checkAutoValidate: true, out validatedControlAllowsFocusChange);
+        }
+
+        return true;
     }
 
     /// <summary>Processes a dialog character through the parent chain.</summary>

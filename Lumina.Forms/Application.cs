@@ -217,6 +217,7 @@ public static class Application
 
             while (Win32.GetMessage(out var message, 0, 0, 0) > 0)
             {
+                if (PreProcessKeyboardMessage(ref message)) { continue; }
                 _ = Win32.TranslateMessage(in message);
                 _ = Win32.DispatchMessage(in message);
             }
@@ -242,6 +243,40 @@ public static class Application
                 }
             }
         }
+    }
+
+    private static bool PreProcessKeyboardMessage(ref Win32.MSG nativeMessage)
+    {
+        // Keep sent messages on their ordinary WndProc path. Only keyboard
+        // messages retrieved by this thread's queue participate in preprocessing.
+        const uint WmKeyLast = 0x0109;
+        if (nativeMessage.message < Win32.WM_KEYDOWN || nativeMessage.message > WmKeyLast
+            || Control.FromChildHandle(nativeMessage.hwnd) is not { } control)
+        {
+            return false;
+        }
+
+        Message message = Message.Create(nativeMessage.hwnd, unchecked((int)nativeMessage.message),
+            unchecked((nint)nativeMessage.wParam), nativeMessage.lParam);
+        bool handled;
+        try
+        {
+            handled = control.PreProcessMessage(ref message);
+        }
+        catch (Exception exception)
+        {
+            OnThreadException(exception);
+            return true;
+        }
+
+        // A virtual preprocessor may replace the destination or message as well
+        // as its parameters. Preserve native timing/position for the same queue
+        // entry while passing the edited message to Translate/Dispatch.
+        nativeMessage.hwnd = message.HWnd;
+        nativeMessage.message = unchecked((uint)message.Msg);
+        nativeMessage.wParam = unchecked((nuint)message.WParam);
+        nativeMessage.lParam = message.LParam;
+        return handled;
     }
 
     /// <summary>

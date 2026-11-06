@@ -5,10 +5,20 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。034主聊天`01a1b239-e70b-7bb1-ada5-5323cb50aeab`收到“开始接管”后核验交接`45115b86a66c38e4297e79a5a13ffe3b753888c1`三SHA一致且干净并实际接管；033原主已归档。034实现`11c811ac1cb6fab4517cabe4f4ac14626755e60b`已成功推送并核三SHA一致，忽略的bin/obj保留。
-- 当前实施批次：[034](docs/roadmap/batches/034.md)。完成Control-12g实际键事件/父预览管线、ContainerControl-06c嵌套Tab边界、UserControl-02b默认尺寸/AutoSizeMode合法名字/BorderStyle、Form-12a KeyPreview/顶层Tab回绕首范围。新增29/29、全量4,468/4,468和双目标Release构建通过。API库存固定10.0.11缺引用包的NOT_RUN边界保留，未换基线。033完成范围保留；完整消息循环预处理/默认取消按钮、IME、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。035主聊天`01a1b247-6da3-7f51-8a25-3e523fca616e`收到“开始接管”后重新核验交接`7f7e352a828a054ffaa820959b7c0c8e790c043d`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管。034主已声明停止共享写入、构建和Git，按规则立即归档。034实现`11c811ac1cb6fab4517cabe4f4ac14626755e60b`保留；忽略的bin/obj保留。
+- 当前实施批次：[035](docs/roadmap/batches/035.md)。完成Control-12h/Application-06a真实消息循环预处理、ContainerControl-06d/Form-12b默认取消按钮与必要验证消费、UserControl-02c枚举身份及Button必要子范围。新增37/37、全量4,505/4,505及Release方案/固定Demo双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整原生输入/点击验证、IME、全部AutoSize、模态、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
+
+## 批次035 实施与收尾
+
+- 当前实施批次：[035](docs/roadmap/batches/035.md)。message_preprocess独占Application.cs/Control.cs及新消息循环测试，form_dialog_buttons独占Form.cs/Button.cs/IButtonControl/DialogResult及新默认取消测试，autosize_identity独占CompatibilityEnums.cs/UserControl.cs及新枚举身份测试。主会话独占ContainerControl必要协作、共享interop/文档、集成验证与Git；Control默认初始化在其所有者停止写入后统一整合。
+- 三个内部智能体均完成并停止写入。实际消息循环预处理、Form默认/取消按钮的有限验证消费和AutoSizeMode数值身份/命名默认保持已实现；主补实际队列Enter/Escape和共享容器协作。新增37/37、全量4,505/4,505、Release方案/固定Demo双目标构建通过。首次Keys.Return编译失败和无transition位KeyUp fixture导致额外WM_CHAR的36/37失败已定位并保留，不改预期次数掩盖错误。
+- AutoSizeMode现为GrowAndShrink=0/GrowOnly=1，Control显式保留GrowOnly。旧二进制常量/持久化整数0/1须复核，按名字源码重编译保留名字语义。UserControl.cs本已按名字实现，未重复改算法；完整AutoSize父项继续部分。
+- 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl推进：原生输入键/字符判别与队列字符抑制、原生按钮点击验证前置/默认按钮生命周期、UserControl完整AutoSize；不重做033～035，不扩为整ButtonBase或模态已完成。固定API引用包仅10.0.14/9.0.22/8.0.33，10.0.11缺失，库存导出NOT_RUN且分母未换。Designer/AOT/设备/Linux/macOS/98%继续待验。
+- 延续逐批实施、成功commit/push和三SHA回读、下一只读local聊天及归属交接成功推送后才发送开始、确认实际接管后旧主立即归档、30分钟监督的现有授权；后来的暂停停止优先。不创建额外调度框架。
+- 已实时确认034原主归档；当前只有035主写共享工作区。现有配置目录未检出Lumina监督后，通过Codex app建立并回读heartbeat `luminaforms-30`（每30分钟，当前绑定本聊天）；后续交接优先更新这一个heartbeat的归属，避免重复创建。
+- 收尾已按实际代码同步ROADMAP/execution、相关控件/公共任务页/历史、CHANGELOG/validation/本批记录；既有工具生成README实施列/tasks.csv，423份Markdown/2,127任务/187索引行0结构错误，整类型完成仍为0。035实现提交和三SHA回读将在成功推送后补记，未推送前不称批次交付完成。
 
 ## 批次034 新增接续记录
 

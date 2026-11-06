@@ -1,10 +1,19 @@
+// Button activation portions adapted from dotnet/winforms v10.0.11.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses those portions under the MIT license.
+
+using System.ComponentModel;
+
 namespace Lumina.Forms;
 
 /// <summary>
 /// Represents a standard push button control.
 /// </summary>
-public class Button : Control
+public class Button : Control, IButtonControl
 {
+    private DialogResult _dialogResult;
+    private bool _isDefault;
+
     /// <summary>
     /// Initializes a button with Windows-style default spacing.
     /// </summary>
@@ -19,19 +28,50 @@ public class Button : Control
     /// </summary>
     public bool UseVisualStyleBackColor { get; set; } = true;
 
+    /// <summary>Gets or sets the result assigned to the containing form when clicked.</summary>
+    [DefaultValue(DialogResult.None)]
+    public virtual DialogResult DialogResult
+    {
+        get => _dialogResult;
+        set
+        {
+            if (!Enum.IsDefined(value))
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(DialogResult));
+            }
+            _dialogResult = value;
+        }
+    }
+
+    /// <summary>Updates whether this button is the form's current default button.</summary>
+    public virtual void NotifyDefault(bool value)
+    {
+        if (_isDefault == value) { return; }
+        _isDefault = value;
+        UpdateStyles();
+    }
+
     /// <summary>
     /// Programmatically raises the button click action.
     /// </summary>
     public void PerformClick()
     {
-        OnClick(EventArgs.Empty);
+        if (CanSelect)
+        {
+            bool valid = ValidateActiveControl(out bool allowsFocusChange);
+            if (!ValidationCancelled && (valid || allowsFocusChange))
+            {
+                OnClick(EventArgs.Empty);
+            }
+        }
     }
 
     /// <inheritdoc />
     protected override string ClassName => "BUTTON";
 
     /// <inheritdoc />
-    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.BS_PUSHBUTTON;
+    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP
+        | Win32.BS_PUSHBUTTON | (_isDefault ? 0x00000001u : 0u); // BS_DEFPUSHBUTTON
 
     /// <inheritdoc />
     protected override bool UseParentBackgroundForTheming => UseVisualStyleBackColor;
@@ -48,7 +88,7 @@ public class Button : Control
             return false;
         }
 
-        OnClick(EventArgs.Empty);
+        if (!ValidationCancelled) { OnClick(EventArgs.Empty); }
         return true;
     }
 
@@ -82,6 +122,7 @@ public class Button : Control
     /// <param name="e">The event arguments.</param>
     protected override void OnClick(EventArgs e)
     {
+        if (FindForm() is { } form) { form.DialogResult = _dialogResult; }
         base.OnClick(e);
     }
 }

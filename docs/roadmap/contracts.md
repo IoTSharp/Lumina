@@ -5,7 +5,7 @@
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
 | CNS-001 | P0 🟡 | 018 ControlEventArgs/Handler、020 LayoutEventArgs/Handler、023绘制参数/Message/CreateParams保留；027 MouseEventArgs可继承/Location、HandledMouseEventArgs两构造/Handled及标准鼠标委托消费完成。其余准确委托、Cancel/旧新值/索引/CloseReason及键盘契约仍待所属任务，动态封送AOT边界单列 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
-| CNS-002 | P1 🟡 | 001 HighDpiMode、010 BoundsSpecified、023 ControlStyles、024 ImageLayout保留；027补MouseButtons.XButton1/2并以固定参考核对全部鼠标枚举值及原生状态消费。其余Keys/DialogResult/Anchor/Dock/AutoScale/DrawMode等名称/数值/别名/组合/默认/无效值仍待逐项核对 | 不因同名枚举值个数大就稀释控件支持率 |
+| CNS-002 | P1 🟡 | 001～027枚举范围保留；035修AutoSizeMode数值身份并保持命名默认，补齐DialogResult缺失五成员、IButtonControl及实际默认/取消消费。旧AutoSizeMode整数0/1和已编译常量需复核；Keys.Return等别名、其余Anchor/Dock/AutoScale/DrawMode和完整契约仍待 | 不因同名枚举值个数大就稀释控件支持率 |
 | CNS-003 | P1 🟡 | 批次006～012完成ListViewSubItem key与公共集合构造/共享view/整数索引/typed增删/非泛型IList/查询复制/枚举首范围（03a、02a～02f）；018另完成ControlCollection/ArrangedElementCollection父子集合首范围（Control-06a），019修复隐藏重挂通知；其他TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
@@ -24,6 +24,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次035：CNS-002同步AutoSizeMode修正和DialogResult/IButtonControl必要消费。原固定API10.0.11引用包缺失，新增面未重导库存，不以旧库存证明新API匹配；Keys.Return别名缺口由首次编译暴露并保留，见[035](batches/035.md)。
 
 - 2026-10-16 · 批次027：CNS-001/002补MouseEventArgs.Location/可继承、HandledMouseEventArgs和XButton1/2及真实事件消费。错误委托强转的命名空间/Native AOT异常文本差异原样保留，完整契约和平台仍未关闭，见[027](batches/027.md)。
 

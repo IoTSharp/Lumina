@@ -14,8 +14,8 @@ public enum AnchorStyles
 
 public enum AutoSizeMode
 {
-    GrowOnly = 0,
-    GrowAndShrink = 1
+    GrowAndShrink = 0,
+    GrowOnly = 1
 }
 
 public enum CheckState
