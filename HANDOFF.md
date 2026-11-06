@@ -18,7 +18,10 @@
 - 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl推进：原生输入键/字符判别与队列字符抑制、原生按钮点击验证前置/默认按钮生命周期、UserControl完整AutoSize；不重做033～035，不扩为整ButtonBase或模态已完成。固定API引用包仅10.0.14/9.0.22/8.0.33，10.0.11缺失，库存导出NOT_RUN且分母未换。Designer/AOT/设备/Linux/macOS/98%继续待验。
 - 延续逐批实施、成功commit/push和三SHA回读、下一只读local聊天及归属交接成功推送后才发送开始、确认实际接管后旧主立即归档、30分钟监督的现有授权；后来的暂停停止优先。不创建额外调度框架。
 - 已实时确认034原主归档；当前只有035主写共享工作区。现有配置目录未检出Lumina监督后，通过Codex app建立并回读heartbeat `luminaforms-30`（每30分钟，当前绑定本聊天）；后续交接优先更新这一个heartbeat的归属，避免重复创建。
-- 收尾已按实际代码同步ROADMAP/execution、相关控件/公共任务页/历史、CHANGELOG/validation/本批记录；既有工具生成README实施列/tasks.csv，423份Markdown/2,127任务/187索引行0结构错误，整类型完成仍为0。035实现提交和三SHA回读将在成功推送后补记，未推送前不称批次交付完成。
+- 收尾已按实际代码同步ROADMAP/execution、相关控件/公共任务页/历史、CHANGELOG/validation/本批记录；既有工具生成README实施列/tasks.csv，423份Markdown/2,127任务/187索引行0结构错误，整类型完成仍为0。27个本批文件UTF-8严格检查、暂存diff --check均PASS；暂存仅本批27路径，未带入外来改动。
+- 035实现提交`aabff5a05dd9f64fd0d15285c91cdb9c474280da`已成功push；HEAD/origin/main/实际远端refs/heads/main三SHA已回读一致，工作区干净。三个035内部任务均completed/冻结，所有有界任务子进程cleanup_complete=true；独占临时文件`Lumina.Forms/DialogResult.cs.form-dialog-buttons-owned-lf.tmp`已只读核实不存在。
+- 下一local接续聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`（Lumina项目，036 continuation）已创建，只读准备中。下一编码归属指定给该聊天：本归属交接独立commit/push并核验三SHA后，035主才发送“开始接管”；036主收到后重新核对开始消息的交接SHA/HANDOFF并明确实际接管。其确认后035主停止共享写入/构建/Git并立即归档，不等036结束；其确认前035仅做本次交接，036不创建子任务或写共享区。
+- 30分钟监督沿用现有heartbeat `luminaforms-30`，归属交接期间由035主更新其target到036并回读，036先核对避免重复新建。用户持续逐批实施/commit与push/新local接续/监督授权及后来的暂停停止优先全部保留。
 
 ## 批次034 新增接续记录
 
