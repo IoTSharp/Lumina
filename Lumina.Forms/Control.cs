@@ -132,6 +132,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _doubleClickFired;
     private bool _validationCancelled;
     private bool _suppressKeyPress;
+    private int _imeWmCharsToIgnore;
 
     private const int WmCharMessage = 0x0102;
     private const int WmSysKeyUp = 0x0105;
@@ -3469,6 +3470,7 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             Win32.WM_KEYDOWN => WmKeyDown(ref msg, systemKey: false),
             Win32.WM_SYSKEYDOWN => WmKeyDown(ref msg, systemKey: true),
             WmCharMessage or Win32.WM_SYSCHAR => WmChar(ref msg),
+            Win32.WM_IME_CHAR => WmImeChar(ref msg),
             Win32.WM_KEYUP => WmKeyUp(ref msg, systemKey: false),
             WmSysKeyUp => WmKeyUp(ref msg, systemKey: true),
             _ => false
@@ -4754,6 +4756,14 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private bool WmChar(ref Message message)
     {
+        // A Unicode IME character is also followed by a WM_CHAR (or
+        // WM_SYSCHAR). Keep native processing, but do not raise KeyPress twice.
+        if (_imeWmCharsToIgnore > 0)
+        {
+            _imeWmCharsToIgnore--;
+            return false;
+        }
+
         if (_suppressKeyPress)
         {
             _suppressKeyPress = false;
@@ -4763,6 +4773,19 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         KeyPressEventArgs args = new(unchecked((char)(ushort)(nuint)message.WParam));
         OnKeyPress(args);
         message.WParam = (nint)args.KeyChar;
+        return args.Handled;
+    }
+
+    private bool WmImeChar(ref Message message)
+    {
+        // End-composition disables counting until the next start: IMEs can
+        // finish conversion without generating the corresponding WM_CHAR.
+        if (_imeWmCharsToIgnore >= 0) { _imeWmCharsToIgnore++; }
+
+        char originalCharacter = unchecked((char)(ushort)(nuint)message.WParam);
+        KeyPressEventArgs args = new(originalCharacter);
+        OnKeyPress(args);
+        if (args.KeyChar != originalCharacter) { message.WParam = (nint)args.KeyChar; }
         return args.Handled;
     }
 
@@ -4831,6 +4854,19 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
             case WmSysKeyUp:
                 if (ProcessKeyMessage(ref m)) { m.Result = 0; }
                 else { DefWndProc(ref m); }
+                return;
+            case Win32.WM_IME_CHAR:
+                // WinForms sends this directly to the event-args extension,
+                // without the ordinary key-message parent preview route.
+                if (!ProcessKeyEventArgs(ref m)) { DefWndProc(ref m); }
+                return;
+            case Win32.WM_IME_STARTCOMPOSITION:
+                _imeWmCharsToIgnore = 0;
+                DefWndProc(ref m);
+                return;
+            case Win32.WM_IME_ENDCOMPOSITION:
+                _imeWmCharsToIgnore = -1;
+                DefWndProc(ref m);
                 return;
             case Win32.WM_CAPTURECHANGED:
                 OnMouseCaptureChanged(EventArgs.Empty);

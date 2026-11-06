@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[037](batches/037.md)完成Control-12j有限IME字符分流/重复KeyPress抑制、TextBox-003b派生键判别与对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。22新增与4,536全量通过，Release双目标0错/2既有NU1510。下一批先核剩余输入上下文/组合态及派生编辑输入，再补UserControl完整AutoSize；不重复033～037。TextBoxBase、HostedInWin32DialogManager、完整IME、模态、ButtonBase、AOT/Designer/设备/平台/98%均未关闭。036及以下内容保留为历史。
+
 当前[036](batches/036.md)完成Control-12i原生输入键/字符判别、队列字符抑制和验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9项、全量4,514项测试和Release双目标构建通过。035范围保留。下一依赖先按真实缺口推进完整IME/派生输入与按钮/容器组合，再补UserControl完整AutoSize；不重做033～035。固定API10.0.11缺引用包继续NOT_RUN，旧AutoSizeMode整数/已编译常量须复核；父任务、ButtonBase、模态、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。
 
 批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 当前收尾见[029](batches/029.md)。用户于2026-10-17要求当前批次完成后停止：提交推送和远端核验后结束，不创建030/接续聊天、不恢复luminaforms巡检。未来如获新授权，优先解决关闭焦点与循环归属、派生验证消费，再接FND-019键盘；这只是剩余依赖记录，不自动启动。

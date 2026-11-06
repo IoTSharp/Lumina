@@ -125,6 +125,38 @@ public class UserControl : ContainerControl
     protected virtual void OnLoad(EventArgs e) => Load?.Invoke(this, e);
 
     /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnMouseDown(MouseEventArgs e)
+    {
+        if (!ContainsFocus)
+        {
+            _ = Focus();
+        }
+
+        base.OnMouseDown(e);
+    }
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_SETFOCUS)
+        {
+            if (ActiveControl is null)
+            {
+                SelectNextControl(null, true, true, true, false);
+            }
+
+            if (ValidationCancelled)
+            {
+                return;
+            }
+        }
+
+        base.WndProc(ref m);
+    }
+
+    /// <inheritdoc />
     protected override void ApplyTheme()
     {
         ApplyNativeThemeState();

@@ -47,6 +47,8 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 
 ## 修改历史
 
+- 2026-11-07 · 批次037：UserControl派生新增原生焦点入口，7项真实HWND回归验证共享活动链与Prevent/Allow/CausesValidation、Tab正反导航。ContainerControl.cs本批no-op；有限派生消费不关闭完整03/04/06/07，见[037](../batches/037.md)。
+
 - 2026-11-07 · 批次035：06d按固定10.0.11调用点通知Form默认按钮，基类空扩展点是标准派生契约，不代表验证成功；实际按钮激活仍消费真实验证结果。嵌套活动链/三种验证策略和队列Enter/Escape有回归，完整容器与点击输入不关闭，见[035](../batches/035.md)。
 
 - 2026-11-07 · 批次036：Control共享验证状态改为父链读取并在鼠标抬起后清理，真实HWND Prevent/Allow按钮回归覆盖取消不点击与允许点击；未扩展容器的完整原生提交、BindingContext、设备和平台，见[036](../batches/036.md)。

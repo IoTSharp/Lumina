@@ -4,13 +4,26 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 037主聊天`01a1b27b-6152-7792-a700-4989923b44a9`于2026-11-07收到“开始接管”，重新核实独立交接`1a8fecc4fa761d1bc9b04a84db87b046fc94858f`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向036主明确确认实际接管。037为当前唯一编码主；036随后停止共享写入/构建/Git并归档。当前037沿IME字符消息、TextBox派生输入与嵌套UserControl原生验证三个互斥范围继续；主独占共享文档、interop、集成与Git。下面036归属和验证为历史记录。
+
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
 - 工作区是 `D:\GitHub\Lumina`，分支 `main`。036主聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`收到“开始接管”后重新核验独立交接`8625a569e5731564a5d0b2defac9d1a56d099b47`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管并向035主确认。035主已声明停止共享写入、构建和Git，按规则立即归档；035实现`aabff5a05dd9f64fd0d15285c91cdb9c474280da`保留。忽略的bin/obj保留。
 - 当前实施批次：[036](docs/roadmap/batches/036.md)。完成Control-12i原生输入键/字符判别、队列字符抑制及验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9/9、全量4,514/4,514及Release双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整IME、ButtonBase、模态、AutoSize、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次036 实施与收尾
+## 批次037 实施与收尾（当前）
+
+- 当前唯一编码主为037聊天`01a1b27b-6152-7792-a700-4989923b44a9`，已重新核验交接`1a8fecc4fa761d1bc9b04a84db87b046fc94858f`三SHA一致/干净后确认接管，并只读核实036主已归档。
+- 三个互斥智能体已完成并冻结：Control-12j有限IME字符消息/重复计数、TextBox-003b输入键判别/对话框路由、UserControl-05a原生焦点入口/嵌套验证导航；主完成Win32两常量、文档与集成。来源固定WinForms v10.0.11，不恢复TextBoxBase或引入新框架。
+- Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增22/22、全量4,536/4,536通过，0失败/跳过；diff --check通过。IME Handled后的重复计数保留固定源码行为，测试证明只消耗一次；不把程序消息/真实HWND当物理输入或完整IME验收。
+- 公共基础/Control-12父项遗漏036完成范围、validation总览遗漏036记录，本批按已有证据补录并纠正；UserControl-05按05a有限实现由全待办改部分。父任务/原ID/分母保留，使用既有Validate-Roadmap.ps1 -ExportTasks重生成索引。
+- 下一依赖先核剩余IME输入上下文/组合态与派生编辑输入，再补UserControl完整AutoSize。TextBoxBase、HostedInWin32DialogManager、ButtonBase、模态、关闭LostFocus/WM_QUIT、固定API引用包、AOT/Designer/设备/Linux/macOS/98%均保留未完；不重复033～037、不重评全项目。
+- 延续成功commit/push/三SHA回读、新local只读准备/独立归属交接成功推送后才开始/确认实际接管后旧主立即归档、30分钟监督及后续停止优先规则。既有heartbeat `luminaforms-30`由036消息确认已绑定037，本批通过app view回读并复用，未重复创建。
+- 三个内部任务报告所有Cordonix子进程cleanup_complete=true；IME参考源码临时文件已精确删除，其余无临时对象。主的有界构建/测试子树已清理，忽略bin/obj保留。
+- 037收尾使用既有Validate-Roadmap.ps1 -ExportTasks：425份Markdown/2,133任务/187索引行，0结构错误，整类型代码完成仍为0；README实施列/tasks.csv已再生成，源码/任务页/历史/批次/总览边界已同步。
+
+## 批次036 实施与收尾（历史）
 
 - 036是当前唯一编码主；三个互斥内部任务已完成并冻结：Control原生输入判别、Button原生点击验证源码审计/真实HWND回归、Form默认按钮生命周期；主完成共享interop、队列字符抑制、验证取消清理、文档和集成验证。Button.cs本批为no-op，避免重复注入验证。
 - 沿035已确认的输入判别→队列抑制→点击验证/默认生命周期依赖完成明确范围。完整AutoSize、ButtonBase/模态、IME及平台留在原任务，不重复033～035、不重评整个项目。

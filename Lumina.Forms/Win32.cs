@@ -120,6 +120,8 @@ internal static class Win32
     public const int WM_INITDIALOG = 0x0110;
     public const int WM_CONTEXTMENU = 0x007B;
     public const int WM_SYSCHAR = 0x0106;
+    public const int WM_IME_STARTCOMPOSITION = 0x010D;
+    public const int WM_IME_ENDCOMPOSITION = 0x010E;
     public const int WM_IME_CHAR = 0x0286;
     public const int WM_SYSKEYDOWN = 0x0104;
     public const int WM_DESTROY = 0x0002;

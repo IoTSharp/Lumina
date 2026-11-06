@@ -1,6 +1,6 @@
 # UserControl
 
-🟡 **当前状态：**031～034范围保留；035补02c AutoSizeMode数值身份并保持命名默认。完整AutoSize/设计器、验证/键盘、AOT与平台语义仍缺，见[035](../batches/035.md)。
+🟡 **当前状态：**031～035范围保留；037补05a原生焦点入口及嵌套验证/导航限定组合。完整AutoSize/设计器、全部验证/键盘、AOT与平台语义仍缺，见[037](../batches/037.md)。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
 
@@ -22,7 +22,8 @@
 | 🟡 | P0 / UserControl-03 | 032的03a已实现成功OnCreateControl后一次Load，重复Visible/重建不重复；035纠正父项仍全待办的历史状态。完整首次展示、嵌套创建/父级可见性、Designer与所有异常生命周期边界仍待对照。 |
 | ✅ | P0 / UserControl-03a | 批次032：增加标准Load/OnLoad，首次成功OnCreateControl后一次触发；重复Visible切换和句柄重建不重复，创建失败不伪造成功，处理器异常原样传播。 |
 | 🟡 | P1 / UserControl-04 | 已继承ContainerControl内容首选测量和基础MinMax/默认布局；035以明确数值模式验证有限AutoSize父反馈。完整嵌套Dock/Anchor、派生覆盖顺序/复杂反馈、缩放和Designer仍待，不由基类/局部布局用例关闭完整AutoSize。 |
-| ⬜ | P1 / UserControl-05 | 验证 Tab/Shift+Tab、助记键、Enter/Escape、Validating 取消以及将焦点设为内部子控件；活动链应穿透嵌套 UserControl。 |
+| 🟡 | P1 / UserControl-05 | 037的05a补原生焦点入口与嵌套Tab/Shift+Tab、Prevent/Allow/CausesValidation限定组合；原全待办按实际实现改部分。完整助记键、Enter/Escape、HostedInWin32DialogManager、全部验证重入/输入和设备仍待。 |
+| ✅ | P1 / UserControl-05a | 批次037：OnMouseDown焦点不在内部时先Focus再事件；WM_SETFOCUS无活动项时选首个可选后代，并消费ValidationCancelled守卫。7项真实HWND回归覆盖嵌套首次/已有子焦点、鼠标事件顺序、三种验证组合及Tab双向活动链。完整05和AutoSize仍未完成。 |
 | ⬜ | P1 / UserControl-06 | 校准 AutoScaleMode.Font/Dpi/Inherit/None、父容器字体继承、独立设计基准尺寸和跨 DPI 移动，无二次缩放。 |
 | ⬜ | P1 / UserControl-07 | 实现 ControlAdded/Removed、BindingContextChanged 和用户数据绑定传播；Controls.Clear 与 Dispose 的资源归属分别验收。 |
 | ⬜ | P2 / UserControl-08 | Windows 继续真实子 HWND，明确容器窗口样式与透明背景转发；不需要独立视觉框架。 |
@@ -43,6 +44,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-11-07 · 批次037：05a按固定10.0.11接入OnMouseDown/WM_SETFOCUS，7项真实HWND回归通过；完整HostedInWin32DialogManager、输入/验证/AutoSize、Designer/AOT/设备和平台仍待，见[037](../batches/037.md)。
 
 - 2026-11-07 · 批次035：02c修复历史数值反置，并显式保留基础Control的GrowOnly默认；UserControl.cs按名字实现本已正确，本批不重复修改。03父项仍全待办遗漏032的03a，04遗漏已有内容测量/基础布局，按真实局部实现纠正为部分并保留剩余范围。旧持久化整数和已编译枚举常量须复核；按名字源码重编译保持名字语义。10项限定回归通过，不关闭完整AutoSize，见[035](../batches/035.md)。
 

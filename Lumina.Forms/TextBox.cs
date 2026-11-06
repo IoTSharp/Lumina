@@ -68,6 +68,44 @@ public class TextBox : Control
         set => _acceptsTab = value;
     }
 
+    /// <inheritdoc />
+    protected override bool IsInputKey(Keys keyData)
+    {
+        // Preserve the TextBox and TextBoxBase input-key rules from WinForms
+        // v10.0.11 while the standard TextBoxBase hierarchy remains pending.
+        if ((keyData & Keys.Alt) == 0)
+        {
+            switch (keyData & Keys.KeyCode)
+            {
+                case Keys.Enter when Multiline:
+                    return AcceptsReturn;
+                case Keys.Tab:
+                    return Multiline && AcceptsTab && (keyData & Keys.Control) == 0;
+                case Keys.Escape when Multiline:
+                    return false;
+                case Keys.Back when !ReadOnly:
+                case Keys.PageUp:
+                case Keys.PageDown:
+                case Keys.Home:
+                case Keys.End:
+                    return true;
+            }
+        }
+
+        return base.IsInputKey(keyData);
+    }
+
+    /// <inheritdoc />
+    protected override bool ProcessDialogKey(Keys keyData)
+    {
+        if ((keyData & Keys.KeyCode) == Keys.Tab && AcceptsTab && (keyData & Keys.Control) != 0)
+        {
+            keyData &= ~Keys.Control;
+        }
+
+        return base.ProcessDialogKey(keyData);
+    }
+
     /// <summary>
     /// Gets or sets a value indicating whether the text box is read-only.
     /// </summary>

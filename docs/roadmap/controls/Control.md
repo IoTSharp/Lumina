@@ -1,6 +1,6 @@
 # Control
 
-🟡 **当前状态：**002～035明确子范围保留；036完成12i原生输入键/字符判别、队列字符抑制及验证取消状态清理。关闭多余LostFocus/WM_QUIT、完整命令对话框、IME/全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[036](../batches/036.md)。
+🟡 **当前状态：**002～036明确子范围保留；037完成12j有限IME字符消息与重复KeyPress计数。关闭多余LostFocus/WM_QUIT、完整命令对话框、IME组合态/context/候选窗及全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[037](../batches/037.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/Control.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
@@ -11,6 +11,7 @@
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
+| ✅ | P1 / Control-12j | 批次037：WM_IME_CHAR直接进入ProcessKeyEventArgs而不经父KeyPreview，KeyPress消费/字符修改及原WParam保留；计数避免后续WM_CHAR/WM_SYSCHAR重复事件且保留默认过程，START清零/END关闭计数。7项回归通过；Handled后的计数按固定源码保留一次。ImeMode/context/组合串/候选窗及物理设备仍待，不关闭完整IME。 |
 | ✅ | P1 / Control-12h | 批次035：Application实际键盘队列在Translate/Dispatch前按FromChildHandle调用PreProcessMessage，消费后停止、未消费保留四字段修改；异常经ThreadException报告。补内部ValidateActiveControl供Button消费；9项实际消息队列回归含默认取消按钮集成通过。直接SendMessage仍走WndProc，原生输入键/字符判别、队列字符抑制、IME和物理输入仍待。 |
 | ✅ | P1 / Control-12i | 批次036：按固定10.0.11实现IsInputKey的Alt/Tab/箭头/默认WM_GETDLGCODE判别、IsInputChar的字符/Tab判别及WM_SYSCHAR直达对话字符；队列KeyDown的SuppressKeyPress按消息类型有界移除WM_CHAR/WM_SYSCHAR/WM_IME_CHAR，直接WndProc保留现有单次兼容路径。补ValidationCancelled父链读取、鼠标抬起取消点击守卫和状态清理；5项输入判别、2项真实按钮验证所需共享回归及既有键盘队列通过。完整IME/队列边界、全部派生和物理输入仍归父项。 |
 | ✅ | P1 / Control-12g | 批次034：六类普通/system键消息经ProcessKeyMessage→父预览→ProcessKeyEventArgs，事件返回Handled且默认过程只在未消费时执行，KeyChar修改回写WParam；基础ProcessMnemonic默认false终止后代回父递归。7项新增回归通过；完整IME/队列字符抑制/物理输入与全部命令路由仍归12父项。 |
@@ -54,7 +55,7 @@
 | ✅ | P1 / Control-11b | 批次022：virtual Font/BackColor/ForeColor、三默认值/Reset、internal virtual ShouldSerialize、FontHeight缓存、标准On*/OnParent*及FontChanged、局部相等/身份、父级重挂、通知顺序/重入/原异常/释放后托管行为和必要布局缓存协作完成。Font沿父内部存储继承，颜色消费父虚getter；主题不向公共属性回写。仅基础托管父链与本批必要消费范围，全部ambient/DPI/UserPaint/Designer另列；212行探针完整原始差分见022。 |
 | ✅ | P1 / Control-11a | 批次017：标准virtual ResetText经虚Text setter，null归空、虚getter判等、重复赋值/身份、事件/覆盖/隐藏/不调base/重入/原异常及释放后托管读写完成；219项新增回归通过。3,774条固定10.0.11参考/JIT全同；实际AOT仅Text的DispId属性被工具链删除，其他3,773条原始记录全同，原差异和运行时策略单列，不能称AOT元数据全同。已有HWND/native、父级继承、完整布局/中文Designer及动态转换另列。 |
 | ✅ | P1 / Control-11c | 批次031：标准 `RightToLeft` 枚举、属性、Reset/ShouldSerialize、事件槽和父级继承通知；有效值接入 `WS_EX_LAYOUTRTL`/`WS_EX_RTLREADING`，显式 No 使用 `WS_EX_NOINHERITLAYOUT`，句柄创建/重建保持一致；补齐标准 `AutoScrollOffset` 供滚动容器消费。完整 Cursor、RTL镜像/DPI、ambient/Designer及全部派生控件仍归11父项。 |
-| 🟡 | P1 / Control-12 | 028～034导航/焦点/验证、键事件/预处理/父预览范围保留；035的12h接实际消息循环并补默认按钮验证消费。全部派生/ToolStripControlHost、原生点击提交抑制、原生输入键判别、完整Tab/助记键/队列字符抑制/IME及物理输入仍缺；完整焦点输入不关闭。 |
+| 🟡 | P1 / Control-12 | 028～035导航/焦点/验证、键事件/预处理/父预览和实际消息循环保留；036的12i补原生输入判别/队列字符抑制/验证取消清理；037的12j补有限IME字符消息。纠正父项仍把036范围全列缺失的滞后；全部派生/ToolStripControlHost、完整原生验证组合、Tab/助记键/命令、IME组合态/context/候选窗和物理输入仍缺。 |
 | ✅ | P1 / Control-12a | 批次028：CanSelect、GetContainerControl、GetNextControl、Select()/protected Select(bool,bool)、SelectNextControl的基础托管导航；按TabIndex/集合顺序遍历、容器边界、方向/TabStop/nested/wrap过滤及虚派发。普通Control/ContainerControl/Form指定场景有固定参考；ToolStripControlHost特殊反向遍历、标准派生容器继承、自动转移/验证另列于12父项。 |
 | ✅ | P1 / Control-12b | 批次028：Enter/Leave改用组件事件槽，OnEnter/OnLeave对齐protected internal；补GotFocus/LostFocus、On*/Invoke*及WM_SETFOCUS/WM_KILLFOCUS的默认过程顺序，Focus成功后更新活动链。订退/CanRaiseEvents/原异常、无HWND逻辑选择与实际HWND程序焦点有证据；完整验证、设备及派生焦点处理不在该有限范围。 |
 | ✅ | P1 / Control-12c | 批次029：SelectNextIfFocused从父容器使用标准SelectNextControl；Enabled提交状态后、Visible提交前触发导航，无候选不自造清空。TabStop变更同步WS_TABSTOP并经组件事件槽发TabStopChanged；指定当前/祖先、TabStop/Selectable及嵌套候选轨迹有固定参考/JIT/AOT证据。关闭阶段差异归07/Form-07。 |
@@ -85,6 +86,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次037：按固定10.0.11补12j，7项IME消息回归及4,536全量通过。纠正12父项遗漏036已完成子范围的滞后；完整IME/context/候选窗/派生与平台不关闭，详见[037](../batches/037.md)。
 
 - 2026-11-07 · 批次035：12h接入真实消息循环，默认按钮消费复用内部验证结果；AutoSizeMode修正数值身份时将基础字段显式初始化GrowOnly，保留原命名默认。旧整数0/1及已编译常量须复核，不以新增队列用例关闭完整键盘/Control，见[035](../batches/035.md)。
 

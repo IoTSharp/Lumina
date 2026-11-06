@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[037](docs/roadmap/batches/037.md)完成Control-12j有限IME字符消息、TextBox-003b输入键/对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。新增22/22、全量4,536/4,536、Release双目标0错误/2条既有NU1510。033～036范围保留；完整IME组合态/context/候选窗、TextBoxBase、AutoSize、ButtonBase、模态、AOT、Designer、设备和平台/98%仍待。下述036为历史快照。
+
 当前批次[036](docs/roadmap/batches/036.md)完成Control-12i原生输入键/字符判别与队列字符抑制、Form-12c默认按钮托管释放清理，并完成Button-002b原生点击验证前置源码审计与真实HWND回归；Button.cs无需算法改动。新增9/9、全量4,514/4,514测试通过，Release双目标构建0错误/2条既有NU1510。035范围保留。固定10.0.11 API库存缺引用包仍NOT_RUN；完整IME、全部派生输入、模态、ButtonBase、AutoSize、设备、Designer、AOT及平台仍未关闭，不宣称完整控件或98%。
 
 实施遵循根目录 [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)。Drawing 已确定为 **Windows 两个目标都用官方 System.Drawing.Common，Linux 使用自有 Lumina.Drawing.Common 包并保留 System.Drawing 源码消费方式**；优先验证同名程序集 System.Drawing.Common，通过 XPL-002 后冻结完整身份与发布方案。按目标 OS/RID 选择完整依赖图，保留原生控件、Designer 资源和 AOT；先做实际必需范围与 Linux 原型，不承诺先重写全套 Drawing。身份、资源与平台运行须有独立证据，不能把需求定案当作实现完成。
@@ -10,7 +12,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～036的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [036结果](docs/roadmap/batches/036.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～037的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [037结果](docs/roadmap/batches/037.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |
