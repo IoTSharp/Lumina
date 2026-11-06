@@ -7,8 +7,15 @@
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
 - 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次033：Control/ContainerControl/ScrollableControl代码、三个新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
 - 当前实施批次：[033](docs/roadmap/batches/033.md)。本批完成Control-12f/FND-019键盘预处理首范围、ContainerControl-06b Tab/助记键后代路由、ScrollableControl-07a已有偏移下的聚焦滚动修正；4,439项全线测试、Forms双目标Release构建和差分检查通过。`Export-Inventory.ps1 -ReferenceVersion 10.0.11` 因本机缺少固定 `Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0` 被阻断，未用 SDK 10.0.403 替代；完整命令/对话框协作、IME、真实物理输入、Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次031/032基础与继承链子范围保留。
-- 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033本轮待收口提交和远端核验。
+- 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173` 已推送，交接收口提交和三SHA回读待完成。
 - 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
+
+## 批次033 新增接续记录
+
+- 并行子任务已停止写入：`control_keyboard_preprocess`完成Control-12f/FND-019键盘预处理首范围；`container_keyboard_route`完成ContainerControl-06b Tab/助记键后代路由；`scrollable_tab_scroll`完成ScrollableControl-07a已有偏移下的后代可见坐标修正。主会话复核源码、测试、任务页、索引和 Git。
+- 验证：双目标 `dotnet build Lumina.slnx -c Release --no-restore --nologo -v:q -p:WarningLevel=0` PASS，0错误（2条既有NU1510）；新增定向测试9/9；`Lumina.Tests`全量4,439/4,439；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git diff --check` PASS。
+- API库存刷新 `Export-Inventory.ps1 -ReferenceVersion 10.0.11 -SkipBuild` 因本机仅有SDK `10.0.403`、缺少固定 `Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0` 阻断，未用其他SDK替代，API基线保持原值。Native AOT、真实物理键鼠/滚轮/触摸板、Designer、Linux/macOS、生产/现场仍NOT_RUN/UNKNOWN，不宣称98%。
+- 实现提交 `cbf5173` 已成功 push；下一步完成本交接记录提交后，回读 `HEAD`、`origin/main` 和 `git ls-remote origin refs/heads/main` 三者一致，再决定下一批接续归属。忽略的 `bin/`、`obj/` 只属于构建/测试产物，不纳入 Git。
 
 ## 批次031 新增接续记录
 
