@@ -32,6 +32,8 @@
 - 下一依赖先核组合串/候选窗、模态宿主及真实前置，再按共享编辑依赖推进TextBoxBase；CurrentCulture/UseWaitCursor、完整UserControl AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%留原任务。不重复033～041，不新增完整context架构或调度框架，不重评全项目。
 - 所有Cordonix构建/测试子树cleanup_complete=true，两个内部任务无临时对象/打开workspace文档/独占服务；artifacts/compatibility-batch041固定源码/JSON/四个TRX及共享bin/obj保留。Windows两个目标官方Drawing、Demo固定双目标/静态Designer和net10.0 AOT方向保持。
 - 持续逐批实施、互斥内部任务、主独占文档/interop/集成/Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备后开始、确认接管后旧主立即停止共享操作并归档以及后来暂停停止优先规则保持。监督luminaforms-30为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。
+- 041实现提交`9db88ccc01d51656ab77cda0653d0ac86aa3fa2b`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；18路径UTF8严格解码/无NUL/往返与暂存diff通过，回执保留artifacts/compatibility-batch041/implementation-push.json。
+- 下一local只读接续聊天`01a1b2db-40e3-7262-8536-b2dd17bbbfe4`（Lumina batch 042 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后041主才发送“开始接管”；042收到后重新核交接SHA/HANDOFF/干净工作树，并明确向041确认实际接管，确认前只读不建子任务。确认后041立即停止共享写入/构建/Git并归档，不等042完成。持续授权、成功push/三SHA、只读准备/独立交接/确认/归档与后来暂停停止优先规则保持；监督NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。
 
 ## 批次040 实施与收尾（历史）
 
