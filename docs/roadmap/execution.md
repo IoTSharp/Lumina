@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[034](batches/034.md)完成Control实际键事件管线、嵌套Tab边界、Form KeyPreview/顶层回绕及UserControl默认尺寸/边框四个明确子范围；29项新增、4,468项全量测试和Release双目标构建通过。保留033完成范围，下一依赖先核对消息循环实际预处理及Form默认/取消按钮与验证消费，UserControl则核对AutoSizeMode枚举数值身份和完整AutoSize。固定API10.0.11缺引用包继续NOT_RUN；父任务、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。
+
 批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 当前收尾见[029](batches/029.md)。用户于2026-10-17要求当前批次完成后停止：提交推送和远端核验后结束，不创建030/接续聊天、不恢复luminaforms巡检。未来如获新授权，优先解决关闭焦点与循环归属、派生验证消费，再接FND-019键盘；这只是剩余依赖记录，不自动启动。
 
 2026-10-26新授权恢复实施，批次030完成FND-019/Control-12e基础键消息与事件契约首范围；批次031完成FND-013/016/017及Control、ScrollableControl、ContainerControl、UserControl的明确基础与继承链子范围；批次032补Panel迁移、UserControl Load和Windows滚动消息首范围；批次033补FND-019/Control-12f键盘预处理、ContainerControl-06b Tab/助记键后代路由和ScrollableControl-07a已有偏移下的聚焦滚动修正。4,439项全线测试和Forms双目标Release构建通过。完整KeyPreview/命令与对话框协作、IME、真实物理输入、Cursor、完整缩放/设计器、Native AOT及跨平台仍待办，见[033](batches/033.md)。

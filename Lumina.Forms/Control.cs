@@ -3410,10 +3410,10 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     protected virtual bool ProcessDialogKey(Keys keyData)
         => _parent?.ProcessDialogKey(keyData) ?? false;
 
-    /// <summary>Processes a mnemonic through the parent chain.</summary>
+    /// <summary>Determines whether this control processes a mnemonic character.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected internal virtual bool ProcessMnemonic(char charCode)
-        => _parent?.ProcessMnemonic(charCode) ?? false;
+        => false;
 
     /// <summary>Allows a parent to preview a key message before dispatch.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -3424,16 +3424,23 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected internal virtual bool ProcessKeyMessage(ref Message msg)
     {
-        if (ProcessKeyPreview(ref msg)) { return true; }
+        if (_parent?.ProcessKeyPreview(ref msg) == true) { return true; }
         return ProcessKeyEventArgs(ref msg);
     }
 
-    /// <summary>Dispatches a key message through the control's normal window procedure.</summary>
+    /// <summary>Raises the keyboard event for a message and reports whether it was handled.</summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual bool ProcessKeyEventArgs(ref Message msg)
     {
-        WndProc(ref msg);
-        return msg.Result != 0;
+        return msg.Msg switch
+        {
+            Win32.WM_KEYDOWN => WmKeyDown(ref msg, systemKey: false),
+            Win32.WM_SYSKEYDOWN => WmKeyDown(ref msg, systemKey: true),
+            WmCharMessage or Win32.WM_SYSCHAR => WmChar(ref msg),
+            Win32.WM_KEYUP => WmKeyUp(ref msg, systemKey: false),
+            WmSysKeyUp => WmKeyUp(ref msg, systemKey: true),
+            _ => false
+        };
     }
 
     /// <summary>
@@ -4667,37 +4674,34 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
         return keyData;
     }
 
-    private void WmKeyDown(ref Message message, bool systemKey)
+    private bool WmKeyDown(ref Message message, bool systemKey)
     {
         KeyEventArgs args = new(KeyDataFromMessage(message.WParam, message.LParam, systemKey));
         OnKeyDown(args);
         _suppressKeyPress = args.SuppressKeyPress;
-        if (args.Handled) { message.Result = 0; }
-        else { DefWndProc(ref message); }
+        return args.Handled;
     }
 
-    private void WmChar(ref Message message)
+    private bool WmChar(ref Message message)
     {
         if (_suppressKeyPress)
         {
             _suppressKeyPress = false;
-            message.Result = 0;
-            return;
+            return true;
         }
 
         KeyPressEventArgs args = new(unchecked((char)(ushort)(nuint)message.WParam));
         OnKeyPress(args);
-        if (args.Handled) { message.Result = 0; }
-        else { DefWndProc(ref message); }
+        message.WParam = (nint)args.KeyChar;
+        return args.Handled;
     }
 
-    private void WmKeyUp(ref Message message, bool systemKey)
+    private bool WmKeyUp(ref Message message, bool systemKey)
     {
         KeyEventArgs args = new(KeyDataFromMessage(message.WParam, message.LParam, systemKey));
         OnKeyUp(args);
         _suppressKeyPress = false;
-        if (args.Handled) { message.Result = 0; }
-        else { DefWndProc(ref message); }
+        return args.Handled;
     }
 
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -4750,19 +4754,13 @@ public class Control : Component, IWin32Window, ISynchronizeInvoke
                 InvokeLostFocus(this, EventArgs.Empty);
                 return;
             case Win32.WM_KEYDOWN:
-                WmKeyDown(ref m, systemKey: false);
-                return;
             case Win32.WM_SYSKEYDOWN:
-                WmKeyDown(ref m, systemKey: true);
-                return;
             case WmCharMessage:
-                WmChar(ref m);
-                return;
+            case Win32.WM_SYSCHAR:
             case Win32.WM_KEYUP:
-                WmKeyUp(ref m, systemKey: false);
-                return;
             case WmSysKeyUp:
-                WmKeyUp(ref m, systemKey: true);
+                if (ProcessKeyMessage(ref m)) { m.Result = 0; }
+                else { DefWndProc(ref m); }
                 return;
             case Win32.WM_CAPTURECHANGED:
                 OnMouseCaptureChanged(EventArgs.Empty);

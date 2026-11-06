@@ -1,6 +1,8 @@
 # LuminaForms 路线图
 
-更新：2026-10-17。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
+更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
+
+当前批次[034](docs/roadmap/batches/034.md)完成Control-12g实际键事件/父预览管线、ContainerControl-06c嵌套Tab边界、Form-12a KeyPreview/顶层回绕、UserControl-02b默认尺寸/边框首范围；新增29项及全量4,468项测试通过，Release双目标构建0错误。033已完成范围保留。固定10.0.11 API库存缺引用包仍NOT_RUN；AutoSizeMode枚举数值身份、完整消息循环预处理/默认取消按钮/验证、IME、设备、Designer、AOT及平台仍未关闭，不宣称完整控件或98%。
 
 实施遵循根目录 [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)。Drawing 已确定为 **Windows 两个目标都用官方 System.Drawing.Common，Linux 使用自有 Lumina.Drawing.Common 包并保留 System.Drawing 源码消费方式**；优先验证同名程序集 System.Drawing.Common，通过 XPL-002 后冻结完整身份与发布方案。按目标 OS/RID 选择完整依赖图，保留原生控件、Designer 资源和 AOT；先做实际必需范围与 Linux 原型，不承诺先重写全套 Drawing。身份、资源与平台运行须有独立证据，不能把需求定案当作实现完成。
 

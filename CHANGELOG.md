@@ -10,12 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Batch 034: key-event dispatch now honors parent preview and Handled, nested containers yield Tab at their boundaries, forms support KeyPreview and top-level Tab wrapping, and UserControl gains bounded default-size and border-style behavior.
 - Initial bounded FND-019 keyboard pipeline: `KeyDown`, `KeyPress`, and `KeyUp` event contracts plus Win32 key-message dispatch in `Control`.
 - Bounded foundation/inheritance slices: `RightToLeft` inheritance and Win32 RTL styles, `ScrollableControl` auto-scroll state and protected contracts, `ContainerControl.ParentForm`/`AutoScaleFactor`, and the standard `UserControl : ContainerControl` chain.
 - Panel now consumes the shared `ScrollableControl` chain; `UserControl.Load` has a one-time creation lifecycle; Windows scroll messages update the shared scroll state and native SCROLLINFO within the bounded batch scope.
 - Bounded keyboard and scrolling slices: `Control` now exposes the standard PreviewKeyDown and preprocessing chain, `ContainerControl` routes Tab/Shift+Tab and descendant mnemonics, and `ScrollableControl.ScrollControlIntoView` accounts for existing offsets in nested content.
 
 ### Verification
+- Batch 034: Release solution build passes with 0 errors and 2 existing NU1510 warnings; 29 new tests and the full 4,468-test suite pass. Fixed 10.0.11 API inventory remains blocked by the missing reference pack; AutoSizeMode numeric identity, full input/dialog behavior, AOT, designer and platform acceptance remain open.
 - Release solution build and the full `Lumina.Tests` suite pass for the 033 scope (4,439 tests); complete command/dialog routing, IME, physical keyboard/wheel/touch input, Cursor, Native AOT, designer, and cross-platform gates remain open.
 
 ### Planned

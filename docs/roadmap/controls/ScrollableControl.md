@@ -13,7 +13,7 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入；Panel仍用历史基类，完整Control受保护契约也仍待后续，不关闭父项。 |
+| 🟡 | P0 / ScrollableControl-01 | 018完成01a标准层次与ContainerControl/Form接入，032已完成Panel迁移并由UserControl消费共享链；完整Control受保护契约与全部派生消费仍待，不关闭父项。 |
 | ✅ | P0 / ScrollableControl-01a | 018建立标准ScrollableControl : Control，共享父子集合/客户区/释放，ContainerControl/Form复用；020统一事务，021补Visible时请求自身布局并清首选缓存，再调用base通知。仅继承/事务衔接完成，Panel迁移与任何完整滚动行为不在此范围。 |
 | ✅ | P0 / ScrollableControl-01b | 批次029：按固定ScrollableControl源码在构造设置ContainerControl style，使批量验证遍历其子孙；无HWND后代先行回归通过。仅该必要style及消费，其他默认style、滚动/全部派生仍归父项。 |
 | 🟡 | P0 / ScrollableControl-02 | 018已有无滚动客户区DisplayRectangle；031完成02a的AutoScroll/AutoScrollMargin/MinSize/Position、HorizontalScroll/VerticalScroll和ScrollProperties托管范围模型，真实滚动条与完整状态仍待父项。 |
@@ -47,6 +47,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-11-07 · 批次034收尾：纠正01父项仍称Panel使用历史基类的滞后描述，保留032已完成迁移与033聚焦滚动范围；本批未修改ScrollableControl源码或关闭完整滚动任务。
 
 - 2026-10-26 · 批次032：完成08a Windows滚动消息与SCROLLINFO代码首范围，Panel迁移并消费共享滚动层；真实物理输入、平台后端和完整验收仍待，见[032](../batches/032.md)。
 

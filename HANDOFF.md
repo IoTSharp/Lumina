@@ -5,10 +5,18 @@
 ## 当前接续点（2026-10-26 新授权）
 
 - 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
-- 工作区是 `D:\GitHub\Lumina`，分支 `main`。本轮未提交改动属于批次033：Control/ContainerControl/ScrollableControl代码、三个新增回归测试及本批路线图、验证、交接和变更记录；忽略的 `bin/`、`obj/` 仅为有界构建/测试产物。
-- 当前实施批次：[033](docs/roadmap/batches/033.md)。本批完成Control-12f/FND-019键盘预处理首范围、ContainerControl-06b Tab/助记键后代路由、ScrollableControl-07a已有偏移下的聚焦滚动修正；4,439项全线测试、Forms双目标Release构建和差分检查通过。`Export-Inventory.ps1 -ReferenceVersion 10.0.11` 因本机缺少固定 `Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0` 被阻断，未用 SDK 10.0.403 替代；完整命令/对话框协作、IME、真实物理输入、Designer、Native AOT、设备和跨平台仍为UNKNOWN/NOT_RUN；批次031/032基础与继承链子范围保留。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。034主聊天`01a1b239-e70b-7bb1-ada5-5323cb50aeab`收到“开始接管”后实时核验交接`45115b86a66c38e4297e79a5a13ffe3b753888c1`三SHA一致且干净，实际接管；033原主已归档。当前未提交变更属于034，忽略的bin/obj保留，不纳入Git。
+- 当前实施批次：[034](docs/roadmap/batches/034.md)。完成Control-12g实际键事件/父预览管线、ContainerControl-06c嵌套Tab边界、UserControl-02b默认尺寸/AutoSizeMode合法名字/BorderStyle、Form-12a KeyPreview/顶层Tab回绕首范围。新增29/29、全量4,468/4,468和双目标Release构建通过。API库存固定10.0.11缺引用包的NOT_RUN边界保留，未换基线。033完成范围保留；完整消息循环预处理/默认取消按钮、IME、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
-- 仓库已克隆并在 Codex 面板打开 `README.zh-CN.md`、`ROADMAP.md`、`HANDOFF.md`；当前 Codex App 工具可列出已有项目但没有创建新本地项目登记接口，侧栏的 `Lumina` 项目注册仍需用户在桌面界面添加 `D:\GitHub\Lumina` 路径，不能把 projectless 会话误记为已注册项目。
+- 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
+
+## 批次034 新增接续记录
+
+- 三个互斥智能体已停止写入：control_keyboard独占Control.cs/新键管线测试；container_navigation独占ContainerControl.cs/新Tab边界测试；usercontrol_defaults独占UserControl.cs/新默认契约测试。主独占Form.cs/新预览测试、共享文档、集成和Git。
+- Release方案构建PASS（0错误/2条既有NU1510，WarningLevel=0不代表分析警告清零）；新增29/29、全量4,468/4,468 PASS。首轮定向27/29失败原因及修复保留在034。真实HWND程序Tab和边框样式检查不等于物理设备验收。
+- AutoSizeMode历史数值身份与官方相反未修，留在UserControl-02父任务；固定10.0.11 API引用包缺失，未重跑库存导出、不替换基线。AOT/Designer/物理设备/Linux/macOS/现场仍NOT_RUN/UNKNOWN。
+- 下一依赖：Control消息循环实际预处理→容器验证/导航→Form默认取消按钮与UserControl完整AutoSize；先核对枚举数值身份影响，不重复033/034。仅明确子范围代码完成，父任务和98%不关闭。
+- 本批实现及交接须成功commit/push并核对HEAD/tracking/实际远端；新聊天先只读准备，更新归属交接提交推送后再发送“开始接管”，确认实际接管后旧主停止写入并归档。保持多个互斥智能体、主独占共享文档/集成/Git、有界执行和资源归属规则。
 
 ## 批次033 新增接续记录
 

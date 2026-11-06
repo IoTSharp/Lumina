@@ -371,9 +371,11 @@ public class ContainerControl : ScrollableControl, IContainerControl
     /// </summary>
     protected override bool ProcessDialogKey(Keys keyData)
     {
-        if ((keyData & Keys.KeyCode) == Keys.Tab)
+        if ((keyData & (Keys.Alt | Keys.Control)) == Keys.None
+            && (keyData & Keys.KeyCode) == Keys.Tab
+            && ProcessTabKey((keyData & Keys.Shift) == Keys.None))
         {
-            return ProcessTabKey((keyData & Keys.Shift) == Keys.None);
+            return true;
         }
 
         return base.ProcessDialogKey(keyData);
@@ -383,7 +385,7 @@ public class ContainerControl : ScrollableControl, IContainerControl
     /// Selects the next selectable control in the requested direction.
     /// </summary>
     protected virtual bool ProcessTabKey(bool forward)
-        => SelectNextControl(ActiveControl, forward, tabStopOnly: true, nested: true, wrap: true);
+        => SelectNextControl(ActiveControl, forward, tabStopOnly: true, nested: true, wrap: false);
 
     /// <summary>
     /// Processes dialog characters by offering descendant controls their

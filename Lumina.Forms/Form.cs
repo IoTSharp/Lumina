@@ -60,6 +60,25 @@ public class Form : ContainerControl
         base.SetVisibleCore(false);
     }
 
+    /// <summary>Gets or sets whether the form receives key events before the focused control.</summary>
+    [System.ComponentModel.DefaultValue(false)]
+    public bool KeyPreview { get; set; }
+
+    /// <inheritdoc />
+    protected override bool ProcessKeyPreview(ref Message m)
+    {
+        if (KeyPreview && ProcessKeyEventArgs(ref m))
+        {
+            return true;
+        }
+
+        return base.ProcessKeyPreview(ref m);
+    }
+
+    /// <inheritdoc />
+    protected override bool ProcessTabKey(bool forward)
+        => SelectNextControl(ActiveControl, forward, tabStopOnly: true, nested: true, wrap: true);
+
     /// <summary>
     /// Occurs after the native form handle and attached child controls are created.
     /// </summary>
