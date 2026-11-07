@@ -42,6 +42,9 @@
 
 ## 批次051 实施与收尾（当前）
 
+- 051实现提交`845a386a2d65c4e7c1d31658fee146abbf8c7a36`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；26拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch051/implementation-push.json。
+- 下一local只读接续聊天`01a1b461-26a9-7d22-a676-820c668625c9`（Lumina batch 052 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后051才发送“开始接管”；052收到后先完成必要只读准备，再核独立交接SHA/HANDOFF/干净树，并明确向051确认实际接管，确认前只读、不建内部任务。确认后051立即停止共享写入/构建/Git并归档，不等052完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、052绑定NOT_DONE，不恢复或另建替代项。
+
 - 已独立核交接`7d7b9bb6f64346f1478439a7af848ee469fee627`三SHA一致、main干净/+0/-0，明确向050确认接管并实时核其归档。三个互斥内部任务全部completed冻结：005f独占新ClientUtils/词边界测试，009a仅新命令测试，Control-14c仅新内部更新测试；主独占TextBoxBase/Control/Win32、文档/集成/Git，无同源生产并发写入。
 - 仅完成005f固定词边界辅助、009a启用Ctrl+Back/Ctrl+Shift+Back词删除及Control-14c必要内部redraw。固定word为字母/数字/NonSpacingMark，连接标点为nonword、UTF-16 surrogate停止反向扫描；不加参数归一化。命令先父路由及原050守卫，有选区内部替换empty/false；无选区非起点按边界选择、Begin/EndUpdate后内部可撤销替换。父返回true仍执行并保消息修改，不整串Text重写/手工通知。内部redraw用short计数、无窗Begin不积累、首0/末1、可选Invalidate自身，无配对End false；没有新公开更新模型。
 - 首轮Release方案/固定Demo双目标0错/2既有NU1510。新增首跑85/88三处夹具错误保留：无窗选择经虚TextLength读取Text，两处起点和一处有限重入轨迹原预期遗漏；按固定源码修夹具而不改生产。直接boundary的Text异常改已有EDIT隔离调用点。测试项目重建0错，最终新增88/88（52+26+10）及全量5,119/5,119，0失败/跳过。JSON/TRX/first-failure-analysis保留051目录，WarningLevel=0不表示分析告警清零。
