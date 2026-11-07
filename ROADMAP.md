@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[057](docs/roadmap/batches/057.md)完成TextBoxBase-002d有窗原生TextLength/无窗虚Text分支和003h必要默认事件/绑定、选区元数据与Paint转发。41新增/5,568全量首轮通过，Release固定双目标0错/2既有NU1510；旧测试未改。真实派生层级/模型/后端优先继续，完整基类/绑定/Designer/AOT/可见绘制/物理输入/平台/98%仍待。下述056及以前为历史。
+
 当前批次[056](docs/roadmap/batches/056.md)完成TextBoxBase-003f构造四样式/专用左键点击链和003g八项必要绘图/间距成员声明转发。46新增/5,527全量首轮通过，Release固定双目标0错/2既有NU1510。独立WindowFromPoint均no-hit，只验证负向路由，正向可见点击/物理输入仍待；完整003、其余元数据/缩放、真实Rich/Masked后端与Designer/AOT/平台/98%不关闭。下述055及以前为历史。
 
 历史批次[055](docs/roadmap/batches/055.md)完成TextBox-004b滚动条首选测量及必要线程感知SM2/3度量、TextBoxBase-003e创建请求/前置主题标志。68新增/5,481全量通过，Release固定双目标0错/2既有NU1510。首67/68的一例ReadOnly/IME/PasswordChar建窗夹具错误已纠正并保留回执，生产未为失败改变。完整缩放/点击/样式、真实Rich/Masked后端与Designer/AOT/平台/98%仍待。下述054及以前为历史。
@@ -50,7 +52,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～056的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [056结果](docs/roadmap/batches/056.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～057的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [057结果](docs/roadmap/batches/057.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

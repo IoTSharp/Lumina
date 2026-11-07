@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 057主聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向056明确确认实际接管并实时核其归档。057为唯一编码主；两个互斥内部任务分别只写新TextLength原生读取和必要文本/选区元数据/Paint转发测试，主独占TextBoxBase生产、共享文档/集成/Git。限定002d有窗原生TextLength和003h必要元数据，不扩展真实派生后端或设备门槛；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。下述056及以前归属为历史。
+
 - 056主聊天`01a1b4dc-aa38-74e1-bbcd-9bdf038298f1`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向055明确确认实际接管，实时归档列表确认055已归档。056为唯一编码主；两个互斥内部任务分别只写点击消息链及隐藏成员契约的新测试，主独占生产/共享接口interop、文档/集成/Git。限定构造点击样式/消息链与必要隐藏绘图/间距元数据；完整缩放、真实Rich/Masked后端与平台验收不关闭。监督NOT_FOUND、056绑定NOT_DONE，不恢复或新建替代项；下述055及以前归属为历史。
 
 - 055主聊天`01a1b4c6-1525-7820-a4e8-b2e43893e2a9`于2026-11-07收到“开始接管”，完成必要只读准备，独立重核归属交接`835a3e8e522228a07f7cc0447d6564c39336b450`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向054明确确认实际接管并实时核其归档。055为唯一编码主；两个互斥内部任务分别只写新滚动条首选测量、新EDIT创建参数测试，主独占共享生产/interop、文档/集成/Git。限定TextBox-004b滚动条首选测量与TextBoxBase-003e创建请求/必要主题标志，不扩展完整缩放/点击路径。监督NOT_FOUND、055绑定NOT_DONE，不恢复或新建替代项；下述054及以前归属为历史。
@@ -50,7 +52,17 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次056 实施与收尾（当前）
+## 批次057 实施与收尾（当前）
+
+- 本批完成TextBoxBase-002d的TextLength有句柄直接读取原生长度/无句柄保留虚Text，以及003h默认事件/绑定、选区隐藏元数据、Multiline/ReadOnly分类与Paint隐藏事件转发。两个内部任务各只写自己的新测试，completed后冻结；主独占TextBoxBase共享生产、文档/集成/Git，不改Control/interop、派生生产、旧测试、项目或Demo/Designer/resx。
+- Release方案/固定Demo双目标首轮0错误/2既有NU1510，41新增（21长度/20元数据）与5,568全量首轮0失败/跳过，原JSON/TRX保留artifacts/compatibility-batch057。WarningLevel=0不是分析告警清零；包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读。普通EDIT长度/TypeDescriptor/Paint直接钩子测试不计RichEdit、掩码模型、真实绑定/Designer/可见绘制/设备/AOT/平台验收。
+- 只新增002d/003h；完整002/003/控件父项、DefaultCursor/ToString/Designer/editor等其余基类项保持部分。固定API刷新NOT_RUN，原ID/1,095类型/61,240成员行/分母不改；官方Drawing/固定双目标Demo/静态资源保持。下一优先核Rich/Masked直接继承所需专有默认、原生类/模型依赖，推进真实后端，不以元数据全集阻塞实际派生，不重做033～057、不重评全项目、不建context/调度框架。
+- 053完整TextBoxBase及054完整Control.proxy参考字节/hash独立重核；父Cordonix PID62700/精确FILETIME134385105242559543仅属057勿复用。外部调用cleanup_complete=true，两个内部任务无持久文档/临时/独占服务，STA仍ExitThread→private visual-context；保留证据/bin/obj/缓存/MCP，不按名杀进程。
+- 根路线图、执行总览、受影响5控件/公共页与历史、验证/索引同步；ExportTasks与独立Python复核均445MD/2,181任务（2,131控件+50共享）/187实施行/整类型完成0。003e当前旧构造点击待办改交叉引用003f，原055历史和正向门槛保持；只新增002d/003h、原ID和固定分母不改。
+- 056实现`0d66dbac48d0b3d10b7c55a03f816303f760dcde`与独立归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`独立保留；057已向056确认接管并实时核其归档。056原生命中均false的正向点击/物理输入门槛保留，不重做其算法或测试架构。
+- 持续授权、互斥任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接核后开始/明确确认/旧主立即停写并归档全部保持。后来暂停停止优先；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次056 实施与收尾（历史）
 
 - 056实现提交`0d66dbac48d0b3d10b7c55a03f816303f760dcde`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`。实现与本独立归属交接分别保留，不以本地commit冒充交付。17个交付文件严格UTF8/无NUL/字节roundtrip、staged ownership及diff均通过。
 - 下一local只读接续聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`（Lumina batch 057 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后056才发送“开始接管”；057先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向056确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后056立即停止共享写入/构建/Git并归档，不等057完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先保持；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。

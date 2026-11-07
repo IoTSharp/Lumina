@@ -12,6 +12,8 @@ namespace Lumina.Forms;
 /// <summary>
 /// Provides the shared native editing behavior for text controls.
 /// </summary>
+[DefaultEvent(nameof(TextChanged))]
+[DefaultBindingProperty(nameof(Text))]
 public abstract class TextBoxBase : Control
 {
     private static readonly object s_acceptsTabChangedEvent = new();
@@ -141,6 +143,14 @@ public abstract class TextBoxBase : Control
 
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+    public new event PaintEventHandler? Paint
+    {
+        add => base.Paint += value;
+        remove => base.Paint -= value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public new Padding Padding
     {
@@ -182,6 +192,7 @@ public abstract class TextBoxBase : Control
     /// <summary>
     /// Gets or sets a value indicating whether the text box is multi-line.
     /// </summary>
+    [Category("Behavior")]
     [DefaultValue(false)]
     [Localizable(true)]
     [RefreshProperties(RefreshProperties.All)]
@@ -201,6 +212,7 @@ public abstract class TextBoxBase : Control
     }
 
     /// <summary>Occurs when the <see cref="Multiline"/> property changes.</summary>
+    [Category("Property Changed")]
     public event EventHandler? MultilineChanged
     {
         add => Events.AddHandler(s_multilineChangedEvent, value);
@@ -423,6 +435,7 @@ public abstract class TextBoxBase : Control
     /// <summary>
     /// Gets or sets a value indicating whether the text box is read-only.
     /// </summary>
+    [Category("Behavior")]
     [DefaultValue(false)]
     [RefreshProperties(RefreshProperties.Repaint)]
     public bool ReadOnly
@@ -443,6 +456,7 @@ public abstract class TextBoxBase : Control
     }
 
     /// <summary>Occurs when the <see cref="ReadOnly"/> property changes.</summary>
+    [Category("Property Changed")]
     public event EventHandler? ReadOnlyChanged
     {
         add => Events.AddHandler(s_readOnlyChangedEvent, value);
@@ -480,6 +494,9 @@ public abstract class TextBoxBase : Control
     /// <summary>
     /// Gets the starting position of text selected in the text box.
     /// </summary>
+    [Category("Appearance")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int SelectionStart
     {
         get
@@ -497,6 +514,9 @@ public abstract class TextBoxBase : Control
     /// <summary>
     /// Gets the number of characters selected in the text box.
     /// </summary>
+    [Category("Appearance")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public virtual int SelectionLength
     {
         get
@@ -546,7 +566,8 @@ public abstract class TextBoxBase : Control
         }
     }
 
-    public virtual int TextLength => Text.Length;
+    [Browsable(false)]
+    public virtual int TextLength => IsHandleCreated ? Win32.GetWindowTextLengthW(NativeHandle) : Text.Length;
 
     /// <summary>Gets whether the previous editing operation can be undone.</summary>
     [Category("Behavior")]

@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次057 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标首轮0错误/2既有NU1510（release-build.json）；WarningLevel=0不表示分析告警清零。新增41/41（TextLength 21、编辑元数据20）与全量5,568/5,568首轮通过，0失败/跳过，旧测试未改。tests-new.json/tests-full.json和对应TRX保留实际argv、时间、PID、父身份与cleanup_complete，位于artifacts/compatibility-batch057。
+
+有窗TextLength绕过虚Text，真实EDIT的Unicode/CRLF/NUL、每次原生编辑/选择/Modified/Undo/通知保持、重建/销毁和有限重入均有轻量回归；无窗仍虚Text且保留原异常/null，不建窗。TypeDescriptor默认事件真实订退、选区描述符读写与Paint共槽/跨引用退订、原参数/异常/一次重入、借用Graphics寿命通过；Control现有CanRaiseEvents=false仍直接调用Paint的行为保留。本批不建立真实Designer序列化、完整绑定引擎、可见绘制或Rich/Masked模型/后端兼容结论。
+
+056原生命中均false仍只证负向路由，正向可见点击/物理设备仍待；完整缩放/线程/模态/原反射父寿命、Designer/Native AOT运行/Linux/macOS/98%未关闭。固定完整TextBoxBase/Control参考SHA独立重核；固定API刷新、CI NuGet smoke pack/Notepad smoke publish本地NOT_RUN，hosted CI未独立回读。原1,095类型/61,240成员行/分母、固定双目标Demo/官方Drawing和全部未完父项保持，见[057](batches/057.md)。
+
 ## 批次056 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；WarningLevel=0不表示分析告警清零。新增46/46（点击23、必要成员元数据23）和全量5,527/5,527首轮通过，0失败/跳过，未改已有测试。tests-new.json/tests-full.json及TRX保留实际argv、时间、PID、父身份和cleanup_complete，位于artifacts/compatibility-batch056。
