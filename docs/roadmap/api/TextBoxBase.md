@@ -22,6 +22,9 @@
 
 ## 公开成员
 
+047当前源码补充：002b新增标准SelectedText/内部替换及clearUndo分支，002c修正Lines空文本/CR/LF/CRLF，003c补必要MaxLength及真实EDIT输入限制。完整AppendText/公开撤销/剪贴板、测量和派生后端仍待；原成员行、ID及固定分母保持，引用库存刷新NOT_RUN。
+
+
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
 | API-92933B0E10AF2CC0 | Event | `public event System.EventHandler AcceptsTabChanged` | `System.Windows.Forms.TextBoxBase`  | ⬜ 缺少精确签名 | ⬜ / ⬜ / ⬜ |

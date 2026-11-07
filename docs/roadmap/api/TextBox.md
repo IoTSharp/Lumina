@@ -18,6 +18,9 @@
 
 ## 公开成员
 
+047当前源码补充：源码no-op，继承标准SelectedText/Lines/MaxLength，009任务按实际继承范围改部分；公开撤销/剪贴板、完整输入/测量仍待，不重复新增完成任务。固定逐成员库存行、原ID/分母保持。
+
+
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
 | API-429208E54EE81CCF | Constructor | `public TextBox()` | `System.Windows.Forms.TextBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |

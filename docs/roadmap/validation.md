@@ -1,6 +1,18 @@
 # 本轮验证与限制
 
-## 批次046 · 2026-11-07 当前验证
+## 批次047 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增65/65（SelectedText23、Lines26、MaxLength16）和全量4,893/4,893，0失败/跳过。最终命令回执为artifacts/compatibility-batch047/release-build-verified.json、tests-new-verified.json及tests-full-verified.json，对应两个TRX保留tests目录。WarningLevel=0不表示分析告警清零。
+
+[047](batches/047.md)只关闭TextBoxBase-002b/002c/003c。SelectedText经过私有选择查询/虚Text读取及原生替换，保留有向待选区负长度异常；null删除、clearUndo及_maxLength恢复按固定源码。Lines空文本[]，CR/LF/CRLF分行且保留尾空行；必要MaxLength默认32767/校验/真实输入限制与创建恢复生效，程序Text/SelectedText仍能超过该限制。无公开CanUndo/Undo/ClearUndo或剪贴板扩面。
+
+首次新增62/65的JSON/TRX保留。两例AllowNull在PropertyInfo上找不到，按仓库既有ControlTextResetTests改查setter value参数，并核ReadState.NotNull/WriteState.Nullable。第三例原文本abcd长4/MaxLength=3，恢复限制后Undo原生只允许恢复abd；同STA、同完整请求配置、真实父HWND映射的独立EDIT与Lumina分别硬断言abd后再比较，两端限制/modified/undo状态和消息断言保持。生产实现未为夹具改变。
+
+固定TextBoxBase v10.0.11源码69,799字节SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63已独立核并复制047/reference。Context7无匹配资料，不替代固定源码；固定引用库存刷新NOT_RUN。StringArrayEditor/完整Designer、AOT发布/运行、物理设备、Linux/macOS和98%仍NOT_RUN/UNKNOWN；完整AppendText/公开撤销/剪贴板、尺寸、真实派生后端、运行时RTL/镜像、模态/OLE/多UI和关闭LostFocus/WM_QUIT继续原任务。
+
+既有工具导出435份Markdown、2,157任务、187实施索引行、0结构错误，整类型代码完成0。22拥有路径UTF8严格解码/无NUL/字节往返及diff检查PASS；有界外部子树cleanup_complete=true。末次dotnet名称快照2项属其他SonnetDB任务，未终止，不把该观察写作全机零进程；证据/bin/obj保留。
+
+## 批次046 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增46例（BorderStyle24、选择方法20、源类context2）与旧对齐28组合74/74，最后完整4,828/4,828，0失败/跳过。最终命令与TRX分别见artifacts/compatibility-batch046/release-build-context-cleanup.json及tests-full-verified.json、tests/batch046-full-verified.trx；WarningLevel=0不表示分析告警清零。
 

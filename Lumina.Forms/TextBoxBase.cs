@@ -27,6 +27,7 @@ public abstract class TextBoxBase : Control
     private bool _hideSelection = true;
     private bool _wordWrap = true;
     private BorderStyle _borderStyle = BorderStyle.Fixed3D;
+    private int _maxLength = 32767;
     private int _selectionStart;
     private int _selectionLength;
     private bool _restoreSelectionOnHandleCreated;
@@ -350,10 +351,77 @@ public abstract class TextBoxBase : Control
 
     public virtual int TextLength => Text.Length;
 
+    /// <summary>Gets or replaces the selected text in the control.</summary>
+    [Category("Appearance")]
+    [Browsable(false)]
+    [AllowNull]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public virtual string SelectedText
+    {
+        get
+        {
+            GetSelectionStartAndLength(out int start, out int length);
+            return Text.Substring(start, length);
+        }
+        set => SetSelectedTextInternal(value, true);
+    }
+
+    internal virtual void SetSelectedTextInternal(string? text, bool clearUndo)
+    {
+        if (!IsHandleCreated) { CreateHandle(); }
+        text ??= string.Empty;
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_LIMITTEXT, 0, 0);
+        if (clearUndo)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_REPLACESEL, 0, text);
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, 0, 0);
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_EMPTYUNDOBUFFER, 0, 0);
+        }
+        else
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_REPLACESEL, (nint)(-1), text);
+        }
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_LIMITTEXT, (nint)_maxLength, 0);
+    }
+
+    /// <summary>Gets or sets the lines of text in the text box.</summary>
+    [Category("Appearance")]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [MergableProperty(false)]
+    [Localizable(true)]
+    [AllowNull]
     public string[] Lines
     {
-        get => Text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
+        get
+        {
+            string text = Text;
+            return text.Length == 0 ? [] : text.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
+        }
         set => Text = value is null ? string.Empty : string.Join(Environment.NewLine, value);
+    }
+
+    /// <summary>Gets or sets the maximum number of characters the user can enter.</summary>
+    [Category("Behavior")]
+    [DefaultValue(32767)]
+    [Localizable(true)]
+    public virtual int MaxLength
+    {
+        get => _maxLength;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            if (_maxLength == value) { return; }
+            _maxLength = value;
+            UpdateMaxLength();
+        }
+    }
+
+    internal virtual void UpdateMaxLength()
+    {
+        if (NativeHandle != 0)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_LIMITTEXT, (nint)_maxLength, 0);
+        }
     }
 
     public new void Clear()
@@ -593,6 +661,7 @@ public abstract class TextBoxBase : Control
     {
         base.OnHandleCreated(e);
         if (NativeHandle == 0) { return; }
+        UpdateMaxLength();
         if (_nativeModified)
         {
             _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, (nint)1, 0);

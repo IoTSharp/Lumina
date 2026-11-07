@@ -14,6 +14,9 @@
 
 ## 公开成员
 
+047当前源码补充：错误TextBox层级间接消费普通EDIT的SelectedText/Lines/MaxLength，不等于掩码选区处理、专有限制/隐藏元数据或标准直接层级；源码no-op，原成员行/ID/分母与全部未完父任务保持。
+
+
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
 | API-E20B97937B230ABC | Constructor | `public MaskedTextBox()` | `System.Windows.Forms.MaskedTextBox`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |

@@ -168,6 +168,8 @@ internal static partial class Win32
     public const int EM_GETPASSWORDCHAR = 0x00D2;
     public const int EM_SETPASSWORDCHAR = 0x00CC;
     public const int EM_REPLACESEL = 0x00C2;
+    public const int EM_LIMITTEXT = 0x00C5;
+    public const int EM_EMPTYUNDOBUFFER = 0x00CD;
     public const int LB_ADDSTRING = 0x0180;
     public const int LB_RESETCONTENT = 0x0184;
     public const int LB_GETCURSEL = 0x0188;

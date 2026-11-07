@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[047](docs/roadmap/batches/047.md)完成TextBoxBase-002b标准SelectedText原生替换、002c的Lines空值/CR/LF/CRLF及必要003c的MaxLength。65新增和4,893全量通过，Release固定双目标0错误/2既有NU1510；首轮62/65的两处AllowNull反射位置和受限Undo夹具错误及独立EDIT对照均保留。完整AppendText/公开撤销/剪贴板、测量、真实派生后端及模态/设备/Designer/AOT/平台/98%仍待；下述046及以前为历史。
+
 当前批次[046](docs/roadmap/batches/046.md)完成TextBoxBase-002a的SelectAll/DeselectAll、007a标准BorderStyle/通知/创建样式，以及Control-17c按当前源类身份缓存superclass。新增46例与旧对齐组合74/74，最终全量4,828/4,828，Release固定双目标0错误/2既有NU1510。首次夹具、源类缓存/activation环境失败和主夹具清理中止均保留。完整SelectedText/Lines/撤销/剪贴板、尺寸、真实派生后端及模态/设备/Designer/AOT/平台/98%仍待；下述045及以前为历史。
 
 当前批次[045](docs/roadmap/batches/045.md)完成TextBoxBase-005a标准Modified状态/通知、EN_UPDATE同步及程序设文的最小WindowText衔接，以及TextBox-007b标准CharacterCasing设置/重建/原生大小写样式。最终45新增、892相关、4,782全量通过，Release固定双目标0错误/2既有NU1510；首次43/45的两例父窗口夹具失败保留。BorderStyle/尺寸、选区编辑/撤销、运行时RTL/镜像、真实Rich/Masked后端及模态/设备/Designer/AOT/平台/98%仍待；下述044及以前为历史。
@@ -30,7 +32,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～046的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [046结果](docs/roadmap/batches/046.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～047的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [047结果](docs/roadmap/batches/047.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次047完成TextBoxBase-002b/002c的SelectedText及Lines，并补必要003c的MaxLength；65新增/4,893全量及固定双目标Release通过。TextBox消费共享实现，Rich/Masked错误层级的间接消费不关闭其真实后端；完整AppendText/公开撤销/剪贴板、测量、StringArrayEditor/Designer和平台门禁仍待，见[047](batches/047.md)。下述046及以前为历史。
+
 2026-11-07 · 批次046补TextBoxBase边框设置/通知、SelectAll/DeselectAll及源窗口类身份缓存，限定范围为002a/007a/Control-17c。46新增与旧对齐组合74/74、最终4,828全量通过；完整测量/编辑、真实派生后端与平台门禁仍待，见[046](batches/046.md)。下述045及以前为历史。
 
 2026-11-07 · 批次045补TextBoxBase.Modified/ModifiedChanged、EN_UPDATE及程序设文期间的最小内部WindowText守卫，TextBox.CharacterCasing交真实EDIT处理大小写。45新增、892相关和4,782全量通过；完整共同编辑/尺寸、真实派生后端和平台门禁仍待，见[045](batches/045.md)。下述044及以前为历史。
@@ -44,6 +46,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次047：只新增TextBoxBase-002b/002c/003c，完整002/003/005父项保持部分；TextBox-009因真实继承SelectedText/MaxLength从全待办纠正为部分，002同步Lines范围。Rich/Masked原父项不关闭，API固定成员行/原ID/1,095类型/61,240成员行保持；README实施列/tasks.csv由既有工具生成，见[047](batches/047.md)。
 
 - 2026-11-07 · 批次044：共同HideSelection标准设置/通知与TextBox对齐创建样式完成明确范围；HorizontalAlignment按固定10.0.11修正，旧二进制/整数1/2持久化须复核。FND-001/013/014/019等父项保持部分，Control源码no-op，原生RTL夹具只证既有创建管线的样式消费；完整设备/Designer/AOT/平台/98%不关闭，见[044](batches/044.md)。
 

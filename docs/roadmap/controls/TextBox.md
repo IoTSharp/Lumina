@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+047源码no-op，继承TextBoxBase-002b/002c/003c的SelectedText、Lines与MaxLength；程序替换暂解限制后恢复，真实输入仍受配置限制。完整AppendText/公开撤销/剪贴板、测量/运行时RTL和派生后端仍待，见[047](../batches/047.md)。
+
 046源码no-op，继承基类007a的BorderStyle/标准通知与002a的SelectAll/DeselectAll；44项新增回归通过。初值/重建状态按真实EDIT消费，不将创建请求位等同规范化后的公开样式位；完整尺寸/SelectedText/Lines/撤销/剪贴板和运行时RTL仍待，见[046](../batches/046.md)。
 
 045完成007b：CharacterCasing=Normal、标准枚举Normal0/Upper1/Lower2、非法value异常/同值no-op、变更重建及原生ES_UPPERCASE/ES_LOWERCASE，无自创Changed事件或托管字符串转换。25项新增、全量4,782项通过，见[045](../batches/045.md)。继承005a的Modified/程序设文守卫；完整运行时RTL/镜像视觉、尺寸/编辑和派生后端仍待。
@@ -28,7 +30,7 @@
 |---|---|---|---|
 | TextBox-001 | P0 | 🟡 | 042的001a已改为TextBox : TextBoxBase并共用旧字体/选择/文本生命周期。完整基类成员与默认/Designer仍缺；现有SelectionChanged非WinForms成员暂留TextBox、不污染标准基类，正式迁移兼容决策仍待，不抵扣基线覆盖。 |
 | TextBox-001a | P0 | ✅ | 批次042：TextBox直接继承标准TextBoxBase，密码/系统密码、AcceptsReturn、ScrollBars、PlaceholderText及SelectionChanged留派生；便利构造保持原始字段初始化时序，选择扩展通过内部连接继续派发原虚On*。基类引用/真实重建/事件/密码与旧相关组通过；完整001父项不关闭。 |
-| TextBox-002 | P1 | 🟡 | 已有Text/Lines和EN_CHANGE双向同步，038的003c补创建前选择缓存、创建/重建恢复及创建期间重复EN_CHANGE抑制。完整用户输入、AppendText/Clear/撤销修改标志及全部通知重入仍待，不能由选择前置关闭父项。 |
+| TextBox-002 | P1 | 🟡 | 已有Text/EN_CHANGE与038的003c选择/重建范围保留；047继承基类002b/002c的SelectedText替换与Lines空值/换行。完整用户输入、AppendText/Clear/公开撤销及全部通知重入仍待，不能由有限编辑子范围关闭父项。 |
 | TextBox-003 | P1 | 🟡 | 028完成003a焦点通知；037的003b补输入键判别与有限对话框路由；038的003c补Multiline真实重建及文本/选择/原生modified位保存。PreferredHeight/AutoSize/布局、撤销栈、其余样式与完整编辑/IME/设备仍待。 |
 | TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
 | TextBox-003b | P1 | ✅ | 批次037：现有TextBox消费固定TextBox/TextBoxBase输入键规则：多行Enter/AcceptsReturn、Tab/AcceptsTab/Ctrl、多行Escape、可编辑Back及Home/End/Page；AcceptsTab下Ctrl+Tab去除Ctrl后交父对话框链。8项无句柄/真实EDIT/Form默认按钮回归通过。未恢复TextBoxBase、运行期原生样式重建和完整编辑输入。 |
@@ -42,7 +44,7 @@
 | TextBox-007a | P1 | ✅ | 批次044：TextAlign默认Left/Localizable、合法枚举与value异常、Events槽/虚On*、同值/重入/原异常/CanRaiseEvents；变化保存后重建再通知。创建时左右按有效RTL翻译并清WS_EX_RIGHT，水平条须逻辑Left且不WordWrap。共享枚举纠正Left0/Right1/Center2；28项回归通过。RTL原生对照复现既有Control创建后重提交样式，仅证样式消费，不是固定WinForms完整镜像/物理视觉验收。 |
 | TextBox-007b | P1 | ✅ | 批次045：CharacterCasing标准非virtual属性、Behavior/DefaultValue(Normal)，Normal0/Upper1/Lower2；非法value异常不改状态/不建窗，同值no-op、变化保存后重建。创建消费ES_UPPERCASE/ES_LOWERCASE，不做手工转换或新增事件；25项回归含单双行ASCII/中文WM_CHAR硬期望、独立EDIT样式/程序设文/EM_REPLACESEL对照、文本/选择/modified/只读/滚动/密码/原异常保存通过。物理输入/剪贴板/完整文化/IME及007父项不关闭。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
-| TextBox-009 | P2 | ⬜ | Paste(string)、继承 Paste/Copy/Cut/Undo、MaxLength、SelectedText、ShortcutsEnabled；异常、只读、超长粘贴和 UTF-16 端点完整对照。 |
+| TextBox-009 | P2 | 🟡 | 047继承基类002b/003c的SelectedText及MaxLength，必要消息/限制/只读程序替换见对应子项，不重复新增完成任务。Paste(string)、公开Paste/Copy/Cut/Undo、ShortcutsEnabled、超长粘贴和完整UTF-16端点仍待。 |
 | TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认，046继承TextBoxBase-007a边框设置/通知/创建样式。单行PreferredHeight/AutoSize、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
 | TextBox-010a | P2 | ✅ | 批次022移除隐藏Font、克隆和外部Font释放，复用Control借用Font与独占HFONT创建/替换/销毁。无局部颜色时BackColor为Window（只读为Control）、ForeColor为WindowText，不继承父显式颜色；原生仍消费语义palette且明确记录默认前景差异。字体LOGFONT、Reset/重建/释放及派生颜色getter有限场景见022；全部文本/自动缩放/IME另列。 |
 | TextBox-011 | P3 | ⬜ | 静态 Designer 与 .resx 文本/字体、公开事件完整清单、AOT 输入与剪贴板、三平台原生可访问性和 Dispose 验收。 |
@@ -61,6 +63,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次047：源码no-op，002/009按真实继承的SelectedText/Lines/MaxLength更新；009由全待办纠正为部分，不重复计数。程序替换可超过MaxLength，后续用户输入/Undo仍由原生限制；不把内部撤销分支当公开Undo或完整编辑实现，见[047](../batches/047.md)。
 
 - 2026-11-07 · 批次046：源码no-op，消费共同边框和两个标准选择方法；010按实际共享边框子范围纠正当前缺口描述，不重复新增TextBox完成任务。Upper原生初值在重建前明确观测，单线边框公开位按独立EDIT规范化读回核对，完整测量/输入和派生后端仍待，见[046](../batches/046.md)。
 

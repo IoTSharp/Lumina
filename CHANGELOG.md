@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Batch 047: standard TextBoxBase.SelectedText with native replacement, null deletion, undo/modified clearing and input-limit restoration; Lines now returns no entries for empty text and recognizes CR, LF and CRLF. The required MaxLength property validates its standard default and updates real EDIT input limits without recreating handles or truncating existing/programmatic text. Public undo/clipboard APIs, AppendText parity, full sizing and derived editing backends remain open.
+
 - Batch 046: standard TextBoxBase.BorderStyle/BorderStyleChanged with native border styles, handle recreation and conditional parent layout; SelectAll and DeselectAll now share the existing selection path through SelectInternal. Native system-class registrations now distinguish the source module/procedure resolved in the current activation context, preventing cross-STA EDIT superclass reuse across native versions. Full preferred-size behavior, SelectedText, undo/clipboard and derived editing backends remain open.
 
 - Batch 045: standard TextBoxBase.Modified/ModifiedChanged with native observation and EN_UPDATE synchronization, plus the internal WindowText submission boundary needed to suppress programmatic EDIT notifications while preserving edits from TextChanged handlers. TextBox.CharacterCasing now validates its standard enum, recreates the handle and uses native upper/lowercase styles; no custom conversion or extra event is introduced. Full shared editing, sizing and derived backends remain open.
@@ -32,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bounded keyboard and scrolling slices: `Control` now exposes the standard PreviewKeyDown and preprocessing chain, `ContainerControl` routes Tab/Shift+Tab and descendant mnemonics, and `ScrollableControl.ScrollControlIntoView` accounts for existing offsets in nested content.
 
 ### Verification
+
+- Batch 047: Release fixed dual-target builds pass with 0 errors and 2 existing NU1510 warnings; all 65 new and 4,893 full-suite tests pass without failures/skips. The first new run passed 62/65: two fixtures read AllowNull metadata from the property instead of the setter parameter, and another expected Undo to ignore a restored MaxLength. An independent EDIT confirms the bounded Undo result. Original JSON/TRX receipts are retained; production behavior was not changed to satisfy these fixture errors. Designer, Native AOT, physical input and platform acceptance were not run.
 
 - Batch 045: Release fixed dual-target builds pass with 0 errors and 2 existing NU1510 warnings; final 45 new, 892 related and 4,782 full-suite tests pass without failures/skips. The first new run passed 43/45 because two fixtures created a child before its parent HWND, leaving native notifications at a parking window. Original receipts are retained; the corrected fixtures assert the actual parent HWND and managed mapping without changing production behavior or event expectations. Designer, Native AOT, physical input and platform acceptance were not run.
 
