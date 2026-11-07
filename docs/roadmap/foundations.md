@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次046补TextBoxBase边框设置/通知、SelectAll/DeselectAll及源窗口类身份缓存，限定范围为002a/007a/Control-17c。46新增与旧对齐组合74/74、最终4,828全量通过；完整测量/编辑、真实派生后端与平台门禁仍待，见[046](batches/046.md)。下述045及以前为历史。
+
 2026-11-07 · 批次045补TextBoxBase.Modified/ModifiedChanged、EN_UPDATE及程序设文期间的最小内部WindowText守卫，TextBox.CharacterCasing交真实EDIT处理大小写。45新增、892相关和4,782全量通过；完整共同编辑/尺寸、真实派生后端和平台门禁仍待，见[045](batches/045.md)。下述044及以前为历史。
 
 2026-11-07 · 批次035～043范围保留；044补TextBoxBase.HideSelection标准设置/通知和TextBox.TextAlign设置/创建样式，纠正HorizontalAlignment整数身份。完整编辑基类、派生后端、RTL/镜像视觉、OLE宿主context、输入/布局及平台验收仍待，见[044](batches/044.md)。
@@ -24,10 +26,10 @@
 | ID | 状态 | 任务细节与验收 |
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
-| FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
+| FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界；046的Control-17c按当前源类身份缓存superclass，避免跨activation context混用EDIT。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
-| FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
+| FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap与046的BorderStyle复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
 | FND-015 | 🟡 | 020标准事务10b、021标准引擎/缓存/InitLayout与Resume(false)协作10c完成；512行参考/JIT/实际AOT同，旧394行参考/JIT差异清零。非Control布局对象、复杂缓存重入/异常恢复、完整容器算法/Designer仍缺，不关闭父项 |
 | FND-016 | 🟡 | 018已有ScrollableControl无滚动客户区DisplayRectangle；031完成托管AutoScroll/ScrollProperties/Scroll事件及受保护契约，032补Panel迁移和Windows SCROLLINFO/WM_HSCROLL/WM_VSCROLL首范围，033补已有偏移下的后代可见坐标修正。真实物理滚轮/触摸板、Dock/Anchor/Tab/RTL组合、嵌套滚动事务与Linux/macOS滚动仍缺 |
 | FND-017 | 🟡 | 历史Form已有AutoScaleMode/Dimensions/PerformAutoScale算法，018迁入ContainerControl并回归；031补AutoScaleFactor首范围，纠正原全部未开始状态遗漏旧局部实现。完整Font/Dpi/None/Inherit、嵌套继承、DpiChanged父子通知与96/144/192往返仍缺 |

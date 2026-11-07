@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+046完成007a边框设置/通知/原生创建样式与002a标准SelectAll/DeselectAll：BorderStyle默认Fixed3D，按固定顺序提交状态/UpdateStyles/重建/条件布局/通知；SelectAll只观察一次TextLength，DeselectAll经过虚SelectionLength setter。44项新增回归通过，见[046](../batches/046.md)。完整尺寸、SelectedText/Lines/撤销/剪贴板及真实派生后端仍待。
+
 045完成005a：标准Modified/ModifiedChanged、native getter观测通知、setter先getter及EN_UPDATE同步；Text/WindowText按固定源码仅在程序native提交期间抑制反射通知，最后清native modified位，由后续getter观测通知。20项新增和4,782项全量通过，见[045](../batches/045.md)。完整撤销/选区编辑/Lines/AppendText、BorderStyle/尺寸及派生真实后端仍待。
 
 044完成003b：HideSelection=true、标准HideSelectionChanged/虚On*及组件Events槽，变更先重建再通知，false加入ES_NOHIDESEL；14项新增与4,737项全量通过，见[044](../batches/044.md)。RichTextBox既有隐藏存值属性保留，其他默认/编辑/尺寸及派生后端仍待。
@@ -24,15 +26,17 @@
 |---|---|---|---|
 | TextBoxBase-001 | P0 | 🟡 | 042完成001a标准基类及TextBox直接继承/已有行为迁移。RichTextBox/MaskedTextBox直接继承、对应原生实现与共享成员扩面仍待；ISupportInitialize等按各类型基线放置，不由一个派生迁移关闭父项。 |
 | TextBoxBase-001a | P0 | ✅ | 批次042：建立abstract TextBoxBase : Control与internal无参构造，TextBox直接继承；迁移现有文本/选择、多行/只读、Tab、颜色/主题和EDIT句柄状态。TextLength为virtual，密码/Enter及既有SelectionChanged扩展保留TextBox。8项新增基类引用/真实重建/事件/派生hook回归与全量通过；不含另外两个派生直接层级或完整编辑能力。 |
-| TextBoxBase-002 | P1 | 🟡 | 042迁入现有Text/Lines、virtual TextLength、SelectionStart/Length和Select的无句柄缓存/真实创建恢复。SelectedText、SelectAll/DeselectAll、完整CRLF/emoji/端点及Lines语义仍待，不以已有选择前置关闭父项。 |
+| TextBoxBase-002 | P1 | 🟡 | 042迁入现有Text/Lines、virtual TextLength、SelectionStart/Length和Select的无句柄缓存/真实创建恢复；046的002a补SelectAll/DeselectAll及共同SelectInternal。SelectedText、完整CRLF/emoji/端点及Lines语义仍待，不以选择方法或有限UTF-16案例关闭父项。 |
+| TextBoxBase-002a | P1 | ✅ | 批次046：标准非virtual SelectAll/DeselectAll；SelectAll只读取一次虚TextLength并直接进入private protected virtual SelectInternal，DeselectAll调用虚SelectionLength setter。已有Select校验和无窗缓存/EM_SETSEL/创建重建恢复共用入口。20项回归含虚调用/原异常、CRLF/emoji、真实父映射及选区/只读/Modified保持通过；不含SelectedText、Lines、完整端点/输入或UIA。 |
 | TextBoxBase-003 | P1 | 🟡 | 042迁入ReadOnly/Multiline/AcceptsTab及WordWrap；043的003a补AcceptsTab通知与WordWrap真实折行/重建/条件布局，044的003b补HideSelection标准设置/通知/样式。MaxLength/ShortcutsEnabled、完整默认/元数据及派生覆盖仍待；既有ES_WANTRETURN等完整CreateParams差异保留。 |
 | TextBoxBase-003a | P1 | ✅ | 批次043：AcceptsTab=false、标准AcceptsTabChanged/虚On*、Events槽/同值/重入/原异常；WordWrap=true及Localizable，变更重建，所有赋值清本控件首选缓存，AutoSize时含同值参与父布局。默认AUTOH/AUTOV、多行折行清AUTOH，不再强制纵条；17项回归含真实EDIT折行/状态通过。完整003/004/007父项不关闭。 |
 | TextBoxBase-003b | P1 | ✅ | 批次044：HideSelection=true、Behavior/DefaultValue元数据、HideSelectionChanged/虚On*与Events槽；同值不操作，合法变化保存后RecreateHandle再通知，false设置ES_NOHIDESEL。14项回归含独立EDIT样式、通知/重入/原异常/CanRaiseEvents及选择/modified/只读/密码保存通过。物理选区显示、RichEdit派生覆盖和完整003/004父项不关闭。 |
-| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged；045的005a补ModifiedChanged标准事件槽/虚通知及getter观测语义。BorderStyleChanged及其余完整通知仍待，事件子范围不关闭父项。 |
+| TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged，045的005a补ModifiedChanged，046的007a补BorderStyleChanged标准事件槽/虚通知。完整通知时序/元数据及派生覆盖仍待，事件子范围交叉引用不重复计数、不关闭父项。 |
 | TextBoxBase-005 | P1 | 🟡 | 042迁入既有Clear/AppendText和native modified位保存；045的005a补公开Modified/ModifiedChanged、EN_UPDATE与程序设文/创建销毁衔接。CanUndo、Undo/ClearUndo、Copy/Cut/Paste及完整AppendText空值/选择/撤销语义仍待，不把修改标志或迁移旧代码计为完整编辑。 |
 | TextBoxBase-005a | P1 | ✅ | 批次045：Modified默认false、非virtual及Behavior/Browsable(false)/隐藏序列化元数据，Events槽/虚OnModifiedChanged；getter读取真实EDIT状态，差异时保存后通知，setter先消费getter再提交native/缓存/通知。EN_UPDATE同步，程序Text的native提交期间抑制反射通知，TextChanged处理器内native编辑仍可通知；最后直接清native位并延迟至getter通知，创建/重建和销毁观测保存状态。20项回归与全量通过；不含撤销/剪贴板/完整编辑或真实派生后端。 |
 | TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、Control键事件与现有IME前置；045的005a补EN_UPDATE的Modified同步和程序设文守卫。标准基类没有SelectionChanged，TextBox非标准扩展暂留原派生。完整输入法提交、粘贴、验证/失焦和RichEdit选择通知仍待。 |
-| TextBoxBase-007 | P1 | 🟡 | 042仅迁入既有颜色/主题与24/48最小原生高度，保留已知差异。BorderStyle、AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的尺寸、选择/撤销保存仍未完整实现。 |
+| TextBoxBase-007 | P1 | 🟡 | 042迁入既有颜色/主题与24/48最小原生高度，046的007a补BorderStyle设置/通知/创建样式及条件布局。AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的完整尺寸、选择/撤销保存仍未完整实现，旧高度差异保留。 |
+| TextBoxBase-007a | P1 | ✅ | 批次046：BorderStyle默认Fixed3D、Appearance/DefaultValue/DispId(-504)及合法枚举异常，变化保存后UpdateStyles、RecreateHandle，再在AutoSize条件父布局事务内通知；组件Events槽与虚OnBorderStyleChanged，同值no-op。CreateParams清WS_BORDER/CLIENTEDGE后按None/FixedSingle/Fixed3D选择真实请求。24项回归含缓存/布局/异常/重入、独立EDIT边框与状态恢复通过；原生EDIT规范化读回与创建请求分开，不含完整尺寸或视觉验收。 |
 | TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；未建句柄延期滚动及GetCharFromPosition/GetCharIndexFromPosition/GetPositionFromCharIndex/GetLineFromCharIndex/GetFirstCharIndexFromLine/GetFirstCharIndexOfCurrentLine仍待，换行/端点逐场景验收。 |
 | TextBoxBase-009 | P2 | 🟡 | 042按固定层级拆出共享Tab/编辑键/只读IME限制，Enter与PasswordProtect由TextBox消费；组合/候选通知继续原生默认过程。快捷键关闭、复制/密码完整限制、RTL、物理组合输入/候选窗口与跨平台原生集成仍待。 |
 | TextBoxBase-010 | P2 | ⬜ | 控件焦点与原生编辑子对象同步，辅助技术 text/value/selection/read-only 状态；Dispose 解除 field editor/剪贴板和通知回调。 |
@@ -52,6 +56,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次046：新增002a/007a，002/004/007按真实子范围交叉引用，完整父项保持部分。首次40/44中三例错误要求原生EDIT保留公开WS_BORDER，另一例错误比较不同ReflectedType的MethodInfo对象；补匹配配置的独立EDIT，保留请求位硬断言并确认原生规范化后读回0，反射改核DeclaringType/Module/MetadataToken/签名。第二轮41/44暴露同三例启用Upper后误期待小写初值，改在重建前硬断言原生大写并核重建保持。原失败JSON/TRX保留，生产实现未为夹具改变；最终44/44。完整测量/编辑/派生后端仍待，见[046](../batches/046.md)。
 
 - 2026-11-07 · 批次045：005a补Modified/ModifiedChanged、EN_UPDATE和程序设文/销毁观测衔接，004/006交叉引用不重复新增事件任务。核固定源码纠正最初“EN_CHANGE后同步”理解：实际为EN_UPDATE分支；程序Text清native位后缓存由getter观测，不用setter提前通知。首次两例父Form无HWND而进入停车窗，补真实父句柄/映射硬断言后原期望通过，生产不为夹具改写。完整005/编辑/尺寸/派生后端仍部分，见[045](../batches/045.md)。
 

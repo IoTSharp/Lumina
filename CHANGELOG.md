@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Batch 046: standard TextBoxBase.BorderStyle/BorderStyleChanged with native border styles, handle recreation and conditional parent layout; SelectAll and DeselectAll now share the existing selection path through SelectInternal. Native system-class registrations now distinguish the source module/procedure resolved in the current activation context, preventing cross-STA EDIT superclass reuse across native versions. Full preferred-size behavior, SelectedText, undo/clipboard and derived editing backends remain open.
+
 - Batch 045: standard TextBoxBase.Modified/ModifiedChanged with native observation and EN_UPDATE synchronization, plus the internal WindowText submission boundary needed to suppress programmatic EDIT notifications while preserving edits from TextChanged handlers. TextBox.CharacterCasing now validates its standard enum, recreates the handle and uses native upper/lowercase styles; no custom conversion or extra event is introduced. Full shared editing, sizing and derived backends remain open.
 
 - Batch 044: standard TextBoxBase.HideSelection notifications and native EDIT selection style, plus TextBox.TextAlign notifications, handle recreation and creation alignment styles. Horizontal scroll bars now also require logical Left alignment. HorizontalAlignment is corrected to Left=0, Right=1, Center=2; existing binaries and persisted integer values 1/2 need review. RichTextBox keeps its existing separate HideSelection storage through an explicit new declaration.

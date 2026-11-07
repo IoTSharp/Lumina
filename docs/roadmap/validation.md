@@ -1,6 +1,18 @@
 # 本轮验证与限制
 
-## 批次045 · 2026-11-07 当前验证
+## 批次046 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增46例（BorderStyle24、选择方法20、源类context2）与旧对齐28组合74/74，最后完整4,828/4,828，0失败/跳过。最终命令与TRX分别见artifacts/compatibility-batch046/release-build-context-cleanup.json及tests-full-verified.json、tests/batch046-full-verified.trx；WarningLevel=0不表示分析告警清零。
+
+[046](batches/046.md)只关闭TextBoxBase-002a/007a与Control-17c。边框状态/样式/重建/条件布局/事件遵循固定源码；全选只读一次TextLength，取消选择走虚setter。当前源类先GetClassInfoExW解析，再以源模块/窗口过程参与superclass缓存，同源重复复用。原ES_WANTRETURN、24/48高度和其余编辑规则保留。
+
+首次新40/44与第二次41/44均保留：独立EDIT证明请求WS_BORDER后公开位规范化为0，Upper创建前后初值按大写硬断言，MethodInfo按声明/模块/token/签名比较。首轮全量6个旧RTL失败、隔离28通过及组合6失败均保留；直接源类回归修复前2/2失败，修复后74组合通过。第二轮全量4,820/4,828暴露夹具受运行器activation stack影响；明确null-context后主错误清理外层cookie导致0xC015000F，全量4,604通过后中止仍记FAIL，不当完整通过。修正为OLE→既有visual-context清理→外层cookie逆序释放后，context/对齐30/30、最后全量4,828/4,828通过。所有JSON/TRX、诊断/Sequence及崩溃说明保留，不删除原失败或改旧RTL硬期望。
+
+固定TextBoxBase源码69,799字节SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63已复核并复制046/reference；DISPID -504与null-context规则的官方来源在reference.json。固定引用库存刷新、Native AOT发布/运行、Designer、物理输入/视觉、Linux/macOS和98%本批NOT_RUN/UNKNOWN。完整SelectedText/Lines/撤销/剪贴板、尺寸、真实派生后端、运行时RTL、模态/OLE宿主context和关闭LostFocus/WM_QUIT继续原任务。
+
+既有工具导出434份Markdown、2,154任务、187实施索引行、0结构错误，整类型代码完成仍0；24拥有路径UTF8严格/无NUL/字节往返及diff检查通过。所有有界外部调用cleanup_complete=true，主无workspace_open/edit/commit、临时对象或独占服务；末次dotnet名称快照0项/inaccessible0，不称全机零进程，资源回执在resources.json。证据/bin/obj保留。
+
+## 批次045 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增45/45（Modified20、CharacterCasing25）、相关文本/IME/焦点/输入语言/OLE/键盘/同步上下文892/892、全量4,782/4,782通过，0失败/跳过。首次新增43/45，两例真实EDIT通知夹具先建子句柄、父Form未建窗而进入原生STATIC停车窗，导致通知不反射；首次JSON/TRX保留。仅修夹具先建父HWND，增加GetParent及Control.FromHandle父映射硬断言，保留原消息与事件序列期望后通过。
 

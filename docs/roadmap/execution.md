@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[046](batches/046.md)完成TextBoxBase-002a标准全选/取消选区、007a边框契约及Control-17c当前源窗口类身份缓存；46新增与旧对齐组合74/74，最终全量4,828/4,828，Release固定双目标0错/2既有NU1510。原生EDIT边框规范化、Upper初值、反射wrapper及activation环境/清理夹具失败均有原回执；完整输入/视觉/平台不因本批关闭。下一依赖继续SelectedText、Lines/AppendText空值/CRLF/撤销、CanUndo/Undo/ClearUndo/剪贴板及完整测量，再恢复真实Rich/Masked直接层级与后端。不重复033～046，不新建context或调度框架；下述045及以前为历史。
+
 当前[045](batches/045.md)完成TextBoxBase-005a标准Modified/getter观测通知/EN_UPDATE与程序设文守卫，以及TextBox-007b标准CharacterCasing/原生大小写样式；45新增、892相关、4,782全量与Release固定双目标通过。首次两例父Form未建窗而进入停车窗的夹具失败保留，补真实父HWND/托管映射硬断言后通过，生产实现未为夹具改变。下一真实依赖继续TextBoxBase的BorderStyle/标准通知、SelectedText/选择方法、Lines/AppendText/撤销和尺寸，再按真实后端恢复Rich/Masked直接继承。完整RTL/镜像视觉、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁继续原任务；不重复033～045、不重评全项目、不新建context或调度框架。下述044及以前为历史。
 
 当前[044](batches/044.md)完成TextBoxBase-003b共同HideSelection默认/标准通知与TextBox-007a对齐设置/创建样式及水平条逻辑Left条件；最终42新增/2,356相关/4,737全量与Release固定双目标通过。共享HorizontalAlignment整数身份已按固定10.0.11纠正，旧二进制及1/2整数存储需复核；保留首轮4例RTL裸native夹具与既有Control创建后重提交路径不同的失败。下一真实依赖继续TextBoxBase共享编辑/标准默认事件（BorderStyle/Modified/选择文本等按原任务排序），再恢复Rich/Masked标准直接继承及真实后端。完整RTL/镜像视觉、首选尺寸/AutoSize、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁仍留原任务；不重复033～044、不重评全项目、不新增context或调度框架。下述043及以前是历史。

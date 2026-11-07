@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+046源码no-op，继承基类007a的BorderStyle/标准通知与002a的SelectAll/DeselectAll；44项新增回归通过。初值/重建状态按真实EDIT消费，不将创建请求位等同规范化后的公开样式位；完整尺寸/SelectedText/Lines/撤销/剪贴板和运行时RTL仍待，见[046](../batches/046.md)。
+
 045完成007b：CharacterCasing=Normal、标准枚举Normal0/Upper1/Lower2、非法value异常/同值no-op、变更重建及原生ES_UPPERCASE/ES_LOWERCASE，无自创Changed事件或托管字符串转换。25项新增、全量4,782项通过，见[045](../batches/045.md)。继承005a的Modified/程序设文守卫；完整运行时RTL/镜像视觉、尺寸/编辑和派生后端仍待。
 
 044完成007a：TextAlign标准默认/校验/事件、变更重建及EDIT创建对齐位，初始有效RTL翻译左右，清WS_EX_RIGHT；水平条限逻辑Left。28项新增、42项本批及4,737全量通过，见[044](../batches/044.md)。HorizontalAlignment按固定10.0.11纠正为Left=0/Right=1/Center=2；旧二进制常量及整数1/2持久化需复核。完整运行时RTL/镜像视觉/尺寸及CharacterCasing仍待。
@@ -41,7 +43,7 @@
 | TextBox-007b | P1 | ✅ | 批次045：CharacterCasing标准非virtual属性、Behavior/DefaultValue(Normal)，Normal0/Upper1/Lower2；非法value异常不改状态/不建窗，同值no-op、变化保存后重建。创建消费ES_UPPERCASE/ES_LOWERCASE，不做手工转换或新增事件；25项回归含单双行ASCII/中文WM_CHAR硬期望、独立EDIT样式/程序设文/EM_REPLACESEL对照、文本/选择/modified/只读/滚动/密码/原异常保存通过。物理输入/剪贴板/完整文化/IME及007父项不关闭。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
 | TextBox-009 | P2 | ⬜ | Paste(string)、继承 Paste/Copy/Cut/Undo、MaxLength、SelectedText、ShortcutsEnabled；异常、只读、超长粘贴和 UTF-16 端点完整对照。 |
-| TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认；单行PreferredHeight/AutoSize、BorderStyle、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
+| TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认，046继承TextBoxBase-007a边框设置/通知/创建样式。单行PreferredHeight/AutoSize、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
 | TextBox-010a | P2 | ✅ | 批次022移除隐藏Font、克隆和外部Font释放，复用Control借用Font与独占HFONT创建/替换/销毁。无局部颜色时BackColor为Window（只读为Control）、ForeColor为WindowText，不继承父显式颜色；原生仍消费语义palette且明确记录默认前景差异。字体LOGFONT、Reset/重建/释放及派生颜色getter有限场景见022；全部文本/自动缩放/IME另列。 |
 | TextBox-011 | P3 | ⬜ | 静态 Designer 与 .resx 文本/字体、公开事件完整清单、AOT 输入与剪贴板、三平台原生可访问性和 Dispose 验收。 |
 | TextBox-CLOSE | P3 | ⬜ | 对照 API 清单逐个关闭剩余属性、事件、方法/重载与受保护兼容点；属性写入后读回、通知顺序/取消/重入、默认值、异常、未建句柄/重建/释放后行为分别有证据。Windows 与两原生平台各出属性/事件/行为分子分母，未验收项不能标🧪 验收通过。 |
@@ -59,6 +61,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次046：源码no-op，消费共同边框和两个标准选择方法；010按实际共享边框子范围纠正当前缺口描述，不重复新增TextBox完成任务。Upper原生初值在重建前明确观测，单线边框公开位按独立EDIT规范化读回核对，完整测量/输入和派生后端仍待，见[046](../batches/046.md)。
 
 - 2026-11-07 · 批次045：007b补CharacterCasing标准属性/枚举与原生消费；不把错误继承链中Rich/Masked间接暴露计为它们的标准成员或真实后端完成。继承TextBoxBase-005a的Modified/程序设文规则，完整Text/选区/撤销/尺寸和运行时RTL仍待；原ID及父任务保持，见[045](../batches/045.md)。
 

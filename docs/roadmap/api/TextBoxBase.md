@@ -18,6 +18,8 @@
 
 `🟡签名匹配` 仅指规范化命名空间后的元数据形状，**不是实现完成**。所有运行支持状态均为 `⬜未验收`；实际支持须补源码消费、默认值、运行与 AOT 证据。默认值栏是特性元数据，缺少特性不代表默认值不存在。
 
+046当前源码补充：007a新增BorderStyle/BorderStyleChanged/OnBorderStyleChanged及真实边框创建样式；002a新增标准SelectAll/DeselectAll并复用SelectInternal。完整尺寸、SelectedText/Lines/撤销/剪贴板、UIA和真实派生后端仍待；固定成员行、原ID和分母保持历史快照，10.0.11引用包刷新NOT_RUN。
+
 ## 公开成员
 
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |

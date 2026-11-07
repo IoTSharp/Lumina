@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～045](batches/045.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。042～044共享基类/样式范围保留，045补Modified标准状态/通知与CharacterCasing原生大小写设置；完整基类、Rich/Masked直接继承/真实后端、RTL/镜像视觉及所有父项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～046](batches/046.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。042～045共享基类/样式/修改标志范围保留，046补标准BorderStyle/通知、SelectAll/DeselectAll及当前源窗口类身份缓存；完整基类、Rich/Masked直接继承/真实后端、RTL/镜像视觉及所有父项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -14,7 +14,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-11c、Control-12a、Control-12b、Control-12c、Control-12d、Control-12e、Control-12f、Control-12g、Control-12h、Control-12i、Control-12j、Control-12k、Control-12l、Control-12m、Control-13a、Control-13b、Control-14a、Control-14b、Control-17a、Control-17b；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-11c、Control-12a、Control-12b、Control-12c、Control-12d、Control-12e、Control-12f、Control-12g、Control-12h、Control-12i、Control-12j、Control-12k、Control-12l、Control-12m、Control-13a、Control-13b、Control-14a、Control-14b、Control-17a、Control-17b、Control-17c；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-06a、Application-08a、Application-11a、Application-11b、Application-12a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -24,7 +24,7 @@
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a、UserControl-02b、UserControl-02c、UserControl-02d、UserControl-03a、UserControl-05a；其余任务未完成 |
 | [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-07a、Form-08a、Form-10a、Form-10b、Form-12a、Form-12b、Form-12c、Form-12d、Form-16a、Form-16b、Form-16c；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
-| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a、TextBoxBase-003a、TextBoxBase-003b、TextBoxBase-005a；其余任务未完成 |
+| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a、TextBoxBase-002a、TextBoxBase-003a、TextBoxBase-003b、TextBoxBase-005a、TextBoxBase-007a；其余任务未完成 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [UpDownBase](controls/UpDownBase.md) | M1 | ⬜ 缺失 | 103 / 74 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ScrollBar](controls/ScrollBar.md) | M1 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

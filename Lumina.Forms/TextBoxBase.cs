@@ -5,6 +5,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Lumina.Forms;
 
@@ -14,6 +15,7 @@ namespace Lumina.Forms;
 public abstract class TextBoxBase : Control
 {
     private static readonly object s_acceptsTabChangedEvent = new();
+    private static readonly object s_borderStyleChangedEvent = new();
     private static readonly object s_hideSelectionChangedEvent = new();
     private static readonly object s_modifiedChangedEvent = new();
     private static readonly object s_multilineChangedEvent = new();
@@ -24,6 +26,7 @@ public abstract class TextBoxBase : Control
     private bool _acceptsTab;
     private bool _hideSelection = true;
     private bool _wordWrap = true;
+    private BorderStyle _borderStyle = BorderStyle.Fixed3D;
     private int _selectionStart;
     private int _selectionLength;
     private bool _restoreSelectionOnHandleCreated;
@@ -90,6 +93,37 @@ public abstract class TextBoxBase : Control
     {
         add => Events.AddHandler(s_acceptsTabChangedEvent, value);
         remove => Events.RemoveHandler(s_acceptsTabChangedEvent, value);
+    }
+
+    /// <summary>Gets or sets the border type of the text box.</summary>
+    [Category("Appearance")]
+    [DefaultValue(BorderStyle.Fixed3D)]
+    [DispId(-504)]
+    public BorderStyle BorderStyle
+    {
+        get => _borderStyle;
+        set
+        {
+            if (_borderStyle == value) { return; }
+            if ((uint)value > (uint)BorderStyle.Fixed3D)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(BorderStyle));
+            }
+
+            _borderStyle = value;
+            UpdateStyles();
+            RecreateHandle();
+            using LayoutTransaction transaction = new(AutoSize ? Parent : null, this, nameof(BorderStyle));
+            OnBorderStyleChanged(EventArgs.Empty);
+        }
+    }
+
+    /// <summary>Occurs when the <see cref="BorderStyle"/> property changes.</summary>
+    [Category("Property Changed")]
+    public event EventHandler? BorderStyleChanged
+    {
+        add => Events.AddHandler(s_borderStyleChangedEvent, value);
+        remove => Events.RemoveHandler(s_borderStyleChangedEvent, value);
     }
 
     /// <summary>Gets or sets whether selected text is hidden when the control loses focus.</summary>
@@ -392,8 +426,24 @@ public abstract class TextBoxBase : Control
         }
     }
 
-    /// <inheritdoc />
+    // Preserve the existing protected extension; CreateParams below selects
+    // the standard BorderStyle after consuming the legacy style projections.
     protected override uint ExStyle => Win32.WS_EX_CLIENTEDGE;
+
+    /// <inheritdoc />
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            const int WsBorder = 0x00800000;
+            CreateParams parameters = base.CreateParams;
+            parameters.Style &= ~WsBorder;
+            parameters.ExStyle &= ~(int)Win32.WS_EX_CLIENTEDGE;
+            if (_borderStyle == BorderStyle.FixedSingle) { parameters.Style |= WsBorder; }
+            if (_borderStyle == BorderStyle.Fixed3D) { parameters.ExStyle |= (int)Win32.WS_EX_CLIENTEDGE; }
+            return parameters;
+        }
+    }
 
     /// <inheritdoc />
     protected override int GetNativeHeight(int requestedHeight)
@@ -434,17 +484,36 @@ public abstract class TextBoxBase : Control
             start = textLength;
         }
 
+        SelectInternal(start, length, textLength);
+    }
+
+    /// <summary>Performs the selection using an already observed text length.</summary>
+    private protected virtual void SelectInternal(int selectionStart, int selectionLength, int textLength)
+    {
         if (NativeHandle == 0)
         {
-            _selectionStart = start;
-            _selectionLength = length;
+            _selectionStart = selectionStart;
+            _selectionLength = selectionLength;
             _restoreSelectionOnHandleCreated = true;
             return;
         }
 
-        AdjustSelection(start, length, textLength, out int selectionStart, out int selectionEnd);
-        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)selectionStart, (nint)selectionEnd);
+        AdjustSelection(selectionStart, selectionLength, textLength, out int start, out int end);
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)start, (nint)end);
         _ = UpdateSelectionFromHandle();
+    }
+
+    /// <summary>Selects all text in the text box.</summary>
+    public void SelectAll()
+    {
+        int textLength = TextLength;
+        SelectInternal(0, textLength, textLength);
+    }
+
+    /// <summary>Sets the selection length to zero.</summary>
+    public void DeselectAll()
+    {
+        SelectionLength = 0;
     }
 
     /// <summary>
@@ -572,6 +641,10 @@ public abstract class TextBoxBase : Control
     /// <summary>Raises the <see cref="AcceptsTabChanged"/> event.</summary>
     protected virtual void OnAcceptsTabChanged(EventArgs e)
         => (Events[s_acceptsTabChangedEvent] as EventHandler)?.Invoke(this, e);
+
+    /// <summary>Raises the <see cref="BorderStyleChanged"/> event.</summary>
+    protected virtual void OnBorderStyleChanged(EventArgs e)
+        => (Events[s_borderStyleChangedEvent] as EventHandler)?.Invoke(this, e);
 
     /// <summary>Raises the <see cref="HideSelectionChanged"/> event.</summary>
     protected virtual void OnHideSelectionChanged(EventArgs e)

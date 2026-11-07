@@ -344,14 +344,36 @@ public sealed class TextBoxTextAlignTests
         var thread = new Thread(() =>
         {
             WindowsFormsSynchronizationContext.AutoInstall = false;
-            try { action(); }
+            nuint defaultContextCookie = 0;
+            try
+            {
+                // These fixed native style expectations use the original
+                // process manifest, independent of the runner's active stack.
+                Assert.True(ActivateActCtx(0, out defaultContextCookie));
+                action();
+            }
             catch (Exception exception) { failure = exception; }
+            finally
+            {
+                Application.ExitThread();
+                typeof(Application).GetMethod("DisposeThemedCommonControlsActivation",
+                    BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, null);
+                if (defaultContextCookie != 0) { Assert.True(DeactivateActCtx(0, defaultContextCookie)); }
+            }
         }) { IsBackground = true };
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         Assert.True(thread.Join(TimeSpan.FromSeconds(12)), "TextBox alignment test timed out.");
         if (failure is not null) { ExceptionDispatchInfo.Capture(failure).Throw(); }
     }
+
+    [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool ActivateActCtx(nint context, out nuint cookie);
+
+    [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DeactivateActCtx(uint flags, nuint cookie);
 
     private sealed class HookTextBox : TextBox
     {

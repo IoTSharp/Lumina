@@ -9,18 +9,15 @@ internal readonly record struct NativeWindowClassRegistration(string Name, nint 
 internal static class NativeWindowClass
 {
     private static readonly Lock s_sync = new();
-    private static readonly Dictionary<(string? Name, int Style, nint Callback, nint Instance, nint Icon, nint Brush), NativeWindowClassRegistration> s_classes = [];
+    private static readonly Dictionary<(string? Name, int Style, nint Callback, nint Instance, nint Icon, nint Brush,
+        nint SourceInstance, nint SourceWindowProc), NativeWindowClassRegistration> s_classes = [];
 
     internal static unsafe NativeWindowClassRegistration GetOrRegister(
         string? className, int classStyle, nint windowProc, nint instanceHandle,
         nint iconHandle = 0, nint backgroundBrush = 0)
     {
-        // ClassStyle applies only to a newly defined class, as in CreateParams.
-        var key = (className, className is null ? classStyle : 0, windowProc, instanceHandle, iconHandle, backgroundBrush);
         lock (s_sync)
         {
-            if (s_classes.TryGetValue(key, out NativeWindowClassRegistration registration)) { return registration; }
-
             Win32.WNDCLASSEXW_NATIVE windowClass = new() { cbSize = (uint)Marshal.SizeOf<Win32.WNDCLASSEXW_NATIVE>() };
             nint originalWindowProc = 0;
             if (className is null)
@@ -40,6 +37,14 @@ internal static class NativeWindowClass
                 }
                 originalWindowProc = windowClass.lpfnWndProc;
             }
+
+            // The same system class name can resolve to different procedures
+            // under different activation contexts. Resolve before consulting
+            // the shared cache and reuse only the same source class identity.
+            // ClassStyle applies only to a newly defined class.
+            var key = (className, className is null ? classStyle : 0, windowProc, instanceHandle, iconHandle, backgroundBrush,
+                className is null ? 0 : windowClass.hInstance, originalWindowProc);
+            if (s_classes.TryGetValue(key, out NativeWindowClassRegistration registration)) { return registration; }
 
             // Keep the source class recognizable to native diagnostics while
             // the unique suffix separates callback/style registrations.

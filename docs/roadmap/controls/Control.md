@@ -1,5 +1,7 @@
 # Control
 
+046完成17c：系统窗口类先按当前activation context解析，再以源hInstance/lpfnWndProc身份参与superclass缓存，避免跨STA混用EDIT版本；双向context顺序/重复注册复用和旧RTL组合通过。Control.cs源码no-op，完整窗口后端/输入/生命周期仍待，见[046](../batches/046.md)。
+
 🟡 **当前状态：**002～039明确子范围保留；040补12m输入语言消息向Form通知/请求取消与HKL服务必要连接。关闭多余LostFocus/WM_QUIT、完整命令对话框、OLE/完整输入语言服务、模态宿主/组合串/候选窗及全部派生输入、绘制/资源、Cursor/ambient、DPI/Designer、线程释放竞态及GTK4/AppKit仍缺；整Control保持部分，见[040](../batches/040.md)。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
@@ -76,6 +78,7 @@
 | 🟡 | P1 / Control-17 | 002～022的USER32/生命周期保留；023完成17a标准消息与必要Form衔接，025完成17b native callback边界。完整消息反射、创建参数自定义对象AOT封送、所有派生同步/状态恢复及资源/关闭竞态仍缺，不由基础探针关闭整个Windows后端。 |
 | ✅ | P1 / Control-17a | 批次023明确首范围：标准Message/CreateParams、WndProc(ref Message)/DefWndProc、Message.Result回传、原窗口类过程保留、早期创建消息绑定和原生销毁最终清理；CreateParams样式/位置/文本/Parent/Param真实参与Control/Form创建和重建。字符串及显式静态基础值封送已有实现，运行仅覆盖null/string/nint及JIT自定义Payload；自定义Payload/object的AOT明确NotSupportedException。Message.GetLParam(Type)仅验证显式根化Payload，IL3050/任意marshaller、全部其他值与派生类/竞态验收另列。 |
 | ✅ | P1 / Control-17b | 批次025：Control/Form 原生窗口过程先捕获 managed callback 异常，再执行 `WM_NCDESTROY` 清理；回调、映射、句柄、资源和 GCHandle 的独立失败分别进入 `ThreadException`，不让异常越过 unmanaged callback。同步上下文同样在 native 边界内处理。完整消息反射/自定义 Param AOT/关闭竞态仍归父项。 |
+| ✅ | P1 / Control-17c | 批次046：有源类名时先GetClassInfoExW解析当前activation context中的原生类，缓存键加入源hInstance/lpfnWndProc；同源身份重复复用注册，不按STA额外注册。2项交替hosted/plain STA回归核源过程与_originalWindowProc、反向顺序及注册名复用，修复前2/2失败、修复后与新增/旧RTL共74/74通过。限定系统类缓存身份，不关闭完整activation/OLE/线程生命周期或17父项。 |
 | ⬜ | P2 / Control-18 | Linux 用真实 GtkWidget 和 shared GMainContext；非交互宿主可用 GtkFixed，焦点/输入/可访问性用原生 controller。HWND/WndProc 等 Windows 消息契约单列，普通布局/Font/Image 不任意排除。 |
 | ⬜ | P3 / Control-19 | macOS 用 NSView/NSControl 与 AppKit 主线程，target-action/delegate 映射标准事件；翻转坐标与 key-view loop 统一处理，native 指针不能冒称 HWND。 |
 | ⬜ | 验收 / Control-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -89,6 +92,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次046：新宿主测试暴露旧superclass缓存跨activation context混用EDIT的潜在缺陷。首轮全量6个旧RTL失败，隔离28项通过、与新测试组合再次6失败；直接回归读到源过程与缓存原过程不一致，修复前两例全失败。仅在NativeWindowClass当前源类解析与缓存键加入真实源身份，保留旧RTL硬断言；Control.cs不改，完整17及平台/线程/模态仍待，见[046](../batches/046.md)。
 
 - 2026-11-07 · 批次045：为TextBoxBase-005a增加标准内部WindowText扩展点，将现有Text setter的native提交与公开OnTextChanged分开；仅EDIT在native提交期间抑制反射通知，处理器内native编辑仍正常通知。Control公开Text判等/提交/通知规则保持；相关ControlText/编辑等892项与全量4,782项通过。首次两例夹具父Form未建窗被停车窗承载，补真实父HWND和托管映射断言后通过；不改变生产Parent/创建/反射管线，不重复新增Control完成任务，完整11/17与生命周期仍待，见[045](../batches/045.md)。
 
