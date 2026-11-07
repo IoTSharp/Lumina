@@ -26,6 +26,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次061：Rich-003a/004a使用私有Pack4 CHARFORMAT2W/PARAFORMAT映射及既有SendMessage，新增SelectionBackColor/SelectionAlignment标准属性，纠正SelectionColor存值行为；无新公共类型/依赖/PInvoke。不新增CNS完成项，完整格式/Font/ForeColor/BackColor、Designer/AOT运行与平台仍待，见[061](batches/061.md)。
+
 - 2026-11-07 · 批次060：Rich新增标准Rtf/SelectedRtf与静态Stdcall流出回调、逐调用cookie/MemoryStream，复用Pack4 EDITSTREAM和既有SendMessage，无新PInvoke/公共流模型/依赖。归Rich-002c/011a，不新增CNS完成项；完整文件/Protected/OLE、格式API与Designer/AOT运行仍待，见[060](batches/060.md)。
 
 - 2026-11-07 · 批次059：Rich纯文回调以静态UnmanagedCallersOnly/Stdcall和独立cookie实现，复用现有SendMessage；SDK核GETTEXTEX/EDITSTREAM的Pack4。必要内部结构归Rich-002a/002b，不新增公共契约或CNS完成项，完整RTF/格式/Protected/OLE/Designer/AOT运行保持待办，见[059](batches/059.md)。

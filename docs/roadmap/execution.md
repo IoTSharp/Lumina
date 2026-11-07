@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[061](batches/061.md)完成RichTextBox-003a颜色双属性真实CHARFORMAT2W状态与004a SelectionAlignment的PARAFORMAT对齐。67新增/5,849全量首轮与固定双目标Release通过；无窗背景缓存、原生mask/effects和混合读回、非法枚举前置及RTF重建保持。下一沿其余字符/段落格式、专有选择/坐标和MaskedTextProvider真实模型依赖继续；Font/Protected/SelectionType、Bullet/缩进/Tabs、完整格式/文件/OLE/通知/撤销重做、缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～061、不重评全项目、不建context/调度框架；下述060及以前为历史。
+
 当前[060](batches/060.md)完成RichTextBox-002c Rtf/SelectedRtf字符串流与011a RTF句柄格式缓存。54新增/5,782全量及固定双目标Release通过；首测试unsafe编译失败、首50/54和真实新纯文Modified恢复修复保留，空选区导出0字节独立native确认。下一沿Rich字符/段落格式真实状态、专有选择/坐标和MaskedTextProvider模型依赖继续；Load/Save文件/StreamType、Protected/OLE/通知/撤销重做、完整缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～060、不重评全项目、不建context/调度框架；下述059及以前为历史。
 
 当前[059](batches/059.md)完成RichTextBox-002a纯文本Text/Unicode StreamIn和002b专有TextLength/SelectedText/SelectionLength首范围。64新增/5,728全量及固定双目标Release通过；首61/64包含真实Modified重建缺口及两项新夹具问题，原回执保持。下一按Rich格式/RTF持久化、专有选择/坐标及MaskedTextProvider模型依赖继续；完整格式/Protected/OLE/通知、缩放/反射/线程/模态、Designer/AOT/设备/平台/98%仍待。不重做033～059、不重评全项目、不建context/调度框架；下述058及以前为历史。

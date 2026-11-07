@@ -19,6 +19,14 @@ public class RichTextBox : TextBoxBase
     private const int WmSetText = 0x000C;
     private const int EmGetLineCount = 0x00BA;
     private const int EmExSetSel = 0x0437;
+    private const int EmGetCharFormat = 0x043A;
+    private const int EmGetParaFormat = 0x043D;
+    private const int EmSetCharFormat = 0x0444;
+    private const int EmSetParaFormat = 0x0447;
+    private const uint CfmColor = 0x40000000;
+    private const uint CfmBackColor = 0x04000000;
+    private const uint CfeAutoBackColor = 0x04000000;
+    private const uint PfmAlignment = 8;
     private const int EmStreamIn = 0x0449;
     private const int EmStreamOut = 0x044A;
     private const int EmGetTextEx = 0x045E;
@@ -45,7 +53,7 @@ public class RichTextBox : TextBoxBase
     private string? _textPlain;
     private string? _textRtf;
     private bool _creatingRichHandle;
-    private Color _selectionColor = Color.Empty;
+    private Color _selectionBackColorToSetOnHandleCreated = Color.Empty;
     private bool _autoWordSelection;
     private bool _detectUrls;
     private RichTextBoxScrollBars _scrollBars;
@@ -253,10 +261,102 @@ public class RichTextBox : TextBoxBase
         }
     }
 
-    public Color SelectionColor
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe Color SelectionColor
     {
-        get => _selectionColor;
-        set => _selectionColor = value;
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            CharFormat2 format = GetSelectionCharFormat();
+            return (format.Mask & CfmColor) != 0
+                ? ColorTranslator.FromOle(format.TextColor) : Color.Empty;
+        }
+        set
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            CharFormat2 format = GetSelectionCharFormat();
+            format.Mask = CfmColor;
+            format.Effects = 0;
+            format.TextColor = ColorTranslator.ToWin32(value);
+            _ = Win32.SendMessageW(NativeHandle, EmSetCharFormat, 1, (nint)(&format));
+        }
+    }
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe Color SelectionBackColor
+    {
+        get
+        {
+            if (!IsHandleCreated) { return _selectionBackColorToSetOnHandleCreated; }
+            CharFormat2 format = GetSelectionCharFormat();
+            if ((format.Effects & CfeAutoBackColor) != 0) { return BackColor; }
+            return (format.Mask & CfmBackColor) != 0
+                ? ColorTranslator.FromOle(format.BackColor) : Color.Empty;
+        }
+        set
+        {
+            // A repeated value can target a different selection. Before handle
+            // creation WinForms caches this property without creating a window.
+            _selectionBackColorToSetOnHandleCreated = value;
+            if (!IsHandleCreated) { return; }
+            CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
+            if (value == Color.Empty) { format.Effects = CfeAutoBackColor; }
+            else
+            {
+                format.Mask = CfmBackColor;
+                format.BackColor = ColorTranslator.ToWin32(value);
+            }
+            _ = Win32.SendMessageW(NativeHandle, EmSetCharFormat, 1, (nint)(&format));
+        }
+    }
+
+    [DefaultValue(HorizontalAlignment.Left)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe HorizontalAlignment SelectionAlignment
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new() { Size = (uint)sizeof(ParaFormat) };
+            _ = Win32.SendMessageW(NativeHandle, EmGetParaFormat, 0, (nint)(&format));
+            if ((format.Mask & PfmAlignment) == 0) { return HorizontalAlignment.Left; }
+            return format.Alignment switch
+            {
+                2 => HorizontalAlignment.Right,
+                3 => HorizontalAlignment.Center,
+                _ => HorizontalAlignment.Left
+            };
+        }
+        set
+        {
+            if ((uint)value > 2u)
+            {
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(HorizontalAlignment));
+            }
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new()
+            {
+                Size = (uint)sizeof(ParaFormat),
+                Mask = PfmAlignment,
+                Alignment = value switch
+                {
+                    HorizontalAlignment.Right => 2,
+                    HorizontalAlignment.Center => 3,
+                    _ => 1
+                }
+            };
+            _ = Win32.SendMessageW(NativeHandle, EmSetParaFormat, 0, (nint)(&format));
+        }
+    }
+
+    private unsafe CharFormat2 GetSelectionCharFormat()
+    {
+        CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
+        _ = Win32.SendMessageW(NativeHandle, EmGetCharFormat, 1, (nint)(&format));
+        return format;
     }
 
     protected override Size DefaultSize => new(100, 96);
@@ -307,6 +407,10 @@ public class RichTextBox : TextBoxBase
         // Hidden RichEdit controls otherwise omit these edit notifications.
         _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0, EnmChange | EnmUpdate);
         _ = Win32.SendMessageW(NativeHandle, EmAutoUrlDetect, DetectUrls ? 1 : 0, 0);
+        if (_selectionBackColorToSetOnHandleCreated != Color.Empty)
+        {
+            SelectionBackColor = _selectionBackColorToSetOnHandleCreated;
+        }
         AutoWordSelection = AutoWordSelection;
         base.OnHandleCreated(e);
         if (_textRtf is not null)
@@ -510,6 +614,48 @@ public class RichTextBox : TextBoxBase
             if (context is not null) { context.Failure = exception; }
             return 1;
         }
+    }
+
+    // Richedit.h packs both structures at four bytes. Fixed inline buffers
+    // keep these synchronous message payloads blittable on the AOT path.
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    private unsafe struct CharFormat2
+    {
+        internal uint Size;
+        internal uint Mask;
+        internal uint Effects;
+        internal int Height;
+        internal int Offset;
+        internal int TextColor;
+        internal byte CharSet;
+        internal byte PitchAndFamily;
+        internal fixed char FaceName[32];
+        internal ushort Weight;
+        internal short Spacing;
+        internal int BackColor;
+        internal uint Locale;
+        internal uint Reserved;
+        internal short Style;
+        internal ushort Kerning;
+        internal byte UnderlineType;
+        internal byte Animation;
+        internal byte RevisionAuthor;
+        internal byte Reserved1;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    private unsafe struct ParaFormat
+    {
+        internal uint Size;
+        internal uint Mask;
+        internal ushort Numbering;
+        internal ushort Effects;
+        internal int StartIndent;
+        internal int RightIndent;
+        internal int Offset;
+        internal ushort Alignment;
+        internal short TabCount;
+        internal fixed int Tabs[32];
     }
 
     private sealed class TextStreamContext(byte[] bytes)

@@ -1,5 +1,15 @@
 # 本轮验证与限制
 
+## 批次061 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标首轮0错/2既有NU1510（release-build.json），67/67新增（颜色33/对齐34）与5,849/5,849全量首轮0失败/跳过；旧测试、项目与固定Demo/Designer/resx未改。WarningLevel=0不是分析告警清零，原JSON/TRX保留artifacts/compatibility-batch061。
+
+003a覆盖SelectionColor/SelectionBackColor的116字节Pack4字符格式、精确GET→SET/mask/effects/颜色转换、无窗背景缓存/创建重放/RTF优先、混合/最新native颜色、其他格式保持与重建；Empty背景请求由独立RichEdit窗口对照。004a覆盖SelectionAlignment的156字节Pack4段落格式、非法枚举建窗前拒绝、原异常/重试、mask/native值映射、空/混合/选中段落与最新native状态、缩进/Tab/粗体保持、RTF重建/Modified真假的状态保持。SDK10.0.26100.0头文件与固定Rich参考123,535字节/SHA256 76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0已独立重核；无新PInvoke/公共封送模型/依赖，无系统剪贴板操作。
+
+仅关闭003a/004a；004从全待办纠正部分。SelectionFont/CharOffset/Protected/SelectionType、Bullet/缩进/Tabs、完整格式与Font/ForeColor/BackColor同步、文件/OLE/专有通知/撤销重做/坐标、Masked模型/直接层级及Designer/AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%仍待。固定API刷新、CI包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回；官方Drawing/固定双目标静态Demo、原ID/未完父项/1,095类型/61,240成员行/固定分母保持，见[061](batches/061.md)。
+
+收尾纠正公共页FND-001遗漏058 Rich后端和FND-011遗漏049通知修复的当前描述，父项继续部分。路线导出449MD/2,189任务（2,139控件+50共享）/187实施行/整类型完成0/0错误；独立核任务ID/未完父项/TRX。首独立脚本漏计4个根文档，只修核查范围，原失败回执保留，无生产/测试变更。
+
 ## 批次060 · 2026-11-07 当前验证
 
 最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json），54/54新增（RTF31/寿命23）与5,782/5,782全量0失败/跳过。首方案构建因新测试三处unsafe且测试项目未开放而失败，修新测试为Marshal缓冲/测试委托，不改项目或生产接口；原release-build.json保留。WarningLevel=0不是分析告警清零，回执位于artifacts/compatibility-batch060。

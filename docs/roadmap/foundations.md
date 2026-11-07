@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次061收尾复核：058已完成Rich直接TextBoxBase/真实RichEdit，059～061只补明确文本/RTF/颜色/对齐子范围；FND-001原仍列整个Rich层级/后端缺失的当前描述已纠正。FND-011原仍称048重挂通知原因未闭环，现按049已实现的Control-17e纠正；原反射父Form寿命/WM_NOTIFY、完整派生/线程/缩放及平台父项仍未完成，不新增FND完成任务，见[061](batches/061.md)。下述053及以前为历史。
+
 2026-11-07 · 批次053完成CNS-006a标准无DC测量依赖、TextBoxBase-007b真实首选尺寸计算与008c普通EDIT延期滚动。108新增/5,329全量和固定双目标Release通过；首构建与两轮夹具/诊断失败保留。完整AutoSize/default/首选缓存/控件DPI与请求高度生命周期、Rich/Masked后端、线程/模态及平台仍待，见[053](batches/053.md)。下述052及以前为历史。
 
 2026-11-07 · 批次052完成TextBoxBase-008a/008b六个行/字符位置查询限定范围；102新增/5,221全量及固定双目标Release通过。首93/102九个夹具轨迹错误与原TRX保留，生产未为此改动。普通EDIT程序查询不等于完整测量/default、派生编辑、物理输入或辅助技术验收，完整线程/模态/平台仍待，见[052](batches/052.md)。下述051及以前为历史。
@@ -28,7 +30,7 @@
 
 | ID | 状态 | 工作与验收 | 对应文档 |
 | --- | --- | --- | --- |
-| FND-001 | 🟡 | 002～019基础构造、集合/标准句柄及Form链保留；042新增TextBoxBase共享EDIT首范围与TextBox直接继承。RichTextBox/MaskedTextBox直接层级/原生后端、ButtonBase、IDropTarget和所有派生默认/完整扩展仍缺，不由一个基类或构造关闭父项 | [Control](controls/Control.md)、[Form](controls/Form.md)、[TextBoxBase](controls/TextBoxBase.md)、[批次042](batches/042.md) |
+| FND-001 | 🟡 | 002～019基础构造、集合/标准句柄及Form链、042的TextBoxBase/TextBox层级保留；058的RichTextBox-001a/007a已完成直接层级、真实RichEdit及必要默认，059～061的文本/RTF/颜色/对齐另记Rich子任务。MaskedTextBox直接层级/真实模型、ButtonBase、IDropTarget、Rich完整共享成员覆盖和所有派生默认/扩展仍缺，不由有限子范围关闭父项 | [Control](controls/Control.md)、[Form](controls/Form.md)、[TextBoxBase](controls/TextBoxBase.md)、[RichTextBox](controls/RichTextBox.md)、[批次058](batches/058.md) |
 | FND-002 | 🟡 | 003～025投递/context范围保留；026的Control-05c补已接受InvokeAsync任务关闭/Post/Attach失败终止，保留取消先后/重建/已开始异步工作和ValueTask单消费。ApplicationContext/模态、多UI退出、等待期间释放同一wait与完整竞态仍缺；null Delegate/Send、关闭增强和错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次026](batches/026.md) |
 | FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | 🟡 | 018～026 Demo窗口证据保留；027 Native AOT原生窗口可见、程序BM_CLICK使Enable option 0→1、WM_CLOSE正常exit0且原HWND全部销毁。锁屏下物理鼠标命中未验收；模态、完整布局/业务交互、设计器/可访问性及018文字裁切仍未关闭 | [027证据](batches/027.md)、[原评估](../assessments/2026-10-15/README.md) |
@@ -40,7 +42,7 @@
 | ID | 状态 | 任务细节与验收 |
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
-| FND-011 | 🟡 | 019～046句柄/消息/销毁边界与源窗口类身份缓存范围保留；048的Control-17d补停车期间WM_COMMAND到已登记实际子控件的连接。重挂后EDIT未交付命令的现象已复现，原因未闭环，继续Control-17/TextBoxBase-006；全部派生状态恢复、完整反射、自定义Param AOT、关闭竞态与三平台仍缺，Created隐藏属性差异保留 |
+| FND-011 | 🟡 | 019～048句柄/消息/销毁边界、源窗口类缓存和停车WM_COMMAND连接保留；049的Control-17e已保留原停车通知接收者至源句柄销毁，并由Form按来源HWND反射，闭环048的parking→Form编辑/Undo通知缺口。原反射父Form销毁/重建寿命、WM_NOTIFY/完整反射、全部派生状态恢复、自定义Param AOT、关闭竞态与三平台仍缺，Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
 | FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap与046的BorderStyle复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
@@ -58,6 +60,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次061：FND-001原当前行遗漏058已落地的Rich直接层级/真实后端，FND-011仍保留048通知缺口而遗漏049修复；按现有Rich生产/Control通知接收者连接、对应原任务及本批5,849全量回归纠正，原历史失败快照不改。两个父项保持部分，不新增FND子任务或宣称完整后端/平台，原ID/固定分母保持，见[061](batches/061.md)。
 
 - 2026-11-07 · 批次048：只新增TextBoxBase-005b/005c与Control-17d，TextBox-002/009按真实继承交叉引用，Rich/Masked不计专有支持。重挂后编辑通知是新发现未完范围，保留诊断并进入原父任务，不因43新增通过或缩小测试范围称完整重挂兼容；原ID/1,095类型/61,240成员行和固定分母保留。README实施列/tasks.csv由既有工具生成，见[048](batches/048.md)。
 
