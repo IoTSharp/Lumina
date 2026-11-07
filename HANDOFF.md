@@ -68,6 +68,8 @@
 
 ## 批次064 实施与收尾（当前）
 
+- 下一local只读接续聊天`01a1b5c5-685a-7330-852e-435ba2a38370`（Lumina batch 065 continuation，host local）已创建，编码归属指定给该聊天。064实现提交`12a1c42c9c56ebde04d91911114ed930b380c418`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立核一致，main干净/+0/-0；本独立归属交接commit/push并核三SHA后064才发送“开始接管”。065先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树并向064原主`01a1b59c-e7bd-7921-976f-23b4a54bd381`明确确认实际接管；确认前不写文件/不构建/不提交推送/不创建内部任务。确认后064立即停共享写入/构建/Git并归档，不等065完成。持续授权/分别成功push核三SHA/先只读/明确确认/旧主立即归档以及后来暂停停止优先保持；监督NOT_FOUND、065绑定NOT_DONE，不恢复或另建替代项。全量FAIL/未解门槛完整传递，不因代码完成消除。
+
 - 完成RichTextBox-003c SelectionType/标准五值flags与008a三项RichEdit专有查询，101新增（39/62）通过；Release方案/固定双目标0错/2既有NU1510，生产SHA af1932c9353f7f7b4be225a7bd28ca0cb325b51629ee28f269e78b57ddea3fb3。只修新位置夹具的两次物理行假设错误，保70001原生硬断言，生产/旧测试未为失败改变。主独占生产/枚举、共享文档/集成/Git，两个内部任务已冻结。
 - 全量明确FAIL/未解决：首55秒超时，完整一次6145/6146（既有WindowsFormsSynchronizationContextInstallTests.LegacyTaskCallback_FromWorkerAlsoResumesOnTheUiThread的UI callback超时），末180秒超时另有既有TextBoxClickMessageTests.OnlyLeftDoubleMessageArmsTheTextBoxFlagBeforeNativeDefaultProcessing失败。两组独立18/18和23/23通过，不等于全量通过；原因未定，不称环境问题、不改旧断言，不为此扩展本批生产范围。全部原JSON/TRX保留artifacts/compatibility-batch064，后续不得抹除该未解门槛。
 - 根路线图/执行/5控件公共页及历史/contracts/foundations/验证/README实施列/tasks.csv按实际范围同步，索引总述从063同步064。既有ExportTasks为452MD/2195任务（2145控件+50共享）/187实施行/整类型完成0/0错误；只新增003c/008a，008由待办进入部分，其他旧ID/状态与1095类型/61240成员记录/固定分母保持。独立核查与TRX/编码/归属回执见artifacts/compatibility-batch064，审计通过不等同全量测试通过。
