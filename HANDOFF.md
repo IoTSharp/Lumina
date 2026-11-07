@@ -48,6 +48,9 @@
 
 ## 批次054 实施与收尾（当前）
 
+- 054实现提交`2234352906131df9edca2784ad226d11099fb774`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`43ce1bd82369650abb1257f599cb9f257bdc4d6a`。实现与本独立归属交接分别保留，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b4c6-1525-7820-a4e8-b2e43893e2a9`（Lumina batch 055 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后054才发送“开始接管”；055先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向054确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后054立即停止共享写入/构建/Git并归档，不等055完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先全部保持；监督NOT_FOUND、055绑定NOT_DONE，不恢复或新建替代项。
+
 - 已独立核交接`43ce1bd82369650abb1257f599cb9f257bdc4d6a`三SHA/干净树，向053明确确认实际接管并实时核其归档。三个互斥任务completed冻结，主复核整合并补必要父布局/元数据回归，独占共享生产/interop、文档/集成/Git。
 - 只完成TextBoxBase-007c标准PreferredHeight/DefaultSize与必要独立控件DPI度量，007d独立AutoSize默认true/请求高度及SetBoundsCore/Font/Padding/Multiline/创建调整，007e首选缓存启用/真实失效。取消旧24/48原生下限；Table/Flow改读内部LayoutAutoSize，通用布局状态仍false。完整缩放/跨屏DPI消息与字体重缩放、其余元数据/样式、TextBox滚动条首选测量及Rich/Masked真实层级/模型/后端仍待。
 - 最终Release方案/固定Demo双目标0错/2既有NU1510；84新增（33度量+30生命周期+21缓存/消费者）和5,413全量0失败/跳过，最终JSON/TRX带metadata-final后缀。首81新增通过、首全量6失败原回执完整：真实Table宽80→4消费者缺口已修，Flow同源消费同步修；其余5例明确固定夹具AutoSize=false，原尺寸/选择/缓存/坐标硬期望不改。中间83/5,412通过后固定源码复核纠正DeviceDpi EditorBrowsable=Always并补一例，最终重建/重跑84/5,413通过，见[054](docs/roadmap/batches/054.md)。
