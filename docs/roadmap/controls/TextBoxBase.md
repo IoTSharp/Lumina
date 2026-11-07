@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+056完成003f构造点击样式/专用左键消息链及003g必要绘图/间距成员元数据。构造关闭StandardClick/StandardDoubleClick/UseTextForAccessibility/UserPaint，左双击消息先置私有位；OnMouseUp按验证/原生命中生成点击或双击并转发原参数，保留固定异常/清位顺序。隐藏成员继续直转Control状态/事件槽。46新增/5,527全量及Release固定双目标通过；两次独立WindowFromPoint检查均no-hit，只证明负向路由，不计正向可见点击/物理输入验收。完整003与Designer/AOT/平台保持未完成，见[056](../batches/056.md)。下述055及以前为历史。
+
 055完成003e创建参数限定范围：在消费base.CreateParams前设置ApplyThemingImplicitly，多行不再额外强加ES_WANTRETURN；保留Style/ExStyle既有受保护扩展。31例核请求组合/缓存复用、前置顺序/原异常、真实EDIT/独立native对照和AcceptsReturn/直接CR输入通过。首轮一例句柄预期错误按既有ReadOnly→IME→PasswordChar建窗链纠正，原样式硬断言不改，生产未为此改动；完整主题、点击/双击、其余样式/元数据与平台仍待，见[055](../batches/055.md)。下述054及以前为历史。
 
 054完成007c的标准PreferredHeight/DefaultSize与必要控件DPI度量、007d的独立AutoSize/请求高度生命周期、007e的首选缓存启用及失效。单行默认AutoSize=true，默认100×PreferredHeight；取消旧24/48原生高度下限，保存用户请求高度供关闭AutoSize/切换多行时恢复。通用布局状态保持false，Table/Flow消费内部状态；84个新增用例通过。完整缩放/跨屏DPI消息、其余元数据/样式、Rich/Masked真实后端与平台验收仍待，见[054](../batches/054.md)。下述053及以前为历史。
@@ -48,12 +50,14 @@
 | TextBoxBase-002a | P1 | ✅ | 批次046：标准非virtual SelectAll/DeselectAll；SelectAll只读取一次虚TextLength并直接进入private protected virtual SelectInternal，DeselectAll调用虚SelectionLength setter。已有Select校验和无窗缓存/EM_SETSEL/创建重建恢复共用入口。20项回归含虚调用/原异常、CRLF/emoji、真实父映射及选区/只读/Modified保持通过；不含SelectedText、Lines、完整端点/输入或UIA。 |
 | TextBoxBase-002b | P1 | ✅ | 批次047：标准virtual SelectedText及内部virtual SetSelectedTextInternal；getter消费私有选择查询和虚Text.Substring，无窗不建句柄，保留固定源码有向负长度异常。setter创建真实EDIT，null归空，暂解EM_LIMITTEXT后EM_REPLACESEL；clearUndo时清native modified/undo，再恢复私有_maxLength，false保留可撤销编辑。必要长度依赖见003c；原生通知、只读程序替换、UTF-16、精确消息序列及独立EDIT受限Undo对照见047，不关闭完整002/005。 |
 | TextBoxBase-002c | P1 | ✅ | 批次047：Lines getter只读取一次虚Text，空文本返回空数组，CR/LF/CRLF分行且保留尾部空行；setter null/空数组/null元素经虚Text及Environment.NewLine处理。补Appearance/Hidden/Mergable(false)/Localizable/AllowNull声明，虚调用/原异常、真实父映射/原生文本/通知/重建有限场景见047；StringArrayEditor和Designer往返继续011。 |
-| TextBoxBase-003 | P1 | 🟡 | 042～051共享设置/通知、MaxLength/快捷键等限定范围保留；055的003e移除多行额外ES_WANTRETURN并补CreateParams前置主题标志。其余默认/元数据、构造点击样式与完整点击链、完整菜单/快捷键输入及派生覆盖仍待；完整CreateParams/主题不由有限请求位关闭，交叉引用不重复计数。 |
+| TextBoxBase-003 | P1 | 🟡 | 042～055设置/通知、MaxLength/快捷键与创建请求限定范围保留；056的003f补构造样式/专用左键点击链，003g补八项绘图/间距声明与转发元数据。其余默认/元数据、完整菜单/快捷键输入、正向可见点击/物理设备与派生覆盖仍待；完整CreateParams/主题与父项不由有限范围关闭，交叉引用不重复计数。 |
 | TextBoxBase-003a | P1 | ✅ | 批次043：AcceptsTab=false、标准AcceptsTabChanged/虚On*、Events槽/同值/重入/原异常；WordWrap=true及Localizable，变更重建，所有赋值清本控件首选缓存，AutoSize时含同值参与父布局。默认AUTOH/AUTOV、多行折行清AUTOH，不再强制纵条；17项回归含真实EDIT折行/状态通过。完整003/004/007父项不关闭。 |
 | TextBoxBase-003b | P1 | ✅ | 批次044：HideSelection=true、Behavior/DefaultValue元数据、HideSelectionChanged/虚On*与Events槽；同值不操作，合法变化保存后RecreateHandle再通知，false设置ES_NOHIDESEL。14项回归含独立EDIT样式、通知/重入/原异常/CanRaiseEvents及选择/modified/只读/密码保存通过。物理选区显示、RichEdit派生覆盖和完整003/004父项不关闭。 |
 | TextBoxBase-003c | P1 | ✅ | 批次047：SelectedText必要前置MaxLength标准virtual属性，默认32767/Behavior/Localizable，负值抛value异常；同值no-op、无窗缓存，有窗和创建后经internal virtual UpdateMaxLength提交EM_LIMITTEXT。0解除限制，现有/程序Text不截断、不重建句柄；真实字符输入、消息次数/状态和重建限制回读见047。不含派生专有限制、剪贴板/完整输入或003父项。 |
 | TextBoxBase-003d | P1 | ✅ | 批次050：标准virtual ShortcutsEnabled默认true及Behavior/DefaultValue；setter含同值赋值惰性初始化固定14项表。ProcessCmdKey先父路由并保消息修改/结果，再消费虚getter；禁用精确表及附加Shift，不扩展Alt/CtrlI，私有只读态另拦精确CtrlL/R/E/J。WM_CONTEXTMENU禁用时跳过native系统菜单，客户区内保留既有custom菜单路由/键盘中心。62例通过；自定义菜单仅owner0受限路由，真实显示/物理输入和启用时Ctrl+Backspace词删除不在本子范围，不关闭003/005/009。 |
 | TextBoxBase-003e | P1 | ✅ | 批次055：CreateParams在base前设置ApplyThemingImplicitly，多行仅加ES_MULTILINE而不强加ES_WANTRETURN；保留Style/ExStyle历史扩展和现有其他请求位。31例覆盖组合、参数复用/状态切换、投影前标志/原异常、真实与独立EDIT、AcceptsReturn和直接CR输入；首轮一例ReadOnly=false经IME/PasswordChar建窗的夹具假设已纠正，原样式硬断言保留。完整构造点击样式/点击链、主题视觉和003父项未关闭。 |
+| TextBoxBase-003f | P1 | ✅ | 批次056：构造关闭StandardClick/StandardDoubleClick/UseTextForAccessibility/UserPaint，保留单行FixedHeight/Selectable；左双击在base.WndProc前置私有标记，OnMouseUp仅左键经验证取消/WindowFromPoint守卫生成Click→MouseClick或先清位再DoubleClick→MouseDoubleClick，随后清位并base转发原参数；非左/null与原异常时序保持。Click显式new/true/Always并共用基类事件槽。23例含标记前置/取消/负命中/同槽订退及Control finally清捕获通过；两次原生命中均false，正向可见点击、物理输入及完整003未验。 |
+| TextBoxBase-003g | P1 | ✅ | 批次056：BackgroundImage/BackgroundImageLayout override及两Changed new事件均Browsable(false)/EditorBrowsable(Never)，Padding及PaddingChanged另DSV.Hidden/事件Layout分类；MouseClick为new/true/Always，DoubleBuffered为protected override/Never。八项均直转Control，不新增状态/事件槽。23例声明/TypeDescriptor、跨引用订退/共享状态、有限重入/原异常、间距钳值/借用图片寿命通过；其余元数据、Designer序列化往返/主题视觉/AOT和完整003未验。 |
 | TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged，045的005a补ModifiedChanged，046的007a补BorderStyleChanged标准事件槽/虚通知。完整通知时序/元数据及派生覆盖仍待，事件子范围交叉引用不重复计数、不关闭父项。 |
 | TextBoxBase-005 | P1 | 🟡 | 045～050修改标志/替换/追加/撤销/Clear/剪贴板入口保留；051的005f补固定词边界辅助，009a另记使用该辅助的可撤销词删除命令。真实剪贴板数据/限制、完整快捷键/输入合并、派生覆盖与全部编辑重入仍待；有限普通EDIT范围不关闭父项。 |
 | TextBoxBase-005a | P1 | ✅ | 批次045：Modified默认false、非virtual及Behavior/Browsable(false)/隐藏序列化元数据，Events槽/虚OnModifiedChanged；getter读取真实EDIT状态，差异时保存后通知，setter先消费getter再提交native/缓存/通知。EN_UPDATE同步，程序Text的native提交期间抑制反射通知，TextChanged处理器内native编辑仍可通知；最后直接清native位并延迟至getter通知，创建/重建和销毁观测保存状态。20项回归与全量通过；不含撤销/剪贴板/完整编辑或真实派生后端。 |
@@ -92,6 +96,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次056：新增003f/003g，仅关闭上述代码范围；纠正当前构造点击样式/这八项元数据仍全待办的描述，旧批历史不回写。46新增/5,527全量和固定双目标Release通过，未改旧测试。两次WindowFromPoint均no-hit，不将负向通过冒充正向点击验收，原始TRX保留；完整003/平台与固定分母保持，见[056](../batches/056.md)。
 
 - 2026-11-07 · 批次055：新增003e，只关闭创建请求位/前置标志有限范围；当前ES_WANTRETURN缺口按真实代码纠正，完整构造点击/主题/元数据父项仍待。首67/68的一例新夹具错误和最终68新增/5,481全量证据见[055](../batches/055.md)，未为失败修改生产。
 

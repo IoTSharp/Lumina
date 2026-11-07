@@ -40,10 +40,12 @@ public abstract class TextBoxBase : Control
     private bool _autoSize = true;
     private int _requestedHeight;
     private bool _integralHeightAdjust;
+    private bool _doubleClickFired;
 
     internal TextBoxBase()
     {
-        SetStyle(ControlStyles.UserPaint, false);
+        SetStyle(ControlStyles.StandardClick | ControlStyles.StandardDoubleClick
+            | ControlStyles.UseTextForAccessibility | ControlStyles.UserPaint, false);
         SetStyle(ControlStyles.FixedHeight, true);
         CachePreferredSize = true;
         _requestedHeight = Height;
@@ -80,6 +82,80 @@ public abstract class TextBoxBase : Control
     {
         add => base.AutoSizeChanged += value;
         remove => base.AutoSizeChanged -= value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override Image? BackgroundImage
+    {
+        get => base.BackgroundImage;
+        set => base.BackgroundImage = value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new event EventHandler? BackgroundImageChanged
+    {
+        add => base.BackgroundImageChanged += value;
+        remove => base.BackgroundImageChanged -= value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override ImageLayout BackgroundImageLayout
+    {
+        get => base.BackgroundImageLayout;
+        set => base.BackgroundImageLayout = value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new event EventHandler? BackgroundImageLayoutChanged
+    {
+        add => base.BackgroundImageLayoutChanged += value;
+        remove => base.BackgroundImageLayoutChanged -= value;
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override bool DoubleBuffered
+    {
+        get => base.DoubleBuffered;
+        set => base.DoubleBuffered = value;
+    }
+
+    [Browsable(true)]
+    [EditorBrowsable(EditorBrowsableState.Always)]
+    public new event EventHandler? Click
+    {
+        add => base.Click += value;
+        remove => base.Click -= value;
+    }
+
+    [Browsable(true)]
+    [EditorBrowsable(EditorBrowsableState.Always)]
+    public new event MouseEventHandler? MouseClick
+    {
+        add => base.MouseClick += value;
+        remove => base.MouseClick -= value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Padding Padding
+    {
+        get => base.Padding;
+        set => base.Padding = value;
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [Category("Layout")]
+    public new event EventHandler? PaddingChanged
+    {
+        add => base.PaddingChanged += value;
+        remove => base.PaddingChanged -= value;
     }
 
     /// <summary>Gets the preferred height for a single line, independently of wrapping.</summary>
@@ -904,6 +980,36 @@ public abstract class TextBoxBase : Control
     }
 
     /// <inheritdoc />
+    protected override void OnMouseUp(MouseEventArgs mevent)
+    {
+        if (mevent is not null && mevent.Button == MouseButtons.Left)
+        {
+            if (!ValidationCancelled)
+            {
+                Point screen = PointToScreen(mevent.Location);
+                if (Win32.WindowFromPoint(new Win32.POINT { x = screen.X, y = screen.Y }) == NativeHandle)
+                {
+                    if (!_doubleClickFired)
+                    {
+                        OnClick(mevent);
+                        OnMouseClick(mevent);
+                    }
+                    else
+                    {
+                        _doubleClickFired = false;
+                        OnDoubleClick(mevent);
+                        OnMouseDoubleClick(mevent);
+                    }
+                }
+            }
+
+            _doubleClickFired = false;
+        }
+
+        base.OnMouseUp(mevent!);
+    }
+
+    /// <inheritdoc />
     protected override void OnPaddingChanged(EventArgs e)
     {
         base.OnPaddingChanged(e);
@@ -960,6 +1066,13 @@ public abstract class TextBoxBase : Control
         }
 
         return base.HandleWindowMessage(message, wParam, lParam, out result);
+    }
+
+    /// <inheritdoc />
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_LBUTTONDBLCLK) { _doubleClickFired = true; }
+        base.WndProc(ref m);
     }
 
     /// <inheritdoc />

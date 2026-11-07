@@ -1,6 +1,14 @@
 # 本轮验证与限制
 
-## 批次055 · 2026-11-07 当前验证
+## 批次056 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；WarningLevel=0不表示分析告警清零。新增46/46（点击23、必要成员元数据23）和全量5,527/5,527首轮通过，0失败/跳过，未改已有测试。tests-new.json/tests-full.json及TRX保留实际argv、时间、PID、父身份和cleanup_complete，位于artifacts/compatibility-batch056。
+
+两组独立WindowFromPoint检查在新增/全量TRX中均hit=False（doubleClick=false/true），只证明负向命中/状态清理与原参数转发，不证明正向Click/DoubleClick可见命中或物理设备验收。样式/左双击前置标记、取消/非左/null/异常、基类finally捕获清理、反射/TypeDescriptor及跨引用同槽/资源借用分别有轻量回归；Designer往返、AOT运行、完整输入/缩放/真实Rich/Masked和全部平台/98%仍未验。
+
+固定TextBoxBase/Control完整参考哈希独立重核，未使用partial/404作完整库存。固定API刷新、CI NuGet smoke pack/Notepad smoke publish本地NOT_RUN，hosted CI未独立回读。原1,095类型/61,240成员行/分母和所有未完父项保持，见[056](batches/056.md)。
+
+## 批次055 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；仅新夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。最终68/68新增（滚动条首选37、创建请求31）与5,481/5,481全量、0失败/跳过；tests-new-final.json、tests-full.json及TRX含实际argv、时间、PID、父身份和cleanup_complete，保留于artifacts/compatibility-batch055。
 

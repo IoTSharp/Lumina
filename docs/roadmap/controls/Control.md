@@ -1,5 +1,7 @@
 # Control
 
+056源码no-op，TextBoxBase-003f关闭通用标准点击样式并由专用OnMouseUp生成事件；复用现有Control鼠标finally清捕获/验证状态。必要成员转发归003g，不新增Control完成任务。23项点击契约及23项元数据测试通过，但独立WindowFromPoint均false，正向可见命中/物理输入与完整Control-13仍待，见[056](../batches/056.md)。
+
 055仅复用054的独立控件DPI读取和线程PMv2门禁，Win32新增SM2/3滚动条度量服务TextBox-004b；Control.cs源码no-op，不新增Control完成任务。固定RecreateHandle无句柄直接返回的缓存边界保留；完整缩放/跨屏事件/点击样式等原父项不关闭，见[055](../batches/055.md)。
 
 054为TextBoxBase-007c补必要DPI读取：构造在虚DefaultSize前保存独立DeviceDpiInternal，PMv2窗口创建后按真实HWND读取；公开非virtual DeviceDpi只在线程PMv2时投影控件值，其他线程返回初始系统DPI，元数据按固定源码。边框度量按当前线程感知选择系统API；只作为007c依赖记录，不重复新增完成任务。WmDpiChanged/BeforeParent、字体/常量重缩放、跨屏/Designer与完整DPI仍待，见[054](../batches/054.md)。
@@ -105,6 +107,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次056：生产no-op，专用文本框点击链保留通用鼠标异常finally边界，不将有限负向命中/元数据检查计为完整Control输入或Designer完成，见[056](../batches/056.md)。
 
 - 2026-11-07 · 批次055：源码no-op，固定Control重建guard与DPI内部读取只为TextBox-004b提供依赖；不把新增两个系统度量helper计作完整DPI或Control完成，见[055](../batches/055.md)。
 

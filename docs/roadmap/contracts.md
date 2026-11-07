@@ -26,6 +26,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次056：必要隐藏/可见成员元数据与基类转发归TextBoxBase-003g，Click声明及构造样式/左键链归003f；无新公开类型或名称，不扩写VisualStyles/可访问性完成范围。原附属类型父项、任务ID与固定类型/成员分母保持，见[056](batches/056.md)。
+
 - 2026-11-07 · 批次055：必要SM2/3按线程感知读取归TextBox-004b，创建请求/前置主题标志归TextBoxBase-003e；无新增公共类型/API，不扩写CNS-006a或主题VisualStyles完成范围。原父项、任务ID与固定类型/成员分母保持，见[055](batches/055.md)。
 
 - 2026-11-07 · 批次054：新增尺寸范围及必要控件DPI/原生边框度量归TextBoxBase-007c/007d/007e；CNS-006a只保留053无DC测量范围，不将其扩写为完整TextRenderer/IDeviceContext/DrawText完成。原附属类型父项、任务ID及固定分母保持，见[054](batches/054.md)。
