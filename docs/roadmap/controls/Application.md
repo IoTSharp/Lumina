@@ -1,5 +1,7 @@
 # Application
 
+053必要依赖：成功SetHighDpiMode后刷新无DC标准文本测量的初始系统DPI快照；失败、非法值和已有窗口拒绝路径保持原结果。该内部连接归CNS-006a，不新增Application完成任务；全量5,329回归通过，完整DPI/线程/平台验收仍待，见[053](../batches/053.md)。
+
 🟡 **现状：**已有消息循环、样式activation context和open form跟踪；040线程HKL服务保留，041补OleRequired线程缓存、输入语言OLE前置与显式/最外层退出配对。Run()/Run(ApplicationContext)、完整消息过滤/退出与OLE宿主context、CurrentCulture/UseWaitCursor、标准异常对话框与异常模式仍缺。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。

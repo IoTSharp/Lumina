@@ -150,7 +150,7 @@ foreach ($document in $globalDocuments.Keys) {
     foreach ($line in (Get-Content -Encoding UTF8 -LiteralPath (Join-Path $roadmapRoot $document))) {
         if (-not $line.StartsWith('|')) { continue }
         $cells = @([regex]::Split($line.Trim().Trim('|'), '(?<!\\)\|') | ForEach-Object { $_.Trim() })
-        $match = [regex]::Match($cells[0], '^(?:\d+ )?(?<Id>(?:FND|REP|CNS|XPL)-\d{3})$')
+        $match = [regex]::Match($cells[0], '^(?:\d+ )?(?<Id>(?:FND|REP|CNS|XPL)-\d{3}[a-z]?)$')
         if (-not $match.Success) { continue }
         $taskId = $match.Groups['Id'].Value
         if (-not $taskIds.Add($taskId)) { $errors.Add("Duplicate task ID: $taskId") }

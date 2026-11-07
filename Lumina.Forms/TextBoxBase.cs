@@ -36,6 +36,7 @@ public abstract class TextBoxBase : Control
     private bool _nativeModified;
     private bool _creatingHandle;
     private bool _codeUpdateText;
+    private bool _scrollToCaretOnHandleCreated;
 
     internal TextBoxBase()
     {
@@ -765,10 +766,52 @@ public abstract class TextBoxBase : Control
     /// </summary>
     public void ScrollToCaret()
     {
-        if (NativeHandle != 0)
+        if (!IsHandleCreated)
         {
-            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SCROLLCARET, 0, 0);
+            _scrollToCaretOnHandleCreated = true;
+            return;
         }
+
+        if (string.IsNullOrEmpty(WindowText)) { return; }
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SCROLLCARET, 0, 0);
+    }
+
+    // The standard measurement differs from PreferredHeight: multiline text,
+    // wrapping, padding and the requested constraints all participate here.
+    internal override Size GetPreferredSizeCore(Size proposedConstraints)
+    {
+        Size bordersAndPadding = SizeFromClientSize(Size.Empty) + Padding.Size;
+        if (BorderStyle != BorderStyle.None)
+        {
+            bordersAndPadding += new Size(0, 3);
+        }
+        if (BorderStyle == BorderStyle.FixedSingle)
+        {
+            bordersAndPadding += new Size(2, 2);
+        }
+
+        proposedConstraints -= bordersAndPadding;
+        TextFormatFlags format = TextFormatFlags.NoPrefix;
+        if (!Multiline)
+        {
+            format |= TextFormatFlags.SingleLine;
+        }
+        else if (WordWrap)
+        {
+            format |= TextFormatFlags.WordBreak;
+        }
+
+        Size textSize = TextRenderer.MeasureText(Text, Font, proposedConstraints, format);
+        textSize.Height = Math.Max(textSize.Height, FontHeight);
+        return textSize + bordersAndPadding;
+    }
+
+    /// <inheritdoc />
+    protected override void OnTextChanged(EventArgs e)
+    {
+        // Text changes clear measurement without relaying out the parent.
+        ClearPreferredSizeCache();
+        base.OnTextChanged(e);
     }
 
     /// <inheritdoc />
@@ -860,6 +903,11 @@ public abstract class TextBoxBase : Control
             _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, (nint)1, 0);
         }
         RestoreSelectionOnHandle();
+        if (_scrollToCaretOnHandleCreated)
+        {
+            ScrollToCaret();
+            _scrollToCaretOnHandleCreated = false;
+        }
     }
 
     /// <inheritdoc />

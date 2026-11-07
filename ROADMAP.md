@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[053](docs/roadmap/batches/053.md)完成CNS-006a六个无DC标准TextRenderer.MeasureText重载及必要TextFormatFlags/Padding.Size/DPI快照依赖、TextBoxBase-007b真实首选尺寸计算和008c普通EDIT未建窗延期滚动。108新增/5,329全量通过，Release固定双目标0错/2既有NU1510。首构建缺Padding.Size、首104/105与第二107/108夹具/诊断失败均保留；独立EDIT隐藏首行0、可见未聚焦/聚焦均37，Lumina可见聚焦37。生产未为测试失败改变。完整AutoSize/PreferredHeight/DefaultSize/缓存生命周期、Rich/Masked后端与平台/98%仍待。下述052及以前为历史。
+
 当前批次[052](docs/roadmap/batches/052.md)完成TextBoxBase-008a行查询与008b字符位置查询六个标准成员，直接消费真实EDIT消息并保留虚调用/异常/句柄/16位坐标契约。102新增/5,221全量通过，固定双目标Release0错/2既有NU1510；首93/102九个夹具轨迹错误和原TRX保留，生产未为此改动。完整008、AutoSize/PreferredHeight/DefaultSize/GetPreferredSize、真实派生后端和平台验收仍待。下述051及以前为历史。
 
 当前批次[051](docs/roadmap/batches/051.md)完成TextBoxBase-005f固定词边界辅助、009a启用Ctrl+Backspace/Ctrl+Shift+Backspace可撤销词删除，以及必要Control-14c内部redraw嵌套计数。最终88新增/5,119全量通过，固定双目标Release0错/2既有NU1510；首次85/88的三处无窗TextLength调用轨迹夹具错误及原TRX保留，生产未为此改动。未访问系统剪贴板或菜单；实际绘制/物理输入、完整编辑/测量/default、真实派生后端和平台门禁仍待。下述050及以前为历史。
@@ -42,7 +44,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～052的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [052结果](docs/roadmap/batches/052.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～053的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [053结果](docs/roadmap/batches/053.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

@@ -180,7 +180,9 @@ public static class Application
 
         lock (s_syncRoot)
         {
-            return !s_nativeWindowCreated && ApplicationHighDpi.SetProcessMode(highDpiMode);
+            bool success = !s_nativeWindowCreated && ApplicationHighDpi.SetProcessMode(highDpiMode);
+            if (success) { Win32.RefreshInitialSystemDpi(); }
+            return success;
         }
     }
 

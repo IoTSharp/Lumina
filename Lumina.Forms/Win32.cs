@@ -787,6 +787,16 @@ internal static partial class Win32
         public nint lParam;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct DRAWTEXTPARAMS
+    {
+        public uint cbSize;
+        public int iTabLength;
+        public int iLeftMargin;
+        public int iRightMargin;
+        public uint uiLengthDrawn;
+    }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct TEXTMETRICW
     {
@@ -1309,6 +1319,10 @@ internal static partial class Win32
     [DllImport("user32.dll", EntryPoint = "DrawTextW", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern int DrawTextW(nint hdc, string lpchText, int cchText, ref RECT lprc, uint format);
 
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+    internal static extern unsafe int DrawTextExW(nint hdc, char* text, int count,
+        ref RECT bounds, uint flags, ref DRAWTEXTPARAMS parameters);
+
     [DllImport("user32.dll", EntryPoint = "MessageBoxW", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern int MessageBoxW(nint hWnd, string lpText, string lpCaption, uint uType);
 
@@ -1455,6 +1469,27 @@ internal static partial class Win32
             return GetWindowTextW(hwnd, bufferPointer, buffer.Length);
         }
     }
+
+    private static int s_initialSystemDpi;
+
+    // No-DC text measurement uses the initial system DPI, rather than the
+    // calling thread's possibly temporary awareness context on every call.
+    internal static int InitialSystemDpi
+    {
+        get
+        {
+            int dpi = Volatile.Read(ref s_initialSystemDpi);
+            if (dpi == 0)
+            {
+                dpi = (int)GetSystemDpiScaleDimensions().Width;
+                Interlocked.CompareExchange(ref s_initialSystemDpi, dpi, 0);
+            }
+            return Volatile.Read(ref s_initialSystemDpi);
+        }
+    }
+
+    internal static void RefreshInitialSystemDpi()
+        => Volatile.Write(ref s_initialSystemDpi, (int)GetSystemDpiScaleDimensions().Width);
 
     internal static SizeF GetSystemDpiScaleDimensions()
     {

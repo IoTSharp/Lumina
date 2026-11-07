@@ -1,5 +1,7 @@
 # RichTextBox：逐成员待办
 
+053当前源码补充：错误TextBox层级间接消费普通EDIT首选计算/延期滚动，不计RichEdit格式度量、专有默认或COM文档滚动；源码no-op，真实后端/标准直接层级及原父项保持。固定成员行/原ID/分母不改，库存刷新NOT_RUN，见[当前任务](../controls/RichTextBox.md)。
+
 052当前源码补充：错误TextBox层级间接消费普通EDIT六个行/位置查询，不计RichEdit段落/格式/隐藏文字或专有坐标支持；本类型源码no-op、真实后端和标准层级仍缺。固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/RichTextBox.md)。
 
 050当前源码补充：源码no-op，错误TextBox层级的普通EDIT命令入口/快捷键禁用不计RichEdit专有剪贴板、输入、菜单或标准直接层级支持；原父任务、固定成员行/原ID/分母保持，引用包刷新NOT_RUN，见[当前任务](../controls/RichTextBox.md)。

@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次053 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标最终0错误/2既有NU1510（release-build-retest.json）；首构建因缺少标准Padding.Size双目标失败，补齐getter后重建通过，原release-build.json保留。WarningLevel=0不表示分析告警清零。新增最终108/108（测量62、首选计算26、延期滚动20）、完整5,329/5,329，0失败/跳过；tests-new-final.json、tests-full.json与TRX、实际argv/时间/PID/父身份/cleanup_complete保留artifacts/compatibility-batch053。
+
+首跑104/105的唯一失败为停车宿主下真实EDIT滚动首行仍0，三个同值枚举别名用例被xUnit去重；改用独立名称后全部108例进入。第二107/108失败为主新增的“未聚焦必为0”错误诊断假设。最终独立EDIT隐藏首行0、可见未聚焦/聚焦均37，Lumina在有效可见顶层宿主/真实focus硬断言下37，文本/选择/Undo/Modified/零通知原硬预期保持；只改夹具，生产未为测试失败改变。原tests-new.json/tests-new-retest.json及两个TRX保留，不把失败记为成功。
+
+固定v10.0.11真实GDI测量/普通EDIT范围有界通过；完整AutoSize独立默认、PreferredHeight/DefaultSize、首选缓存与控件DPI/请求高度生命周期、RichEdit COM滚动、Masked模型、IDeviceContext/DrawText、可见命中/物理设备、Designer/Native AOT与Linux/macOS/98%未跑或未完成。固定API库存刷新NOT_RUN，1,095类型/61,240成员行与分母保持；测量代码不使用估算值或空成功。
+
 ## 批次052 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。新增102（行查询53、位置查询49）最终102/102，完整5,221/5,221，0失败/跳过；实际argv、时间、PID、父身份/cleanup_complete及TRX保留artifacts/compatibility-batch052。

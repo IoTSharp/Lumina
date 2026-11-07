@@ -9,7 +9,8 @@
 | CNS-003 | P1 🟡 | 批次006～019的ListViewSubItem与ControlCollection/ArrangedElementCollection首范围保留；040补标准只读InputLanguageCollection的索引/Contains/IndexOf/CopyTo和快照。其他TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
-| CNS-006 | P3 ⬜ | System.Windows.Forms.VisualStyles：VisualStyleRenderer/Element/Information、TextRenderer、ControlPaint、绘制事件参数；Windows主题数据/GDI句柄与扩展点 | Windows完整基线保留；Linux/macOS逐成员判断，不能整个命名空间先全划平台豁免 |
+| CNS-006 | P3 🟡 | 053的006a补System.Windows.Forms.TextRenderer六个无DC测量重载及必要枚举/间距依赖；完整IDeviceContext测量、DrawText、ControlPaint、绘制事件参数和System.Windows.Forms.VisualStyles主题类型/句柄仍待。纠正原表把TextRenderer/ControlPaint归入VisualStyles的命名空间描述 | Windows完整基线保留；Linux/macOS逐成员判断，不能整个命名空间先全划平台豁免 |
+| CNS-006a | P1 ✅ | 批次053：标准TextRenderer.MeasureText三个string及三个ReadOnlySpan无DC重载、完整TextFormatFlags值和必要Padding.Size；真实DrawTextExW/字体ceil与质量0/字形padding/约束/flags分离，初始系统DPI缓存只在成功SetHighDpiMode后刷新，自有HFONT/DC在finally释放。62例含独立DrawTextW字体/Unicode/布局对照通过。IDeviceContext/DrawText、整个TextRenderer、字体缓存优化、Designer/AOT/多DPI与跨平台不计完成 | 只关闭无DC测量必要子范围；为TextBoxBase-007b服务，不由API/测试数量推兼容率 |
 | CNS-007 | P2/P3 ⬜ | System.Windows.Forms.Design运行时导出契约：ComponentEditorForm/Page、PropertyTab、IUIService/IWindowsFormsEditorService、属性特性与编辑站点 | 保留真实VS设计器往返；不承诺重做整个VS设计器宿主 |
 | CNS-008 | P2 🟡 | 021新增标准Layout.LayoutEngine、Control默认引擎和基础扩展/事务协作；LayoutSettings、非Control布局对象、Flow/Table完整Settings/样式集合/序列化仍缺 | [布局基础](foundations.md)、[021](batches/021.md)；不新发明公共Layout API |
 | CNS-009 | P2/P3 ⬜ | Automation、AccessibleObject派生及相关UIA类型；Com2Interop/ActiveX类型、HtmlDocument/HtmlElement集合、DOM事件；各归所属控件 | 可访问性、OLE/浏览器能力各自验收；没有对应原生能力时公开边界 |
@@ -24,6 +25,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次053：CNS-006从全待办纠正为无DC测量子范围完成/完整父项部分，保留未完Drawing/VisualStyles任务；006a登记六重载及必要TextFormatFlags/Padding.Size/DPI辅助，控件页不重复计数。固定API库存与原ID/分母不改，见[053](batches/053.md)。
 
 - 2026-11-07 · 批次041：CNS-012沿Application-11b/12a补OLE前置及最小owner退出配对；CNS-001/003的040事件/集合保持，未关闭任何完整父项。完整context/模态/输入法及平台仍待，固定源码其他失败HRESULT与MUI有界差异单列，见[041](batches/041.md)。
 

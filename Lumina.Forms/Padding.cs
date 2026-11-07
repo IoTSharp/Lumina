@@ -64,6 +64,10 @@ public readonly struct Padding : IEquatable<Padding>
     /// </summary>
     public int Vertical => Top + Bottom;
 
+    /// <summary>Gets the combined horizontal and vertical padding.</summary>
+    [System.ComponentModel.Browsable(false)]
+    public System.Drawing.Size Size => new(Horizontal, Vertical);
+
     /// <inheritdoc />
     public bool Equals(Padding other)
         => Left == other.Left
