@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 063主聊天01a1b587-95a1-72e0-80e1-2ea2a8f07530于2026-11-07完成必要只读准备，收到开始接管后独立核交接ee4752c8e3e115652b41d328d5b01381625263ac的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向062明确确认实际接管并实时核其归档。063为唯一编码主；两个互斥内部任务只新项目符号/制表位测试，主独占生产/共享文档/集成/Git。监督NOT_FOUND、063绑定NOT_DONE，不恢复或另建替代项；下述062及以前归属为历史。
+
 - 062主聊天`01a1b572-44e9-7920-a136-e0d2d74e1d15`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核归属交接`fd53276e64271ef188e9b718b3e4d8bf5912c50c`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向061明确确认实际接管并实时核其归档。062为唯一编码主；两个互斥任务只新字符偏移/保护属性测试和三项段落缩进测试，主独占生产/共享文档/集成/Git。本批003b/004b限定完成，其余Rich/Masked及平台/98%仍待。监督NOT_FOUND、062绑定NOT_DONE，不恢复或新建替代项；下述061及以前归属为历史。
 
 - 061主聊天`01a1b55a-cc3e-7803-9941-bc6c02bca5fe`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核归属交接`590f5f93ab238daf102fc65b3ab8d03d11c90087`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向060明确确认实际接管并实时核其归档。061为唯一编码主；两个互斥任务仅分别新建颜色双属性与段落对齐测试，主独占Rich生产/接口interop、共享文档/集成/Git。当前完成RichTextBox-003a/004a限定范围，其余字符/段落格式、Masked与平台/98%仍待。监督NOT_FOUND、061绑定NOT_DONE，不恢复或新建替代项；下述060及以前归属为历史。
@@ -62,7 +64,20 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次062 实施与收尾（当前）
+## 批次063 实施与收尾（当前）
+
+- 收尾实际导出/普通校验及独立核查PASS：451MD/2,193任务（2,143控件+50共享）/187实施行/整类型完成0，旧2,191任务ID与状态全部保持。18自有路径严格UTF8/noNUL/字节roundtrip与TRX逐结果核对通过。首独立核查误把CSV表头计入61,240成员记录，修为按CSV记录核对后通过；只修核查脚本，生产/测试未变，首失败independent-closeout-first.json保留，最终independent-closeout.json/independent-closeout-execution.json通过。
+
+- 063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。仅新增004c/004d，004及其他父项保持；接管前独立归属交接ee4752c8e3e115652b41d328d5b01381625263ac，实现与独立归属交接分开核验。
+- 项目符号测试48例/25467字节/SHA7a041f917567509b157e1b3099dd9213115df9ca6e0f97cfbd1afc889ea8b6d6；制表位38例/27154字节/SHAeddfaf54b52000c889c6dc0881544bf3331408a5e73d4318660c38af6b0f287d。两任务completed冻结，生产SHA b1768a27f9c6f468941299ae4ff22fc6792b877630c61f09aa59e260b2cc0d1a。
+- 004c：SelectionBullet为标准非virtual/默认false/隐藏属性，getter强制建窗后需NUMBERING mask且值1才真；setter新零156字节PARAFORMAT仅mask0x24/Numbering和Offset，true为bullet1与屏幕X像素转twip，false清两字段，每次SET无GET。BulletIndent标准非virtual/默认0/Behavior/Localizable，负值前置拒绝，先写缓存且无窗不建；有窗仅当前真bullet再提交，同值也查询。48例含精确载荷/混合/原生最新值/缓存时序/原异常/其他格式/RTF重建Modified真假的状态保持。
+- 004d：SelectionTabs为标准非virtual int[]/隐藏序列化/AllowNull，超过32在建窗前拒绝且ActualValue为空；getter按TABSTOPS有效mask逐槽转像素，无mask为空。setter先GET当前156字节结构，仅改mask/数量/前N槽，保留非目标字段及尾槽；null/空清数量，不排序/不校验元素，重复仍GET→SET并忽略返回。38例含32边界/全int/数组寿命/整结构/独立RichEdit/混合段落/其他格式及RTF重建通过。首AllowNull夹具只修setter参数反射，原失败保留。
+- 生产只改RichTextBox.cs，两个任务只新增各自测试；未改其他生产/旧测试/项目/固定Demo/Designer/resx，无剪贴板操作。WarningLevel=0不是分析告警清零。共享路线图/5控件页及历史/contracts/foundations/验证/README实施列/tasks.csv同步；索引总述停060的滞后已纠正，原ID/未完父项/1095类型61240成员行/分母保持，数量不推98%。
+- SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。不重做033～063、不重评全项目、不建context/调度/报告框架。
+- 固定Rich参考复用058，已核123535字节/SHA76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0。063主Cordonix父PID64388/精确FILETIME134385205260853678仅属063，调用有界/cleanup_complete=true；STA ExitThread再private visual-context，不加outer cookie。无临时脚本/持久workspace文档/独占服务，只清精确自有对象，不按名杀；保留证据/bin/obj/共享缓存/MCP。
+- 持续授权、多互斥内部任务一任务一负责人/主独占生产接口interop文档集成Git、实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后发开始接管/明确确认后旧主立即停共享写入构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、063绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次062 实施与收尾（历史）
 
 - 062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。仅新增003b/004b，003/004及所有未完父项保持；062实现提交`33fa78eca8b597e123023d20e01ed42c8acaae83`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地commit称交付；接管前为`fd53276e64271ef188e9b718b3e4d8bf5912c50c`。
 - 下一local只读接续聊天`01a1b587-95a1-72e0-80e1-2ea2a8f07530`（Lumina batch 063 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后062才发送“开始接管”；063先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向062确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后062立即停止共享写入/构建/Git并归档，不等063完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、063绑定NOT_DONE，不恢复或新建替代项。

@@ -33,6 +33,10 @@ public class RichTextBox : TextBoxBase
     private const uint PfmRightIndent = 2;
     private const uint PfmOffset = 4;
     private const uint PfmAlignment = 8;
+    private const uint PfmTabStops = 0x10;
+    private const uint PfmNumbering = 0x20;
+    private const ushort PfnBullet = 1;
+    private const int MaxTabStops = 32;
     private const int EmStreamIn = 0x0449;
     private const int EmStreamOut = 0x044A;
     private const int EmGetTextEx = 0x045E;
@@ -63,6 +67,7 @@ public class RichTextBox : TextBoxBase
     private bool _autoWordSelection;
     private bool _detectUrls;
     private RichTextBoxScrollBars _scrollBars;
+    private int _bulletIndent;
 
     /// <summary>
     /// Initializes a multi-line rich text box.
@@ -435,6 +440,86 @@ public class RichTextBox : TextBoxBase
         {
             ArgumentOutOfRangeException.ThrowIfNegative(value);
             SetSelectionParagraphIndent(PfmRightIndent, value);
+        }
+    }
+
+    [Category("Behavior")]
+    [DefaultValue(0)]
+    [Localizable(true)]
+    public int BulletIndent
+    {
+        get => _bulletIndent;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            _bulletIndent = value;
+            if (IsHandleCreated && SelectionBullet) { SelectionBullet = true; }
+        }
+    }
+
+    [DefaultValue(false)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe bool SelectionBullet
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new() { Size = (uint)sizeof(ParaFormat) };
+            _ = Win32.SendMessageW(NativeHandle, EmGetParaFormat, 0, (nint)(&format));
+            return (format.Mask & PfmNumbering) != 0 && format.Numbering == PfnBullet;
+        }
+        set
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new()
+            {
+                Size = (uint)sizeof(ParaFormat),
+                Mask = PfmNumbering | PfmOffset,
+                Numbering = value ? PfnBullet : (ushort)0,
+                Offset = value ? PixelToTwip(_bulletIndent, xDirection: true) : 0
+            };
+            _ = Win32.SendMessageW(NativeHandle, EmSetParaFormat, 0, (nint)(&format));
+        }
+    }
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [AllowNull]
+    public unsafe int[] SelectionTabs
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new() { Size = (uint)sizeof(ParaFormat) };
+            _ = Win32.SendMessageW(NativeHandle, EmGetParaFormat, 0, (nint)(&format));
+            if ((format.Mask & PfmTabStops) == 0) { return []; }
+            int[] tabs = new int[format.TabCount];
+            // RichEdit's PARAFORMAT contract limits cTabCount to 32.
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                tabs[i] = TwipToPixel(format.Tabs[i], xDirection: true);
+            }
+            return tabs;
+        }
+        set
+        {
+            if (value is not null && value.Length > MaxTabStops)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "The number of tab stops must not exceed 32.");
+            }
+            if (!IsHandleCreated) { CreateHandle(); }
+            ParaFormat format = new() { Size = (uint)sizeof(ParaFormat) };
+            // The fixed WinForms setter preserves the other returned fields,
+            // including tab slots beyond the newly assigned count.
+            _ = Win32.SendMessageW(NativeHandle, EmGetParaFormat, 0, (nint)(&format));
+            format.TabCount = (short)(value?.Length ?? 0);
+            format.Mask = PfmTabStops;
+            for (int i = 0; i < format.TabCount; i++)
+            {
+                format.Tabs[i] = PixelToTwip(value![i], xDirection: true);
+            }
+            _ = Win32.SendMessageW(NativeHandle, EmSetParaFormat, 0, (nint)(&format));
         }
     }
 

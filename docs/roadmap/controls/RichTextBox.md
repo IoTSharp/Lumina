@@ -1,5 +1,7 @@
 # RichTextBox
 
+063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。见[063](../batches/063.md)。下述062及以前为历史。
+
 基线：2026-10-15 · .NET 10.0.11。目标继承：`RichTextBox : TextBoxBase`。本页是实施与验收任务，未声称已完成兼容。
 
 ## 当前证据与依赖
@@ -44,7 +46,7 @@
 
 043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或RichEdit/富文本后端，全部原任务状态保留。
 
-🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前直接继承TextBoxBase并使用系统RichEdit；059文本模型、060 RTF流/句柄缓存、061颜色/对齐保留，062的003b/004b补真实字符偏移/保护标记与三项段落缩进。程序流恢复配置MaxLength，独立WM_SETTEXT扩限反例保留。SelectionFont/SelectionType、Bullet/Tabs、完整Protected事件/拒改、文件/编码/OLE/专有通知/撤销重做/坐标测量和Font/ForeColor/BackColor同步仍待，不能由五属性关闭父项。
+🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 直接继承TextBoxBase并使用系统RichEdit；058～062明确范围保持，063补真实项目符号、缓存BulletIndent和SelectionTabs。SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。004父项不由三个属性关闭。
 
 源码定位：[Lumina.Forms/RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、原生 RichEdit 载入与回调、字体/颜色/图像策略、剪贴板和 RTF 流。
 
@@ -65,9 +67,11 @@
 | RichTextBox-003 | P1 | 🟡 | 061的003a完成颜色双属性，062的003b完成SelectionCharOffset/SelectionProtected原生属性与必要屏幕DC换算；SelectionFont、SelectionType、完整字符格式/输入/Protected事件拒改及平台验收仍待，父项不关闭。 |
 | RichTextBox-003a | P1 | ✅ | 批次061：标准非virtual SelectionColor/SelectionBackColor与隐藏浏览/序列化；前景强制建窗并GET→SET仅COLOR/effects0，背景无窗缓存/有窗新零结构、auto effect优先、同值仍原生提交，非空缓存在base创建通知与文本/RTF加载前重放。33例覆盖116字节Pack4/精确mask与颜色转换、混合/最新native状态、其他格式/选区保持、RTF优先/重建；Empty背景mask0/effect按固定源及独立RichEdit对照保留。完整003、Font/ForeColor/BackColor同步及平台不计完成。 |
 | RichTextBox-003b | P1 | ✅ | 批次062：标准非virtual SelectionCharOffset/SelectionProtected、DefaultValue及隐藏浏览/序列化；偏移先拒绝超出[-2000,2000]再建窗，以新CHARFORMAT2W仅提交OFFSET，getter直接转换原生Offset不检查mask。保护getter需mask/effect均PROTECTED，setter新零结构仅mask/effect且每次提交，不补完整保护通知/拒改。43例含116字节精确消息/屏幕Y DPI、原异常重试/混合/最新native、其他格式/状态和RTF重建Modified真/假。完整003仍待。 |
-| RichTextBox-004 | P1 | 🟡 | 061的004a完成段落对齐，062的004b完成SelectionIndent/SelectionHangingIndent/SelectionRightIndent三项缩进及屏幕DC换算。SelectionBullet、BulletIndent、SelectionTabs、完整混合段落/RTL/布局单位边界和平台验收仍待，不以局部属性关闭父项。 |
+| RichTextBox-004 | P1 | 🟡 | 061的004a对齐、062的004b三项缩进、063的004c项目符号/缓存缩进和004d制表位限定实现完成。完整混合段落/RTL/布局单位边界、全部格式交互及平台/Designer/AOT/设备验收仍待，不以局部属性关闭父项。 |
 | RichTextBox-004a | P1 | ✅ | 批次061：标准SelectionAlignment/DefaultValue(Left)/隐藏序列化；非法枚举value先拒绝而不建窗，getter强制建窗并按PARAFORMAT mask8/native1/2/3映射，无mask/未知值回Left。setter每次以156字节Pack4零结构仅设对齐发送，忽略原生返回值如固定源。34例覆盖精确布局/消息、原异常重试、真实选中/空选区/混合段落、最新native读回及缩进/Tab/粗体/RTF重建/Modified真假的状态保持。Bullet/缩进/Tabs及完整004仍待。 |
 | RichTextBox-004b | P1 | ✅ | 批次062：三项标准非virtual缩进属性及DefaultValue(0)/隐藏序列化；getter强制建窗，以PARAFORMAT对应mask有效字段读取，否则0；setter新零结构只提交STARTINDENT/RIGHTINDENT/OFFSET一个字段且忽略native返回，右缩进先拒负，其余接受完整int。屏幕X DPI像素/twip沿固定浮点顺序截断，每次DC在finally释放。67例核156字节精确结构/无GET/零返回、极值/原异常、真实空/混合/独立native状态、无关格式和RTF重建Modified真/假；Bullet/Tabs及完整004仍待。 |
+| RichTextBox-004c | P1 | ✅ | 批次063：004c：SelectionBullet为标准非virtual/默认false/隐藏属性，getter强制建窗后需NUMBERING mask且值1才真；setter新零156字节PARAFORMAT仅mask0x24/Numbering和Offset，true为bullet1与屏幕X像素转twip，false清两字段，每次SET无GET。BulletIndent标准非virtual/默认0/Behavior/Localizable，负值前置拒绝，先写缓存且无窗不建；有窗仅当前真bullet再提交，同值也查询。48例含精确载荷/混合/原生最新值/缓存时序/原异常/其他格式/RTF重建Modified真假的状态保持。完整004仍待。 |
+| RichTextBox-004d | P1 | ✅ | 批次063：004d：SelectionTabs为标准非virtual int[]/隐藏序列化/AllowNull，超过32在建窗前拒绝且ActualValue为空；getter按TABSTOPS有效mask逐槽转像素，无mask为空。setter先GET当前156字节结构，仅改mask/数量/前N槽，保留非目标字段及尾槽；null/空清数量，不排序/不校验元素，重复仍GET→SET并忽略返回。38例含32边界/全int/数组寿命/整结构/独立RichEdit/混合段落/其他格式及RTF重建通过。首AllowNull夹具只修setter参数反射，原失败保留。完整004未关闭。 |
 | RichTextBox-005 | P1 | ⬜ | SelectionChanged、ContentsResized、LinkClicked、Protected、HScroll、VScroll、ImeChange 与 TextChanged：原生事件掩码、参数、次数/顺序及受保护文字拒绝修改场景。 |
 | RichTextBox-006 | P1 | ⬜ | CanUndo/CanRedo、Undo/Redo、UndoActionName/RedoActionName、ClearUndo；输入合并、粘贴/格式变化、程序赋值、只读和重建句柄的撤销边界。 |
 | RichTextBox-007 | P1 | 🟡 | 058的007a完成AutoSize/Multiline/MaxLength覆盖与必要初值、共享HideSelection、DetectUrls/AutoWordSelection及ScrollBars真实原生设置。RightMargin、ShowSelectionMargin、ZoomFactor、完整富文本测量/布局/滚动、格式/撤销的重建恢复与物理交互仍待。 |
@@ -93,6 +97,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次063：限定完成Rich-004c/004d；86新增/6,045全量及固定双目标Release通过，首85/86的新AllowNull反射夹具失败回执保留。原ID/未完父项/固定分母保持，见[063](../batches/063.md)。
 
 - 2026-11-07 · 批次062：003b字符偏移/选区保护属性与004b三项段落缩进限定范围完成；110新增/5,959全量首轮及固定双目标Release通过。屏幕DC/twip、原生mask/精确结构/混合读回和RTF重建保持；未完父项/平台/98%及固定分母保留，见[062](../batches/062.md)。
 

@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次063 · 2026-11-07 当前验证
+
+收尾实际导出/普通校验及独立核查PASS：451MD/2,193任务（2,143控件+50共享）/187实施行/整类型完成0，旧2,191任务ID与状态全部保持。18自有路径严格UTF8/noNUL/字节roundtrip与TRX逐结果核对通过。首独立核查误把CSV表头计入61,240成员记录，修为按CSV记录核对后通过；只修核查脚本，生产/测试未变，首失败independent-closeout-first.json保留，最终independent-closeout.json/independent-closeout-execution.json通过。
+
+063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。修后测试项目重编0错，生产SHA仍b1768a27f9c6f468941299ae4ff22fc6792b877630c61f09aa59e260b2cc0d1a。WarningLevel=0不是分析告警清零；旧测试/项目/固定Demo/Designer/resx未改，无剪贴板操作。原JSON/TRX在artifacts/compatibility-batch063。
+
+精确156字节消息/NUMBERING与OFFSET新零结构、Tabs先GET并保非目标字节/尾槽、前置校验/全int/32边界/原异常重试、真实混合/空/选区/独立RichEdit最新值、其他格式/文档状态及RTF重建Modified真/假均有回归。只新增004c/004d；索引总述原停060按063纠正，历史证据不删除。SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。官方Drawing/固定双目标静态Demo保持，见[063](batches/063.md)。
+
 ## 批次062 · 2026-11-07 当前验证
 
 062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。WarningLevel=0不是分析告警清零；旧测试、项目及固定Demo/Designer/resx未改，无系统剪贴板操作。回执位于artifacts/compatibility-batch062。
