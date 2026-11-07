@@ -1512,9 +1512,9 @@ public class Form : ContainerControl
                 break;
 
             case Win32.WM_NOTIFY:
-                if (HandleNotify(lParam))
+                if (HandleNotify(lParam, out nint notifyResult))
                 {
-                    return 0;
+                    return notifyResult;
                 }
 
                 return 0;
@@ -1572,19 +1572,22 @@ public class Form : ContainerControl
         return true;
     }
 
-    private bool HandleNotify(nint lParam)
+    private bool HandleNotify(nint lParam, out nint result)
     {
+        result = 0;
         if (lParam == 0)
         {
             return false;
         }
 
         Win32.NMHDR header = Marshal.PtrToStructure<Win32.NMHDR>(lParam);
-        int controlId = unchecked((int)header.idFrom);
         int notificationCode = unchecked((int)header.code);
 
-        return _controlsById.TryGetValue(controlId, out var control)
-            && control.HandleNotify(notificationCode, lParam);
+        // Native controls may retain their creation parent after SetParent.
+        // The source HWND identifies the sender even if IDs overlap.
+        return Control.TryGetControlByHandle(header.hwndFrom, out Control? control)
+            && control is not null
+            && control.HandleNotifyWithResult(notificationCode, lParam, out result);
     }
 
     internal void RouteCommandFromContainer(Control control, int notificationCode, nint sourceHandle)
@@ -1599,6 +1602,13 @@ public class Form : ContainerControl
     {
         ArgumentNullException.ThrowIfNull(control);
         return control.HandleNotify(notificationCode, lParam);
+    }
+
+    internal bool RouteNotifyWithResultFromContainer(
+        Control control, int notificationCode, nint lParam, out nint result)
+    {
+        ArgumentNullException.ThrowIfNull(control);
+        return control.HandleNotifyWithResult(notificationCode, lParam, out result);
     }
 
     private bool HandleContextMenu(nint wParam, nint lParam)

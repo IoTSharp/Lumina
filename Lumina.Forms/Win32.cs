@@ -1087,6 +1087,9 @@ internal static partial class Win32
     [DllImport("user32.dll")]
     internal static extern nint GetFocus();
 
+    [LibraryImport("user32.dll")]
+    internal static partial int MessageBeep(uint uType);
+
     [LibraryImport("ole32.dll")]
     internal static partial int OleInitialize(nint reserved);
 

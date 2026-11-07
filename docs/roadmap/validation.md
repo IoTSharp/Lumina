@@ -1,5 +1,11 @@
 # 本轮验证与限制
 
+首相关1027/1046、19失败的JSON/TRX保留：16个新契约夹具把构造读取CreateParams误当建窗，守卫只移到CreateHandle；2个新raw对照的通知消息按实际原生由EM_REPLACESEL更正为WM_SETTEXT，其文本/范围/结果硬断言保持；1个旧SelectionFont格式保持夹具在保护后设置格式，被新增守卫按预期拒绝。独立23/23（19契约+4raw）证实ENM_PROTECTED关闭时两项格式改变、启用时精确两通知/两拒绝。仅让旧格式合并夹具临时关闭新保护通知并finally恢复，完整原方法体/13处Assert和AssertFont保持；生产未因本轮失败改变。最终新增96（19契约/28原生含4raw/49结果），旧相关952数量保持；1048/1048通过。最终Release27.766秒/相关84.531秒，首构建71.735秒，独立诊断含重编35.203秒。
+
+资源身份边界：首构建、首及最终相关在存活期间保存CLI/外层PS7/根dotnet/host精确FILETIME、命令与父链。27.766秒最终构建已在独立快照前退出；诊断host只运行832ms、未捕获存活身份。对应PID/命令/执行和cleanup回执保留，不声称每个调用有完整存活身份覆盖。
+
+069限定完成RichTextBox-005d标准Protected通知及真实保护拒改，并以Control-17g补必要WM_NOTIFY原生结果回传。Form改按来源HWND路由，容器/停车接收者保持0/1结果；旧OnNotify钩子保留。保护样式本身与全文替换允许，受保护选区替换/格式修改拒绝；流拒改消耗保护标志，不伪造成功修改。96新增及1048相关通过，Release固定双目标0错/2既有NU1510。完整LinkClicked/TextChanged/其他通知、文件/OLE/撤销、Find/完整选择测量、Masked模型与平台/98%仍待；064全量FAIL/未解决、065超时及066～069全量NOT_RUN保持。用户2026-11-07明确要求本批完成后停止连续代码实施；下一新会话只整理路线图/文档，将完成范围迁入变更记录并合并重复内容，不启动070。 见[069](batches/069.md)；下述068及以前为历史。
+
 2026-11-07 · 068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。回执artifacts/compatibility-batch068/release-build-final.json与rich-tests-final.json/TRX；WarningLevel=0不表示分析告警清零。长调用在存活期间保存CLI/外层PS7/根dotnet/host精确FILETIME、命令行与父链，Cordonix清理自有子树。全量本批NOT_RUN；固定API刷新/包smoke/Notepad publish本地NOT_RUN、hosted CI未独立读回，Designer/Native AOT实际运行/正向可见点击/设备/Linux/macOS/98%均未关闭。
 
 ## 批次067 · 2026-11-07 当前验证
@@ -836,3 +842,6 @@ direct-helpers的错误委托转换保留System.Windows.Forms.MouseEventHandler�
 批次032完成 Panel-01b/02a 标准 ScrollableControl 迁移与共享 AutoScroll 消费、UserControl-03a Load 一次触发生命周期、ScrollableControl-08a Windows `WM_HSCROLL`/`WM_VSCROLL` 与 SCROLLINFO 首范围。`dotnet build Lumina.slnx -c Release --no-restore --nologo`：PASS，0错误；三组新增回归11/11 PASS；`dotnet test Lumina.Tests/Lumina.Tests.csproj -c Release --no-build --no-restore --nologo`：PASS，4,430/4,430。全量首次回归唯一失败为Panel迁移导致AutoScroll=false尺寸刷新额外布局事件，滚动层关闭额外布局请求后复测通过；不弱化原有断言。
 
 `git -c core.whitespace=cr-at-eol diff --check`：PASS。未运行 Native AOT、真实物理滚轮/触摸板、Designer往返、Linux/macOS、生产或现场验证；完整Panel/ScrollableControl/UserControl父任务和FND-016继续部分或待办，不由本批代码/测试数推导98%。详见[032](batches/032.md)。
+
+
+收尾ExportTasks/普通verify与独立审计PASS：457MD（roadmap453+根四入口）/2204任务（2154控件+50共享）/187实施行/整类型完成0/0错误；26自有路径严格UTF8/noNUL/字节roundtrip/SHA、1048条最终TRX逐结果和旧952各分组数量已核。仅新增005d/17g，旧2202任务ID及状态、1095类型/61240成员记录与固定分母保持。原生/夹具首失败与独立对照完整保留。详情artifacts/compatibility-batch069/independent-closeout-final.json；审计PASS不清全量FAIL/超时或平台门槛。

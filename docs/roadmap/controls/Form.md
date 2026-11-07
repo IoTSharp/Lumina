@@ -1,5 +1,7 @@
 # Form
 
+069在Control-17g必要范围将Form的WM_NOTIFY按来源HWND转发并回传Rich保护通知0/1，原内部布尔入口保留，不新增Form完成项。活原Form重挂/冲突ID/未映射源有定向回归；原父Form销毁重建寿命、完整线程/模态/反射和平台仍待。064FAIL/065超时保持，见[069](../batches/069.md)；下述为历史。
+
 049在Control-17e下补必要WM_COMMAND连接：非零lParam按来源HWND查控件并反射，不依赖原owner的ID字典；零lParam的菜单/既有命令路径保持。两个活Form间重挂及ID碰撞各有回归，不新增重复Form完成任务。原反射父Form销毁/重建的完整关系、WM_NOTIFY和完整16/生命周期仍待，见[049](../batches/049.md)。
 
 🟡 **现状：**018～036范围保留；040补12d标准输入语言事件/参数、虚通知与后代请求取消。关闭多余LostFocus/WM_QUIT、完整关闭事件/原因、IME组合态/候选窗、OLE/模态宿主、Activated/Deactivate、owner/MDI、资源事务/多UI退出及Designer仍缺。
@@ -54,6 +56,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次069：069在Control-17g必要范围将Form的WM_NOTIFY按来源HWND转发并回传Rich保护通知0/1，原内部布尔入口保留，不新增Form完成项。活原Form重挂/冲突ID/未映射源有定向回归；原父Form销毁重建寿命、完整线程/模态/反射和平台仍待。064FAIL/065超时保持，见[069](../batches/069.md)；下述为历史。
 
 - 2026-11-07 · 批次049：非零lParam的控件WM_COMMAND先按来源HWND反射，修复重挂后旧Form字典不再拥有控件/ID已重用的通知缺口；OnCommand扩展仍由收到原生命令的Form调用，菜单限零lParam。8项新重挂回归及4,954全量通过，完整16/原反射父寿命仍部分，范围交叉引用Control-17e，见[049](../batches/049.md)。
 

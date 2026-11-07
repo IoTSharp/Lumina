@@ -262,7 +262,7 @@ public sealed class RichTextBoxScrollImeNotificationTests
         => OnSta(() =>
         {
             using var rich = new NotificationRichTextBox();
-            const int expectedMask = 1 | 2 | 4 | 8 | 0x40000 | 0x80000 | 0x800000;
+            const int expectedMask = 1 | 2 | 4 | 8 | 0x40000 | 0x80000 | 0x200000 | 0x800000;
             Assert.Equal((nint)expectedMask, SendMessageW(rich.Handle, 0x043B, 0, 0));
 
             rich.RecreateNow();

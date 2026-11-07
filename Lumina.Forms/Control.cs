@@ -3203,9 +3203,9 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
                 if (TryGetControlByHandle(header.hwndFrom, out Control? notifyChild) && notifyChild is not null
                     && (Win32.GetAncestor(header.hwndFrom, 1) == hwnd
                         || (notifyChild._parkingWindow == hwnd && notifyChild._parkingWindowIsNotificationParent))
-                    && notifyChild.HandleNotify(unchecked((int)header.code), lParam))
+                    && notifyChild.HandleNotifyWithResult(unchecked((int)header.code), lParam, out nint notifyResult))
                 {
-                    return 0;
+                    return notifyResult;
                 }
             }
             return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
@@ -3281,6 +3281,13 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
 
     internal bool HandleNotify(int notificationCode, nint lParam)
         => OnNotify(notificationCode, lParam);
+
+    // Preserve the existing notification hook while carrying native veto results.
+    internal virtual bool HandleNotifyWithResult(int notificationCode, nint lParam, out nint result)
+    {
+        result = 0;
+        return HandleNotify(notificationCode, lParam);
+    }
 
     internal void RefreshTheme()
     {
@@ -4115,9 +4122,10 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
                     {
                         if (Owner is not null)
                         {
-                            _ = Owner.RouteNotifyFromContainer(notifyControl, unchecked((int)header.code), lParam);
+                            _ = Owner.RouteNotifyWithResultFromContainer(
+                                notifyControl, unchecked((int)header.code), lParam, out result);
                         }
-                        else { _ = notifyControl.HandleNotify(unchecked((int)header.code), lParam); }
+                        else { _ = notifyControl.HandleNotifyWithResult(unchecked((int)header.code), lParam, out result); }
                         return true;
                     }
                 }

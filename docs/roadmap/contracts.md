@@ -1,5 +1,7 @@
 # 附属类型与命名空间任务
 
+069的RichTextBox-005d/Control-17g只补标准Protected事件/拒改与内部WM_NOTIFY结果连接；新增私有Pack4 ENPROTECTED及MessageBeep LibraryImport，Windows继续官方Drawing，无新公共附属类型/依赖或CNS/FND完成项。Link/完整共享、资源/线程/Masked及平台仍待，064FAIL/065超时保持，见[069](batches/069.md)。下述068及以前为历史。
+
 068只新增RichTextBox-005b/005c标准通知限定范围；私有Pack4 SELCHANGE与既有SendMessage/PostMessage封装在Rich内，无新公共类型/PInvoke/依赖，不新增CNS/FND完成项。完整共享/资源/线程/Masked与平台仍待，064FAIL/065超时保留，见[068](batches/068.md)。下述067及以前为历史。
 
 067在RichTextBox-005a内补标准ContentsResizedEventArgs/Handler及真实REQRESIZE接收；003f复用私有字符格式/LOGFONT，Windows仍用官方Drawing。两个附属类型按既有Rich任务归属，不新增CNS完成项或改变固定API分母；完整资源/ambient/字体DPI与平台仍待，见[067](batches/067.md)。下述066及以前为历史。
@@ -39,6 +41,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次069：005d/17g限定完成；旧ID/未完父项/固定分母与064FAIL/065超时保持，见[069](batches/069.md)。
 
 - 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](batches/068.md)。
 

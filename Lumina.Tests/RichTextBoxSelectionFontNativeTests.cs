@@ -374,36 +374,45 @@ public sealed class RichTextBoxSelectionFontNativeTests
         => OnSta(() =>
         {
             using var rich = new FontRichTextBox { Text = "first\nsecond" };
-            rich.Select(1, 3);
-            rich.SelectionColor = Color.DarkRed;
-            rich.SelectionBackColor = Color.Gold;
-            rich.SelectionCharOffset = 12;
-            rich.SelectionProtected = true;
-            rich.SelectionAlignment = HorizontalAlignment.Center;
-            rich.SelectionIndent = 24;
-            rich.SelectionBullet = true;
-            rich.SelectionTabs = [48, 96];
-            NativeFormat before = ReadFormat(rich.Handle);
-            int indent = rich.SelectionIndent;
-            using var supplied = new Font(FontFamily.GenericMonospace, 18, FontStyle.Bold | FontStyle.Italic);
+            // This pre-005d test isolates native format merging. Keep its
+            // protection-notification guard disabled as in its original scope;
+            // ProtectedNativeTests separately verifies the enabled guard.
+            nint eventMask = SendMessageW(rich.Handle, 0x043B, 0, 0);
+            _ = SendMessageW(rich.Handle, 0x0445, 0, eventMask & ~0x200000);
+            try
+            {
+                rich.Select(1, 3);
+                rich.SelectionColor = Color.DarkRed;
+                rich.SelectionBackColor = Color.Gold;
+                rich.SelectionCharOffset = 12;
+                rich.SelectionProtected = true;
+                rich.SelectionAlignment = HorizontalAlignment.Center;
+                rich.SelectionIndent = 24;
+                rich.SelectionBullet = true;
+                rich.SelectionTabs = [48, 96];
+                NativeFormat before = ReadFormat(rich.Handle);
+                int indent = rich.SelectionIndent;
+                using var supplied = new Font(FontFamily.GenericMonospace, 18, FontStyle.Bold | FontStyle.Italic);
 
-            rich.SelectionFont = supplied;
+                rich.SelectionFont = supplied;
 
-            NativeFormat after = ReadFormat(rich.Handle);
-            Assert.Equal(before.TextColor, after.TextColor);
-            Assert.Equal(before.BackColor, after.BackColor);
-            Assert.Equal(before.Offset, after.Offset);
-            Assert.Equal(before.Effects & ~15u, after.Effects & ~15u);
-            Assert.True(rich.SelectionProtected);
-            Assert.True(rich.SelectionBullet);
-            Assert.Equal(HorizontalAlignment.Center, rich.SelectionAlignment);
-            Assert.Equal(indent, rich.SelectionIndent);
-            Assert.Equal(new[] { 48, 96 }, rich.SelectionTabs);
-            Assert.Equal("first\nsecond", rich.Text);
-            Assert.Equal(1, rich.SelectionStart);
-            Assert.Equal(3, rich.SelectionLength);
-            using Font actual = Assert.IsType<Font>(rich.SelectionFont);
-            AssertFont(supplied, actual);
+                NativeFormat after = ReadFormat(rich.Handle);
+                Assert.Equal(before.TextColor, after.TextColor);
+                Assert.Equal(before.BackColor, after.BackColor);
+                Assert.Equal(before.Offset, after.Offset);
+                Assert.Equal(before.Effects & ~15u, after.Effects & ~15u);
+                Assert.True(rich.SelectionProtected);
+                Assert.True(rich.SelectionBullet);
+                Assert.Equal(HorizontalAlignment.Center, rich.SelectionAlignment);
+                Assert.Equal(indent, rich.SelectionIndent);
+                Assert.Equal(new[] { 48, 96 }, rich.SelectionTabs);
+                Assert.Equal("first\nsecond", rich.Text);
+                Assert.Equal(1, rich.SelectionStart);
+                Assert.Equal(3, rich.SelectionLength);
+                using Font actual = Assert.IsType<Font>(rich.SelectionFont);
+                AssertFont(supplied, actual);
+            }
+            finally { _ = SendMessageW(rich.Handle, 0x0445, 0, eventMask); }
         });
 
     [Theory]

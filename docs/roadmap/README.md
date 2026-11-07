@@ -1,5 +1,7 @@
 # 逐控件任务索引
 
+069限定完成RichTextBox-005d标准Protected通知及真实保护拒改，并以Control-17g补必要WM_NOTIFY原生结果回传。Form改按来源HWND路由，容器/停车接收者保持0/1结果；旧OnNotify钩子保留。保护样式本身与全文替换允许，受保护选区替换/格式修改拒绝；流拒改消耗保护标志，不伪造成功修改。96新增及1048相关通过，Release固定双目标0错/2既有NU1510。完整LinkClicked/TextChanged/其他通知、文件/OLE/撤销、Find/完整选择测量、Masked模型与平台/98%仍待；064全量FAIL/未解决、065超时及066～069全量NOT_RUN保持。用户2026-11-07明确要求本批完成后停止连续代码实施；下一新会话只整理路线图/文档，将完成范围迁入变更记录并合并重复内容，不启动070。 见[069](batches/069.md)；下述068及以前为历史。
+
 068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。仅新增005b/005c，旧ID/状态/固定分母保持；实施列和tasks.csv由既有工具生成。补齐此前首页总述遗漏的067：003f/005a/Control-17f明确范围已在067完成，详见[067](batches/067.md)。下述066及以前为历史。
 
 066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](batches/066.md)。下述065及以前为历史。
@@ -38,7 +40,7 @@
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
-| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-11c、Control-12a、Control-12b、Control-12c、Control-12d、Control-12e、Control-12f、Control-12g、Control-12h、Control-12i、Control-12j、Control-12k、Control-12l、Control-12m、Control-13a、Control-13b、Control-14a、Control-14b、Control-14c、Control-17a、Control-17b、Control-17c、Control-17d、Control-17e、Control-17f；其余任务未完成 |
+| [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-11c、Control-12a、Control-12b、Control-12c、Control-12d、Control-12e、Control-12f、Control-12g、Control-12h、Control-12i、Control-12j、Control-12k、Control-12l、Control-12m、Control-13a、Control-13b、Control-14a、Control-14b、Control-14c、Control-17a、Control-17b、Control-17c、Control-17d、Control-17e、Control-17f、Control-17g；其余任务未完成 |
 | [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-06a、Application-08a、Application-11a、Application-11b、Application-12a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -63,7 +65,7 @@
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-001a、TextBox-003a、TextBox-003b、TextBox-003c、TextBox-004a、TextBox-004b、TextBox-005a、TextBox-007a、TextBox-007b、TextBox-010a；其余任务未完成 |
-| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-003b、RichTextBox-003c、RichTextBox-003d、RichTextBox-003e、RichTextBox-003f、RichTextBox-004a、RichTextBox-004b、RichTextBox-004c、RichTextBox-004d、RichTextBox-005a、RichTextBox-005b、RichTextBox-005c、RichTextBox-007a、RichTextBox-008a、RichTextBox-011a；其余任务未完成 |
+| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-003b、RichTextBox-003c、RichTextBox-003d、RichTextBox-003e、RichTextBox-003f、RichTextBox-004a、RichTextBox-004b、RichTextBox-004c、RichTextBox-004d、RichTextBox-005a、RichTextBox-005b、RichTextBox-005c、RichTextBox-005d、RichTextBox-007a、RichTextBox-008a、RichTextBox-011a；其余任务未完成 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [DomainUpDown](controls/DomainUpDown.md) | M2 | ⬜ 缺失 | 108 / 75 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

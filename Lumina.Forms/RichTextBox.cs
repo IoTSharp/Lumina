@@ -66,6 +66,8 @@ public class RichTextBox : TextBoxBase
     private const int EnmRequestResize = 0x40000;
     private const int EnmSelChange = 0x80000;
     private const int EnmImeChange = 0x800000;
+    private const int EnmProtected = 0x200000;
+    private const int EnProtected = 0x0704;
     private const int EnRequestResize = 0x0701;
     private const int EnSelChange = 0x0702;
     private const int EnHScroll = 0x0601;
@@ -76,6 +78,7 @@ public class RichTextBox : TextBoxBase
     private static readonly object s_hScrollEvent = new();
     private static readonly object s_vScrollEvent = new();
     private static readonly object s_imeChangeEvent = new();
+    private static readonly object s_protectedEvent = new();
 
     // The registered superclass retains pointers into Msftedit. Keep its one
     // system-directory load alive for the same process lifetime as that cache.
@@ -90,6 +93,7 @@ public class RichTextBox : TextBoxBase
     private RichTextBoxScrollBars _scrollBars;
     private int _bulletIndent;
     private bool _suppressContentsResized;
+    private bool _protectedError;
     private int _currentSelectionStart = -1;
     private int _currentSelectionEnd = -1;
     private short _currentSelectionType = -1;
@@ -191,6 +195,19 @@ public class RichTextBox : TextBoxBase
     {
         add => Events.AddHandler(s_imeChangeEvent, value);
         remove => Events.RemoveHandler(s_imeChangeEvent, value);
+    }
+
+    [Category("Behavior")]
+    public event EventHandler? Protected
+    {
+        add => Events.AddHandler(s_protectedEvent, value);
+        remove => Events.RemoveHandler(s_protectedEvent, value);
+    }
+
+    protected virtual void OnProtected(EventArgs e)
+    {
+        _protectedError = true;
+        ((EventHandler?)Events[s_protectedEvent])?.Invoke(this, e);
     }
 
     protected virtual void OnSelectionChanged(EventArgs e)
@@ -906,7 +923,7 @@ public class RichTextBox : TextBoxBase
         UpdateMaxLength();
         // Hidden RichEdit controls otherwise omit the notifications consumed here.
         _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0,
-            EnmChange | EnmUpdate | EnmScroll | EnmScrollEvents | EnmRequestResize | EnmSelChange | EnmImeChange);
+            EnmChange | EnmUpdate | EnmScroll | EnmScrollEvents | EnmRequestResize | EnmSelChange | EnmImeChange | EnmProtected);
         _ = Win32.SendMessageW(NativeHandle, EmAutoUrlDetect, DetectUrls ? 1 : 0, 0);
         if (_selectionBackColorToSetOnHandleCreated != Color.Empty)
         {
@@ -970,6 +987,41 @@ public class RichTextBox : TextBoxBase
             if (notificationCode == EnVScroll) { OnVScroll(EventArgs.Empty); return true; }
         }
         return base.OnCommand(notificationCode);
+    }
+
+    internal override unsafe bool HandleNotifyWithResult(int notificationCode, nint lParam, out nint result)
+    {
+        if (notificationCode != EnProtected)
+        {
+            return base.HandleNotifyWithResult(notificationCode, lParam, out result);
+        }
+
+        ProtectedNotification notification = *(ProtectedNotification*)lParam;
+        result = 0;
+        switch (notification.Message)
+        {
+            case EmSetCharFormat:
+                // Changing the protection style itself must remain possible.
+                if ((((CharFormat2*)notification.LParam)->Mask & CfmProtected) != 0) { return true; }
+                break;
+            case EmSetParaFormat:
+            case Win32.EM_REPLACESEL:
+                break;
+            case EmStreamIn:
+                if ((unchecked((uint)(long)notification.WParam) & SffSelection) == 0) { return true; }
+                break;
+            case Win32.WM_COPY:
+            case WmSetText:
+            case EmExLimitText:
+                return true;
+            default:
+                _ = Win32.MessageBeep(0);
+                break;
+        }
+
+        OnProtected(EventArgs.Empty);
+        result = 1;
+        return true;
     }
 
     protected override unsafe bool OnNotify(int notificationCode, nint lParam)
@@ -1076,7 +1128,11 @@ public class RichTextBox : TextBoxBase
         bool selection = (flags & SffSelection) != 0;
         if (value.Length == 0)
         {
-            if (selection) { _ = Win32.SendMessageW(NativeHandle, WmClear, 0, 0); }
+            if (selection)
+            {
+                _ = Win32.SendMessageW(NativeHandle, WmClear, 0, 0);
+                _protectedError = false;
+            }
             else { _ = Win32.SendMessageW(NativeHandle, WmSetText, 0, string.Empty); }
             return;
         }
@@ -1117,6 +1173,13 @@ public class RichTextBox : TextBoxBase
             _ = Win32.SendMessageW(NativeHandle, EmStreamIn,
                 flags, (nint)(&stream));
             UpdateMaxLength();
+            // A rejected protected selection already raised its standard event.
+            // Consume that marker before interpreting the native stream error.
+            if (_protectedError)
+            {
+                _protectedError = false;
+                return;
+            }
             if (stream.Error != 0 || context.Failure is not null)
             {
                 throw new InvalidOperationException("Failed to load text into the rich text box.", context.Failure);
@@ -1215,6 +1278,16 @@ public class RichTextBox : TextBoxBase
         internal Win32.NMHDR Header;
         internal CharacterRange Range;
         internal ushort Type;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    private struct ProtectedNotification
+    {
+        internal Win32.NMHDR Header;
+        internal uint Message;
+        internal nint WParam;
+        internal nint LParam;
+        internal CharacterRange Range;
     }
 
     // The LOGFONT buffer contains only native scalar values and an inline name.
