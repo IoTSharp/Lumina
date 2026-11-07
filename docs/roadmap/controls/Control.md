@@ -1,5 +1,7 @@
 # Control
 
+051完成14c必要内部redraw更新辅助：short嵌套计数，无窗Begin不积累，首Begin发WM_SETREDRAW(0)，末End先减计数再经Handle发1并按参数Invalidate自身；无配对End返回false。10例含有限回调/异常/销毁重建回归与5,119全量通过，未新增公开API。可见绘制、资源压力、完整14/生命周期及平台仍待，见[051](../batches/051.md)。下述049及以前为历史。
+
 049完成17e的原停车通知接收者寿命及来源HWND反射：独立原生EDIT证实SetParent后EN_UPDATE/EN_CHANGE仍投向创建时父HWND，固定v10.0.11的ReflectParent计数保留该接收者。仅将确曾作为当前原生句柄创建父的停车窗保留至原句柄销毁；回调校验映射和自有原接收者归属，Form非零lParam按来源HWND反射，避免旧owner字典/ID碰撞。8项新增回归及4,954全量通过。原反射父Form销毁/重建的完整关系、WM_NOTIFY及完整context仍待，见[049](../batches/049.md)。下述048及以前为历史。
 
 048完成17d必要停车期间WM_COMMAND转发：原裸STATIC不处理未挂父EDIT通知，标准AppendText建窗后暴露TextChanged缺失。复用NativeWindowClass注册无托管Control映射的停车窗回调，仅验证真实子HWND后进入既有HandleCommand；其他消息走DefWindowProc，异常沿既有native边界报告。停车窗归属/销毁方式保持。新增探针还发现重挂后EDIT未向Form/child交付后续命令，native ID一致但原因未闭环，继续17父项；完整消息反射、WM_NOTIFY及线程context仍待，见[048](../batches/048.md)。
@@ -74,7 +76,8 @@
 | 🟡 | P1 / Control-13 | 027完成13a坐标/捕获和13b基础鼠标消息/事件；必要消费者共享Click去重。验证取消与点击协作、全部派生反射/默认激活/AutoCheck/组同步、RTL/DPI/非客户区及完整捕获竞态仍待原任务。锁屏下10个参考、20个JIT/AOT命中观察失败，真实命中/物理设备交互未验收，不能由事件入口或消息注入关闭完整输入。 |
 | ✅ | P1 / Control-13a | 批次027：PointToClient/PointToScreen、RectangleToClient/RectangleToScreen按真实MapWindowPoints转换（矩形两点）；Capture查询/获取/转移/释放与MouseCaptureChanged，静态MouseButtons/MousePosition接原生状态。无/有句柄、负坐标、父子、释放与重建指定范围完成；RTL镜像/DPI/Wayland等完整语义与物理设备验收仍归父项。 |
 | ✅ | P1 / Control-13b | 批次027：标准Click/DoubleClick及鼠标事件共用Component.Events、对应虚On*、InvokeOnClick/RaiseMouseEvent/ResetMouseEventArgs；MouseEventArgs.Location/可继承、HandledMouseEventArgs与XButton1/2；五按钮/双击/有符号坐标/滚轮Handled及原生Enter/Hover/Leave跟踪。跟踪在虚WndProc之外，保留直接调用区别、重建pending-enter、有限销毁和Up后的捕获清理。范围限基础Control消息路径及上述契约；验证取消、所有派生路由与设备验收不计完成，原异常文本差异保留。 |
-| 🟡 | P1 / Control-14 | 023的14a、024的14b完成基础背景图像/真实HWND透明绘制；RTL/mirror、滚动viewport、TabPage主题透明、全部派生owner draw/消息反射/缓冲分配失败与资源压力仍缺。不能由基础Control/屏幕采样关闭完整绘制，022/023历史原始差异保留。 |
+| 🟡 | P1 / Control-14 | 023的14a、024的14b完成基础背景图像/真实HWND透明绘制，051的14c补词删除必要内部redraw计数；RTL/mirror、滚动viewport、TabPage主题透明、全部派生owner draw/消息反射/缓冲分配失败与资源压力仍缺。不能由基础Control/消息回归关闭完整绘制，022/023历史原始差异保留。 |
+| ✅ | P1 / Control-14c | 批次051：内部BeginUpdateInternal及EndUpdateInternal两重载，private short计数；无窗Begin不计数/建窗，首Begin发WM_SETREDRAW(0)，嵌套End返回true且末次先减到0再经Handle发1，可选Invalidate自身，无配对End返回false。10例核消息参数/有限回调计数顺序、默认与false失效行为/原异常、销毁后Handle重建及创建失败后的零计数。测试截获redraw消息，真实可见绘制未验；不新增公开更新模型或关闭完整14/17。 |
 | ✅ | P1 / Control-14b | 批次024：virtual BackgroundImage/Layout、ImageLayout五值、两事件/三个On*、通知传播及借用图像寿命；Tile/None/Center/Stretch/Zoom、基础真实父子HWND透明/alpha、父坐标/DC裁剪/Graphics状态、移动失效传播完成。20项回归、同源屏幕及PRINTCLIENT分列观测、非同比例Stretch/Zoom有JIT/实际AOT证据。无HWNDdirect场景仅证不建窗/状态寿命；高对比复用既有系统读取，未作设备切换验收，剩余见父项。 |
 | ✅ | P1 / Control-14a | 批次023明确首范围：ControlStyles默认/组合/未知位、GetStyle/SetStyle/UpdateStyles、DoubleBuffered/ResizeRedraw；Paint/Invalidated/StyleChanged及标准On*/InvokePaint/OnPrint、六个Invalidate重载、Update/Refresh/CreateGraphics，真实WM_PAINT/ERASEBKGND/PRINTCLIENT与缓冲/借用Graphics寿命。公共OnPrint借用Graphics并保留背景回调对其状态的修改，内部native绘制隔离背景状态；标准事件/重入/原异常和原生EDIT路径有指定对照。透明无句柄场景不计为可见合成验收，完整边界仍属14父项。 |
 | ⬜ | P1 / Control-15 | 实现 DataBindings/BindingContext/DataContext 与变化传播、拖放/IDataObject/剪贴板、AccessibleName/Description/Role/AccessibilityObject；各领域引用对应独立任务，不能全部留为存值。 |
@@ -98,6 +101,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次051：14c仅补TextBox词删除必要内部redraw依赖，默认Invalidate不强制子树；10例新增及5,119全量通过。Handle销毁后End必要重建和原异常按固定10.0.11保持，完整绘制/生命周期/设备及平台仍待，见[051](../batches/051.md)。
 
 - 2026-11-07 · 批次049：新增17e，原因由固定Control.ReflectParent/UpdateReflectParent与独立原生EDIT对照闭环，不再把实际GetParent等同通知接收者。首跑13例11通过，两项重挂通知失败保留；修复后新18与旧停车/行为8组合26/26、完整4,954/4,954。048最终停车测试“重挂即释放”的断言是历史实现假设，现改为原EDIT销毁时释放；048原失败/诊断及17d限定历史保留，旧2次事件硬期望未改。完整17父项仍部分，见[049](../batches/049.md)。
 

@@ -86,6 +86,7 @@ internal static partial class Win32
     public const int WM_ACTIVATE = 0x0006;
     public const int WM_SETFOCUS = 0x0007;
     public const int WM_KILLFOCUS = 0x0008;
+    public const int WM_SETREDRAW = 0x000B;
     public const int WM_NULL = 0x0000;
     public const int WM_CLOSE = 0x0010;
     public const int WM_SETICON = 0x0080;

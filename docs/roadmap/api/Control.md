@@ -1,5 +1,7 @@
 # Control：逐成员待办
 
+051当前源码补充：Control-14c仅增加内部Begin/EndUpdate计数与必要WM_SETREDRAW常量，供词删除复用；公开成员表面不变。10例消息/生命周期回归不代表可见绘制或完整Control验收，固定库存/ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/Control.md)。
+
 049当前源码补充：Control-17e按固定反射父寿命保留原停车命令接收者至对应原生句柄销毁，来源HWND与自有归属决定反射，不新增公共API。完整原反射父Form寿命/WM_NOTIFY/context仍待；本页固定成员库存/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/Control.md)。
 
 自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。

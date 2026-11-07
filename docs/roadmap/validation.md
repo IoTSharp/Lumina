@@ -1,6 +1,22 @@
 # 本轮验证与限制
 
-## 批次050 · 2026-11-07 当前验证
+## 批次051 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；仅测试夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。新增88（词边界52、命令26、redraw10）最终88/88，完整5,119/5,119，0失败/跳过；实际请求、PID、启动/结束、父身份/cleanup_complete和TRX保留artifacts/compatibility-batch051的tests-new-retest.json、tests-full.json与tests目录。
+
+首跑85/88的三处失败保留tests-new.json、tests-new-first85of88.json与batch051-new.trx。两处起点夹具错误地禁止Text读取，一处有限重入轨迹遗漏Text；固定无窗GetSelectionStartAndLength经AdjustSelectionStartAndEnd(...,-1)读取虚TextLength，故SelectionLength和SelectionStart分别间接读取Text。按固定源码纠正夹具，未为此修改生产。另把直接词边界Text getter异常用例改为已有真实EDIT，以免实际先在无窗选择查询抛错；first-failure-analysis.json保留分析。
+
+[051](batches/051.md)仅关闭TextBoxBase-005f内部词边界、009a启用词删除命令及必要Control-14c内部redraw依赖。字母/数字/NonSpacingMark、标点/空白、首位非word与UTF-16 surrogate按固定ClientUtils处理，不新增边界归一化。精确Ctrl+Back/Ctrl+Shift+Back在父路由与既有禁用/只读守卫后执行；选区经内部可撤销替换，空选区先按词边界调整。真实EDIT文本/选择/一次TextChanged/Modified/Undo/句柄及MaxLength有回读；无公共SelectedText或Text setter重写。选择setter异常按固定源码不增加finally恢复redraw，未声明异常事务完成。
+
+Control内部辅助测试截获WM_SETREDRAW观察嵌套计数、参数、销毁重建和失效异常；命令测试使用真实EDIT及native redraw/替换消息，未验证实际可见绘制。全部新测试未访问系统剪贴板或菜单。Designer、Native AOT发布运行、物理输入/IME、Linux/macOS及98%仍NOT_RUN/UNKNOWN；普通EDIT不计RichEdit/Masked专有支持。
+
+固定TextBoxBase/Control分别从050/049复制重核原SHA；ClientUtils精确v10.0.11为1,708字节/SHA256 8939dfdb58bf6f09f34e12e65f57bae8136eeb91771b9309b66d65041f3f5b28，直连超时/临时7890代理成功及引用回执保留。固定API库存刷新NOT_RUN，1,095类型/61,240成员行/原ID/分母保持；README实施列/tasks.csv由既有工具生成，最终校验与编码回执保留051目录。三个任务各有负责人，主独占共享生产/interop/文档/集成/Git；外部调用资源及只读输出上限单列，不把查看失败改成测试结果。
+
+既有Validate-Roadmap.ps1 -ExportTasks实际PASS：439份Markdown、2,167任务、187实施索引行、0结构错误，整类型代码完成0；只新增005f/009a/14c，README实施列/tasks.csv由工具生成，roadmap-export.json保留。
+
+26拥有路径UTF8严格/无NUL/字节往返、无导出复核和diff检查PASS；固定库存/Demo及未触及派生生产diff为空。最终dotnet名称快照2项为其他SonnetDB格式检查，保留未动，不称全机零进程。自有有界外部调用cleanup_complete=true，无临时/持久workspace文档/独占服务；各任务只读搜索输出上限已定点补读，不作为构建/测试结果。
+
+## 批次050 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标0错误/2既有NU1510；新增77（剪贴板入口15、快捷键62）/77，完整5,031/5,031，均0失败/跳过。实际请求、PID、启动/结束、父进程身份和cleanup_complete保留artifacts/compatibility-batch050/release-build.json、tests-new.json、tests-full.json，TRX在tests目录。WarningLevel=0不表示分析告警清零；本批没有执行AOT发布/运行、设计器往返或设备输入。
 

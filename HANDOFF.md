@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 051主聊天`01a1b418-68f4-71f3-92ba-e43b81dcb719`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`7d7b9bb6f64346f1478439a7af848ee469fee627`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向050明确确认实际接管并实时核其归档。051为当前唯一编码主；词边界任务独占新内部辅助及新测试，命令契约任务仅新Ctrl+Backspace测试，redraw依赖任务仅新内部更新测试；主独占共享基类/Control/interop、文档/集成/Git。050实现`ba59726ad90f6633fa3941e5c8c4ddcbd5e73d20`独立保留；监督`luminaforms-30`保持NOT_FOUND、051绑定NOT_DONE，不恢复可能用户删除项。下述050及以前归属为历史。
+
 - 050主聊天`01a1b3f7-925d-75a1-83c8-05623abd944f`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`27ab70adf17e20ff232bfff1bbc7fa9c3b16cd03`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向049明确确认实际接管并实时核其归档。050为当前唯一编码主；剪贴板任务独占基类Copy/Cut/Paste三个成员及新命令测试，快捷键任务只写新测试并提供精确补丁，主待基类冻结后串行整合，独占interop/共享文档/集成/Git。049实现`94303a2e7a7708facd81020418fb1d1175162649`独立保留；监督`luminaforms-30`保持NOT_FOUND、050绑定NOT_DONE，不恢复可能用户删除项。剪贴板验证只截获消息，不读写用户当前系统剪贴板；下述049及以前归属为历史。
 
 - 049主聊天`01a1b3ce-63d6-7b41-83ea-7d70ac57424e`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`38bdf2ec1d601899b61ba53d13a04aae8be682ed`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向048明确确认实际接管并实时核其归档。049为唯一编码主；两个互斥内部任务分别负责Control-17/TextBoxBase-006重挂EDIT命令诊断与新回归、TextBoxBase-005的Clear标准虚调用限定子范围。主独占Control生产补丁、共享接口/interop、文档/集成/Git。048实现`c896813a2092995d9416111fb443f46e776807ee`独立保留；监督`luminaforms-30`保持NOT_FOUND、049绑定NOT_DONE，不恢复可能用户删除项。下述048及以前归属为历史。
@@ -38,7 +40,20 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次050 实施与收尾（当前）
+## 批次051 实施与收尾（当前）
+
+- 已独立核交接`7d7b9bb6f64346f1478439a7af848ee469fee627`三SHA一致、main干净/+0/-0，明确向050确认接管并实时核其归档。三个互斥内部任务全部completed冻结：005f独占新ClientUtils/词边界测试，009a仅新命令测试，Control-14c仅新内部更新测试；主独占TextBoxBase/Control/Win32、文档/集成/Git，无同源生产并发写入。
+- 仅完成005f固定词边界辅助、009a启用Ctrl+Back/Ctrl+Shift+Back词删除及Control-14c必要内部redraw。固定word为字母/数字/NonSpacingMark，连接标点为nonword、UTF-16 surrogate停止反向扫描；不加参数归一化。命令先父路由及原050守卫，有选区内部替换empty/false；无选区非起点按边界选择、Begin/EndUpdate后内部可撤销替换。父返回true仍执行并保消息修改，不整串Text重写/手工通知。内部redraw用short计数、无窗Begin不积累、首0/末1、可选Invalidate自身，无配对End false；没有新公开更新模型。
+- 首轮Release方案/固定Demo双目标0错/2既有NU1510。新增首跑85/88三处夹具错误保留：无窗选择经虚TextLength读取Text，两处起点和一处有限重入轨迹原预期遗漏；按固定源码修夹具而不改生产。直接boundary的Text异常改已有EDIT隔离调用点。测试项目重建0错，最终新增88/88（52+26+10）及全量5,119/5,119，0失败/跳过。JSON/TRX/first-failure-analysis保留051目录，WarningLevel=0不表示分析告警清零。
+- 新测试没有系统剪贴板/菜单访问；内部redraw测试截获消息，命令测试经真实EDIT可撤销删除，但可见绘制/物理输入仍未验。选择setter异常按固定源码没有finally恢复redraw，不称完整异常事务。TextBox/Rich/Masked/Form/Application/Demo源码no-op，错误层级间接消费不计派生专有支持。完整003/005/009/Control14及所有父项保持部分，不推导98%。
+- TextBoxBase/Control固定源码由050/049复制重核；新ClientUtils v10.0.11为1,708字节/SHA256 8939dfdb58bf6f09f34e12e65f57bae8136eeb91771b9309b66d65041f3f5b28，直连超时和临时7890代理成功回执保留。固定API库存刷新NOT_RUN，1,095类型/61,240成员行/任务ID和分母不改。下一继续完整测量/default及必要编辑辅助，再恢复Rich/Masked标准直接层级和真实后端；实际剪贴板/菜单、原反射父Form寿命/WM_NOTIFY、StringArrayEditor/Designer、ES_WANTRETURN/24/48、RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及各平台门禁继续原任务。不重复033～051、不重评全项目、不建context或调度框架。
+- 主Cordonix父PID14156/精确FILETIME134384964624244220为本聊天独立观察，不能复用050身份。PS7.6.9已核；三个任务无临时/持久workspace文档/独占服务，证据/reference/JSON/TRX/bin/obj保留，不按名杀/清缓存或MCP。新STA finally顺序OLE ExitThread→既有private visual-context，无outer cookie；046旧outer cookie最后逆序。资源/编码/导出回执另存，名称快照只限观察范围。
+- 持续授权逐批实施、多个互斥内部任务一人一任务/主独占共享接口interop文档集成Git；实现和独立归属交接分别成功commit/push并核HEAD/tracking/实际远端三SHA，新local先只读准备、交接成功push后开始/明确确认，旧主立即停共享写入/构建/Git并归档，不等下一批完成；后来暂停停止优先。监督luminaforms-30保持NOT_FOUND、051绑定NOT_DONE，不恢复或另建替代项；Windows两个目标官方Drawing、固定Demo双目标与静态Designer/resx保持。
+
+- 既有Validate-Roadmap.ps1 -ExportTasks实际PASS：439份Markdown、2,167任务、187实施索引行、0结构错误，整类型代码完成0；README实施列/tasks.csv工具生成，固定API库存和Demo源码保持。最终编码、无导出复核、diff及资源回执另存051目录。
+- 26个拥有路径UTF8严格/无NUL/字节往返PASS，无导出复核同统计PASS，固定库存/Demo与未触及派生生产diff为空。最终dotnet名称快照2项属于其他SonnetDB格式检查，保留未动，不称全机零进程；主有界构建/测试/工具调用cleanup_complete=true，无持久workspace文档/临时/独占服务。三个子任务只读搜索输出上限已定点补读，不计构建/测试结果。
+
+## 批次050 实施与收尾（历史）
 
 - 050实现提交`ba59726ad90f6633fa3941e5c8c4ddcbd5e73d20`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；21拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch050/implementation-push.json。
 - 下一local只读接续聊天`01a1b418-68f4-71f3-92ba-e43b81dcb719`（Lumina batch 051 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后050才发送“开始接管”；051收到后先完成必要只读准备，再重核交接SHA/HANDOFF/干净树，并明确向050确认实际接管，确认前只读、不建内部任务。确认后050立即停止共享写入/构建/Git并归档，不等051完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、051绑定NOT_DONE，不恢复可能用户删除项。

@@ -115,6 +115,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     private bool _handleDestroyedNotified;
     private bool _parentRecreatingHandle;
     private byte _layoutSuspendCount;
+    private short _updateCount;
     private bool _layoutDeferred;
     private bool _clearLayoutArgs;
     private bool _layoutDirty;
@@ -2099,6 +2100,30 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
         _clientWidth = x;
         _clientHeight = y;
         OnClientSizeChanged(EventArgs.Empty);
+    }
+
+    internal void BeginUpdateInternal()
+    {
+        if (!IsHandleCreated) { return; }
+        if (_updateCount == 0)
+        {
+            _ = Win32.SendMessageW(Handle, Win32.WM_SETREDRAW, 0, 0);
+        }
+        _updateCount++;
+    }
+
+    internal bool EndUpdateInternal() => EndUpdateInternal(invalidate: true);
+
+    internal bool EndUpdateInternal(bool invalidate)
+    {
+        if (_updateCount <= 0) { return false; }
+        _updateCount--;
+        if (_updateCount == 0)
+        {
+            _ = Win32.SendMessageW(Handle, Win32.WM_SETREDRAW, (nint)1, 0);
+            if (invalidate) { Invalidate(); }
+        }
+        return true;
     }
 
     /// <summary>

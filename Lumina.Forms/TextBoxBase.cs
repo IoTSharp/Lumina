@@ -131,6 +131,26 @@ public abstract class TextBoxBase : Control
             return true;
         }
 
+        if (!ReadOnly && keyData is (Keys.Control | Keys.Back) or (Keys.Control | Keys.Shift | Keys.Back))
+        {
+            if (SelectionLength != 0)
+            {
+                SetSelectedTextInternal(string.Empty, clearUndo: false);
+            }
+            else if (SelectionStart != 0)
+            {
+                int boundaryStart = ClientUtils.GetWordBoundaryStart(Text, SelectionStart);
+                int length = SelectionStart - boundaryStart;
+                BeginUpdateInternal();
+                SelectionStart = boundaryStart;
+                SelectionLength = length;
+                EndUpdateInternal();
+                SetSelectedTextInternal(string.Empty, clearUndo: false);
+            }
+
+            return true;
+        }
+
         return handled;
     }
 

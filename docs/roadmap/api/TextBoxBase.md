@@ -1,5 +1,7 @@
 # TextBoxBase：逐成员待办
 
+051当前源码补充：005f新增内部固定词边界辅助，009a补启用Ctrl+Backspace/Ctrl+Shift+Backspace命令，经既有内部选择替换保留native撤销。88新增/5,119全量通过，首次三处夹具预期错误保留；完整编辑/测量/default、可见绘制及派生后端仍待。固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBoxBase.md)。
+
 050当前源码补充：005e新增标准非virtual Copy/Cut/Paste命令入口，003d新增virtual ShortcutsEnabled精确禁用/只读对齐/系统菜单抑制。消息截获回归不访问真实剪贴板，custom菜单只核受限路由；启用时Ctrl+Backspace词删除、完整编辑/尺寸及派生真实后端仍待。固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBoxBase.md)。
 
 049当前源码补充：005d对齐标准非virtual Clear的虚Text=null调用，保留原异常/重入；通过Control-17e消费重挂后的普通EDIT通知。剪贴板/快捷键、测量和真实派生后端仍待，本页固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBoxBase.md)。
