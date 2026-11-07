@@ -32,6 +32,9 @@
 
 ## 批次046 实施与收尾（当前）
 
+- 046实现提交`ccff4b5b275a701879de592d5f026f812fa8225c`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；24拥有路径UTF8严格解码/无NUL/字节往返及暂存diff PASS，真实回执在artifacts/compatibility-batch046/implementation-push.json。
+- 下一local只读接续聊天`01a1b355-d4a1-72a1-849a-d1086d4ca2e3`（Lumina batch 047 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后046才发送“开始接管”；047收到后重新核交接SHA/HANDOFF/干净树，并明确向046确认实际接管，确认前只读不建内部任务。确认后046立即停止共享写入/构建/Git并归档，不等047完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、047绑定NOT_DONE，不恢复可能用户删除项。
+
 - 046已核独立归属交接`383060a83ed53693836e2bb37ba4c1d885d7956e`三SHA一致/main干净/+0/-0，向045确认接管并实时核其归档。两个互斥任务completed冻结：TextBoxBase-007a BorderStyle（24例）及002a SelectAll/DeselectAll契约/回归（20例）；主整合共享选择接口，并完成必要Control-17c源窗口类身份缓存及2例回归。只关闭这三个子范围，完整父项保持部分。
 - 最终Release方案/固定Demo双目标0错/2既有NU1510；新增46与旧对齐28组合74/74，最终完整4,828/4,828，0失败/跳过。WarningLevel=0不表示分析告警清零。原首两轮新增40/44、41/44、两轮全量6/8失败、直接源类2/2失败及一次全量4,604后中止均保留JSON/TRX/诊断，不当成功。
 - BorderStyle默认Fixed3D、标准元数据/事件槽/虚On*，状态→UpdateStyles→RecreateHandle→条件布局/通知，CreateParams清两种边框位再按枚举选择；保留旧protected ExStyle投影。原生EDIT规范化清公开WS_BORDER，以请求位硬断言和同配置独立EDIT回读分开验证。Upper原生初值在重建前硬断言大写，选择方法不修改文本/Modified；SelectAll仅读一次TextLength，DeselectAll走虚SelectionLength setter。
