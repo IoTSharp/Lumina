@@ -13,20 +13,11 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ✅ | P1 / ContainerControl-06d | 批次035：活动控件变化经UpdateFocusedControl成功结算后通知所属Form.UpdateDefaultButton，补标准protected virtual扩展点；基类无默认按钮动作与固定参考一致。ValidateInternal供Control内部按钮入口消费，保留Prevent/Allow/Disable结果；嵌套活动按钮与验证策略回归通过。完整原生点击/BindingContext/输入仍待。 |
-| ✅ | P1 / ContainerControl-06c | 批次034：ProcessTabKey不在当前容器回绕，Tab/Shift+Tab边界及无候选时回退父链；Ctrl/Alt修饰Tab不走普通导航。9项新增回归覆盖正反边界/嵌套/空容器和普通助记后代终止；完整验证取消/默认按钮/设备仍归父项。 |
-| ✅ | P0 / ContainerControl-01 | 018已建立ContainerControl : ScrollableControl : Control，共用Control父子集合/状态；Form接入标准链，原Form缩放移到该层。历史公共名称保留，完整容器行为另列。 |
 | 🟡 | P0 / ContainerControl-02 | 028的02a逻辑链/原生恢复保留；029完成02b移除候选和Control-12c禁用/隐藏导航、03a程序验证取消协作。全部派生、ToolStripControlHost、完整原生输入与关闭焦点差异仍缺，不关闭整个活动导航任务。 |
-| ✅ | P0 / ContainerControl-02a | 批次028：设置ContainerControl样式，独立逻辑focusedControl；公开ActiveControl与显式ActivateControl按参考分别维护父/深层活动链，Enter/Leave按路径和重入更新，异常经ThreadException保留；定向Select选择首/尾子项，WM_SETFOCUS恢复活动子项并避免多发容器GotFocus。无HWND选择及真实HWND程序焦点对照完成限定范围，验证取消与自动候选仍归02/03。 |
-| ✅ | P0 / ContainerControl-02b | 批次029：移除后通过SelectNextControl从剩余首项按TabIndex/CanSelect/TabStop/nested/wrap选取；清理本容器及祖先待验证链，恢复可见树句柄和原生活动焦点。普通/嵌套移除及旧父子集合回归覆盖有限范围，MDI/全部派生另列。 |
 | 🟡 | P0 / ContainerControl-03 | 029完成03a基础验证状态机及批量遍历；CausesValidation、取消/重入/异常和两种enable策略有对照。原生点击提交抑制、全部派生默认/标准继承、Form自身声明元数据及完整输入协作仍缺，不以程序探针关闭全验证任务。 |
-| ✅ | P0 / ContainerControl-03a | 批次029：标准AutoValidate枚举/继承/AmbientValue/Changed、Validate两重载和ValidateChildren两重载实现。保存最深待验证路径，在Enter前验证至共同祖先；Prevent恢复原活动链，Allow仍如实返回验证失败；Disable/显式验证/重入finally/原异常保留。批量默认Selectable按style筛选、后代先行、取消不中断兄弟；普通容器style及TabControl递归消费完成限定范围。 |
 | 🟡 | P1 / ContainerControl-04 | 028程序Select/Focus/原生焦点顺序保留；029补Validating/Validated、取消后活动链与原生焦点、重入/异常对照。物理鼠标/Tab、输入提交及完整派生仍待实现/验收；关闭多余LostFocus单列，不能归一化。 |
 | 🟡 | P1 / ContainerControl-05 | 018已迁入既有AutoScaleMode/Dimensions/CurrentDimensions/PerformAutoScale，031补05a受保护AutoScaleFactor。完整嵌套继承/字体/DPI切换和重复缩放仍缺，不以迁移旧算法或比例属性宣称完整兼容。 |
-| ✅ | P1 / ContainerControl-05a | 批次031：受保护 `AutoScaleFactor` 按当前/设计尺寸返回双轴比例，设计基线或单轴缺失时返回中性1.0；不关闭完整字体/DPI/嵌套缩放。 |
 | 🟡 | P1 / ContainerControl-06 | 031～034的06a～06c保留；035完成06d活动链默认按钮更新与Form Enter/Escape必要验证消费。BindingContext、完整助记键/原生输入和导航验证组合仍缺。 |
-| ✅ | P1 / ContainerControl-06a | 批次031：标准 `ParentForm` 按当前父级链动态解析，重新挂载或脱离后立即反映宿主；不冒称BindingContext或键盘路由已完成。 |
-| ✅ | P1 / ContainerControl-06b | 批次033：`ProcessDialogKey` 将 Tab/Shift+Tab 交给 `ProcessTabKey`，按活动控件路径执行标准选择；`ProcessDialogChar`/`ProcessMnemonic` 遍历可见启用后代，首个处理成功项终止并按父链回退。完整验证取消/点击提交、BindingContext、IsDialogMessage、Enter/Escape、全部派生和真实设备仍待。 |
 | 🟡 | P1 / ContainerControl-07 | 029指定禁用/隐藏、移除/销毁/嵌套候选和异常验证已有程序证据；031已完成UserControl标准继承，035补默认按钮活动链消费，纠正原继承仍缺的滞后描述。完整UserControl组合、混用缩放、全部派生与设备行为仍未完成。 |
 | 🟡 | P2 / ContainerControl-08 | 018～028的原生容器入口保留；029接入自动导航和程序验证。IsDialogMessage/键盘、点击取消消费、完整原生焦点生命周期及关闭多余LostFocus仍待实现。 |
 | ⬜ | P2 / ContainerControl-09 | Linux 用 GtkFixed/GtkBox 原生容器与 GtkEventControllerFocus；兼容层决定验证是否允许转移，再映射 GtkWidget focus；Gtk 自身 focus chain 不等于 ActiveControl。 |
@@ -46,6 +37,25 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / ContainerControl-06d | 批次035：活动控件变化经UpdateFocusedControl成功结算后通知所属Form.UpdateDefaultButton，补标准protected virtual扩展点；基类无默认按钮动作与固定参考一致。ValidateInternal供Control内部按钮入口消费，保留Prevent/Allow/Disable结果；嵌套活动按钮与验证策略回归通过。完整原生点击/BindingContext/输入仍待。 |
+| ✅ | P1 / ContainerControl-06c | 批次034：ProcessTabKey不在当前容器回绕，Tab/Shift+Tab边界及无候选时回退父链；Ctrl/Alt修饰Tab不走普通导航。9项新增回归覆盖正反边界/嵌套/空容器和普通助记后代终止；完整验证取消/默认按钮/设备仍归父项。 |
+| ✅ | P0 / ContainerControl-01 | 018已建立ContainerControl : ScrollableControl : Control，共用Control父子集合/状态；Form接入标准链，原Form缩放移到该层。历史公共名称保留，完整容器行为另列。 |
+| ✅ | P0 / ContainerControl-02a | 批次028：设置ContainerControl样式，独立逻辑focusedControl；公开ActiveControl与显式ActivateControl按参考分别维护父/深层活动链，Enter/Leave按路径和重入更新，异常经ThreadException保留；定向Select选择首/尾子项，WM_SETFOCUS恢复活动子项并避免多发容器GotFocus。无HWND选择及真实HWND程序焦点对照完成限定范围，验证取消与自动候选仍归02/03。 |
+| ✅ | P0 / ContainerControl-02b | 批次029：移除后通过SelectNextControl从剩余首项按TabIndex/CanSelect/TabStop/nested/wrap选取；清理本容器及祖先待验证链，恢复可见树句柄和原生活动焦点。普通/嵌套移除及旧父子集合回归覆盖有限范围，MDI/全部派生另列。 |
+| ✅ | P0 / ContainerControl-03a | 批次029：标准AutoValidate枚举/继承/AmbientValue/Changed、Validate两重载和ValidateChildren两重载实现。保存最深待验证路径，在Enter前验证至共同祖先；Prevent恢复原活动链，Allow仍如实返回验证失败；Disable/显式验证/重入finally/原异常保留。批量默认Selectable按style筛选、后代先行、取消不中断兄弟；普通容器style及TabControl递归消费完成限定范围。 |
+| ✅ | P1 / ContainerControl-05a | 批次031：受保护 `AutoScaleFactor` 按当前/设计尺寸返回双轴比例，设计基线或单轴缺失时返回中性1.0；不关闭完整字体/DPI/嵌套缩放。 |
+| ✅ | P1 / ContainerControl-06a | 批次031：标准 `ParentForm` 按当前父级链动态解析，重新挂载或脱离后立即反映宿主；不冒称BindingContext或键盘路由已完成。 |
+| ✅ | P1 / ContainerControl-06b | 批次033：`ProcessDialogKey` 将 Tab/Shift+Tab 交给 `ProcessTabKey`，按活动控件路径执行标准选择；`ProcessDialogChar`/`ProcessMnemonic` 遍历可见启用后代，首个处理成功项终止并按父链回退。完整验证取消/点击提交、BindingContext、IsDialogMessage、Enter/Escape、全部派生和真实设备仍待。 |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次039：ContainerControl.cs未改，继承Control-12l的有限语言消息/非Form根传播；未完成模态宿主、完整输入语言/IME和全部派生验证，父任务状态保留，见[039](../batches/039.md)。
 

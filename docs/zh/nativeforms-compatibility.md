@@ -1,32 +1,25 @@
 ---
-title: "LuminaForms 兼容差异清单"
+title: "LuminaForms 兼容与迁移差异"
 permalink: /zh/nativeforms-compatibility/
 layout: default
 ---
 
-# LuminaForms 兼容差异清单
+# LuminaForms 兼容与迁移差异
 
-## 当前已经对齐的方向
+目标是保留 WinForms 名称、签名、默认值、事件顺序、生命周期、设计器与释放语义。完整目标见[项目需求](../../PROJECT_REQUIREMENTS.md)。本页解释如何查差异，不维护第二套控件支持状态。
 
-- WinForms 风格启动入口：`ApplicationConfiguration.Initialize()`
-- WinForms 风格顶层窗口：`Form`
-- 常用标准控件：`Button`、`Label`、`TextBox`、`ComboBox`、`CheckBox`、`RadioButton`、`ListBox`
-- 基础容器层级：`Form`、`GroupBox`、`Panel`
-- 常见集合操作：`Controls.AddRange(...)`、`Controls.Find(...)`、`Items.AddRange(...)`
-- 常见选择 API：`SelectedIndex`、`SelectedItem`
-- 常见布局属性：`Left`、`Top`、`Width`、`Height`、`Location`、`Size`、`Bounds`
-- WinForms 风格自动缩放：`AutoScaleMode`、`AutoScaleDimensions`、`CurrentAutoScaleDimensions`、`PerformAutoScale()`
-- WinForms 风格启动约束分析器：`LNF001` ~ `LNF004`
+## 查找具体差异
 
-## 当前仍在继续补齐的方向
+1. 从[任务索引](../roadmap/README.md)进入控件页，当前表列未完成父项和成员范围，修改历史保存已完成子项的 ID、行为与限制。
+2. 对照该页 API 附件查完整成员、继承和接口；固定库存是静态快照，不是当前支持率。
+3. 从[验证记录](../roadmap/validation.md)区分局部 PASS、全量 FAIL、UNKNOWN 与 NOT_RUN；按[98% 口径](../roadmap/coverage.md)分别核各平台。
+4. 按[迁移指南](nativeforms-migration.md)保留固定双目标，对业务使用的真实路径逐项验证。
 
-- 更复杂的公共控件族
-- 更完整的设计期元数据
-- Owner-draw、自定义绘制和更深入的主题着色
-- 更复杂的高级容器、数据绑定和消息路由
+## 已记录的迁移注意事项
 
-## 迁移建议
+- AutoSizeMode 数值已对齐 GrowAndShrink=0 / GrowOnly=1；已编译常量或按整数保存的 0/1 需复核。
+- HorizontalAlignment 已对齐 Left=0 / Right=1 / Center=2；旧二进制和整数持久化的 1/2 需复核。
+- AppendText 参数名已对齐为 text；使用旧 value 命名参数的源码需调整。
+- 这些具体变化及当时验证见[CHANGELOG](../../CHANGELOG.md)，不能由它们推断完整输入、布局或 API 兼容。
 
-1. 先保留 `net10.0-windows` 的 WinForms 路径，保证设计器和旧行为可以回退。
-2. 再让 `net10.0` 切到 `Lumina.Forms`，优先验证高频窗体和高频控件。
-3. 对尚未覆盖的高级能力，先收敛差异面，再决定是继续补齐 LuminaForms，还是暂时保留 WinForms 路径。
+Windows 的真实 WinForms/设计器路径保持在 net10.0-windows；net10.0 使用 Lumina.Forms 并保持 AOT 方向。Linux/macOS 的 Drawing、原生控件与运行验收遵循[平台要求](../roadmap/platforms.md)，不由 Windows 编译结果代替。

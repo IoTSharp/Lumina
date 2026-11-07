@@ -14,16 +14,12 @@
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
 | 🟡 | P0 / MenuStrip-01 | 020事务入口及021父Dock定位完成；标准构造/Items/Owner/Dock/AutoSize/GripStyle全部默认、MainMenuStrip绑定/替换/Dispose注册仍待对齐。 |
-| ✅ | P0 / MenuStrip-01b | 批次021：移除历史菜单自定位，继承ToolStrip Dock事务并由实际父级DefaultLayout定位；保持既有菜单内容布局。仅父布局接入，不关闭完整菜单默认/激活/MDI/资源。 |
-| ✅ | P0 / MenuStrip-01a | 批次020：现有菜单布局通过标准OnLayout及内部直属Form定位入口执行；暂停延期与直属Form定位有回归；嵌套strip遵守父级约束，本批嵌套定位fixture仅直接覆盖ToolStrip。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P0 / MenuStrip-02 | 完整传递 ToolStripMenuItem 的 ShortcutKeys/ShortcutKeyDisplayString/ShowShortcutKeys、CheckOnClick/Checked/CheckState、DropDownItems 和启用状态。 |
 | ⬜ | P1 / MenuStrip-03 | 实现 MenuActivate/MenuDeactivate，Alt/F10 进入、Esc 逐层退出、左右同级切换、上下/Enter 选项与焦点还原；不依赖鼠标才能打开菜单。 |
 | 🟡 | P1 / MenuStrip-04 | 027完成04a私有顶层宿主共享Click事件槽；动态Items/DropDownItems增删、文本/图像/勾选/可见性同步、Click/ItemClicked与关闭顺序仍待完整对照。 |
-| ✅ | P1 / MenuStrip-04a | 批次027：私有TopLevelMenuItemHost移除独立Click，既有WM_LBUTTONUP位置调用继承OnClick，保留菜单原激活路径。25项消费回归包含该宿主订阅去重；仅事件槽衔接，不关闭完整菜单输入、Alt/F10/焦点或ItemClicked。 |
 | ⬜ | P1 / MenuStrip-05 | 实现 MdiWindowListItem、AllowMerge、ToolStripManager.Merge/RevertMerge 相关场景；MdiClient 未完成时明确阻塞，不能单独标已支持。 |
 | ⬜ | P1 / MenuStrip-06 | 核验助记键冲突、&& 转义、快捷键在 TextBox 等编辑控件聚焦时的优先级、禁用/隐藏父菜单下命令是否可触发。 |
 | 🟡 | P1 / MenuStrip-07 | 022完成07a有效字体/显式颜色消费；完整RTL/DPI/长标题/图像透明/.resx本地化和可访问性层级仍待验收。 |
-| ✅ | P1 / MenuStrip-07a | 批次022顶层宿主绘制使用自身独占HFONT和显式父级颜色链，默认保留语义palette；复用ToolStrip有效字体测量。字体布局须保留现有顶层宿主身份，不以替换控件丢失状态；仅此必要资源衔接，完整菜单资源/输入另列。 |
 | 🟡 | P2 / MenuStrip-08 | 已有顶层原生宿主与HMENU popup，原全待办更正；022沿现有路径接入字体/颜色。完整Items/Renderer、焦点、激活和主题仍待验收，不为单一实现推翻已有行为。 |
 | ⬜ | P2 / MenuStrip-09 | Linux 使用 GtkPopoverMenuBar/GMenuModel/GAction；GAction 状态与 Checked/Enabled 双向同步。GtkPopoverMenuBar 的菜单栏只接受菜单模型，ToolStrip 任意嵌入项需原生组合并单列限制。 |
 | ⬜ | P3 / MenuStrip-10 | macOS 首选 NSMenu/NSMenuItem 接入应用主菜单，按活动窗口切换命令；WinForms 可嵌入/多条 MenuStrip 与 macOS 全局菜单不等价，明确 portable 范围并验证，不暗中忽略 Dock。 |
@@ -42,6 +38,20 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P0 / MenuStrip-01b | 批次021：移除历史菜单自定位，继承ToolStrip Dock事务并由实际父级DefaultLayout定位；保持既有菜单内容布局。仅父布局接入，不关闭完整菜单默认/激活/MDI/资源。 |
+| ✅ | P0 / MenuStrip-01a | 批次020：现有菜单布局通过标准OnLayout及内部直属Form定位入口执行；暂停延期与直属Form定位有回归；嵌套strip遵守父级约束，本批嵌套定位fixture仅直接覆盖ToolStrip。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+| ✅ | P1 / MenuStrip-04a | 批次027：私有TopLevelMenuItemHost移除独立Click，既有WM_LBUTTONUP位置调用继承OnClick，保留菜单原激活路径。25项消费回归包含该宿主订阅去重；仅事件槽衔接，不关闭完整菜单输入、Alt/F10/焦点或ItemClicked。 |
+| ✅ | P1 / MenuStrip-07a | 批次022顶层宿主绘制使用自身独占HFONT和显式父级颜色链，默认保留语义palette；复用ToolStrip有效字体测量。字体布局须保留现有顶层宿主身份，不以替换控件丢失状态；仅此必要资源衔接，完整菜单资源/输入另列。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次027：私有TopLevelMenuItemHost复用Control.Click/OnClick，避免新基类事件与宿主独立事件分裂；既有鼠标释放处理位置不变，新增宿主回归通过。仅04a代码完成，04父项保持部分，完整键盘/激活/设备交互仍缺，见[027](../batches/027.md)。
 

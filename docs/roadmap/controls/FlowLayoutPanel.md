@@ -21,8 +21,6 @@
 | ⬜ | P1 / FlowLayoutPanel-04 | 支持每个子控件 Margin、容器 Padding、FlowBreak、Visible=false、Dock/Anchor 在行/列内的标准约束，避免简单顺序 SetBounds 视作完成。 |
 | 🟡 | P1 / FlowLayoutPanel-05 | 021新增有限内容首选测量和AutoSize（明确接入范围见06b）；完整换行边界、超大首项、行列内Dock/Anchor和滚动范围仍缺，不能由两个子项样例关闭全部测量。 |
 | 🟡 | P1 / FlowLayoutPanel-06 | 021接入专用LayoutEngine，旧flow算法不被DefaultLayout覆盖；内部SetBounds保留用户指定尺寸，补有限内容测量/AutoSize、FlowDirection/WrapContents真实清缓存。完整FlowBreak/Settings/RTL/行列内Dock/Anchor算法和字体/DPI仍缺。 |
-| ✅ | P1 / FlowLayoutPanel-06b | 批次021：专用引擎驱动既有flow排列及有限内容测量，避免布局覆盖指定尺寸；方向/换行属性清缓存并请求真实布局。简单两子项58×21测量/AutoSize与换向缓存独立回归通过；仅接入/有限测量，完整标准flow算法不在此范围。 |
-| ✅ | P1 / FlowLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有flow几何；SuspendLayout实际延期现有布局，重复/重入沿共享事务处理。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / FlowLayoutPanel-07 | 保留 TabIndex 与视觉排列不同的键盘顺序；子控件焦点、验证、鼠标事件不被容器吞掉。 |
 | ⬜ | P2 / FlowLayoutPanel-08 | Windows 使用真实子 HWND，托管 flow 算法计算后批量 SetWindowPos；勿引入独立绘制控件树。 |
 | ⬜ | P2 / FlowLayoutPanel-09 | Linux 优先 GtkFixed + 共享 flow 算法；GtkFlowBox 可作为原型对照，但其 selection、均分/行宽规则不能直接取代 WinForms FlowLayoutPanel。 |
@@ -42,6 +40,18 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / FlowLayoutPanel-06b | 批次021：专用引擎驱动既有flow排列及有限内容测量，避免布局覆盖指定尺寸；方向/换行属性清缓存并请求真实布局。简单两子项58×21测量/AutoSize与换向缓存独立回归通过；仅接入/有限测量，完整标准flow算法不在此范围。 |
+| ✅ | P1 / FlowLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有flow几何；SuspendLayout实际延期现有布局，重复/重入沿共享事务处理。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次054：跟随Table全量失败审计同源子项AutoSize消费者，改用内部状态；原完整算法、FlowBreak/Settings/RTL和平台任务不关闭，见[054](../batches/054.md)。
 

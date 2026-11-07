@@ -1,5 +1,5 @@
-title: Lumina
-description: 为 Windows 应用注入 Mica、Acrylic、Aero 等视觉效果的 SDK 与桌面工具。
+title: LuminaForms
+description: 面向 .NET 10 与 Native AOT 的 WinForms 兼容层；需求、任务、迁移与验证文档。
 lang: zh-CN
 timezone: Asia/Shanghai
 url: https://lumina.maikebing.com
@@ -11,7 +11,7 @@ locales:
     root: /zh/
     label: 中文
   - code: en
-    root: /en/
+    root: /
     label: English
 defaults:
   - scope:
@@ -19,19 +19,19 @@ defaults:
     values:
       layout: default
       ui_home_url: /zh/
-      ui_docs_url: /zh/navigation/
+      ui_docs_url: /
       ui_news_url: /zh/news/
       ui_blog_url: /zh/blog/
-      ui_about_url: /zh/about/
-      ui_getting_started_url: /zh/getting-started/
-      ui_brand_subtitle: Windows 视觉效果 SDK
+      ui_about_url: /zh/nativeforms/
+      ui_getting_started_url: /quickstart/
+      ui_brand_subtitle: .NET 10 WinForms 兼容层
       ui_docs_label: 文档
       ui_news_label: 新闻
       ui_blog_label: 博客
       ui_about_label: 关于
       ui_source_label: 源码
       ui_switch_label: 语言
-      ui_footer_intro: Lumina 是面向 Windows 开发者的视觉效果 SDK，支持 Mica、Acrylic、Aero、自定义模糊，兼容 WinForms、WPF 与原生 Win32。
+      ui_footer_intro: LuminaForms 面向 .NET 10 与 Native AOT，保留 WinForms API 与双目标设计器路径；完整兼容和跨平台验收仍待完成。
       ui_footer_docs_title: 文档
       ui_footer_project_title: 项目
       ui_footer_doc_map_label: 文档导航
@@ -44,20 +44,20 @@ defaults:
   - scope:
       path: en
     values:
-      ui_home_url: /en/
-      ui_docs_url: /en/navigation/
-      ui_news_url: /en/news/
-      ui_blog_url: /en/blog/
-      ui_about_url: /en/about/
-      ui_getting_started_url: /en/getting-started/
-      ui_brand_subtitle: Windows Visual Effects SDK
+      ui_home_url: /
+      ui_docs_url: /
+      ui_news_url: /zh/news/
+      ui_blog_url: /zh/blog/
+      ui_about_url: /zh/nativeforms/
+      ui_getting_started_url: /quickstart/
+      ui_brand_subtitle: .NET 10 WinForms compatibility
       ui_docs_label: Docs
       ui_news_label: News
       ui_blog_label: Blog
       ui_about_label: About
       ui_source_label: Source
       ui_switch_label: Language
-      ui_footer_intro: Lumina is a visual effects SDK for Windows developers, supporting Mica, Acrylic, Aero, and custom blur for WinForms, WPF, and native Win32.
+      ui_footer_intro: LuminaForms targets .NET 10 and Native AOT while preserving familiar WinForms APIs and a designer-friendly dual-target sample. Full compatibility and platform acceptance remain open.
       ui_footer_docs_title: Docs
       ui_footer_project_title: Project
       ui_footer_doc_map_label: Documentation map

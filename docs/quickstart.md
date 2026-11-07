@@ -1,4 +1,12 @@
-# Lumina Quick Start
+---
+title: "LuminaForms Quick Start"
+permalink: /quickstart/
+layout: default
+---
+
+# LuminaForms Quick Start
+
+Use this page for setup examples. Current implementation and acceptance status live in the [task index](roadmap/README.md) and [validation gates](roadmap/validation.md); examples do not establish full WinForms compatibility. The repository targets .NET 10 only, and its fixed demo keeps both WinForms/designer and LuminaForms/AOT targets.
 
 ## Packages
 
@@ -65,7 +73,7 @@ public sealed class MainForm : Form
 ```csharp
 using Lumina.Forms;
 
-Application.LoadTheme("themes/lumina-native-dark.json");
+Application.LoadTheme("themes/nativeforms/lumina-native-dark.json");
 
 using var form = new MainForm();
 form.UseTheme(NativeTheme.CreateDarkTheme());
@@ -78,7 +86,7 @@ form.BackColor = Color.FromArgb(unchecked((int)0xFF1E1E24u));
 form.ForeColor = Color.FromArgb(unchecked((int)0xFFF3F3F3u));
 ```
 
-Sample theme files are included under `themes/nativeforms/` in the repository root.
+Sample theme files are included under [themes/nativeforms](../themes/nativeforms) in the repository root. The example theme path should point to the file deployed with your application.
 
 ## Analyzer Wiring
 

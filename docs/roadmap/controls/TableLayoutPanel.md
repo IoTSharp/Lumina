@@ -21,8 +21,6 @@
 | 🟡 | P1 / TableLayoutPanel-04 | 021新增有限行列首选测量及AutoSize（接入范围见06b），绝对列行测量已有固定参考；完整Absolute/AutoSize/Percent顺序、跨行列与舍入仍待对照，保留完整算法任务。 |
 | ⬜ | P1 / TableLayoutPanel-05 | 支持单元内 Dock/Anchor、Margin/Padding、隐藏控件、RTL、AutoScroll；当前 LayoutControlInCell 只落左上角需补齐对齐/拉伸。 |
 | 🟡 | P1 / TableLayoutPanel-06 | 021接入专用LayoutEngine，保留指定尺寸并增加有限行列首选测量；标准Styles变更通知、完整span/百分比/Anchor/RTL与CellPaint仍缺。 |
-| ✅ | P1 / TableLayoutPanel-06b | 批次021：专用引擎执行既有cell算法并使用内部布局边界；绝对40/60列、20行、Padding2的104×24测量/AutoSize有对照。现有样式列表无变更通知，因此明确禁用PreferredSize缓存，未伪装标准样式集合；完整table算法另列。 |
-| ✅ | P1 / TableLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有table几何，SuspendLayout实际延期；原PerformLayout算法迁入标准OnLayout。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / TableLayoutPanel-07 | 实现 GetColumnWidths/GetRowHeights 与 LayoutSettings 序列化；设计器本地化 .resx 的行列样式和跨格设置可以还原。 |
 | ⬜ | P2 / TableLayoutPanel-08 | Windows 在 Panel 原生宿主上批量移动原生子 HWND；边框绘制属容器装饰，不能将完整表布局改成画布子控件。 |
 | ⬜ | P2 / TableLayoutPanel-09 | Linux 可用 GtkGrid 承载原生子控件，但 WinForms Percent/AutoSize/跨度与 GTK 分配规则不同；先跑共享测量，必要时 GtkFixed 精确落位，避免双重布局。 |
@@ -42,6 +40,18 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / TableLayoutPanel-06b | 批次021：专用引擎执行既有cell算法并使用内部布局边界；绝对40/60列、20行、Padding2的104×24测量/AutoSize有对照。现有样式列表无变更通知，因此明确禁用PreferredSize缓存，未伪装标准样式集合；完整table算法另列。 |
+| ✅ | P1 / TableLayoutPanel-06a | 批次020：标准OnLayout先发事件再执行现有table几何，SuspendLayout实际延期；原PerformLayout算法迁入标准OnLayout。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次054：首轮全量暴露公开AutoSize消费的真实缺口，修正为内部布局状态；原ContainerControlTests固定80宽/Margin硬期望不改，全部原父项保留，见[054](../batches/054.md)。
 

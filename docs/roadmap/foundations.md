@@ -1,44 +1,6 @@
-# 公共基础：先修这些，再铺控件
+# 公共基础：剩余依赖
 
-069的RichTextBox-005d/Control-17g只补标准Protected事件/拒改与内部WM_NOTIFY结果连接；新增私有Pack4 ENPROTECTED及MessageBeep LibraryImport，Windows继续官方Drawing，无新公共附属类型/依赖或CNS/FND完成项。Link/完整共享、资源/线程/Masked及平台仍待，064FAIL/065超时保持，见[069](batches/069.md)。下述068及以前为历史。
-
-068只新增RichTextBox-005b/005c标准通知限定范围；私有Pack4 SELCHANGE与既有SendMessage/PostMessage封装在Rich内，无新公共类型/PInvoke/依赖，不新增CNS/FND完成项。完整共享/资源/线程/Masked与平台仍待，064FAIL/065超时保留，见[068](batches/068.md)。下述067及以前为历史。
-
-067仅关闭RichTextBox-003f/005a和Control-17f必要停车通知连接，不新增FND完成项。Font/尺寸通知与原生字体身份/量化/格式副作用均按限定范围记录；完整共享成员/反射父Form寿命/ambient/DPI/线程/Masked模型与平台仍待。064全量FAIL/未解与065超时保持，见[067](batches/067.md)。下述066及以前为历史。
-
-066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或FND完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
-
-2026-11-07 · 批次065：Rich-003d只关闭SelectionFont及必要私有字体转换，不新增FND完成项；完整Font/颜色同步、Masked模型、缩放/反射/线程/模态与平台父项仍待。064全量FAIL/超时未解门槛保留，不由93新增通过清除，见[065](batches/065.md)。下述064及以前为历史。
-
-2026-11-07 · 批次064：Rich-003c/008a仅增加选择类型及专有查询限定范围，不新增FND完成项；完整共享成员、Masked模型、缩放/反射/线程/模态及平台父项仍待，原ID/分母保持，见[064](batches/064.md)。下述063及以前为历史。
-
-2026-11-07 · 批次063：Rich的004c/004d不新增FND完成任务；原ID/未完父项/固定分母保持。86新增/6,045全量与固定双目标Release通过，完整基础/线程/缩放/平台仍待。见[063](batches/063.md)。下述062及以前为历史。
-
-2026-11-07 · 批次062：Rich-003b/004b五个原生格式属性不新增FND完成项；003/004与完整基础父项保持部分。110新增/5,959全量首轮及固定双目标Release通过；TextBoxBase页042历史段落的Rich层级滞后描述按058实际修正，FND-001/FND-011继续保留061纠正后的范围，见[062](batches/062.md)。下述061及以前为历史。
-
-2026-11-07 · 批次061收尾复核：058已完成Rich直接TextBoxBase/真实RichEdit，059～061只补明确文本/RTF/颜色/对齐子范围；FND-001原仍列整个Rich层级/后端缺失的当前描述已纠正。FND-011原仍称048重挂通知原因未闭环，现按049已实现的Control-17e纠正；原反射父Form寿命/WM_NOTIFY、完整派生/线程/缩放及平台父项仍未完成，不新增FND完成任务，见[061](batches/061.md)。下述053及以前为历史。
-
-2026-11-07 · 批次053完成CNS-006a标准无DC测量依赖、TextBoxBase-007b真实首选尺寸计算与008c普通EDIT延期滚动。108新增/5,329全量和固定双目标Release通过；首构建与两轮夹具/诊断失败保留。完整AutoSize/default/首选缓存/控件DPI与请求高度生命周期、Rich/Masked后端、线程/模态及平台仍待，见[053](batches/053.md)。下述052及以前为历史。
-
-2026-11-07 · 批次052完成TextBoxBase-008a/008b六个行/字符位置查询限定范围；102新增/5,221全量及固定双目标Release通过。首93/102九个夹具轨迹错误与原TRX保留，生产未为此改动。普通EDIT程序查询不等于完整测量/default、派生编辑、物理输入或辅助技术验收，完整线程/模态/平台仍待，见[052](batches/052.md)。下述051及以前为历史。
-
-2026-11-07 · 批次051完成TextBoxBase-005f固定词边界辅助、009a启用词删除命令及Control-14c内部redraw依赖。88新增/5,119全量与固定双目标Release通过；首次85/88的夹具轨迹错误与失败TRX保留。真实EDIT可撤销删除不等于完整输入/剪贴板或可见绘制验收，测量/default、真实派生后端、完整线程/模态和平台仍待，见[051](batches/051.md)。下述050及以前为历史。
-
-2026-11-07 · 批次050完成TextBoxBase-005e标准Copy/Cut/Paste命令入口及003d快捷键禁用/只读对齐/系统菜单抑制。77新增、5,031全量及固定双目标Release通过；命令消息截获而不访问系统剪贴板，custom菜单只核受限路由。完整编辑/启用时Ctrl+Backspace词删除、测量/default、派生真实后端及线程/平台门禁保持，见[050](batches/050.md)。下述049及以前为历史。
-
-2026-11-07 · 批次049完成Control-17e原停车接收者寿命/按来源HWND反射及TextBoxBase-005d标准Clear。独立EDIT证明实际父与通知接收者可不同；18新增与8旧用例组合26/26、4,954全量及固定双目标Release通过。原反射父Form寿命/WM_NOTIFY、完整编辑/测量/派生后端与平台门禁继续原任务，见[049](batches/049.md)。下述048及以前为历史。
-
-2026-11-07 · 批次048完成TextBoxBase-005b/005c的AppendText与公开撤销，以及必要Control-17d停车期间WM_COMMAND反射。43新增与3旧行为组合46/46、4,936全量及固定双目标Release通过；重挂后EDIT命令仍未交付的探针/诊断保留且继续原Control-17/TextBoxBase-006，完整编辑/派生后端/线程与平台门禁不关闭，见[048](batches/048.md)。下述047及以前为历史。
-
-2026-11-07 · 批次047完成TextBoxBase-002b/002c的SelectedText及Lines，并补必要003c的MaxLength；65新增/4,893全量及固定双目标Release通过。TextBox消费共享实现，Rich/Masked错误层级的间接消费不关闭其真实后端；完整AppendText/公开撤销/剪贴板、测量、StringArrayEditor/Designer和平台门禁仍待，见[047](batches/047.md)。下述046及以前为历史。
-
-2026-11-07 · 批次046补TextBoxBase边框设置/通知、SelectAll/DeselectAll及源窗口类身份缓存，限定范围为002a/007a/Control-17c。46新增与旧对齐组合74/74、最终4,828全量通过；完整测量/编辑、真实派生后端与平台门禁仍待，见[046](batches/046.md)。下述045及以前为历史。
-
-2026-11-07 · 批次045补TextBoxBase.Modified/ModifiedChanged、EN_UPDATE及程序设文期间的最小内部WindowText守卫，TextBox.CharacterCasing交真实EDIT处理大小写。45新增、892相关和4,782全量通过；完整共同编辑/尺寸、真实派生后端和平台门禁仍待，见[045](batches/045.md)。下述044及以前为历史。
-
-2026-11-07 · 批次035～043范围保留；044补TextBoxBase.HideSelection标准设置/通知和TextBox.TextAlign设置/创建样式，纠正HorizontalAlignment整数身份。完整编辑基类、派生后端、RTL/镜像视觉、OLE宿主context、输入/布局及平台验收仍待，见[044](batches/044.md)。
-
-依赖顺序：`Component/Control → ScrollableControl → ContainerControl → Form/UserControl`；`ButtonBase/TextBoxBase/ListControl/UpDownBase` 与容器/集合各自接入该体系。**不新造公共框架或公开平台接口。** 分平台实现先放现有 Lumina.Forms 内部，等实证表明确有必要再拆项目。
+公共任务状态以本页表格为准；控件子范围见各自历史台账，未完成父项不随子范围关闭。依赖排序见[执行顺序](execution.md)，证据和未解失败见[验证门槛](validation.md)。Windows 官方 Drawing、固定双目标和平台边界遵循[项目需求](../../PROJECT_REQUIREMENTS.md)。
 
 ## P0：必须先关闭的确定性阻塞
 
@@ -50,7 +12,6 @@
 | FND-002 | 🟡 | 003～025投递/context范围保留；026的Control-05c补已接受InvokeAsync任务关闭/Post/Attach失败终止，保留取消先后/重建/已开始异步工作和ValueTask单消费。ApplicationContext/模态、多UI退出、等待期间释放同一wait与完整竞态仍缺；null Delegate/Send、关闭增强和错误UI差异保留 | [线程上下文](controls/WindowsFormsSynchronizationContext.md)、[批次026](batches/026.md) |
 | FND-003 | 🟡 | 批次001～017完成列表基础构造/子项样式与key、集合共享view/整数索引/typed增删/非泛型IList/查询复制/枚举、两级字符串、主项元数据/未挂接样式及未挂接ImageIndex/ImageKey状态首范围；017图像选择518条参考/JIT相同。其余构造、ImageList解析/挂接native、图像转换器/编辑器、分组、资源继承、完整所属/并发及Items/SubItems/Columns/Nodes原生同步仍待实现，不把局部状态/集合契约当作完整所属 | [ListViewItem](controls/ListViewItem.md)、[ListViewSubItem](controls/ListViewSubItem.md)、[TreeView](controls/TreeView.md) |
 | FND-004 | 🟡 | 018～026 Demo窗口证据保留；027 Native AOT原生窗口可见、程序BM_CLICK使Enable option 0→1、WM_CLOSE正常exit0且原HWND全部销毁。锁屏下物理鼠标命中未验收；模态、完整布局/业务交互、设计器/可访问性及018文字裁切仍未关闭 | [027证据](batches/027.md)、[原评估](../assessments/2026-10-15/README.md) |
-| FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
 | FND-006 | 🟡 | 批次 002 完成 Demo 五张 Bitmap 的内建 byte[] 资源/直接解码，三端像素及身份语义对照通过，IL2026 已消除。原 IL3053 展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type) 的 IL3050，仍未关闭；Icon/Font/其他 TypeConverter 与完整设计器/主窗另列待办，不用全局 suppress 代替处理 | [跨平台资源](platforms.md)、[批次 002](batches/002.md) |
 
 ## P1：所有控件共享的工作
@@ -76,6 +37,19 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+以下为各批当时的状态纠正记录，完成行和当前表共同构成完整任务台账。当前开放门槛统一见[验证](validation.md)；历史授权与“下一批”描述不恢复代码实施。
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| ID | 状态 | 工作与验收 | 对应文档 |
+| --- | --- | --- | --- |
+| FND-005 | ✅ | 批次 001 对齐 Run(Form mainForm) 的 void、SetHighDpiMode 的 bool、HighDpiMode 数值；连接真实 DPI 设置/读取及建窗门禁，14 组隔离场景与本机固定基线对照通过；完整消息循环与真机缩放验收仍待后续任务 | [Application](controls/Application.md) |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次069：005d/17g限定完成；旧ID/未完父项/固定分母与064FAIL/065超时保持，见[069](batches/069.md)。
 

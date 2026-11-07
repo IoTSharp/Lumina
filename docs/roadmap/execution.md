@@ -1,130 +1,40 @@
-# 执行顺序与发布门槛
+# 剩余工作依赖与验收顺序
 
-069限定完成RichTextBox-005d标准Protected通知及真实保护拒改，并以Control-17g补必要WM_NOTIFY原生结果回传。Form改按来源HWND路由，容器/停车接收者保持0/1结果；旧OnNotify钩子保留。保护样式本身与全文替换允许，受保护选区替换/格式修改拒绝；流拒改消耗保护标志，不伪造成功修改。96新增及1048相关通过，Release固定双目标0错/2既有NU1510。完整LinkClicked/TextChanged/其他通知、文件/OLE/撤销、Find/完整选择测量、Masked模型与平台/98%仍待；064全量FAIL/未解决、065超时及066～069全量NOT_RUN保持。用户2026-11-07明确要求本批完成后停止连续代码实施；下一新会话只整理路线图/文档，将完成范围迁入变更记录并合并重复内容，不启动070。 见[069](batches/069.md)；下述068及以前为历史。
+更新：2026-11-07，代码停在批次 069。本页说明未来恢复实施时的依赖，不是启动授权；当前只做文档整理。归属与授权以[HANDOFF](../../HANDOFF.md)为准。
 
-2026-10-15用户确定逐批代码实施与每批新主聊天/多个互斥子智能体机制；根目录[HANDOFF.md](../../HANDOFF.md)是接续入口。2026-10-16另行授权完整Control专项，Windows实际运行/Native AOT及相关Designer/资源验收纳入该专项完成条件，不能继续一概后置。Linux/macOS完成对应代码并单列编译与设备证据；无关全量循环和暂停巡检不恢复。
+状态只在[控件与公共任务页](README.md)维护；本页不重复完成子项或每批测试总述。已完成范围见各任务页“修改历史”和[批次历史](batches/README.md)，失败和未运行门槛见[验证](validation.md)。
 
-任务按依赖和真实迁移阻塞排序。P0 先做；P1 是共同基础及常见场景；P2 是业务/高级能力；P3 是历史专属和低频补齐。P3 代表后做，不代表从全量兼容目标删除。跨平台不等待每个历史 Windows 控件完成，但必须先通过资源与基础原型。
+## 当前最接近的剩余依赖
 
-| 顺序 | 里程碑 | 优先级/状态 | 具体任务入口 | 完成门槛 |
-| --- | --- | --- | --- | --- |
-| 00 | 基线可追踪 | P0 🟡 | [计量](coverage.md)、[类型/成员](api/types.json)、[全控件索引](README.md) | 清单已生成；行为场景和证据映射仍需建立 |
-| 01 | M0 阻塞 | P0 🟡 | [公共基础 FND-001～006](foundations.md)、[ListViewItem](controls/ListViewItem.md)、[项目任务REP-001/002](project-consolidation.md) | 线程/基础构造/启动签名与Form标准链已实现；完整AOT主窗/模态与警告仍未闭环 |
-| 02 | M1 控件/窗体骨架 | P1 🟡 | Component → [Control](controls/Control.md) → 容器/[Form](controls/Form.md)；[BindableComponent](controls/BindableComponent.md) → ToolStripItem；[Application](controls/Application.md) 与 [公共基础](foundations.md) | 基础构造/边界/通知/释放、Parent/Controls/Form标准链首范围完成；标准句柄、事务和基础默认布局/首选尺寸已实现明确范围，完整派生布局/继承属性/键盘/验证/模态/设计器仍缺 |
-| 03 | M2a 高频简单控件 | P1 🟡 已有局部代码，开发/验收未完成 | ButtonBase、Button、CheckBox、RadioButton、Label、TextBoxBase/TextBox、Panel/GroupBox、ProgressBar、PictureBox | 每控件附件+行为过门槛；AOT资源/键盘/释放验证 |
-| 04 | M2b 已有确定性薄弱控件 | P1 🟡 已有局部代码，开发/验收未完成 | [TreeView](controls/TreeView.md)、[ListView](controls/ListView.md)、[RichTextBox](controls/RichTextBox.md)、MaskedTextBox、NumericUpDown、DateTimePicker/MonthCalendar、LinkLabel、ToolTip | 原生状态与托管集合一致；真实交互及事件顺序通过 |
-| 05 | M2c 容器/列表/菜单 | P1 🟡 已有局部代码，开发/验收未完成 | ListControl/ComboBox/ListBox、TabControl、SplitContainer、Flow/TableLayoutPanel、ToolStrip全族（含OverflowButton/PanelRow）、系统对话框/NotifyIcon；随后TaskDialog整族 | 原生与托管双向同步、嵌套布局、所有者/取消/快捷键；TaskDialog页面导航/按钮/进度/关闭取消 |
-| 06 | M3 业务链路 | P2 ⬜ | Binding/BindingSource/BindingContext/CurrencyManager → ErrorProvider → DataGridView基础/行列/样式/六种单元格/集合 → 编辑控件 → BindingNavigator；ImageList/Timer等 | 真实对象列表编辑、校验、排序、虚拟模式可用且AOT；列模板/Clone/共享行/编辑提交不遗漏 |
-| 07 | M3 补常用缺项 | P2 ⬜ | CheckedListBox、DomainUpDown、TrackBar、ScrollBar/H/VScrollBar、ToolStrip容器和下拉 | 所有控件有独立验收，不只看Demo能编译 |
-| 08 | M4 深度兼容 | P2/P3 ⬜ | PropertyGrid及GridItem/PropertyTab、Printing、派生/自绘、UIA、OLE/拖放、WebBrowser、MDI；DataGrid/旧Menu/ToolBar/StatusBar占位契约 | 全量未评估项归零；历史项先匹配固定.NET10标准异常，恢复旧版UI作为可选扩展；剩余项公开 |
-| 09 | XPL 平台进入闸门 | P1研究 🔎 | [XPL-001～015](platforms.md) | 可在M1之后并行一个平台原型；资源契约未解决不承诺全量后端 |
-| 10 | M5 平台推广 | P2 ⬜ | 各控件Linux/macOS任务，按03～08的相同业务依赖顺序 | 各平台可移植属性/事件/行为逐控件 ≥98%，专属能力清楚披露 |
+| 依赖链 | 原任务范围 | 下一步需解决的问题 | 保持开放的边界 |
+| --- | --- | --- | --- |
+| UI 线程/循环归属 → 退出与模态 | FND-002；Application-01/03/04/06/12；Form-07；同步上下文父项 | 原同步上下文回调超时、Run 外关闭 WM_QUIT、关闭 LostFocus 严格差异、ApplicationContext/多 UI 线程及模态寿命 | 064 全量 FAIL 与 065 超时原因未定；独立分组通过不关闭失败 |
+| 原生通知来源 → 接收者寿命 | FND-011；Control-17；TextBoxBase-006；Form-16 | 原反射父 Form 销毁/重建关系、其他通知结果语义和完整派生恢复 | 069 的结果 0/1 回传不等于完整反射或任意高位返回值验证 |
+| RichEdit 文本/游标 → 余下通知与编辑 | RichTextBox-002/005/006/007/008/009/010/011 | LinkClicked/完整 TextChanged 与通知顺序；文件重载/StreamType/编码/锁；Undo/Redo/动作名/OLE；Find、选择方向与测量 | ambient/主题、字符段落交互、RTL/缩放/DPI、辅助技术仍待 |
+| TextBoxBase → MaskedTextProvider → 掩码输入/验证 | MaskedTextBox-001～011；FND-001；TextBoxBase 未完父项 | 直接层级、构造与真实模型，继而文本/选区、输入拒绝、覆盖模式、文化和类型验证 | 不能以存值属性、基类完成或 RichEdit 进展代替真实掩码模型 |
+| 共享输入/布局 → 派生控件逐项闭环 | FND-010～021/023/026；各控件父项 | 真正剪贴板/菜单/物理输入、正向可见点击、派生布局、AutoScale/跨屏 DPI 与 Designer | 不用 DefaultCursor/ToString 或元数据全集阻塞已确定的真实行为依赖；这些缺口仍登记 |
 
-完整控件列表与逐项任务见 [索引](README.md)。同一里程碑内部先修被多个控件共用的基础；不按控件名称字母顺序分配开发。
+这里没有创建新任务或改变优先级。每个具体缺口继续使用原任务 ID，已完成子范围不重复分配。
 
-控件范围按 [补漏审计](scope-audit.md) 的继承闭包检查：Control含抽象基类，ToolStripItem、CommonDialog、Menu、非可视Component及TaskDialog另外核查。不能只完成62个具体Control就宣称所有交互对象已覆盖。
+## 全局顺序
 
-控件页的 P0 表示“开始该控件前先做的工作”，不是把M4历史控件的P0插到M0线程修复之前。全局按本页里程碑与依赖先后，再按控件内P0→P3执行。[tasks.csv](tasks.csv)按阶段/优先级/类型提供筛选索引，不是自动排程，也不是API支持率分母。
+| 顺序 | 阶段 | 剩余交付 | 进入/退出条件 |
+| --- | --- | --- | --- |
+| 1 | M0 | 线程/生命周期阻塞，列表所属/原生同步，主窗/资源/AOT 与告警 | [FND-001～006](foundations.md)、[REP-001/003/004](project-consolidation.md)按实际依赖闭环；记录历史差异和测试失败 |
+| 2 | M1 | Control/容器/Form、ApplicationContext、布局/焦点/验证/输入/DPI | 基础与各派生类分别核查，不由继承自动获得完成状态 |
+| 3 | M2a/M2b | 高频简单控件及已知薄弱的编辑/树/列表/日期/提示控件 | 原生状态与托管对象一致，程序与用户事件、重建/释放均有范围证据 |
+| 4 | M2c | 列表/容器/菜单/工具条、公共对话框、NotifyIcon/TaskDialog | 嵌套布局、集合/Owner、取消/快捷键、页面导航和关闭语义 |
+| 5 | M3 | Binding/BindingSource/BindingContext → 校验/错误 → DataGridView 行列/样式/编辑 → BindingNavigator；常用缺项 | 真实对象列表编辑、排序/虚拟模式、Clone/共享行/提交和 AOT 迁移 |
+| 6 | M4 | PropertyGrid、Printing、派生绘制/UIA、OLE/拖放、WebBrowser/MDI、历史契约 | 历史项先匹配固定 .NET 10 异常契约；恢复旧版 UI 属可选扩展，不稀释活跃控件分母 |
+| 7 | XPL | 资源/依赖身份 → Linux 有限原生原型；macOS 独立原型 | 按[项目需求](../../PROJECT_REQUIREMENTS.md)与[XPL 闸门](platforms.md)；不必先完成全部历史 Windows 控件或重写全部 Drawing |
+| 8 | M5 | 按相同业务依赖扩展 Linux/macOS | 各平台实际 Native AOT 运行、原生资源消费、释放与逐控件兼容验收 |
 
-## 当前接续与每批收尾
+P0 是当前阶段的前置阻塞，P1 是共同基础和高频场景，P2 是业务/高级能力，P3 是低频/历史补齐。同一阶段先解决共享依赖，再按控件内优先级执行；M4 页内的 P0 不越过 M0。任务数量与固定 API 分母分别统计。
 
-069下一沿LinkClicked及其真实文本/游标依赖、Find/完整选择测量与MaskedTextProvider模型继续；不以元数据全集阻塞，不重做033～069、不重评全项目、不新建context/调度/报告框架。005d/17g只关闭本批定义范围，原父Form销毁/重建关系、全部WM_NOTIFY反射与平台门槛保持。
+## 完成与检查规则
 
-068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。下一沿Link/Protected的真实拒改依赖、Find/完整选择测量与MaskedTextProvider模型继续；不以元数据全集阻塞，不重做033～068，不重评全项目或另建context/调度/报告框架。见[068](batches/068.md)，下述067及以前为历史。
+明确范围实现并通过必要编译/轻量检查后才可标 ✅ 代码完成；父项仍有工作就保持 🟡/🚧。平台、设计器、AOT 实际运行、设备和完整兼容验收分别记录，🧪 只用于匹配其平台与范围的可复现证据。[完整 Control 专项](controls/Control.md)既定的 Windows/AOT/相关 Designer 验收仍是其完成条件。
 
-067限定完成RichTextBox-003f Font override与005a ContentsResized，Control-17f仅补自有停车WM_NOTIFY按来源HWND路由。默认字体每次原生读取/SCF_ALL/解析回写及finally尺寸通知恢复沿固定源；完整ambient/DPI、其余通知/文件/OLE/撤销、Find/选择测量与MaskedTextProvider模型继续原任务。064全量FAIL/未解、065超时、066全量NOT_RUN保持；检查见[067](batches/067.md)。不以DefaultCursor/元数据全集阻塞，不重做033～067、不重评全项目、不建context/调度/报告框架。下述066及以前为历史。
+未来获授权继续时，只更新对应任务状态与历史，使用 `tools/compatibility/Validate-Roadmap.ps1 -ExportTasks` 生成索引实施列及 tasks.csv，再普通校验。行为变更写 CHANGELOG；完整命令/首失败/诊断写批次页；当前未解门槛写 validation；HANDOFF 只写当前归属。入口页不再逐批复制相同摘要。
 
-066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](batches/066.md)。下述065及以前为历史。 下一优先沿完整Font及其ContentsResized依赖、Find/选择测量与MaskedTextProvider真实模型继续；不以DefaultCursor/元数据全集阻塞，不重做033～066、不重评全项目、不建context/调度/报告框架。
-
-当前[065](batches/065.md)限定实现Rich-003d SelectionFont/必要私有LOGFONT转换，93新增与固定双目标Release通过；首77/85、独立中英FACE缺位8/8及新夹具纠正保持回执。下一沿完整Font/颜色同步、Find/选择测量及MaskedTextProvider模型的真实依赖继续，原父项/平台/98%保持；064全量FAIL/超时未解门槛不由新增通过清除，065全量结果见批次页。不重做033～065，不重评全项目或另建context/调度/报告框架；下述064及以前为历史。
-
-当前[064](batches/064.md)：限定实现RichTextBox-003c SelectionType/标准flags与008a三项Rich专有字符位置/物理行查询。101新增通过，固定双目标Release0错/2既有NU1510；全量一次6145/6146及两次超时保持FAIL/未解决。既有同步上下文与点击测试两组独立18/18、23/23通过不等同全量通过，原因未定。完整字符格式、Find/选择方向/测量、文件/Protected/OLE/通知/撤销重做与Masked模型依赖继续原任务，不重做033～064、不重评全项目、不建context/调度/报告框架。Designer/AOT实际运行/正向可见点击/物理设备/平台/98%仍待。下述063及以前为历史。
-
-当前[063](batches/063.md)：063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。下一沿真实剩余依赖继续，不重做033～063、不重评全项目、不建context/调度/报告框架；下述062及以前为历史。
-
-历史[062](batches/062.md)062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。下一沿上述真实剩余依赖继续，不重做033～062、不重评全项目、不建context/调度/报告框架；下述061及以前为历史。
-
-当前[061](batches/061.md)完成RichTextBox-003a颜色双属性真实CHARFORMAT2W状态与004a SelectionAlignment的PARAFORMAT对齐。67新增/5,849全量首轮与固定双目标Release通过；无窗背景缓存、原生mask/effects和混合读回、非法枚举前置及RTF重建保持。下一沿其余字符/段落格式、专有选择/坐标和MaskedTextProvider真实模型依赖继续；Font/Protected/SelectionType、Bullet/缩进/Tabs、完整格式/文件/OLE/通知/撤销重做、缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～061、不重评全项目、不建context/调度框架；下述060及以前为历史。
-
-当前[060](batches/060.md)完成RichTextBox-002c Rtf/SelectedRtf字符串流与011a RTF句柄格式缓存。54新增/5,782全量及固定双目标Release通过；首测试unsafe编译失败、首50/54和真实新纯文Modified恢复修复保留，空选区导出0字节独立native确认。下一沿Rich字符/段落格式真实状态、专有选择/坐标和MaskedTextProvider模型依赖继续；Load/Save文件/StreamType、Protected/OLE/通知/撤销重做、完整缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～060、不重评全项目、不建context/调度框架；下述059及以前为历史。
-
-当前[059](batches/059.md)完成RichTextBox-002a纯文本Text/Unicode StreamIn和002b专有TextLength/SelectedText/SelectionLength首范围。64新增/5,728全量及固定双目标Release通过；首61/64包含真实Modified重建缺口及两项新夹具问题，原回执保持。下一按Rich格式/RTF持久化、专有选择/坐标及MaskedTextProvider模型依赖继续；完整格式/Protected/OLE/通知、缩放/反射/线程/模态、Designer/AOT/设备/平台/98%仍待。不重做033～059、不重评全项目、不建context/调度框架；下述058及以前为历史。
-
-当前[058](batches/058.md)完成RichTextBox-001a标准直接层级/真实系统RichEdit和007a必要默认/原生选项，96新增/5,664全量及固定双目标Release通过。下一沿已落地RichEdit的Text/StreamIn、逻辑长度/选区契约及MaskedTextProvider真实模型依赖继续，不以其余基类元数据阻塞真实后端。Rich Text当前仍经WM_SETTEXT，其原生扩限差异明确保留，不以原生模型存在关闭002；完整格式/RTF、反射/线程/模态/缩放、Designer/AOT/正向可见点击/物理输入/平台/98%仍待。不重做033～058、不重评全项目、不建context/调度框架。下述057及以前为历史。
-
-当前[057](batches/057.md)完成TextBoxBase-002d有窗原生TextLength/无窗虚Text与003h必要默认事件/绑定、选区/分类及Paint转发。41新增/5,568全量首轮及固定双目标Release通过，旧测试未改。下一先核Rich/Masked标准直接继承所需专有默认、原生类/真实模型依赖，推进真实后端；剩余DefaultCursor/ToString/Designer/editor等基类项继续原任务，不以元数据全集阻塞实际派生。完整缩放/线程/模态/反射父寿命、可见绘制/正向点击/物理输入、Designer/AOT/平台/98%仍待，不重做033～057、不重评全项目、不建context/调度框架。下述056及以前为历史。
-
-当前[056](batches/056.md)完成TextBoxBase-003f构造样式/专用左键点击和003g八项必要绘图/间距声明转发；46新增/5,527全量首轮及固定双目标Release通过。独立WindowFromPoint均false，正向可见点击/双击与物理输入仍待，不由负向回归关闭验收。下一核剩余基类元数据/默认与实际派生依赖，推进Rich/Masked标准直接层级、专有默认和真实模型/后端；完整ScaleControl/跨屏DPI/字体缩放、原反射父Form寿命和线程/模态继续原任务。不重做033～056、不重评全项目、不建context/调度框架；平台/Designer/AOT/98%门禁保持，下述055及以前为历史。
-
-当前[055](batches/055.md)完成TextBox-004b滚动条首选测量与必要线程PMv2/内部DPI系统度量，以及TextBoxBase-003e创建请求/前置主题标志。68新增/5,481全量与固定双目标Release通过；首轮夹具失败与固定建窗调用链保留。下一沿基类完整构造样式/点击消息和必要隐藏元数据的真实依赖，再推进Rich/Masked直接层级/真实模型后端；完整ScaleControl/字体缩放与跨屏事件仍留原任务，不先铺大架构。不重做033～055、不重评全项目、不建context/调度框架，全部平台/Designer/AOT/物理输入/98%门禁保持。下述054及以前为历史。
-
-历史[054](batches/054.md)完成TextBoxBase-007c/007d/007e的标准单行高度/默认、独立AutoSize与请求高度/创建/字体/间距/多行生命周期及首选缓存；必要控件DPI读取/边框度量和Table/Flow内部布局状态消费一并实现。最终84新增/5,413全量及固定双目标Release通过；首全量6失败原回执、真实消费者原因和夹具修正保留。当时下一缺口为剩余尺寸/缩放/样式及滚动条首选测量；055只关闭上述004b/003e，完整跨屏DPI消息/字体重缩放、Designer/Native AOT/物理输入/平台及98%仍待。不重复033～054、不重评全项目、不建context/调度框架。下述053及以前为历史。
-
-当前[053](batches/053.md)完成必要无DC标准文本测量CNS-006a、TextBoxBase-007b首选尺寸计算及008c普通EDIT延期滚动，108新增/5,329全量与固定双目标Release通过。首构建暴露的Padding.Size已补标准getter；首104/105及第二107/108的夹具/错误诊断断言保留，独立EDIT证实本夹具隐藏首行0、可见未聚焦/聚焦均37，原滚动/状态硬期望不降低。完整AutoSize独立默认、PreferredHeight的控件DPI边框、DefaultSize、请求高度/Font/Multiline/SetBoundsCore和首选缓存生命周期仍待，本批未提前启用缓存。下一沿这些真实依赖继续，不重复033～053、不重评全项目、不建context框架；Rich/Masked标准层级/后端和全部平台门禁保持。下述052及以前为历史。
-
-当前[052](batches/052.md)完成TextBoxBase-008a/008b六个标准行/位置查询，102新增/5,221全量及固定双目标Release通过；首93/102九个夹具初始化/回调Text读取轨迹错误保留，生产未为此改动。测量源码审计确认完整AutoSize/PreferredHeight/DefaultSize/GetPreferredSize依赖控件DPI、标准文本测量和请求高度生命周期，本批未引入局部替代。下一继续这些真实测量/default依赖及ScrollToCaret未建窗延期，再恢复Rich/Masked标准直接层级与真实后端；完整反射/线程/模态、平台与98%留原任务。不重复033～052、不重评全项目、不建context或调度框架。下述051及以前为历史。
-
-当前[051](batches/051.md)完成固定词边界辅助TextBoxBase-005f、启用Ctrl+Backspace/Ctrl+Shift+Backspace命令009a及必要Control-14c内部redraw计数。88新增/5,119全量和固定双目标Release通过；首轮85/88的三处夹具预期错误有原回执，固定无窗选择经TextLength读取Text的语义保持。下一沿TextBoxBase完整测量/default及必要编辑辅助推进，再恢复Rich/Masked标准直接继承与真实后端；实际剪贴板/菜单、完整反射/线程/模态和平台仍留原任务。不重复033～051、不重评全项目、不建context或调度框架。下述050及以前为历史。
-
-当前[050](batches/050.md)完成TextBoxBase-005e剪贴板命令入口及003d快捷键禁用/只读对齐/系统菜单抑制的限定范围；77新增、5,031全量和固定双目标Release通过。命令测试截获WM_COPY/CUT/PASTE，未读写用户系统剪贴板；custom菜单只核owner0受限路由，真实显示待验。下一继续启用时Ctrl+Backspace词删除、完整测量/default和必要编辑辅助，再恢复Rich/Masked标准直接层级及真实后端；原反射父Form寿命/完整反射、线程/模态和平台继续原任务。不重复033～050，不重评全项目、不建context或调度框架。下述049及以前为历史。
-
-当前[049](batches/049.md)完成Control-17e原停车通知接收者寿命及来源HWND反射、TextBoxBase-005d标准Clear虚Text=null。独立原生EDIT目的地回归通过；首跑11/13中的parking→Form和活Form间重挂两项真实失败保留。修复后18新增与8旧用例组合26/26、4,954全量及Release固定双目标通过；048提前销毁停车接收者的假设按固定ReflectParent计数纠正，不改旧TextChanged=2期望。下一依赖继续Copy/Cut/Paste、ShortcutsEnabled与完整测量/default，再按真实后端恢复Rich/Masked标准层级；原反射父Form销毁/重建、WM_NOTIFY/完整反射及线程/模态仍在Control-17等原任务，不重做033～049、不重评全项目、不建context或调度框架。下述048及以前为历史。
-
-当前[048](batches/048.md)完成AppendText的005b、公开撤销005c及停车期间命令转发Control-17d；43新增与3旧行为组合46/46、4,936全量及Release固定双目标通过。首轮夹具37/38、旧行为全量4,930/4,931、停车测试45/46和两次限定诊断原回执保留。停车期间通知已修复；先停车再重挂到Form后的EDIT命令仍缺，native ID=1001与实际映射一致而Form/child无通知，原因未闭环，下一批先继续Control-17/TextBoxBase-006，再做Copy/Cut/Paste/Clear完整虚调用、ShortcutsEnabled与完整测量/default。Rich/Masked标准直接层级和真实后端、完整context/模态/平台仍待。不重复033～048、不重评全项目、不新建context或调度框架；下述047及以前为历史。
-
-当前[047](batches/047.md)完成SelectedText/内部替换002b、Lines空值/CR/LF/CRLF的002c及必要MaxLength输入限制003c；65新增/4,893全量和Release固定双目标通过。首轮62/65的两处AllowNull反射位置错误按既有setter参数元数据断言纠正；独立EDIT证明恢复较小限制后Undo仍受限制，原失败保留。下一依赖继续AppendText空值/选择/撤销、公开CanUndo/Undo/ClearUndo/剪贴板、完整测量/default及必要编辑辅助成员，再按真实后端恢复Rich/Masked直接层级。StringArrayEditor/Designer、完整输入/RTL/模态/线程/平台仍待，不重复033～047、不新建context或调度框架；下述046及以前为历史。
-
-当前[046](batches/046.md)完成TextBoxBase-002a标准全选/取消选区、007a边框契约及Control-17c当前源窗口类身份缓存；46新增与旧对齐组合74/74，最终全量4,828/4,828，Release固定双目标0错/2既有NU1510。原生EDIT边框规范化、Upper初值、反射wrapper及activation环境/清理夹具失败均有原回执；完整输入/视觉/平台不因本批关闭。下一依赖继续SelectedText、Lines/AppendText空值/CRLF/撤销、CanUndo/Undo/ClearUndo/剪贴板及完整测量，再恢复真实Rich/Masked直接层级与后端。不重复033～046，不新建context或调度框架；下述045及以前为历史。
-
-当前[045](batches/045.md)完成TextBoxBase-005a标准Modified/getter观测通知/EN_UPDATE与程序设文守卫，以及TextBox-007b标准CharacterCasing/原生大小写样式；45新增、892相关、4,782全量与Release固定双目标通过。首次两例父Form未建窗而进入停车窗的夹具失败保留，补真实父HWND/托管映射硬断言后通过，生产实现未为夹具改变。下一真实依赖继续TextBoxBase的BorderStyle/标准通知、SelectedText/选择方法、Lines/AppendText/撤销和尺寸，再按真实后端恢复Rich/Masked直接继承。完整RTL/镜像视觉、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁继续原任务；不重复033～045、不重评全项目、不新建context或调度框架。下述044及以前为历史。
-
-当前[044](batches/044.md)完成TextBoxBase-003b共同HideSelection默认/标准通知与TextBox-007a对齐设置/创建样式及水平条逻辑Left条件；最终42新增/2,356相关/4,737全量与Release固定双目标通过。共享HorizontalAlignment整数身份已按固定10.0.11纠正，旧二进制及1/2整数存储需复核；保留首轮4例RTL裸native夹具与既有Control创建后重提交路径不同的失败。下一真实依赖继续TextBoxBase共享编辑/标准默认事件（BorderStyle/Modified/选择文本等按原任务排序），再恢复Rich/Masked标准直接继承及真实后端。完整RTL/镜像视觉、首选尺寸/AutoSize、模态/OLE宿主context、ButtonBase、关闭LostFocus/WM_QUIT与平台门禁仍留原任务；不重复033～044、不重评全项目、不新增context或调度框架。下述043及以前是历史。
-
-当前[043](batches/043.md)完成共同编辑设置的003a及TextBox滚动条004a；41新增/359相关/4,695全量与固定双目标Release通过。保留WordWrap同值赋值的缓存失效/条件父布局，真实折行与滚动样式生效，已有选择/modified/密码/通知顺序保持。下一依赖继续TextBoxBase标准成员/默认事件，随后按真实后端恢复Rich/Masked直接继承；完整对齐/首选尺寸、模态/OLE宿主、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT和平台门禁仍在原任务，不重复033～043、不重评全项目、不新建context或调度框架。下述042及以前为历史。
-
-当前[042](batches/042.md)先核组合串/候选通知的原生默认消息路径与模态前置，再提取TextBoxBase-001a及TextBox-001a共享EDIT首范围。19新增/318相关/4,654全量通过，固定Demo双目标Release0错/2既有NU1510。固定源码的Form.Modal前置尚缺完整ShowDialog/owner/线程生命周期，不新增假状态或完整context。下一依赖按共享成员、Rich/Masked直接继承及真实后端推进，保留旧存值/默认尺寸/编辑语义差异；ButtonBase、AutoSize、关闭LostFocus/WM_QUIT及所有平台门禁仍待，不重评全项目。下述041及以前是历史。
-
-当前[041](batches/041.md)完成Application-11b输入语言OLE前置与12a最小线程缓存/退出配对，复用现有ExitThread及最外层finally；不建立完整ThreadContext或新调度框架。下一依赖核组合串/候选窗及模态宿主的真实前置，再按共享编辑依赖推进TextBoxBase；完整OLE宿主context、CurrentCulture/UseWaitCursor、AutoSize、ButtonBase、关闭LostFocus/WM_QUIT及全部平台门禁留原任务。其他失败HRESULT策略与MUI有界扩容差异保留。不重复033～041、不重评整个项目；下述040及以前是历史。
-
-当前[040](batches/040.md)完成Application-11a线程HKL服务、Form-12d标准语言通知和Control-12m请求取消。27新增、96组合及4,617全量通过，Release固定双目标0错/2既有NU1510。Application-11按实际服务由全待办改部分；固定v10.0.11的OleRequired持久前置副作用仍缺，不能声称完整InputLanguage或Application完成。下一依赖先核输入语言与OLE线程初始化/退出寿命的最小衔接，再核组合态/候选窗、模态宿主及TextBoxBase共享编辑；不新增调度框架或完整context架构。UserControl共享AutoSize/约束、ButtonBase、关闭LostFocus/WM_QUIT及全部设备/Designer/AOT/平台/98%留原任务。不重复033～040、不重评全项目；下述039及以前是历史快照。
-
-当前[039](batches/039.md)完成TextBox-005a只读/密码CanEnableIme与有效ImeMode、标准ReadOnlyChanged及必要原生密码同步，Control-12l补语言消息/非Form宿主传播。22新增、旧焦点组合50/50及4,590全量通过，Release双目标0错/2既有NU1510。下一依赖先补标准输入语言服务与Form语言通知/取消的必要闭环，再核剩余组合态、宿主模态和TextBoxBase共享编辑；UserControl共享AutoSize/约束、ButtonBase与关闭焦点/WM_QUIT保留原任务。不重复033～039、不重评全项目。下述038及以前是历史快照，设备/Designer/AOT/平台和98%继续待验。
-
-当前[038](batches/038.md)完成Control-12k有效ImeMode与真实IMM上下文首范围、TextBox-003c多行EDIT重建/选择与原生modified保存、UserControl-02d标准AutoSize声明。32新增/4,568全量和Release双目标通过。下一依赖先补TextBox只读/密码IME限制与属性联动，再核语言切换/宿主传播/组合态；TextBoxBase和UserControl共享布局完整约束仍待。完整输入、模态、设备/Designer/AOT/平台和98%不关闭。固定源码排除UserControl独立布局算法；037以下保留历史。
-
-当前[037](batches/037.md)完成Control-12j有限IME字符分流/重复KeyPress抑制、TextBox-003b派生键判别与对话框路由、UserControl-05a原生焦点入口及嵌套验证导航。22新增与4,536全量通过，Release双目标0错/2既有NU1510。下一批先核剩余输入上下文/组合态及派生编辑输入，再补UserControl完整AutoSize；不重复033～037。TextBoxBase、HostedInWin32DialogManager、完整IME、模态、ButtonBase、AOT/Designer/设备/平台/98%均未关闭。036及以下内容保留为历史。
-
-当前[036](batches/036.md)完成Control-12i原生输入键/字符判别、队列字符抑制和验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9项、全量4,514项测试和Release双目标构建通过。035范围保留。下一依赖先按真实缺口推进完整IME/派生输入与按钮/容器组合，再补UserControl完整AutoSize；不重做033～035。固定API10.0.11缺引用包继续NOT_RUN，旧AutoSizeMode整数/已编译常量须复核；父任务、ButtonBase、模态、Designer/AOT/设备/平台/98%不关闭。下述029停止记录与各批证据作为历史保留，2026-10-26新授权后的接续以HANDOFF当前归属为准。
-
-批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。 当前收尾见[029](batches/029.md)。用户于2026-10-17要求当前批次完成后停止：提交推送和远端核验后结束，不创建030/接续聊天、不恢复luminaforms巡检。未来如获新授权，优先解决关闭焦点与循环归属、派生验证消费，再接FND-019键盘；这只是剩余依赖记录，不自动启动。
-
-2026-10-26新授权恢复实施，批次030完成FND-019/Control-12e基础键消息与事件契约首范围；批次031完成FND-013/016/017及Control、ScrollableControl、ContainerControl、UserControl的明确基础与继承链子范围；批次032补Panel迁移、UserControl Load和Windows滚动消息首范围；批次033补FND-019/Control-12f键盘预处理、ContainerControl-06b Tab/助记键后代路由和ScrollableControl-07a已有偏移下的聚焦滚动修正。4,439项全线测试和Forms双目标Release构建通过。完整KeyPreview/命令与对话框协作、IME、真实物理输入、Cursor、完整缩放/设计器、Native AOT及跨平台仍待办，见[033](batches/033.md)。
-
-批次036完成Control-12i原生 `WM_GETDLGCODE` 输入键/字符判别、`WM_SYSCHAR` 对话字符分流、队列字符消息有界移除和验证取消状态清理；Form-12c清理托管Dispose后的默认/接受/取消按钮引用并撤销默认通知；Button-002b按固定10.0.11源码审计原生点击前置，确认现有Button.cs不应重复验证，并以真实HWND回归覆盖Prevent/Allow。新增9项、全量4,514项通过，Release双目标0错误/2条既有NU1510，详见[036](batches/036.md)。完整IME、ButtonBase、模态、AutoSize、AOT、Designer、设备和平台仍待。
-
-2026-10-16：批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。见[024](batches/024.md)，M0/M1不关闭。
-
-历史批次[026](batches/026.md)完成Control-05c/08c：已接受InvokeAsync任务关闭/投递失败终止、实际HWND已销毁后的异常继续正常托管清理；活HWND失败、普通Parent/child/Site短路与已开始异步工作保留。4,243测试（新增48）通过，双目标Release 0错误/643警告；25标准场景16同/9明确增强差异，另7旧Task仅Lumina，32场景JIT/实际AOT全同。探针/Demo PE均无CLR目录，Demo真实交互/WM_CLOSE/原始HWND销毁通过。旧004/005各两行增强差异、025四差异与警告不隐藏。Form-07依据已有Close/取消/Dispose由全待办纠正为部分；父项/设计器/资源/完整竞态/平台不关闭。当时下一批027已完成下述明确范围；保留026历史证据。
-
-批次[025](batches/025.md)历史快照：普通Drain在完成信号失败后继续FIFO余队列并延后传播完成错误；Control/Form/context的native callback与`WM_NCDESTROY`清理双错边界按有限范围实现。4,195项测试通过，双目标Demo构建0错误，Control探针与Demo Native AOT均为无CLR directory，真实Demo窗口交互/WM_CLOSE/原始HWND销毁通过。4项参考差异保留；当时InvokeAsync关闭桥接与Dispose后续托管收尾缺口由026完成上述有限范围，全部事务/竞态和完整Control仍未关闭。
-用户于 2026-10-16 明确要求每批结束检查并重新整理路线图，不得虚标。每批实现提交推送前必须逐项核对本批及受影响条目的实际代码和必要检查，同步 ROADMAP.md、本执行总览、相关控件/公共任务页、修改历史、批次记录和 HANDOFF，重新生成 tasks.csv 并校验一致性。明确范围全部实现后才标 ✅；未完父任务保持 🟡/🚧，在原任务下列出完成子范围与剩余项。文档、签名、编译、局部探针或基类完成不等于完整控件/平台完成。🧪 只对应可复现的平台/范围证据，真机/设计器/跨平台继续待验收，不由测试数/任务数推出98%。发现历史错标要纠正并解释，不删除未完项、不重置ID、不缩小固定基线分母。整理随本批实现 commit/push，不为监督消息做空提交，不另建调度或报告框架；完整要求传给下一聊天。
-
-## 第一个 90 天
-
-按 2～3 名熟悉 C#/.NET/Win32 的全职工程师的工作顺序估计，不是交付整个框架的承诺：
-
-1. 第1～2周：M0；补齐行为场景模板；选择3个真实迁移候选，记录窗体/控件/第三方/Windows互操作。
-2. 第3～6周：M1；首个真实配置/设备工具迁移，开始M2a；对照实际API附件修正优先级。
-3. 第7～10周：集中M2b集合/输入缺口及M2c容器/菜单；不并行铺所有高级控件。
-4. 第11～12周：稳定首批迁移、AOT分发、设计器往返；有真实平台设备和需求时完成一个有时限的平台原型。
-5. 第90天：按已关闭缺口、每控件验收率、真实迁移改动量和资源原型结果重估M3～M5。完整DataGridView/PropertyGrid、完整Windows98%以及两个原生后端不承诺90天完成。
-
-## 每个控件的完成定义
-
-开发完成与兼容验收分开：明确范围的代码实现加必要编译/轻量检查后记 ✅ 代码完成，并立即推进下一任务；未完成子项保留，父任务不得跟着自动关闭。各控件页记录真实实现历史与检查结果。复杂真机/UI、设计器和平台运行检查记为后期待验收，不为这些检查先搭大型测试框架。
-
-最终兼容验收仍要求：固定成员清单、继承关系、默认值/异常差分、程序与用户触发事件轨迹、运行时状态回读、平台实现、AOT运行、设计器序列化（适用时）、键盘与辅助技术、释放验证。指定范围附可复现证据后才记 🧪 验收通过并计入98%；规划文档完成只写在修改历史。
-
-每次发布报告每控件属性/事件/方法/行为四项、各平台状态、剩余缺项。运行时未支持功能不得以空方法/吞异常伪装兼容。关键业务与生命周期阻塞必须为零；其余按 [98%规则](coverage.md)。
-
-没有必要在此阶段引入插件后端系统、独立抽象包、每控件项目、分布式验收平台或全量自动UI录制系统。先在现有Lumina.Forms、Lumina.Tests和固定双目标Demo完成最小有效验证。
+本轮文档检查只核链接、任务导出、归档可追溯性和状态一致性；不运行产品构建、全量/设备测试，不用文档检查 PASS 清除现有产品失败。

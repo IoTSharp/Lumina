@@ -19,7 +19,6 @@
 | RadioButton-001 | P0 | ⬜ | 恢复 RadioButton : ButtonBase；Parent、GroupBox、Panel、UserControl、Form 下的分组关系可查询，按钮移组立即清理旧组状态。 |
 | RadioButton-002 | P1 | 🟡 | Checked=false、AutoCheck=true 默认值；程序写入、鼠标、空格、助记键分别测试单选互斥；AutoCheck=false 不自动取消同组其他控件。 |
 | RadioButton-003 | P1 | 🟡 | 已有CheckedChanged，027完成003a当前按钮原生状态→共享Click；原全待办遗漏历史事件，现纠正。组内旧项取消通知/新项顺序、AutoCheck和直接OnClick状态切换仍缺，原生兄弟取消不等于托管组同步。 |
-| RadioButton-003a | P1 | ✅ | 批次027：BN_CLICKED同步当前按钮既有Checked/CheckedChanged，再调用共享OnClick一次；StandardClick关闭，保留参考StandardDoubleClick=true。仅当前按钮通知衔接代码完成，不关闭ButtonBase、AutoCheck、托管互斥组及键盘选择。 |
 | RadioButton-004 | P1 | ⬜ | Appearance=Normal、AppearanceChanged、CheckAlign=MiddleLeft、TextAlign=MiddleLeft；切换 Appearance.Button 仍保持相同组和事件契约。 |
 | RadioButton-005 | P1 | ⬜ | TabStop 及箭头导航：单选组进入/离开、无选中项、禁用项、隐藏项、RTL、Home/End（按基线支持情况）与焦点移动行为逐场景验收。 |
 | RadioButton-006 | P1 | ⬜ | AutoCheck、CausesValidation 与验证取消协同；验证失败时选中状态、焦点与 Click 是否改变按真实 WinForms 对照。 |
@@ -42,6 +41,17 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 任务 | 优先级 | 状态 | 具体范围与完成条件 |
+|---|---|---|---|
+| RadioButton-003a | P1 | ✅ | 批次027：BN_CLICKED同步当前按钮既有Checked/CheckedChanged，再调用共享OnClick一次；StandardClick关闭，保留参考StandardDoubleClick=true。仅当前按钮通知衔接代码完成，不关闭ButtonBase、AutoCheck、托管互斥组及键盘选择。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次027：BN_CLICKED同步当前按钮既有Checked/CheckedChanged，再调用共享OnClick一次；StandardClick关闭，保留参考StandardDoubleClick=true。仅当前按钮通知衔接代码完成，不关闭ButtonBase、AutoCheck、托管互斥组及键盘选择。 已有CheckedChanged，027完成003a当前按钮原生状态→共享Click；原全待办遗漏历史事件，现纠正。组内旧项取消通知/新项顺序、AutoCheck和直接OnClick状态切换仍缺，原生兄弟取消不等于托管组同步。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
 

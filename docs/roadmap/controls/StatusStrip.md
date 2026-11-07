@@ -19,8 +19,6 @@
 | ⬜ | P1 / StatusStrip-04 | 校准 strip.ItemClicked、item.Click 的触发和键鼠顺序，IsLink=true 的状态标签仍使用标准 item.Click，禁用/隐藏后不可意外激活；状态区不劫持编辑控件焦点。 |
 | ⬜ | P1 / StatusStrip-05 | SizingGrip 的可见、命中区、最大化/不可缩放窗体、RTL、右键菜单与窗体拖动场景均验收，属性切换实时生效。 |
 | 🟡 | P1 / StatusStrip-06 | 020事务及021父Dock定位完成；ItemAdded/Removed、完整文本可见重排、GetPreferredSize/LayoutCompleted与SizingGrip/Spring仍待对齐。 |
-| ✅ | P1 / StatusStrip-06b | 批次021：移除历史Form底部专用定位，实际父级DefaultLayout消费Dock.Bottom，保留既有item/Spring局部布局。仅父布局衔接完成，完整首选测量/事件/命中及算法仍缺。 |
-| ✅ | P1 / StatusStrip-06a | 批次020：标准OnLayout消费共享暂停/恢复并保留现有item布局；直属Form底部定位经内部入口，嵌套strip不被Form定位。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / StatusStrip-07 | 补状态提示的可访问性 live 文本/角色/子项遍历、.resx 图片和本地化长文本；持续更新时不制造重复 Click 或 UI 线程回调。 |
 | ⬜ | P2 / StatusStrip-08 | Windows 保留原生 Label/ProgressBar 等宿主组合；若使用 msctls_statusbar32 只覆盖证实可等价的简单 parts，不限制 ToolStripItems 任意组合。 |
 | ⬜ | P2 / StatusStrip-09 | Linux 用底部 GtkBox + GtkLabel/GtkProgressBar 等 native widgets；GTK 的状态提示组件不能自动实现 ToolStripStatusLabel.Spring，窗口缩放由 compositor 允许的 native 路径处理。 |
@@ -40,6 +38,18 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / StatusStrip-06b | 批次021：移除历史Form底部专用定位，实际父级DefaultLayout消费Dock.Bottom，保留既有item/Spring局部布局。仅父布局衔接完成，完整首选测量/事件/命中及算法仍缺。 |
+| ✅ | P1 / StatusStrip-06a | 批次020：标准OnLayout消费共享暂停/恢复并保留现有item布局；直属Form底部定位经内部入口，嵌套strip不被Form定位。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次021：移除历史Form底部专用定位，实际父级DefaultLayout消费Dock.Bottom，保留既有item/Spring局部布局。仅父布局衔接完成，完整首选测量/事件/命中及算法仍缺。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 

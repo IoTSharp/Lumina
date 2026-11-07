@@ -101,11 +101,19 @@ All agents working in this repository must treat the following rules as hard con
 - Do not invent replacement APIs when WinForms already has the answer.
 - Aim for drop-in migration with the same control names, methods, properties, events, defaults, and behavior.
 
-## Continuous Roadmap Implementation (user direction, 2026-10-15)
+## Current phase: documentation cleanup (user direction, 2026-11-07)
 
-- Start by reading `HANDOFF.md` and its current batch. Continue implementation rather than restarting assessment.
+- Continuous product implementation stopped after batch 069. The current authorization covers documentation cleanup and necessary existing documentation-tool adjustments only. Do not start batch 070, product/test changes, builds, full/device tests, new continuation chats or supervision automations.
+- Keep ROADMAP and execution focused on unfinished work and dependencies. Move completed task rows to the original task page's history, preserving IDs, statuses, scope and evidence. The task pages remain authoritative; regenerate the existing index and tasks.csv without reducing the fixed API denominator.
+- Use README/docs navigation for document roles, CHANGELOG and batch pages for delivered changes, validation.md for current evidence and unresolved gates, and HANDOFF for current ownership. Do not copy long batch summaries into every entry page.
+- Preserve historical FAIL, timeout, UNKNOWN and NOT_RUN results. Documentation checks cannot establish product or platform acceptance.
+- Documentation commit/push, independent HEAD/tracking/remote verification and single-lead ownership remain authorized. Complete this documentation delivery and stop; later user pause/stop instructions take precedence.
+
+## Historical implementation workflow (applies only after new implementation authorization)
+
+- Start by reading `HANDOFF.md` and follow its current authorized scope. When implementation is newly authorized, continue the remaining dependencies rather than restarting assessment.
 - The user explicitly requests multiple internal subagents, one roadmap task per subagent, with disjoint file ownership. Keep one coding lead per workspace; the lead owns shared docs, integration builds, commits and pushes.
-- The user authorizes batch-by-batch implementation, committing/pushing completed work, new local continuation chats after each batch, and 30-minute supervision. Preserve this authorization in continuation prompts; later user pauses/stops take precedence.
+- The earlier authorization for continuous batches, continuation chats and 30-minute supervision is superseded by the 2026-11-07 stop. It must not be restored from historical handoffs. Preserve the current scope and later user instructions in any explicitly authorized future handoff.
 - During the implementation phase, mark a defined task scope code-complete after implementation and appropriate compilation/lightweight checks. Defer complex device/UI tests, designer round-trips and broad stress tests. Consolidate Windows device validation later, then Linux; record macOS validation separately when available.
 - Keep code completion separate from verified compatibility. Do not claim the 98% target from compilation or task counts. Never replace missing behavior with empty methods, swallowed exceptions or unconditional success.
 - At each batch boundary update task pages and change history, regenerate the task index, record deferred checks, update `HANDOFF.md`, commit/push, and hand ownership to a fresh continuation chat before stopping the old coding lead.

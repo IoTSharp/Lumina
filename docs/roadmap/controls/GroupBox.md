@@ -20,7 +20,6 @@
 | ⬜ | P1 / GroupBox-05 | 对照 Layout/TextChanged/FontChanged/AutoSizeChanged 触发顺序，覆盖空标题、多行/超长标题、RTL 和容器缩小到零内容区域。 |
 | ⬜ | P1 / GroupBox-06 | 核验 FlatStyle.System/Standard/Flat/Popup 与高对比、系统主题；当前自绘路径与原生路径分开记录，避免美化改变 WinForms 行为。 |
 | 🟡 | P1 / GroupBox-07 | 022完成07a字体及显式颜色消费；完整Enabled/嵌套布局、标题遮挡、背景擦除闪烁、RTL/DPI仍待验收。 |
-| ✅ | P1 / GroupBox-07a | 批次022标题度量使用有效Font.Height，绘制使用本控件独占HFONT；前景/父背景使用有效显式颜色链，默认theme不写公共属性。移除固定系统字体和吞异常回退；字体改变的DisplayRectangle及资源消费回归见022，仅此必要衔接完成。 |
 | 🟡 | P2 / GroupBox-08 | 已有BUTTON/BS_GROUPBOX及WM_PAINT/WM_PRINTCLIENT主题补绘，原全待办更正为部分。完整系统主题/打印、HWND与可访问性、辅助技术仍待逐项验收，不把自绘称为全部系统原生绘制。 |
 | ⬜ | P2 / GroupBox-09 | Linux 使用 GtkFrame + 原生标题 GtkLabel，child 为 GtkFixed；助记键关联首个可聚焦子控件。GTK frame 不提供 WinForms FlatStyle 全部外观。 |
 | ⬜ | P3 / GroupBox-10 | macOS 使用 NSBox，contentView 承载原生子控件，title/boxType/borderType 映射；FlatStyle 枚举的逐像素等价不作为跨平台原生承诺。 |
@@ -39,6 +38,17 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / GroupBox-07a | 批次022标题度量使用有效Font.Height，绘制使用本控件独占HFONT；前景/父背景使用有效显式颜色链，默认theme不写公共属性。移除固定系统字体和吞异常回退；字体改变的DisplayRectangle及资源消费回归见022，仅此必要衔接完成。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次023：显式保留UserPaint=false及BUTTON原生字体路径，既有HandleWindowMessage内主题补绘继续保留。此处是共享Control新绘制入口的必要衔接，不代表GroupBox样式/全部Paint事件语义已同WinForms，07/08父项仍部分。
 

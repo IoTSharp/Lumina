@@ -6,6 +6,8 @@ layout: default
 
 # LuminaForms 迁移指南
 
+本页只描述迁移方法。当前成员/行为状态统一查[任务索引](../roadmap/README.md)，已完成范围见各页历史；未解决失败及 Designer/AOT/平台门槛见[验证记录](../roadmap/validation.md)。双目标可编译不等于完整行为兼容。
+
 ## 迁移目标
 
 迁移目标不是重写旧应用，而是尽量保持 WinForms 的写法，把改动集中在目标框架、引用、命名空间和少量兼容差异上。

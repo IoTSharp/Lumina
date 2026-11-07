@@ -18,8 +18,6 @@
 | ⬜ | P0 / SplitContainer-03 | 对齐 SplitterDistance/Width/Increment、Panel1MinSize/Panel2MinSize、Orientation、FixedPanel、IsSplitterFixed、BorderStyle 的默认、异常与范围语义。 |
 | ⬜ | P1 / SplitContainer-04 | BeginInit/EndInit 期间允许设计器先赋值再调尺寸，结束时统一校验；不能用永久 clamp 隐藏与官方不同的异常。 |
 | 🟡 | P1 / SplitContainer-05 | 020事务05a、021正常双轴比例05b完成；240/90→260保持参考97/101/159，原五行比例差异已修。完整折叠保存/还原、最小尺寸/RTL/边界及标准SplitterPanel仍缺。 |
-| ✅ | P1 / SplitContainer-05b | 批次021：正常Vertical/Horizontal尺寸变化使用总轴长/Panel1比例并向下取整，连续缩放不重设已舍入比例；FixedPanel两侧、直接距离/暂停后的真实逐轴Bounds操作保留Panel2/Bounds延期参数。固定探针双方向相关观测及往返测试通过，完整折叠/min/RTL另列。 |
-| ✅ | P1 / SplitContainer-05a | 批次020：标准OnLayout暂停两panel、提交几何后恢复再发自身事件；直接SplitterDistance仍即时改变panel，复用Control暂停状态保留Panel2/Bounds延期参数。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | ⬜ | P1 / SplitContainer-06 | 拖动过程支持鼠标捕获、Esc 取消、失去捕获、边界限制、SplitterMoving 中修改 SplitX/SplitY 和 Cancel；仅 MouseUp 触发最终 Moved。 |
 | ⬜ | P1 / SplitContainer-07 | 实现键盘聚焦分隔条、方向键/Tab 导航、IsSplitterFixed 后键盘与鼠标一致；RTL 与多 DPI 下距离坐标一致。 |
 | ⬜ | P2 / SplitContainer-08 | Windows 用子 HWND 两面板 + 原生鼠标捕获/光标；分隔条为托管布局区域，保留现有实现并补语义，无须新建绘制框架。 |
@@ -40,6 +38,18 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / SplitContainer-05b | 批次021：正常Vertical/Horizontal尺寸变化使用总轴长/Panel1比例并向下取整，连续缩放不重设已舍入比例；FixedPanel两侧、直接距离/暂停后的真实逐轴Bounds操作保留Panel2/Bounds延期参数。固定探针双方向相关观测及往返测试通过，完整折叠/min/RTL另列。 |
+| ✅ | P1 / SplitContainer-05a | 批次020：标准OnLayout暂停两panel、提交几何后恢复再发自身事件；直接SplitterDistance仍即时改变panel，复用Control暂停状态保留Panel2/Bounds延期参数。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次028：本控件代码未改；container-lookup记录现有ContainerControlBase : Control不具标准ContainerControl身份，活动投影少split:null。保留严格失败并归01标准继承前置；基类导航实现不关闭SplitContainer导航或整个控件，见[028](../batches/028.md)。
 

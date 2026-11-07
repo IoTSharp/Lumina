@@ -7,13 +7,17 @@
 当前以 Windows / Win32 原生控件为实现基础。已有常用控件和 AOT 发布验证，**尚未达到全量 WinForms 兼容**；Linux GTK4、macOS AppKit 原生实现处于规划和原型阶段。
 
 - [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)：兼容约束、Windows 官方 / Linux 自有 Drawing 策略及验收边界。
-- [路线图](ROADMAP.md)：下一步与里程碑。
-- [逐控件任务](docs/roadmap/README.md)：每个控件的任务、三平台分析和修改历史。
+- [文档导航](docs/index.md)：需求、状态、使用指南与历史证据各自的入口。
+- [剩余路线图](ROADMAP.md)：未完成里程碑与依赖；连续代码实施已在 069 后停止。
+- [当前任务索引](docs/roadmap/README.md)：实施状态的统一入口；完成任务 ID 保留在原页修改历史。
+- [变更记录](CHANGELOG.md) · [批次历史](docs/roadmap/batches/README.md) · [验证及未关闭门槛](docs/roadmap/validation.md)。
 - [98% 验收口径](docs/roadmap/coverage.md)：属性、事件、行为分别统计。
-- [重新评估](docs/zh/luminaforms-reassessment-2026-10.md)：项目价值、微软与用户需求、技术缺口。
+- [2026-10 历史评估](docs/zh/luminaforms-reassessment-2026-10.md)：当时的项目价值和缺口，不能作为当前实施状态。
 - [迁移指南](docs/zh/nativeforms-migration.md) · [当前支持矩阵](docs/zh/nativeforms-support-matrix.md)。
 
 `NativeFormsDemo` 固定双目标：`net10.0-windows` 使用真实 WinForms 并保留 Visual Studio 设计器；`net10.0` 使用 Lumina.Forms 并验证 Native AOT。静态布局保留在 `.Designer.cs` / `.resx`。
+
+下列命令的使用说明见[快速开始](docs/quickstart.md)，不代表当前树已通过全部门槛。064 全量失败和 065 超时仍未解决；066～069 未运行全量检查。
 
 ```powershell
 dotnet build Lumina.slnx -c Release

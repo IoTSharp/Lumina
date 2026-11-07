@@ -1,0 +1,836 @@
+# 001～069 交接历史（冻结）
+
+此档案冻结自文档交接提交 `6c05aa0634bc543cebda55418c6ee6e6daf2d00d`；内部“当前”“下一批”和授权均属于当时记录，不是现行执行指令。当前归属见[HANDOFF](../../../HANDOFF.md)，当前状态见[任务索引](../README.md)，未解失败见[验证门槛](../validation.md)。原始证据、失败及资源限制保留，整理不重新判定历史测试。
+
+---
+
+# LuminaForms 实施交接
+
+更新：2026-11-07（Asia/Shanghai）。先读本文件、[项目需求](../../../PROJECT_REQUIREMENTS.md)，再读 [执行顺序](../execution.md) 和当前批次；不要重新评估整个项目。
+
+## 当前接续点（2026-10-26 新授权）
+
+**2026-11-07用户最新要求：完成069后停止连续代码实施，不启动070；下一新会话仅整理路线图与文档。将已完成范围迁入变更记录/历史，整合重复文档并梳理未完路线；原未完成任务和验收缺口保持。该停止要求优先于下述历史持续实施授权。**
+
+- 下一本地聊天`01a1b65d-6197-7020-82a1-cf27aae7f040`（Lumina 路线图与文档整理，host local）已创建，当前仅只读准备。069实现`9675879bf6f65bb386429b554f6705ca978f61ce`已成功push，独立核HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0；代码批次到此停止。后续归属只限文档整理，不启动070或其他功能批次。新会话先读约束/需求/交接/路线与文档，完成准备后等待069原主`01a1b63d-9855-75c0-9953-1c8e010d4e99`在独立文档归属交接commit/push核三SHA后发送“开始接管文档整理”及SHA；此前不写/不构建/不提交推送/不创建子任务。收到后独立重核SHA/HANDOFF/干净树并明确向069确认实际接管文档归属；确认后069立即停止共享操作并归档，不等整理完成。文档范围的commit/push/三SHA核验、单一主归属与明确交接规则保留；最新停止代码要求及后来暂停停止优先，监督NOT_FOUND/069绑定NOT_DONE不恢复。
+
+- 069主聊天`01a1b63d-9855-75c0-9953-1c8e010d4e99`已完成必要只读准备，收到“开始接管”后独立核归属交接`11126cc8e322978dd5ec4d8a2dbf1c632111084b`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，并明确向068确认实际接管及实时核其归档。069为唯一编码主；三个互斥内部任务只新Protected契约/原生拒改/通知结果测试，已冻结。主独占生产、interop、必要旧精确mask更新、文档/集成/Git。限定Rich-005d/Control-17g，064FAIL/065超时完整保留。监督NOT_FOUND、069绑定NOT_DONE，不恢复或另建替代项；下述068及以前归属为历史。
+
+- 068主聊天`01a1b621-b24c-7d11-b6f6-59f0d242e692`已完成必要只读准备，收到“开始接管”后独立重核交接`a664e2cf87ff18974a3412362ca2fae52608bedd`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向067原主明确确认实际接管。068为唯一编码主；三个互斥内部任务分别只写新SelectionChanged契约、原生选择状态和滚动/IME通知测试，主独占Rich生产、共享文档/集成/Git。当前限定RichTextBox-005b/005c通知范围，原父项及064全量FAIL/065超时保持。监督NOT_FOUND、068绑定NOT_DONE，不恢复或另建替代项。下述067及以前归属为历史。
+
+- 067主聊天`01a1b5f9-5b07-7ea0-8d8b-c552146908ab`已完成必要只读准备，收到“开始接管”后独立核交接`40fca96683aa3cc16e156f38527bc9ffccc4798b`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0；已明确向066确认实际接管，并实时核其归档。067为唯一编码主；三个互斥内部任务只新Font契约/Font原生状态/ContentsResized测试，主独占生产、必要停车连接、共享文档/集成/Git。限定003f/005a/Control-17f，完整父项/平台保留。监督NOT_FOUND、067绑定NOT_DONE，不恢复或另建替代项。下述066及以前归属为历史。
+
+- 066主聊天 `01a1b5e0-d281-7831-bb7b-1f7c26de376f` 已完成必要只读准备，收到开始接管后独立核交接 `ddca18cc8f5bcf466834784c9f70ebf8b69762b8` 的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已明确向065确认实际接管并实时核其归档。066为唯一编码主；两个互斥内部任务只新ForeColor及背景/创建测试，主独占Rich生产/必要私有interop、共享文档/集成/Git。限定003e颜色同步，不关闭完整Font/父项/平台；064全量FAIL及065超时完整继承。监督NOT_FOUND、066绑定NOT_DONE，不恢复或另建替代项。下述065及以前归属为历史。
+
+- 065主聊天`01a1b5c5-685a-7330-852e-435ba2a38370`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核交接`da5fc4c71be1e0c59a931e3df8c5660d69c2e1c8`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已明确向064确认实际接管并实时核其归档。065为唯一编码主；两个互斥内部任务分别只新SelectionFont契约和真实原生状态测试，主独占Rich生产/必要私有interop、共享文档/集成/Git。沿RichTextBox-003d的SelectionFont及必要字体转换推进，不关闭完整Font/颜色同步或003父项；064全量FAIL/超时未解门槛完整保留。监督NOT_FOUND、065绑定NOT_DONE，不恢复或另建替代项；下述064及以前归属为历史。
+
+- 064主聊天`01a1b59c-e7bd-7921-976f-23b4a54bd381`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核归属交接`45d7468f347194c8249bfc10f97f4b3e69a1a678`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已明确向063确认实际接管并实时核其归档。064为唯一编码主；两个互斥内部任务分别只新SelectionType和Rich专有位置/行查询测试，主独占生产/枚举、共享文档/集成/Git。监督NOT_FOUND、064绑定NOT_DONE，不恢复或另建替代项；下述063及以前归属为历史。
+
+- 063主聊天01a1b587-95a1-72e0-80e1-2ea2a8f07530于2026-11-07完成必要只读准备，收到开始接管后独立核交接ee4752c8e3e115652b41d328d5b01381625263ac的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向062明确确认实际接管并实时核其归档。063为唯一编码主；两个互斥内部任务只新项目符号/制表位测试，主独占生产/共享文档/集成/Git。监督NOT_FOUND、063绑定NOT_DONE，不恢复或另建替代项；下述062及以前归属为历史。
+
+- 062主聊天`01a1b572-44e9-7920-a136-e0d2d74e1d15`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核归属交接`fd53276e64271ef188e9b718b3e4d8bf5912c50c`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向061明确确认实际接管并实时核其归档。062为唯一编码主；两个互斥任务只新字符偏移/保护属性测试和三项段落缩进测试，主独占生产/共享文档/集成/Git。本批003b/004b限定完成，其余Rich/Masked及平台/98%仍待。监督NOT_FOUND、062绑定NOT_DONE，不恢复或新建替代项；下述061及以前归属为历史。
+
+- 061主聊天`01a1b55a-cc3e-7803-9941-bc6c02bca5fe`于2026-11-07完成必要只读准备，收到“开始接管”后独立重核归属交接`590f5f93ab238daf102fc65b3ab8d03d11c90087`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向060明确确认实际接管并实时核其归档。061为唯一编码主；两个互斥任务仅分别新建颜色双属性与段落对齐测试，主独占Rich生产/接口interop、共享文档/集成/Git。当前完成RichTextBox-003a/004a限定范围，其余字符/段落格式、Masked与平台/98%仍待。监督NOT_FOUND、061绑定NOT_DONE，不恢复或新建替代项；下述060及以前归属为历史。
+
+- 060主聊天`01a1b542-6334-7303-ac39-f47c7f462cd6`于2026-11-07完成必要只读准备并收到“开始接管”，独立重核归属交接`bce028b4790096e6b63018ca3c7f7e28b595b946`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向059明确确认实际接管并实时核其归档。060为唯一编码主；两个互斥任务分别只写新的RTF属性/流测试与RTF句柄持久化测试，主独占生产/接口interop、文档/集成/Git。沿RichTextBox-002c的Rtf/SelectedRtf原生流和011a的RTF缓存恢复限定范围继续；完整文件/格式API、Protected/OLE、通知/坐标、Masked及平台/98%门槛保持。监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。下述059及以前归属为历史。
+
+- 059主聊天`01a1b528-2104-7af2-85d2-abd9d2b7fe98`于2026-11-07完成必要只读准备并收到“开始接管”，独立核交接`14c0c9abeb406b92a6278278c89022e1c5248d7c`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向058明确确认实际接管并实时核其归档。059为唯一编码主；两个互斥任务只写新的Rich Text和长度/选区模型测试，主独占Rich生产/必要共享连接、文档/集成/Git。当前推进纯文本Text/Unicode StreamIn及专有TextLength/SelectedText限定范围；RTF/格式/完整坐标/Masked与平台/98%门槛保持。监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项；下述058及以前归属为历史。
+
+- 058主聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向057明确确认实际接管并实时核其归档。058为唯一编码主；两个互斥内部任务分别只写新的RichTextBox原生后端与构造/default测试，主独占生产/interop、共享文档/集成/Git。沿RichTextBox标准直接层级及真实RICHEDIT50W必要默认推进；完整RTF/格式、MaskedTextProvider、平台与98%门槛不关闭。监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项；下述057及以前归属为历史。
+
+- 057主聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向056明确确认实际接管并实时核其归档。057为唯一编码主；两个互斥内部任务分别只写新TextLength原生读取和必要文本/选区元数据/Paint转发测试，主独占TextBoxBase生产、共享文档/集成/Git。限定002d有窗原生TextLength和003h必要元数据，不扩展真实派生后端或设备门槛；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。下述056及以前归属为历史。
+
+- 056主聊天`01a1b4dc-aa38-74e1-bbcd-9bdf038298f1`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向055明确确认实际接管，实时归档列表确认055已归档。056为唯一编码主；两个互斥内部任务分别只写点击消息链及隐藏成员契约的新测试，主独占生产/共享接口interop、文档/集成/Git。限定构造点击样式/消息链与必要隐藏绘图/间距元数据；完整缩放、真实Rich/Masked后端与平台验收不关闭。监督NOT_FOUND、056绑定NOT_DONE，不恢复或新建替代项；下述055及以前归属为历史。
+
+- 055主聊天`01a1b4c6-1525-7820-a4e8-b2e43893e2a9`于2026-11-07收到“开始接管”，完成必要只读准备，独立重核归属交接`835a3e8e522228a07f7cc0447d6564c39336b450`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向054明确确认实际接管并实时核其归档。055为唯一编码主；两个互斥内部任务分别只写新滚动条首选测量、新EDIT创建参数测试，主独占共享生产/interop、文档/集成/Git。限定TextBox-004b滚动条首选测量与TextBoxBase-003e创建请求/必要主题标志，不扩展完整缩放/点击路径。监督NOT_FOUND、055绑定NOT_DONE，不恢复或新建替代项；下述054及以前归属为历史。
+
+- 054主聊天`01a1b49f-a8dc-7f32-87bc-f1dd796b03d6`于2026-11-07收到“开始接管”，完成必要只读准备，独立重核归属交接`43ce1bd82369650abb1257f599cb9f257bdc4d6a`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向053明确确认实际接管，并实时核053已归档。054为唯一编码主；三个互斥任务分别只写新度量、AutoSize生命周期、首选缓存测试（度量任务另独占必要参考证据）。主独占共享生产/interop、文档/集成/Git，沿真实尺寸/default依赖继续；整控件与平台验收不关闭。监督NOT_FOUND、054绑定NOT_DONE，不恢复或新建替代项；下述053及以前归属为历史。
+
+- 053主聊天`01a1b47b-4e92-7fe0-9a15-6c201ae4e615`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`525c3976c6dfc56405234a75d5a39991a3a33e3b`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向052明确确认实际接管并实时核其归档。053为唯一编码主，052实现`5c236295ec895bfee84bad9a9105842eb72ea6d9`独立保留。测量任务独占新TextRenderer/TextFormatFlags及新测量测试；两个契约任务分别只写新PreferredSize与ScrollToCaret测试。主独占基类/interop/Application必要DPI连接、文档/集成/Git；完整AutoSize/PreferredHeight/DefaultSize/缓存生命周期、真实派生后端与平台仍待。监督NOT_FOUND、053绑定NOT_DONE，不恢复或新建替代项；下述052及以前归属为历史。
+
+- 052主聊天`01a1b461-26a9-7d22-a676-820c668625c9`于2026-11-07收到“开始接管”，完成必要只读准备并独立核交接`3b12d48dfda408e6f5c7178ee30f8a56dc3f6794`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向051明确确认实际接管。051已声明停止共享写入/构建/Git并归档；052为唯一编码主。052限定TextBoxBase-008a行查询与008b字符位置查询，行任务独占三个行成员及新测试，位置任务只写新测试/提供补丁，主待基类冻结后串行整合，独占interop/共享文档/集成/Git。测量源码审计确认完整AutoSize/PreferredHeight/DefaultSize/GetPreferredSize仍依赖控件DPI、文本测量与请求高度生命周期，本批不以局部替代关闭。监督NOT_FOUND、052绑定NOT_DONE，不恢复或新建替代项；下述051及以前归属为历史。
+
+- 051主聊天`01a1b418-68f4-71f3-92ba-e43b81dcb719`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`7d7b9bb6f64346f1478439a7af848ee469fee627`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向050明确确认实际接管并实时核其归档。051为当前唯一编码主；词边界任务独占新内部辅助及新测试，命令契约任务仅新Ctrl+Backspace测试，redraw依赖任务仅新内部更新测试；主独占共享基类/Control/interop、文档/集成/Git。050实现`ba59726ad90f6633fa3941e5c8c4ddcbd5e73d20`独立保留；监督`luminaforms-30`保持NOT_FOUND、051绑定NOT_DONE，不恢复可能用户删除项。下述050及以前归属为历史。
+
+- 050主聊天`01a1b3f7-925d-75a1-83c8-05623abd944f`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`27ab70adf17e20ff232bfff1bbc7fa9c3b16cd03`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向049明确确认实际接管并实时核其归档。050为当前唯一编码主；剪贴板任务独占基类Copy/Cut/Paste三个成员及新命令测试，快捷键任务只写新测试并提供精确补丁，主待基类冻结后串行整合，独占interop/共享文档/集成/Git。049实现`94303a2e7a7708facd81020418fb1d1175162649`独立保留；监督`luminaforms-30`保持NOT_FOUND、050绑定NOT_DONE，不恢复可能用户删除项。剪贴板验证只截获消息，不读写用户当前系统剪贴板；下述049及以前归属为历史。
+
+- 049主聊天`01a1b3ce-63d6-7b41-83ea-7d70ac57424e`于2026-11-07收到“开始接管”，完成必要只读准备并重核独立归属交接`38bdf2ec1d601899b61ba53d13a04aae8be682ed`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向048明确确认实际接管并实时核其归档。049为唯一编码主；两个互斥内部任务分别负责Control-17/TextBoxBase-006重挂EDIT命令诊断与新回归、TextBoxBase-005的Clear标准虚调用限定子范围。主独占Control生产补丁、共享接口/interop、文档/集成/Git。048实现`c896813a2092995d9416111fb443f46e776807ee`独立保留；监督`luminaforms-30`保持NOT_FOUND、049绑定NOT_DONE，不恢复可能用户删除项。下述048及以前归属为历史。
+
+- 048主聊天`01a1b383-1005-7ef0-8c42-c926057b7d4c`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`32b9ffffdce7b2e421ec84bfa062201f9415c23e`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向047明确确认实际接管并实时核047已归档。048为当前唯一编码主；AppendText任务独占基类AppendText/GetEndPosition及新测试，Undo任务仅新测试并提供精确成员补丁，主待基类冻结后串行整合，独占interop/文档/集成/Git。047实现`c8f1ca67268b1974370eb3e92c6bbb78372ad9dc`独立保留；监督`luminaforms-30`保持NOT_FOUND、048绑定NOT_DONE，不恢复可能用户删除项。下述047及以前归属为历史。
+
+- 047主聊天`01a1b355-d4a1-72a1-849a-d1086d4ca2e3`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`8768c3b72a530a49d4880577cea3d10f24d73b22`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向046明确确认实际接管并实时核实046已归档。047为当前唯一编码主；Lines任务独占基类Lines及新Lines测试，完成后冻结；SelectedText任务仅新测试与精确补丁，由主串行整合。主独占必要MaxLength依赖、共享接口/interop/文档/集成/Git。046实现`ccff4b5b275a701879de592d5f026f812fa8225c`独立保留；监督`luminaforms-30`保持NOT_FOUND、047绑定NOT_DONE，不恢复可能用户删除项。下述046及以前归属为历史。
+
+- 046主聊天`01a1b329-7d41-7530-ae78-ac19bcd5361f`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`383060a83ed53693836e2bb37ba4c1d885d7956e`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向045明确确认实际接管并实时核实045已归档。046为当前唯一编码主；两个互斥内部任务分别负责TextBoxBase.BorderStyle标准设置/通知和SelectAll/DeselectAll选择契约/回归，主独占共享选择接口整合、文档/集成/Git。045实现`892d003ba57e2c887ff190117d2ed70b5b7d9726`独立保留；监督`luminaforms-30`保持NOT_FOUND、046绑定NOT_DONE，不恢复可能用户删除项。下述045及以前归属为历史。
+
+- 045主聊天`01a1b314-5fc5-7df2-a31b-fede52d78bf5`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`74e05a9d2fe42c6482891bf1f5aa100713b7043e`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向044明确确认实际接管并实时核实044已归档。045为唯一编码主；两个互斥内部任务分别负责TextBoxBase.Modified标准状态/通知与TextBox.CharacterCasing原生设置，主独占共享枚举/interop/接口整合/文档/集成/Git。044实现`4c3724e77ced92eebedff447f8e0564883aa216a`单独保留。监督`luminaforms-30`保持NOT_FOUND、045绑定NOT_DONE，不恢复可能用户删除项；下述044及以前归属为历史。
+
+- 044主聊天`01a1b300-03c0-76e2-b791-856489626d09`于2026-11-07收到“开始接管”，重新核实独立归属交接`c1ba696c4ae4926530a1bd72d89063eb29c21c55`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向043主明确确认实际接管并实时核实043已归档。044为当前唯一编码主；两个互斥内部任务分别负责TextBoxBase.HideSelection标准设置/通知和TextBox.TextAlign设置/对齐样式，主独占共享接口interop文档集成Git。043实现`771f2f28a06071758f9a163cc0d23cb8190141cc`独立保留；完整编辑/派生后端、模态/平台门禁不关闭。监督`luminaforms-30`保持NOT_FOUND、044绑定NOT_DONE，不恢复可能用户删除项；下述043及以前归属为历史。
+
+- 043主聊天`01a1b2ed-b9ac-74a1-8409-5c2315ee56bb`于2026-11-07收到“开始接管”，重新核实独立归属交接`6a78daf2fc2e2ad9da5de72f9c17dae78a0a7d13`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向042主明确确认实际接管。043为当前唯一编码主；两个互斥内部任务分别负责TextBoxBase标准AcceptsTabChanged/WordWrap原生样式与TextBox.ScrollBars校验/样式/重建，主独占接口整合、interop、共享文档、集成和Git。042实现`bd9f4d2c9f50dee14dc5f1e7a9ba4290d25be7e9`与归属交接分开保留；完整基类/派生后端、模态/IME及平台门禁不关闭。监督`luminaforms-30`保持NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项；下述042及以前归属为历史。
+
+- 042主聊天`01a1b2db-40e3-7262-8536-b2dd17bbbfe4`于2026-11-07收到“开始接管”，重新核实独立归属交接`a561ddb6b44dfdafe376ac4754db5833adc742d7`的HEAD/origin/main/实际远端三SHA一致、main工作树干净，已向041主明确确认实际接管，并实时核实041已归档。042为当前唯一编码主；两个互斥内部任务分别负责标准TextBoxBase共享EDIT首范围与IME原生默认消息转发审计/回归，主独占共享文档、接口整合、interop、集成与Git。模态宿主依赖真实Form.Modal/ShowDialog和线程循环生命周期，不新增假状态或完整context架构；监督`luminaforms-30`保持NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。下述041及以前归属作为历史。
+
+- 041主聊天`01a1b2c7-9ed3-7511-8764-6945f41d3ad5`于2026-11-07收到“开始接管”，重新核实独立归属交接`358538d0afd23ddcf7ad49014690da3630871c0a`的HEAD/origin/main/实际远端三SHA一致、main工作树干净，已向040主明确确认实际接管。041为当前唯一编码主；040已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责最小线程OLE状态和输入语言OLE前置，主独占Application公共入口/退出连接、共享interop/文档、集成和Git。完整context/模态/IME及平台门禁保持，监督`luminaforms-30`为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。下述040及以前归属作为历史。
+
+- 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`于2026-11-07收到“开始接管”，重新核实独立归属交接`6b7624a64b052080e4390fda4e3d273879c11eb0`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向039主确认实际接管。040为当前唯一编码主；039已声明停止共享写入/构建/Git并按规则归档。两个互斥内部任务分别负责InputLanguage服务和Form语言事件/参数，主独占Application入口、Control消息连接、共享interop/文档、集成与Git。监督`luminaforms-30`保持NOT_FOUND、040绑定NOT_DONE，不恢复可能用户删除的项；下述039及以前归属作为历史。
+
+- 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`于2026-11-07收到“开始接管”，重新核实独立归属交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的HEAD/origin/main/实际远端三SHA一致、工作树干净并已向038主确认实际接管。039为当前唯一编码主；038已确认停止共享写入/构建/Git并按规则归档。039沿TextBox只读/密码IME限制和Control语言消息/非Form宿主传播两个互斥范围继续，主独占共享文档、interop、集成与Git。监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，不恢复可能用户删除的项。下述038及以前归属为历史。
+
+- 038主聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`于2026-11-07收到“开始接管”，重新核实独立归属交接`8c1e746322f22b8d5eefe37d0a50b1f0608c8414`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向037主明确确认实际接管。038为当前唯一编码主；037按规则立即停止共享写入/构建/Git并归档。038继续剩余IME上下文/组合态、TextBox派生编辑输入和UserControl AutoSize的互斥限定子范围；主独占共享文档、interop、集成与Git。监督`luminaforms-30`为NOT_FOUND、038绑定NOT_DONE，不自动恢复可能已被用户删除的项。下面037及更早归属/证据作为历史保留。
+
+- 037主聊天`01a1b27b-6152-7792-a700-4989923b44a9`于2026-11-07收到“开始接管”，重新核实独立交接`1a8fecc4fa761d1bc9b04a84db87b046fc94858f`的HEAD/origin/main/实际远端三SHA一致、工作树干净，并已向036主明确确认实际接管。037为当前唯一编码主；036随后停止共享写入/构建/Git并归档。当前037沿IME字符消息、TextBox派生输入与嵌套UserControl原生验证三个互斥范围继续；主独占共享文档、interop、集成与Git。下面036归属和验证为历史记录。
+
+- 用户本轮明确授权在 Codex 桌面应用的 Lumina 项目继续工作，并要求使用多个智能体监督与实现。主会话独占共享文档、集成验证和 Git；Control 键盘预处理、ContainerControl 键盘路由和 ScrollableControl 聚焦滚动由三个互斥子智能体完成，均已停止写入后由主会话复核。
+- 工作区是 `D:\GitHub\Lumina`，分支 `main`。036主聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`收到“开始接管”后重新核验独立交接`8625a569e5731564a5d0b2defac9d1a56d099b47`的HEAD/origin/main/实际远端三SHA一致且干净，已实际接管并向035主确认。035主已声明停止共享写入、构建和Git，按规则立即归档；035实现`aabff5a05dd9f64fd0d15285c91cdb9c474280da`保留。忽略的bin/obj保留。
+- 批次[036](036.md)历史快照：完成Control-12i原生输入键/字符判别、队列字符抑制及验证取消清理，Form-12c默认按钮托管释放清理；Button-002b完成固定源码审计并确认Button.cs无需算法改动。新增9/9、全量4,514/4,514及Release双目标构建PASS（0错误/2条既有NU1510）。固定API10.0.11缺引用包继续NOT_RUN；完整IME、ButtonBase、模态、AutoSize、物理设备、Designer、Native AOT与平台仍UNKNOWN/NOT_RUN。
+- 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
+- 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
+
+## 批次069 实施与收尾（当前）
+
+- 收尾ExportTasks/普通verify与独立审计PASS：457MD（roadmap453+根四入口）/2204任务（2154控件+50共享）/187实施行/整类型完成0/0错误；26自有路径严格UTF8/noNUL/字节roundtrip/SHA、1048条最终TRX逐结果和旧952各分组数量已核。仅新增005d/17g，旧2202任务ID及状态、1095类型/61240成员记录与固定分母保持。原生/夹具首失败与独立对照完整保留。详情artifacts/compatibility-batch069/independent-closeout-final.json；审计PASS不清全量FAIL/超时或平台门槛。
+
+- 用户最新要求：069完成后停止连续代码，不启动070；下一新会话仅整理路线图和文档，完成范围迁到变更记录/历史，合并重复入口，保留未完任务和验收缺口。
+
+
+首相关1027/1046、19失败的JSON/TRX保留：16个新契约夹具把构造读取CreateParams误当建窗，守卫只移到CreateHandle；2个新raw对照的通知消息按实际原生由EM_REPLACESEL更正为WM_SETTEXT，其文本/范围/结果硬断言保持；1个旧SelectionFont格式保持夹具在保护后设置格式，被新增守卫按预期拒绝。独立23/23（19契约+4raw）证实ENM_PROTECTED关闭时两项格式改变、启用时精确两通知/两拒绝。仅让旧格式合并夹具临时关闭新保护通知并finally恢复，完整原方法体/13处Assert和AssertFont保持；生产未因本轮失败改变。最终新增96（19契约/28原生含4raw/49结果），旧相关952数量保持；1048/1048通过。最终Release27.766秒/相关84.531秒，首构建71.735秒，独立诊断含重编35.203秒。
+
+资源身份边界：首构建、首及最终相关在存活期间保存CLI/外层PS7/根dotnet/host精确FILETIME、命令与父链。27.766秒最终构建已在独立快照前退出；诊断host只运行832ms、未捕获存活身份。对应PID/命令/执行和cleanup回执保留，不声称每个调用有完整存活身份覆盖。
+
+- 069限定完成RichTextBox-005d标准Protected通知及真实保护拒改，并以Control-17g补必要WM_NOTIFY原生结果回传。Form改按来源HWND路由，容器/停车接收者保持0/1结果；旧OnNotify钩子保留。保护样式本身与全文替换允许，受保护选区替换/格式修改拒绝；流拒改消耗保护标志，不伪造成功修改。96新增及1048相关通过，Release固定双目标0错/2既有NU1510。完整LinkClicked/TextChanged/其他通知、文件/OLE/撤销、Find/完整选择测量、Masked模型与平台/98%仍待；064全量FAIL/未解决、065超时及066～069全量NOT_RUN保持。用户2026-11-07明确要求本批完成后停止连续代码实施；下一新会话只整理路线图/文档，将完成范围迁入变更记录并合并重复内容，不启动070。
+- 三个互斥新测试文件冻结；旧测试更新068精确事件掩码，并将065格式保持夹具隔离新保护守卫、finally恢复；原方法体/全部断言保持。固定源123535字节/SHA76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0重核，Windows仍官方Drawing。
+- 本批全量NOT_RUN；064FAIL/未解决、065180秒超时及066～068全量NOT_RUN保持，不盲重试。固定API刷新/包smoke/Notepad publish本地NOT_RUN，hosted CI未独立回读；Designer/AOT实际运行/设备/Linux/macOS/98%仍待。
+- 持续授权逐批实施/多个互斥内部任务/主独占、实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后发开始/明确接管后旧主立即停止共享写入构建Git并归档保持，后来暂停停止优先。监督NOT_FOUND、069绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次068 实施与收尾（历史）
+
+- 下一local只读接续聊天`01a1b63d-9855-75c0-9953-1c8e010d4e99`（Lumina batch 069 continuation，host local）已创建，编码归属指定给该聊天。068实现`083315e26ea6d7e9fef19ae1ac9db359868aabb2`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push核三SHA后068才发送“开始接管”。069先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树，向068原主`01a1b621-b24c-7d11-b6f6-59f0d242e692`明确确认实际接管；确认前不写/不构建/不提交推送/不创建内部任务。确认后068立即停共享写入/构建/Git并归档，不等069完成。持续授权、分别成功push核三SHA、先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、069绑定NOT_DONE，不恢复或另建替代项。068全量NOT_RUN、064FAIL/未解及065超时完整传递。
+
+- 收尾ExportTasks及独立核对PASS：456MD/2202任务（2152控件+50共享）/187实施行/整类型完成0/0错误；20自有路径严格UTF8/noNUL/roundtrip/SHA及952个TRX逐结果、原845项分组数量保持。仅新增005b/005c，旧2200ID及状态、固定1095类型/61240成员记录与分母保持。普通校验回执另见artifacts/compatibility-batch068/verify-roadmap.json，独立回执independent-closeout-final.json；审计不清064FAIL/065超时或平台门槛。
+
+- 068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。
+- 三个互斥内部任务已冻结；主独占生产/文档/集成/Git。067原主已实时核归档。本批全量NOT_RUN，不盲重试064/065未解失败，不改旧线程/点击生产或旧断言。
+- 源码参考复用058完整RichTextBox v10.0.11，123535字节/SHA76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0。生产及三测试SHA/资源/命令另存artifacts/compatibility-batch068。Windows仍官方Drawing；基类/Control/Application/Form、项目/Demo/Designer/resx及旧测试未改。
+- 持续授权/互斥内部任务/主独占、实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后发开始/明确接管后旧主立即停止共享写入构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、068绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次067 实施与收尾（历史）
+
+- 下一local只读接续聊天`01a1b621-b24c-7d11-b6f6-59f0d242e692`（Lumina batch 068 continuation，host local）已创建，编码归属指定给该聊天。067实现`95e827a367857f8c73a9cfca25f1aef0ff63496f`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push核三SHA后067才发送“开始接管”。068先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树，向067原主`01a1b5f9-5b07-7ea0-8d8b-c552146908ab`明确确认实际接管；确认前不写/不构建/不提交推送/不创建内部任务。确认后067立即停共享写入/构建/Git并归档，不等068完成。持续授权、分别push核三SHA、先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、068绑定NOT_DONE，不恢复或另建替代项。067全量NOT_RUN，064FAIL/未解及065超时完整传递。
+
+- ExportTasks/普通校验与独立收尾审计PASS：455MD/2200任务（2150控件+50共享）/187实施行/整类型完成0/0错误；23自有路径严格UTF8/noNUL/roundtrip/SHA、845个TRX逐结果、100新增分类和旧测试未改已核。旧2197ID与固定1095类型/61240成员记录保持，仅Rich-005随真实新子范围由pending整理为部分。
+
+- 限定完成RichTextBox-003f Font override、005a ContentsResized与Control-17f自有停车WM_NOTIFY必要连接，详情见[067](067.md)。Windows仍用官方Drawing；共享TextBoxBase/Application/Form生产、项目/Demo/Designer/resx及旧测试均未改。
+- 首构建RECT字段大小写错误已修并保留回执。首相关821/836、第二843/844与独立Drawing/RichEdit8/8、完整格式对照1/1回执保留；最终Release固定双目标0错/2既有NU1510，相关845/845通过，含100新增（Font契约38/原生30/尺寸32）。原生量化、generic-family身份及WM_SETFONT的自动前景/偏移复位均由独立对照证实，只修新夹具预期，生产未为失败改变。
+- 本批全量NOT_RUN；064全量FAIL/未解、065一次180秒超时、066全量NOT_RUN完整继承。Find/完整选择测量、其余通知/文件/OLE/撤销、MaskedTextProvider真实模型、全部ambient/跨屏DPI/字体、反射父Form寿命/线程/模态及Designer/AOT实际运行/设备/Linux/macOS/98%仍待。固定API刷新/包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。
+- 持续授权逐批实施、多个互斥任务/主独占、实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后发开始/明确接管后旧主立即停止共享写入构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、067绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次066 实施与收尾（历史）
+
+- 下一local只读接续聊天`01a1b5f9-5b07-7ea0-8d8b-c552146908ab`（Lumina batch 067 continuation，host local）已创建，编码归属指定给该聊天。066实现提交`114453595ff233cd7ff392746fa0c8a1a53ac1a2`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push并核三SHA后066才发送“开始接管”。067先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树并向066原主`01a1b5e0-d281-7831-bb7b-1f7c26de376f`明确确认实际接管；确认前不写文件/不构建/不提交推送/不创建内部任务。确认后066立即停共享写入/构建/Git并归档，不等067完成。持续授权/分别成功push核三SHA/先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、067绑定NOT_DONE，不恢复或另建替代项。066本批全量NOT_RUN，064全量FAIL/未解及065全量180秒超时完整传递。
+
+
+- 收尾ExportTasks/普通校验及独立审计PASS：454MD/2197任务（2147控件+50共享）/187实施行/整类型完成0/0错误；旧2196ID/状态、1095类型/61240成员记录保持。19自有路径严格UTF8/noNUL/roundtrip、732个TRX逐结果、61新增分类与旧测试方法体逐字未变均已独立核对。
+
+- 066限定完成RichTextBox-003e控件颜色同步和必要Rich主题覆盖修复；完整Font及其他父项/平台不关闭。最终732/732相关RichTextBox（含61新增）与Release固定双目标0错/2既有NU1510；本批全量NOT_RUN，064全量FAIL/未解与065一次180秒超时完整保留。
+- 首相关组输出上限终止无完整TRX/总数，保留JSON；真实RTF重建Modified=false缺口已修，旧SelectionFont只修创建期默认颜色拦截夹具，原选择/字体/完整载荷/数量硬断言保持，不能称旧测试未改。最终生产SHA61ebe57e44d9d43338d32b83951a63abcafb448c37d4a1d5e836d425c8eb0375；参考/两新测试/旧夹具SHA与回执见[066](066.md)和artifacts/compatibility-batch066。
+- 下一沿完整Font/ContentsResized依赖、Find/完整选择测量、MaskedTextProvider真实模型继续；文件/Protected/OLE/通知/撤销动作名、缩放/反射父寿命/WM_NOTIFY/线程/模态及平台/98%保持。先按真实剩余依赖，不以DefaultCursor/元数据全集阻塞；不重做033～066、不重评全项目、不建context/调度/报告框架。
+- 持续授权、多个互斥内部任务/主独占生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后开始/明确确认后旧主即刻停写构建Git并归档、后来暂停停止优先保持。监督NOT_FOUND、066绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次065 实施与收尾（历史）
+
+- 下一local只读接续聊天`01a1b5e0-d281-7831-bb7b-1f7c26de376f`（Lumina batch 066 continuation，host local）已创建，编码归属指定给该聊天。065实现提交`dca0da394c455cdaae551e6586a12af5ba5d9c24`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push并核三SHA后065才发送“开始接管”。066先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树并向065原主`01a1b5c5-685a-7330-852e-435ba2a38370`明确确认实际接管；确认前不写文件/不构建/不提交推送/不创建内部任务。确认后065立即停共享写入/构建/Git并归档，不等066完成。持续授权/分别成功push核三SHA/先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、066绑定NOT_DONE，不恢复或另建替代项。本批180秒全量超时和064全量FAIL/未解门槛完整传递。
+
+- 065限定实现RichTextBox-003d SelectionFont及必要私有LOGFONT转换，两个互斥内部任务只新契约50/原生43测试；主独占生产/共享文档/集成/Git。Release方案/固定双目标0错/2既有NU1510，最终93新增通过。首77/85保留，独立中英诊断8/8确认原选区FACE缺位/null正确；仅修新均匀样式夹具，中英原文/选区/独立native硬断言保留，生产行为/旧测试未因失败改变。
+- 本批一次全量180秒超时，未产生完整TRX/通过数；清理5个自有进程后子树归零（cleanup_complete=true），不声称全量通过。064全量FAIL/两次超时及独立两组通过不能清除失败的边界完整传递，原因未定，不称环境问题。完整Font/ForeColor/BackColor同步、文件/Protected/OLE/通知/UndoRedo、Find/完整选择测量、MaskedTextProvider真实模型及缩放/反射/线程/模态与平台/98%仍待。监督NOT_FOUND、065绑定NOT_DONE，不恢复或新建替代项。
+
+- 根路线图/执行/五控件公共页及历史/contracts/foundations/验证/README实施列/tasks.csv已按实际范围同步。ExportTasks/普通校验/独立核查PASS：453MD/2196任务（2146控件+50共享）/187实施行/整类型完成0；旧2195ID/状态及固定1095类型/61240成员记录/分母全部保持，仅新增003d。三个TRX逐结果/18路径编码/源码与测试SHA/Git归属回执保留；审计不将全量超时改写为PASS。
+
+## 批次064 实施与收尾（历史）
+
+- 下一local只读接续聊天`01a1b5c5-685a-7330-852e-435ba2a38370`（Lumina batch 065 continuation，host local）已创建，编码归属指定给该聊天。064实现提交`12a1c42c9c56ebde04d91911114ed930b380c418`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立核一致，main干净/+0/-0；本独立归属交接commit/push并核三SHA后064才发送“开始接管”。065先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树并向064原主`01a1b59c-e7bd-7921-976f-23b4a54bd381`明确确认实际接管；确认前不写文件/不构建/不提交推送/不创建内部任务。确认后064立即停共享写入/构建/Git并归档，不等065完成。持续授权/分别成功push核三SHA/先只读/明确确认/旧主立即归档以及后来暂停停止优先保持；监督NOT_FOUND、065绑定NOT_DONE，不恢复或另建替代项。全量FAIL/未解门槛完整传递，不因代码完成消除。
+
+- 完成RichTextBox-003c SelectionType/标准五值flags与008a三项RichEdit专有查询，101新增（39/62）通过；Release方案/固定双目标0错/2既有NU1510，生产SHA af1932c9353f7f7b4be225a7bd28ca0cb325b51629ee28f269e78b57ddea3fb3。只修新位置夹具的两次物理行假设错误，保70001原生硬断言，生产/旧测试未为失败改变。主独占生产/枚举、共享文档/集成/Git，两个内部任务已冻结。
+- 全量明确FAIL/未解决：首55秒超时，完整一次6145/6146（既有WindowsFormsSynchronizationContextInstallTests.LegacyTaskCallback_FromWorkerAlsoResumesOnTheUiThread的UI callback超时），末180秒超时另有既有TextBoxClickMessageTests.OnlyLeftDoubleMessageArmsTheTextBoxFlagBeforeNativeDefaultProcessing失败。两组独立18/18和23/23通过，不等于全量通过；原因未定，不称环境问题、不改旧断言，不为此扩展本批生产范围。全部原JSON/TRX保留artifacts/compatibility-batch064，后续不得抹除该未解门槛。
+- 根路线图/执行/5控件公共页及历史/contracts/foundations/验证/README实施列/tasks.csv按实际范围同步，索引总述从063同步064。既有ExportTasks为452MD/2195任务（2145控件+50共享）/187实施行/整类型完成0/0错误；只新增003c/008a，008由待办进入部分，其他旧ID/状态与1095类型/61240成员记录/固定分母保持。独立核查与TRX/编码/归属回执见artifacts/compatibility-batch064，审计通过不等同全量测试通过。
+- 接管前独立归属交接`45d7468f347194c8249bfc10f97f4b3e69a1a678`与063实现`0f6f54fcd096e48d5558f554a2eab2c4246f085d`独立保留；明确确认后063已归档。原ID/未完父项/固定分母保持，完整字体/文件/Protected/OLE/通知/测量、Masked及平台/98%仍待。
+- 持续授权、多互斥内部任务/主独占、每批实现与独立归属交接分别成功commit/push并核三SHA、下一local先只读/交接push核后开始/明确确认后旧主立即停共享写入构建Git并归档保持，后来暂停停止优先。监督NOT_FOUND、064绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次063 实施与收尾（历史）
+
+- 下一local只读接续聊天01a1b59c-e7bd-7921-976f-23b4a54bd381（Lumina batch 064 continuation，host local）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后063才发送“开始接管”；064先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向063确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后063立即停止共享写入/构建/Git并归档，不等064完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、064绑定NOT_DONE，不恢复或新建替代项。
+
+- 收尾实际导出/普通校验及独立核查PASS：451MD/2,193任务（2,143控件+50共享）/187实施行/整类型完成0，旧2,191任务ID与状态全部保持。18自有路径严格UTF8/noNUL/字节roundtrip与TRX逐结果核对通过。首独立核查误把CSV表头计入61,240成员记录，修为按CSV记录核对后通过；只修核查脚本，生产/测试未变，首失败independent-closeout-first.json保留，最终independent-closeout.json/independent-closeout-execution.json通过。
+
+- 063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。仅新增004c/004d，004及其他父项保持；063实现提交0f6f54fcd096e48d5558f554a2eab2c4246f085d已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致，main干净/+0/-0；接管前独立归属交接ee4752c8e3e115652b41d328d5b01381625263ac，实现与独立归属交接分开核验。
+- 项目符号测试48例/25467字节/SHA7a041f917567509b157e1b3099dd9213115df9ca6e0f97cfbd1afc889ea8b6d6；制表位38例/27154字节/SHAeddfaf54b52000c889c6dc0881544bf3331408a5e73d4318660c38af6b0f287d。两任务completed冻结，生产SHA b1768a27f9c6f468941299ae4ff22fc6792b877630c61f09aa59e260b2cc0d1a。
+- 004c：SelectionBullet为标准非virtual/默认false/隐藏属性，getter强制建窗后需NUMBERING mask且值1才真；setter新零156字节PARAFORMAT仅mask0x24/Numbering和Offset，true为bullet1与屏幕X像素转twip，false清两字段，每次SET无GET。BulletIndent标准非virtual/默认0/Behavior/Localizable，负值前置拒绝，先写缓存且无窗不建；有窗仅当前真bullet再提交，同值也查询。48例含精确载荷/混合/原生最新值/缓存时序/原异常/其他格式/RTF重建Modified真假的状态保持。
+- 004d：SelectionTabs为标准非virtual int[]/隐藏序列化/AllowNull，超过32在建窗前拒绝且ActualValue为空；getter按TABSTOPS有效mask逐槽转像素，无mask为空。setter先GET当前156字节结构，仅改mask/数量/前N槽，保留非目标字段及尾槽；null/空清数量，不排序/不校验元素，重复仍GET→SET并忽略返回。38例含32边界/全int/数组寿命/整结构/独立RichEdit/混合段落/其他格式及RTF重建通过。首AllowNull夹具只修setter参数反射，原失败保留。
+- 生产只改RichTextBox.cs，两个任务只新增各自测试；未改其他生产/旧测试/项目/固定Demo/Designer/resx，无剪贴板操作。WarningLevel=0不是分析告警清零。共享路线图/5控件页及历史/contracts/foundations/验证/README实施列/tasks.csv同步；索引总述停060的滞后已纠正，原ID/未完父项/1095类型61240成员行/分母保持，数量不推98%。
+- SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。不重做033～063、不重评全项目、不建context/调度/报告框架。
+- 固定Rich参考复用058，已核123535字节/SHA76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0。063主Cordonix父PID64388/精确FILETIME134385205260853678仅属063，调用有界/cleanup_complete=true；STA ExitThread再private visual-context，不加outer cookie。无临时脚本/持久workspace文档/独占服务，只清精确自有对象，不按名杀；保留证据/bin/obj/共享缓存/MCP。
+- 持续授权、多互斥内部任务一任务一负责人/主独占生产接口interop文档集成Git、实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接push核后发开始接管/明确确认后旧主立即停共享写入构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、063绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次062 实施与收尾（历史）
+
+- 062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。仅新增003b/004b，003/004及所有未完父项保持；062实现提交`33fa78eca8b597e123023d20e01ed42c8acaae83`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地commit称交付；接管前为`fd53276e64271ef188e9b718b3e4d8bf5912c50c`。
+- 下一local只读接续聊天`01a1b587-95a1-72e0-80e1-2ea2a8f07530`（Lumina batch 063 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后062才发送“开始接管”；063先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向062确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后062立即停止共享写入/构建/Git并归档，不等063完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、063绑定NOT_DONE，不恢复或新建替代项。
+- 两个互斥内部任务completed冻结，分别只新RichTextBoxSelectionOffsetProtectionTests.cs（43例，21196字节/SHA3cb05a929e20b6195acf18c4b707c1b304e0fc1b217298a7acf227855f23d502）与RichTextBoxSelectionIndentTests.cs（67例，26867字节/SHA85ca90be26fd401eca1faf5b03e4aeddfa9630b4b249a9eaec25360370faa804）。主独占Rich生产/共享文档/集成/Git；未改其他生产、旧测试、项目或固定Demo/Designer/resx。
+- 偏移[-2000,2000]和右缩进非负先校验，不合法不建窗；五属性均强制创建。OFFSET getter不检查mask，保护getter mask/effect双判、setter新零结构每次发送；段落三mask1/2/4单字段新零结构、有效mask读取否则0。换算每次屏幕DC的X/Y度量并保固定浮点表达式，finally释放DC。沿既有116/156字节Pack4结构和同步SendMessage，无新PInvoke/依赖/公共模型。
+- Release方案/固定双目标首轮0错/2既有NU1510，110新增及5,959全量首轮0失败/跳过；原JSON/TRX保留artifacts/compatibility-batch062，无剪贴板操作，WarningLevel=0不是分析告警清零。覆盖精确结构/消息、异常重试/极值/混合/独立native最新值、无关格式/文本/选择/限长/Undo/通知与RTF重建Modified真/假。
+- 18自有路径收尾同步根路线图/执行/5控件公共页及历史、contracts/foundations、验证/README实施列/tasks.csv/HANDOFF；纠正TextBoxBase页042历史段落仍称Rich经TextBox的滞后，原完成范围/历史证据保持。导出与独立核450MD/2,191任务（2,141控件+50共享）/187实施行/整类型完成0；原ID/未完父项/1095类型61240成员行/固定分母保持，不由数量推98%。
+- SelectionFont/SelectionType、SelectionBullet/BulletIndent/SelectionTabs、完整Protected通知/拒绝修改、Font/ForeColor/BackColor同步、Load/Save各重载/StreamType/编码/文件锁、OLE/专有通知/UndoRedo/动作名/完整选择与坐标/测量、MaskedTextProvider真实模型及直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。不重做033～062、不重评全项目、不建context/调度/报告框架；官方Drawing/固定双目标静态Demo保持。
+- 固定Rich参考复用058，已独立重核123535字节/SHA25676a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0，不重下载。主Cordonix父PID31708/精确FILETIME134385191281891201只属062，勿复用061身份。调用有界/cleanup_complete=true，STA ExitThread→private visual-context，不加outer cookie；保留证据/bin/obj/共享缓存/MCP，只清精确自有对象，不按名杀进程。
+- 持续授权、多互斥内部任务一任务一负责人/主独占生产接口interop文档集成Git、实现与独立归属交接分别成功push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停写构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、062绑定NOT_DONE，不恢复或新建替代项。
+
+- 独立核查前三次脚本漏既有第三列/反引号ID、V1/V2/V3和序号平台表格式，原失败回执保留；修为逐条CSV与所属Markdown表核对后通过（independent-closeout-reconciled.json）。只修核查脚本，生产/测试未变，全部既有任务ID/状态保持。
+
+## 批次061 实施与收尾（历史）
+
+- 本批只完成RichTextBox-003a SelectionColor/SelectionBackColor真实字符颜色及004a SelectionAlignment原生段落对齐；003/004及全部未完父项保持部分。061实现提交`d3725c2775f1af977095a362f5c1c4343dd044db`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地代码称已交付。接管前为`590f5f93ab238daf102fc65b3ab8d03d11c90087`，060实现`71e51965e33d6a46154368c7e10d3b95bb735d2a`独立保留。
+- 下一local只读接续聊天`01a1b572-44e9-7920-a136-e0d2d74e1d15`（Lumina batch 062 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后061才发送“开始接管”；062先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向061确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后061立即停止共享写入/构建/Git并归档，不等062完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、062绑定NOT_DONE，不恢复或新建替代项。
+- 两个互斥任务completed冻结：只新增RichTextBoxSelectionColorTests.cs（33）与RichTextBoxSelectionAlignmentTests.cs（34）；主独占Rich生产/共享文档/集成/Git。未改基类/Control/Application/Masked生产、项目、旧测试或固定Demo/Designer/resx。
+- SelectionColor强制建窗、GET后仅改COLOR/effects0/Win32色再SET；SelectionBackColor无窗只缓存、有窗新零结构，auto effect优先、同值仍发、创建前重放非空缓存且RTF后加载优先。Empty背景mask0/effect按固定源与独立native对照保留。SelectionAlignment先校验再建窗，按mask8/native1/2/3映射，未知/无mask回Left，每次仅提交对齐。私有Pack4字符116/段落156、固定inline buffer与同步SendMessage，无新PInvoke/依赖/公共模型。
+- Release方案/固定Demo双目标首轮0错/2既有NU1510，67新增与5,849全量首轮0失败/跳过，原JSON/TRX保留artifacts/compatibility-batch061。结构/精确消息、混合状态/原生最新读回、其他格式/文本/选择/限长/Undo/通知保持、RTF优先与重建/Modified真假的必要范围通过；无系统剪贴板操作。WarningLevel=0不代表分析告警清零。
+- 根路线图/执行/5控件公共页及历史、验证/README实施列/tasks.csv按实际代码同步；只新增003a/004a，004从全待办纠正为部分，SelectionColor存值的当前描述已纠正。保留原任务ID/未完父项/固定分母，不由数量推98%。固定Rich参考123535字节/hash与SDK头布局已独立重核。
+- 收尾纠正FND-001漏记058 Rich真实层级/后端和FND-011漏记049通知修复的滞后当前描述，两个父项继续部分；原历史失败记录保持，无新增FND任务。449MD/2,189任务（2,139控件+50共享）/187实施行/整类型完成0/0错误。独立Python核任务ID/父项/TRX；首独立脚本漏4个根文档，仅修核查范围，生产/测试未变，原失败回执保留。
+- 下一沿其余字符/段落格式、专有选择/坐标与MaskedTextProvider真实模型依赖继续。SelectionFont/CharOffset/Protected/SelectionType、Bullet/缩进/Tabs、完整Font/ForeColor/BackColor同步、Load/Save/StreamType、OLE/专有通知/UndoRedo/动作名、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务；Designer/AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%仍待。不重做033～061、不重评全项目、不建context/调度/报告框架。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立读回、固定API刷新NOT_RUN；官方Drawing/固定双目标静态Demo保持。
+- 主Cordonix父PID49588/精确FILETIME134385175899865733独立核，不复用060身份。外部调用有界/cleanup_complete=true；STA ExitThread→private visual-context，不加outer cookie。只清精确自有对象，保留证据/bin/obj/共享缓存/MCP，不按名杀进程。
+- 18个自有交付路径严格UTF8/无NUL/字节往返PASS，新测试保持冻结SHA，生产文件与已构建/测试快照一致。最终完整dotnet快照0，无临时脚本/持久workspace文档/独占服务；普通路线校验/暂存归属/CRLF兼容whitespace在提交前复核。
+- 持续授权、多互斥内部任务一任务一负责人/主独占生产接口interop文档集成Git、实现与独立归属交接分别成功push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停写构建Git并归档保持；后来暂停停止优先。监督NOT_FOUND、061绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次060 实施与收尾（历史）
+
+- 完成RichTextBox-002c的Rtf/SelectedRtf字符串流与011a的RTF句柄格式缓存恢复；完整父项保持部分。060实现提交`71e51965e33d6a46154368c7e10d3b95bb735d2a`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地代码称已交付。接管前为`bce028b4790096e6b63018ca3c7f7e28b595b946`，059实现`05f98b39ee2892cab256eb786389acea804322f8`独立保留。
+- 下一local只读接续聊天`01a1b55a-cc3e-7803-9941-bc6c02bca5fe`（Lumina batch 061 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后060才发送“开始接管”；061先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向060确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后060立即停止共享写入/构建/Git并归档，不等061完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、061绑定NOT_DONE，不恢复或新建替代项。
+- 两个互斥任务completed冻结，分别只新RichTextBoxRtfTests.cs与RtfLifetimeTests.cs；另有只读复核无新增阻断。主独占Rich生产、文档/集成/Git；未改基类/Control/Application/Masked生产、项目、旧测试或固定Demo/Designer/resx。
+- Rtf默认无窗null，有plaincache读取才强制建窗；Rtf setter先比较再建窗/缓存/SF_RTF流入并显式通知，SelectedRtf选区0x8002流/空值WM_CLEAR。ACP/原始NUL/五字节前缀与短输入inner异常、输入限长恢复/修改位/行索引顺序保持。流出静态Stdcall/blittable/Pack4、逐调用MemoryStream/cookie及finally回收，无新PInvoke/依赖/公共模型。
+- 销毁先base再缓存最新真实RTF，创建先base再RTF优先/plain、后选择/ClearUndo；RTF快照恢复保Modified真/假与MaxLength，新无窗Text清RTF缓存并经Text setter清修改位。Text读取有RTF缓存时由RichEdit翻译，保disposed/recreating/disposing原分支。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json），54新增（31 RTF/23寿命）与5,782全量0失败/跳过。首新测试unsafe三处编译失败保留，改Marshal/测试委托不改项目；首50/54的三项是真实新plaincache错误恢复旧Modified，修生产且原false硬要求保持；另一空选区夹具由独立native全文正字节/选区零字节核实后改空串，旧测试未改。原JSON/TRX保留，无剪贴板操作；WarningLevel=0不是分析告警清零。
+- 根路线图/执行/5控件公共页及历史、验证/README实施列/tasks.csv已按实际范围同步；只新增002c/011a，011从全待办改部分，原ID/未完父项/固定分母保持，不由数量推98%。ExportTasks与独立Python均448MD/2,187任务（2,137控件+50共享）/187实施行/整类型完成0/0错误；独立TRX核首50/54和最终54/54、5,782/5,782。完整Rich参考123535字节/hash已独立重核。
+- 下一沿Rich字符/段落格式真实状态、专有选择/坐标与MaskedTextProvider真实模型依赖继续。Load/Save/StreamType、公共格式API、Protected/OLE、专有通知/UndoRedo/动作名、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务；正向可见点击/物理输入、Designer/绑定/资源/Native AOT实际运行/Linux/macOS/98%未关闭。不重做033～060、不重评全项目、不建context/调度/报告框架。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立回读、固定API刷新NOT_RUN；官方Drawing/固定双目标静态Demo保持。
+- 主Cordonix父PID32604/精确FILETIME134385159902671754独立核，外部调用有界/cleanup_complete=true；STA ExitThread→private visual-context，无临时脚本/持久文档/独占服务，保留证据/bin/obj/共享缓存/MCP，只清精确自有对象，不按名杀进程。
+- 17个自有交付路径严格UTF8/noNUL/字节往返检查PASS，最终完整dotnet快照0；暂存仅自有路径，提交前核普通路线校验/CRLF兼容whitespace与归属。
+- 持续授权、多互斥内部任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停止共享写入构建Git并归档保持，后来暂停停止优先；监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次059 实施与收尾（历史）
+
+- 既有ExportTasks/普通Validate-Roadmap与独立Python核447MD/2,185任务（2,135控件+50共享）/187实施行/整类型完成0/0错误；接管前快照比对只新增002a/002b、无原ID删除、未完父项保持。独立TRX核首61/64与最终64/64、5,728/5,728；20个自有交付路径严格UTF8/noNUL/roundtrip及CRLF兼容whitespace检查PASS。
+
+- 059实现提交`05f98b39ee2892cab256eb786389acea804322f8`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致，main干净/+0/-0；实现前为`14c0c9abeb406b92a6278278c89022e1c5248d7c`，058实现`e2de04a3fc15aba5a6034152b0021304fbebeacf`独立保留。20个自有交付文件严格UTF8/无NUL/roundtrip、暂存归属及CRLF兼容whitespace检查PASS；实现与独立归属交接分开，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b542-6334-7303-ac39-f47c7f462cd6`（Lumina batch 060 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后059才发送“开始接管”；060先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向059确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后059立即停止共享写入/构建/Git并归档，不等060完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。
+- 两个内部任务completed冻结，分别只新RichTextBoxTextTests.cs与TextModelTests.cs；主独占生产/必要内部连接、共享文档/集成/Git。Text无窗仅缓存/不通知，有窗逻辑LF读取与Unicode流、临时扩限后恢复配置MaxLength；SelectedText为GT_SELECTION/选区流，原始空值WM_CLEAR；TextLength强制Handle/GTL_NUMCHARS，SelectionLength有窗排EOF。静态Stdcall回调/每次cookie，SDK独立核Pack4（x64 EDITSTREAM20/GETTEXTEX28）。
+- 必要共享连接：Control既有父链Disposing查询仅改internal；TextBoxBase选择恢复按固定源移至CreateHandle收尾，并供Rich流恢复后消费。纯文重建保选择/Modified/限长，格式持久化仍待。未改Application/Masked生产、项目、固定Demo/Designer/resx。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510，最终64新增（27Text+37模型）与5,728全量0失败/跳过；首共享常量缺失编译失败与首61/64原JSON/TRX保留。两项新夹具修定位/错误fault寿命，真实Modified重建缺口修生产，原状态/异常硬要求不降；测试项目重建0错0警告。058旧测试明确保独立WM_SETTEXT native17反例，流路径恢复配置3。无系统剪贴板读写；WarningLevel=0不是分析告警清零。
+- 根路线图/执行、5控件与公共页/历史、验证/README实施列/tasks.csv已按实际范围同步；只新增002a/002b，002改部分，完整008/格式/RTF/专有通知/撤销重做/坐标/Masked仍待。根汇总停057的历史滞后已纠正，原ID/未完父项/1095类型61240成员行/分母保持，固定API刷新NOT_RUN。
+- 固定058完整Rich参考123535字节/SHA256`76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0`与053基类69799字节/SHA`b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63`独立重核；不依赖partial。主Cordonix PID62800/精确FILETIME134385142694639671只属059；自有调用有界/cleanup_complete=true，STA ExitThread→private visual-context，无临时/持久文档/独占服务，保留证据/bin/obj/共享缓存/MCP，不按名杀进程。
+- 下一沿Rich格式/RTF持久化、专有选择/坐标与MaskedTextProvider真实依赖继续，不以其余基类元数据阻塞派生，不重做033～059、不重评全项目、不建context/调度/报告框架。完整缩放/跨屏DPI/字体、反射父Form寿命/WM_NOTIFY、线程/模态、056正向点击/物理输入、Designer/绑定/资源/Native AOT运行/Linux/macOS/98%继续原任务。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立回读，官方Drawing/固定双目标静态Demo保持。
+- 持续授权、多互斥内部任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停止共享写入构建Git并归档保持，后来暂停停止优先；监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次058 实施与收尾（历史）
+
+- 根路线图、执行总览、5控件/公共页及历史、验证/README实施列/tasks.csv同步；ExportTasks与独立Python复核均446MD/2,183任务（2,133控件+50共享）/187实施行/整类型完成0/0错误。只新增RichTextBox-001a/007a，原ID快照对比全部保留、所有未完父项保持；独立TRX计数确认首94/96和最终96/96、5,664/5,664。
+
+- 058实现提交`e2de04a3fc15aba5a6034152b0021304fbebeacf`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0；实现前为`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`，057实现`b3f546b160ad86001e34228ee4b2322c79fe0da4`独立保留。19个交付文件严格UTF8/无NUL/roundtrip、暂存归属及CRLF兼容whitespace检查PASS；实现与独立归属交接分开，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b528-2104-7af2-85d2-abd9d2b7fe98`（Lumina batch 059 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后058才发送“开始接管”；059先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向058确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后058立即停止共享写入/构建/Git并归档，不等059完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项。
+- 两个互斥内部任务completed冻结：原生任务只新RichTextBoxNativeBackendTests.cs；默认任务只新RichTextBoxDefaultsTests.cs及NativeOptionsTests.cs。主独占RichTextBox生产/标准条枚举、共享文档/集成/Git；未改TextBoxBase/Control/interop/Application、Masked、既有测试、项目或Demo/Designer/resx。
+- Rich直接继承TextBoxBase，惰性从System32加载Msftedit并保留与superclass缓存同进程寿命引用，实际RICHEDIT50W原过程/特有消息独立核。默认100×96、AutoSize=false/Multiline=true/MaxLength=int.MaxValue；HideSelection移除独立存值。标准RichTextBoxScrollBars七值/请求/FixedSingle CLIENTEDGE、EM_EXLIMITTEXT、DetectUrls重建、AutoWordSelection单条OR2/XOR4及CHANGE/UPDATE掩码落地；完整RTF/格式/专有Text/通知不关闭。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510，测试夹具修正后项目重建0错/0警告；最终96新增（15原生+43默认+38选项）与5,664全量0失败/跳过。首构建消息常量uint/int错误及首94/96原JSON/TRX保留。两个失败独立RichEdit核实：WM_SETTEXT把限3扩到文本17，GETMODIFY=-1为真；只修新夹具、保原状态要求，生产未为失败改变。WarningLevel=0不是分析告警清零。
+- Rich Text仍继承Control.WindowText→SetWindowTextW，固定Text/StreamIn恢复MaxLength、逻辑长度/选择/坐标留002/008；原SelectionColor仅存值/完整RTF、格式、专有通知/Undo-Redo/格式重建、Masked直接层级/模型与全部设备/Designer/AOT/平台/98%仍待。下一沿这些真实模型依赖，不以其余基类元数据阻塞实际后端；不重做033～058、不重评全项目、不建context/调度框架。
+- 完整Rich参考123,535字节/SHA256`76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0`，标准条枚举1,394字节/SHA256`c55c741f94494285b2f709da98cbcff71718ed28f53ae3227a5f9b2d049316a3`；完整053基类/054 Control.proxy也重核。枚举下载直连超时后仅该请求代理成功，未改全局代理；首stdout截断不作完整参考。
+- 主Cordonix父PID47612/精确FILETIME134385117905504926独立核验，未复用057身份；有界调用cleanup_complete=true，STA保持ExitThread→private visual-context、不加outer cookie。无临时脚本/独占服务/持久workspace文档，保留证据/bin/obj/共享缓存/MCP，不按名杀进程。包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读；固定API刷新NOT_RUN，官方Drawing/固定双目标Demo与静态资源、原ID/未完父项及1,095类型/61,240成员行/分母保持。
+- 持续授权、多互斥内部任务一任务一负责人/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读准备/交接push核后才开始/明确确认/旧主立即停写构建Git并归档全部保持。后来暂停停止优先；监督NOT_FOUND、058绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次057 实施与收尾（历史）
+
+- 057实现提交`b3f546b160ad86001e34228ee4b2322c79fe0da4`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`。17个交付文件严格UTF8/无NUL/字节roundtrip、staged ownership与diff均PASS；实现与独立归属交接分别保留，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`（Lumina batch 058 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后057才发送“开始接管”；058先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向057确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后057立即停止共享写入/构建/Git并归档，不等058完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项。
+
+- 本批完成TextBoxBase-002d的TextLength有句柄直接读取原生长度/无句柄保留虚Text，以及003h默认事件/绑定、选区隐藏元数据、Multiline/ReadOnly分类与Paint隐藏事件转发。两个内部任务各只写自己的新测试，completed后冻结；主独占TextBoxBase共享生产、文档/集成/Git，不改Control/interop、派生生产、旧测试、项目或Demo/Designer/resx。
+- Release方案/固定Demo双目标首轮0错误/2既有NU1510，41新增（21长度/20元数据）与5,568全量首轮0失败/跳过，原JSON/TRX保留artifacts/compatibility-batch057。WarningLevel=0不是分析告警清零；包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读。普通EDIT长度/TypeDescriptor/Paint直接钩子测试不计RichEdit、掩码模型、真实绑定/Designer/可见绘制/设备/AOT/平台验收。
+- 只新增002d/003h；完整002/003/控件父项、DefaultCursor/ToString/Designer/editor等其余基类项保持部分。固定API刷新NOT_RUN，原ID/1,095类型/61,240成员行/分母不改；官方Drawing/固定双目标Demo/静态资源保持。下一优先核Rich/Masked直接继承所需专有默认、原生类/模型依赖，推进真实后端，不以元数据全集阻塞实际派生，不重做033～057、不重评全项目、不建context/调度框架。
+- 053完整TextBoxBase及054完整Control.proxy参考字节/hash独立重核；父Cordonix PID62700/精确FILETIME134385105242559543仅属057勿复用。外部调用cleanup_complete=true，两个内部任务无持久文档/临时/独占服务，STA仍ExitThread→private visual-context；保留证据/bin/obj/缓存/MCP，不按名杀进程。
+- 根路线图、执行总览、受影响5控件/公共页与历史、验证/索引同步；ExportTasks与独立Python复核均445MD/2,181任务（2,131控件+50共享）/187实施行/整类型完成0。003e当前旧构造点击待办改交叉引用003f，原055历史和正向门槛保持；只新增002d/003h、原ID和固定分母不改。
+- 056实现`0d66dbac48d0b3d10b7c55a03f816303f760dcde`与独立归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`独立保留；057已向056确认接管并实时核其归档。056原生命中均false的正向点击/物理输入门槛保留，不重做其算法或测试架构。
+- 持续授权、互斥任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核HEAD/tracking/实际远端三SHA、下一local先只读/交接核后开始/明确确认/旧主立即停写并归档全部保持。后来暂停停止优先；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次056 实施与收尾（历史）
+
+- 056实现提交`0d66dbac48d0b3d10b7c55a03f816303f760dcde`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`。实现与本独立归属交接分别保留，不以本地commit冒充交付。17个交付文件严格UTF8/无NUL/字节roundtrip、staged ownership及diff均通过。
+- 下一local只读接续聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`（Lumina batch 057 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后056才发送“开始接管”；057先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向056确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后056立即停止共享写入/构建/Git并归档，不等057完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先保持；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。
+
+- 已独立核交接`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`三SHA一致、main干净/+0/-0，向055明确确认实际接管并实时核055已归档。两个互斥任务completed冻结，各只新点击/成员元数据测试；主独占生产TextBoxBase/共享文档/集成/Git，无共享生产并发写入。
+- 只完成TextBoxBase-003f构造四位关闭/专用左键点击链和003g八项必要成员声明转发。左双击先私有置位再base.WndProc；OnMouseUp保留验证/原生命中、原参数及异常/清位顺序，通用Control finally清捕获/验证状态。Click/MouseClick原事件槽保持，隐藏图片/间距和DoubleBuffered只转基类，不新建公共名称。
+- Release方案/固定Demo双目标0错误/2既有NU1510，46新增（点击23/元数据23）与5,527全量首轮0失败/跳过，原JSON/TRX保留056目录；未改旧测试。两次WindowFromPoint均hit=False，**只验证负向路由，正向可见点击/双击与物理输入未验**。WarningLevel=0不表示分析告警清零；CI包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读。
+- 当前构造样式/八项元数据状态按真实代码更新，完整003/控件父项保留部分。固定API刷新NOT_RUN，原ID/1,095类型/61,240成员行/分母不改；Windows官方Drawing/固定双目标Demo/静态Designer/resx保持。其余元数据/ScaleControl/跨屏DPI/字体重缩放、真实Rich/Masked直接层级/专有默认/模型/后端、原反射父Form寿命、线程/模态及Designer/AOT/平台/98%仍待。
+- 下一核剩余基类元数据/默认和真实派生依赖，推进标准直接层级/真实模型后端；不重做033～056、不重评全项目、不建context/调度框架。持续授权、多互斥任务/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功push三SHA、先只读准备/交接核后开始/明确确认/旧主立即停写构建Git并归档保持，后来暂停停止优先。监督NOT_FOUND、056绑定NOT_DONE，不恢复或另建替代项。
+- 主Cordonix PID64700/精确FILETIME134385093238150529为本聊天独立身份；外部调用cleanup_complete=true，两任务无持久文档/临时/独占服务，新STA保持ExitThread→private visual-context。证据/bin/obj/共享缓存/MCP保留，不按名杀进程。
+- 根路线图、执行总览、受影响控件/公共页与历史、验证/索引已同步；ExportTasks与独立Python复核均444MD/2,179任务（2,129控件+50共享）/187实施行/整类型完成0，原固定类型/成员分母保持。每批实现与独立归属交接必须分别成功commit/push核三SHA，不以本地commit计交付。
+
+## 批次055 实施与收尾（历史）
+
+- 055实现提交`11d008f824ad257c872a8edde0073f5822ddfa03`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`835a3e8e522228a07f7cc0447d6564c39336b450`。实现与本独立归属交接分别保留，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b4dc-aa38-74e1-bbcd-9bdf038298f1`（Lumina batch 056 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后055才发送“开始接管”；056先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向055确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后055立即停止共享写入/构建/Git并归档，不等056完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先全部保持；监督NOT_FOUND、056绑定NOT_DONE，不恢复或新建替代项。
+
+- 根路线图、执行总览、受影响控件/公共页/历史、索引/验证与本交接已同步；ExportTasks与独立verify均443MD/2,177任务/187实施行/整类型完成0、0错误，20个交付文件严格UTF8/无NUL/字节roundtrip通过。实现和本批独立归属交接须分别成功commit/push并核HEAD/tracking/实际远端三SHA后才算交付。
+
+- 本批限定TextBox-004b：先扣滚动条尺寸再经基类首选测量后补回，水平计量不受TextAlign.Left创建门禁，SM2/3仅线程PMv2按内部DPI读取；固定无句柄RecreateHandle缓存边界保留。TextBoxBase-003e在base.CreateParams前设置ApplyThemingImplicitly，多行不再强加ES_WANTRETURN；保留legacy Style/ExStyle，不扩展完整主题或点击路径。
+- Release方案/固定Demo双目标0错/2既有NU1510，68新增（37滚动条/31创建参数）及5,481全量0失败/跳过；WarningLevel=0不是分析告警清零。首67/68的一例新夹具误判ReadOnly=false后仍未建窗，固定IME→PasswordChar getter建窗链已核，现分别断言前无窗/后有窗；原样式/参数硬期望保持、生产未为失败改变。原JSON/TRX与first-failure-analysis保留，最终tests-new-final/tests-full为回执。旧四个PreferredSize轨迹仅补派生两次虚Multiline前导。
+- 两任务completed冻结，主独占生产/interop、共享文档/集成/Git。主Cordonix父PID52808/精确FILETIME134385078443031695独立核验；构建/测试有界调用cleanup_complete=true，无临时脚本/独占服务/持久文档，DPI context恢复及STA ExitThread→private visual-context保持。证据/bin/obj/共享缓存/MCP保留。
+- 受影响任务/历史按真实代码整理，完整父项、原ID与固定1,095类型/61,240成员行/分母不改；API刷新及包/Notepad发布smoke本地NOT_RUN，hosted CI需独立读回。完整ScaleControl/跨屏DPI/字体重缩放、其余构造点击样式与点击消息/元数据、真实Rich/Masked直接层级/模型/后端、Designer/AOT/物理输入/平台/98%仍待。下一优先构造点击样式/点击链的真实依赖与必要元数据，再按依赖推进派生，不重做033～055、不重评全项目、不建context/调度框架。
+- 持续授权、多互斥任务一任务一负责人/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功push核三SHA、下一local先只读准备/交接push核后开始/明确确认/旧主立即停止共享写入构建Git并归档保持。后来暂停停止优先；监督NOT_FOUND、055绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次054 实施与收尾（历史）
+
+- 054实现提交`2234352906131df9edca2784ad226d11099fb774`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`43ce1bd82369650abb1257f599cb9f257bdc4d6a`。实现与本独立归属交接分别保留，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b4c6-1525-7820-a4e8-b2e43893e2a9`（Lumina batch 055 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后054才发送“开始接管”；055先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向054确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后054立即停止共享写入/构建/Git并归档，不等055完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先全部保持；监督NOT_FOUND、055绑定NOT_DONE，不恢复或新建替代项。
+
+- 已独立核交接`43ce1bd82369650abb1257f599cb9f257bdc4d6a`三SHA/干净树，向053明确确认实际接管并实时核其归档。三个互斥任务completed冻结，主复核整合并补必要父布局/元数据回归，独占共享生产/interop、文档/集成/Git。
+- 只完成TextBoxBase-007c标准PreferredHeight/DefaultSize与必要独立控件DPI度量，007d独立AutoSize默认true/请求高度及SetBoundsCore/Font/Padding/Multiline/创建调整，007e首选缓存启用/真实失效。取消旧24/48原生下限；Table/Flow改读内部LayoutAutoSize，通用布局状态仍false。完整缩放/跨屏DPI消息与字体重缩放、其余元数据/样式、TextBox滚动条首选测量及Rich/Masked真实层级/模型/后端仍待。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510；84新增（33度量+30生命周期+21缓存/消费者）和5,413全量0失败/跳过，最终JSON/TRX带metadata-final后缀。首81新增通过、首全量6失败原回执完整：真实Table宽80→4消费者缺口已修，Flow同源消费同步修；其余5例明确固定夹具AutoSize=false，原尺寸/选择/缓存/坐标硬期望不改。中间83/5,412通过后固定源码复核纠正DeviceDpi EditorBrowsable=Always并补一例，最终重建/重跑84/5,413通过，见[054](054.md)。
+- 现有CI还包括NuGet smoke pack/Notepad smoke publish，本批本地NOT_RUN，托管CI需独立回读；不以实施编译/测试冒充包/发布smoke或AOT运行验收。
+- 固定Control完整参考`artifacts/compatibility-batch054/metrics-reference/Control.v10.0.11.proxy.cs`为467,280字节/SHA256 42654f00b1e85bd96b44ac64df36c8728e5db6928510384d9bd22567f895f838；同目录无proxy后缀Control文件仅11,024字节下载超时partial。SystemInformation完整31,529字节/SHA256 d4c6a9fcf7f695c80c41af7965cdd4b6d41c8fb979b18e4ebf1e48f9855996b2；helper404、053目录tree部分响应均仅失败证据。固定API刷新NOT_RUN，原1,095类型/61,240成员行/ID/分母保持。
+- 主Cordonix父PID60124/精确FILETIME134385053257876636独立核验；自有有界调用cleanup_complete=true，三任务无持久文档/临时脚本/独占服务。线程DPI context恢复、STA ExitThread→private visual-context保持；证据/reference/JSON/TRX/bin/obj/共享缓存/MCP保留，不按名杀。Windows官方Drawing/固定双目标Demo/静态Designer/resx保持；物理/Designer/AOT/平台/98%不因程序回归关闭。
+- 受影响任务页/历史/共享文档已同步，纠正README正文停051的历史滞后，既有工具重生成实施列/tasks.csv并复核；442MD/2,175任务/187实施行、整类型完成0。未完父项不关闭、不重置ID/删除待办/缩小分母。下一按真实依赖继续剩余尺寸/缩放/样式与TextBox滚动条首选测量，再按依赖推进真实派生后端；不重做033～054、不重评全项目或建context/调度框架。
+- 持续授权、实现与独立归属交接分别成功push三SHA、下一local先只读准备/独立交接核验后开始/明确确认/旧主立即停止写入构建Git并归档规则保持。后来暂停停止优先；监督NOT_FOUND、054绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次053 实施与收尾（历史）
+
+- 053实现提交`0e6bfa2dba773c7874feefe657d5409808e63510`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`525c3976c6dfc56405234a75d5a39991a3a33e3b`。实现与本独立归属交接分别保留，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b49f-a8dc-7f32-87bc-f1dd796b03d6`（Lumina batch 054 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后053才发送“开始接管”；054完成必要只读准备后核交接SHA/HANDOFF/干净树，并明确向053确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后053立即停止共享写入/构建/Git并归档，不等054完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先保持；监督NOT_FOUND、054绑定NOT_DONE，不恢复或新建替代项。
+
+- 已实际接管并向052确认独立交接`525c3976c6dfc56405234a75d5a39991a3a33e3b`三SHA/干净树；实时核052已归档。三个互斥任务completed冻结，主串行整合共享生产、文档/集成/Git。只完成CNS-006a六个标准无DC测量重载与必要TextFormatFlags/Padding.Size/初始DPI依赖、TextBoxBase-007b首选尺寸计算和008c普通EDIT延期滚动。
+- 首构建缺Padding.Size双目标失败后补标准getter，最终Release方案/固定Demo双目标0错/2既有NU1510；新增首104/105及第二107/108的夹具/诊断失败原JSON/TRX保留。独立EDIT隐藏首行0、可见未聚焦/聚焦均37，Lumina有效顶层宿主/真实focus下37；原滚动/编辑状态/通知硬期望保持，生产未为测试失败改变。最终108/108（62测量+26首选+20滚动）、5,329/5,329全量，0失败/跳过，见[053](053.md)。
+- 完整AutoSize独立状态/默认、PreferredHeight/DefaultSize、首选缓存启用、控件DPI边框与请求高度/SetBoundsCore/Font/Multiline生命周期未完成。核心计算完成不关闭007/008；旧24/48高度保持，IDeviceContext/DrawText、RichEdit COM滚动、真实Rich/Masked层级/模型/后端及所有平台父项仍待。下一沿这些真实尺寸依赖继续，不重做033～053、不重评全项目、不建context/调度框架。
+- 固定参考TextBoxBase从052复制独立核69,799字节/SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63；七份测量源码完整，tree响应下载超时的partial仅保留失败证据。固定API刷新NOT_RUN，原ID/1,095类型/61,240成员行/固定分母不改，Windows官方Drawing/固定Demo双目标/静态Designer保持。物理输入/可见命中/Designer/AOT/平台/98%继续NOT_RUN或UNKNOWN。
+- 主Cordonix父PID65304/精确FILETIME134385029437563647独立核验；自有有界调用cleanup_complete=true，三任务无持久文档/临时/独占服务；证据/reference/JSON/TRX/bin/obj/共享缓存/MCP保留，不按名杀。新STA仍OLE ExitThread→既有private visual-context，不加outer cookie。
+- README实施列/tasks.csv已由既有导出工具生成；工具补识别CNS-006a字母子范围，原ID/未完项保留。441MD/2,172任务/187实施行、整类型完成0，结构一致；CNS-006命名空间旧描述已纠正，完整父项仍部分。
+- 持续授权/实现与独立交接分别成功push三SHA/新local只读准备/交接核验后开始/明确确认/旧主立即停写构建Git并归档/后来暂停停止优先全部保持。监督NOT_FOUND、053绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次052 实施与收尾（历史）
+
+- 已独立核交接`3b12d48dfda408e6f5c7178ee30f8a56dc3f6794`三SHA一致、main干净/+0/-0，向051明确确认实际接管并实时核其归档。两个互斥任务completed冻结：008a仅三个行查询和新测试，008b仅新位置查询测试/精确补丁；主在基类冻结后串行整合位置方法，独占interop/共享文档/集成/Git，无同源生产并发写入。
+- 下一local只读接续聊天`01a1b47b-4e92-7fe0-9a15-6c201ae4e615`（Lumina batch 053 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后052才发送“开始接管”；053收到后先完成必要只读准备，再核独立交接SHA/HANDOFF/干净树，并明确向052确认实际接管，确认前只读、不建内部任务。确认后052立即停止共享写入/构建/Git并归档，不等053完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、053绑定NOT_DONE，不恢复或另建替代项。
+- 仅完成TextBoxBase-008a/008b六个标准行/字符位置查询。标准virtual/nonvirtual、负行号异常/原生-1哨兵、Handle必要创建、Text快照→虚索引、消息后Text长度夹值、合法位置索引才建窗及低高16位规则保留。真实EDIT的UTF-16/CRLF/尾空行/软折行/字符回读及文本/选区/Modified/Undo/通知保持通过，没有手工补事件或系统剪贴板/菜单访问。
+- Release方案/固定Demo双目标0错/2既有NU1510；新增首跑93/102九个夹具轨迹错误：初始化Text setter额外读虚getter，快照变更回调setter也合法读取。仅清初始化轨迹，并在回调用例保留text/index/text、原字符c/变更后x/异常硬预期，生产未为此改。测试项目重建0错/0警告，最终102/102（53行+49位置）、全量5,221/5,221，0失败/跳过；首JSON/TRX、first-failure-analysis和最终回执保留052目录。WarningLevel=0不表示分析告警清零。
+- 固定TextBoxBase v10.0.11为69,799字节/SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63，从051复制重核。测量源码审计确认PreferredHeight依赖控件DPI边框度量，GetPreferredSize依赖标准TextRenderer，AutoSize依赖独立状态/请求高度/SetBoundsCore/Font/Multiline生命周期；没有用局部默认/桩关闭完整尺寸。完整003/007/008及所有派生父项保持部分，固定API刷新NOT_RUN，原ID/1,095类型/61,240成员行和分母不改。
+- 下一继续真实测量/default依赖与ScrollToCaret未建窗延期，再恢复Rich/Masked标准直接继承和真实后端。完整剪贴板/菜单、原反射父Form寿命/WM_NOTIFY、StringArrayEditor/Designer、ES_WANTRETURN/24/48、RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及设备/AOT/Linux/macOS/98%继续原任务。不重复033～052、不重评全项目、不建context或调度框架。
+- 主Cordonix父PID66016/精确FILETIME134385012297562012独立核验，不复用051的14156。两个任务无临时/持久workspace文档/独占服务，自有外部调用cleanup_complete=true；证据/reference/JSON/TRX/bin/obj和共享缓存/MCP保留，不按名杀。新STA清理顺序OLE ExitThread→既有private visual-context，不加outer cookie；046已有outer cookie最后逆序。
+- 持续授权逐批实施、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核HEAD/tracking/实际远端三SHA，新local先只读准备、交接push核后开始并明确确认，旧主立即停共享写入/构建/Git并归档，不等下一批完成。后来暂停停止优先。监督NOT_FOUND、052绑定NOT_DONE，不恢复或新建替代项；Windows两个目标官方Drawing、固定Demo双目标/静态Designer/resx保持。
+
+## 批次051 实施与收尾（历史）
+
+- 051实现提交`845a386a2d65c4e7c1d31658fee146abbf8c7a36`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；26拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch051/implementation-push.json。
+- 下一local只读接续聊天`01a1b461-26a9-7d22-a676-820c668625c9`（Lumina batch 052 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后051才发送“开始接管”；052收到后先完成必要只读准备，再核独立交接SHA/HANDOFF/干净树，并明确向051确认实际接管，确认前只读、不建内部任务。确认后051立即停止共享写入/构建/Git并归档，不等052完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、052绑定NOT_DONE，不恢复或另建替代项。
+
+- 已独立核交接`7d7b9bb6f64346f1478439a7af848ee469fee627`三SHA一致、main干净/+0/-0，明确向050确认接管并实时核其归档。三个互斥内部任务全部completed冻结：005f独占新ClientUtils/词边界测试，009a仅新命令测试，Control-14c仅新内部更新测试；主独占TextBoxBase/Control/Win32、文档/集成/Git，无同源生产并发写入。
+- 仅完成005f固定词边界辅助、009a启用Ctrl+Back/Ctrl+Shift+Back词删除及Control-14c必要内部redraw。固定word为字母/数字/NonSpacingMark，连接标点为nonword、UTF-16 surrogate停止反向扫描；不加参数归一化。命令先父路由及原050守卫，有选区内部替换empty/false；无选区非起点按边界选择、Begin/EndUpdate后内部可撤销替换。父返回true仍执行并保消息修改，不整串Text重写/手工通知。内部redraw用short计数、无窗Begin不积累、首0/末1、可选Invalidate自身，无配对End false；没有新公开更新模型。
+- 首轮Release方案/固定Demo双目标0错/2既有NU1510。新增首跑85/88三处夹具错误保留：无窗选择经虚TextLength读取Text，两处起点和一处有限重入轨迹原预期遗漏；按固定源码修夹具而不改生产。直接boundary的Text异常改已有EDIT隔离调用点。测试项目重建0错，最终新增88/88（52+26+10）及全量5,119/5,119，0失败/跳过。JSON/TRX/first-failure-analysis保留051目录，WarningLevel=0不表示分析告警清零。
+- 新测试没有系统剪贴板/菜单访问；内部redraw测试截获消息，命令测试经真实EDIT可撤销删除，但可见绘制/物理输入仍未验。选择setter异常按固定源码没有finally恢复redraw，不称完整异常事务。TextBox/Rich/Masked/Form/Application/Demo源码no-op，错误层级间接消费不计派生专有支持。完整003/005/009/Control14及所有父项保持部分，不推导98%。
+- TextBoxBase/Control固定源码由050/049复制重核；新ClientUtils v10.0.11为1,708字节/SHA256 8939dfdb58bf6f09f34e12e65f57bae8136eeb91771b9309b66d65041f3f5b28，直连超时和临时7890代理成功回执保留。固定API库存刷新NOT_RUN，1,095类型/61,240成员行/任务ID和分母不改。下一继续完整测量/default及必要编辑辅助，再恢复Rich/Masked标准直接层级和真实后端；实际剪贴板/菜单、原反射父Form寿命/WM_NOTIFY、StringArrayEditor/Designer、ES_WANTRETURN/24/48、RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及各平台门禁继续原任务。不重复033～051、不重评全项目、不建context或调度框架。
+- 主Cordonix父PID14156/精确FILETIME134384964624244220为本聊天独立观察，不能复用050身份。PS7.6.9已核；三个任务无临时/持久workspace文档/独占服务，证据/reference/JSON/TRX/bin/obj保留，不按名杀/清缓存或MCP。新STA finally顺序OLE ExitThread→既有private visual-context，无outer cookie；046旧outer cookie最后逆序。资源/编码/导出回执另存，名称快照只限观察范围。
+- 持续授权逐批实施、多个互斥内部任务一人一任务/主独占共享接口interop文档集成Git；实现和独立归属交接分别成功commit/push并核HEAD/tracking/实际远端三SHA，新local先只读准备、交接成功push后开始/明确确认，旧主立即停共享写入/构建/Git并归档，不等下一批完成；后来暂停停止优先。监督luminaforms-30保持NOT_FOUND、051绑定NOT_DONE，不恢复或另建替代项；Windows两个目标官方Drawing、固定Demo双目标与静态Designer/resx保持。
+
+- 既有Validate-Roadmap.ps1 -ExportTasks实际PASS：439份Markdown、2,167任务、187实施索引行、0结构错误，整类型代码完成0；README实施列/tasks.csv工具生成，固定API库存和Demo源码保持。最终编码、无导出复核、diff及资源回执另存051目录。
+- 26个拥有路径UTF8严格/无NUL/字节往返PASS，无导出复核同统计PASS，固定库存/Demo与未触及派生生产diff为空。最终dotnet名称快照2项属于其他SonnetDB格式检查，保留未动，不称全机零进程；主有界构建/测试/工具调用cleanup_complete=true，无持久workspace文档/临时/独占服务。三个子任务只读搜索输出上限已定点补读，不计构建/测试结果。
+
+## 批次050 实施与收尾（历史）
+
+- 050实现提交`ba59726ad90f6633fa3941e5c8c4ddcbd5e73d20`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；21拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch050/implementation-push.json。
+- 下一local只读接续聊天`01a1b418-68f4-71f3-92ba-e43b81dcb719`（Lumina batch 051 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后050才发送“开始接管”；051收到后先完成必要只读准备，再重核交接SHA/HANDOFF/干净树，并明确向050确认实际接管，确认前只读、不建内部任务。确认后050立即停止共享写入/构建/Git并归档，不等051完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、051绑定NOT_DONE，不恢复可能用户删除项。
+
+- 050已重核独立归属交接`27ab70adf17e20ff232bfff1bbc7fa9c3b16cd03`三SHA一致、main干净/+0/-0，向049明确确认接管并实时核其归档。两个互斥内部任务均completed冻结：剪贴板任务只写基类Copy/Cut/Paste三个成员和新测试；快捷键任务只写新测试，主待基类冻结后串行整合，独占interop/共享文档/集成/Git，无同源生产并发写入。
+- 仅关闭TextBoxBase-005e命令入口与003d快捷键禁用/只读对齐/系统菜单抑制。Copy/Cut/Paste非virtual、经Handle必要建窗、零参数发送对应消息并忽略返回值，不读写虚Text/SelectedText等。ShortcutsEnabled标准virtual/true默认，每次setter包括同值初始化固定14项表，ProcessCmdKey先父路由后虚getter，精确表及附加Shift、不扩展Alt/CtrlI；私有只读态仅拦CtrlL/R/E/J。启用时Ctrl+Backspace词删除未实现，保留005/009完整任务。
+- 新增77（命令15/快捷键62）/77、完整5,031/5,031，0失败/跳过；Release方案/固定Demo双目标0错误/2既有NU1510，首跑通过。JSON为050/release-build.json、tests-new.json、tests-full.json，TRX保留tests目录；WarningLevel=0不表示分析告警清零。命令消息全部在测试WndProc截获，不读取/写入/备份恢复用户系统剪贴板。真实EDIT的上下文默认过程也被夹具截断；三个custom菜单场景仅owner0受限路由，不称实际显示/交互验收。
+- 固定TextBoxBase 69,799字节/SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63从049复制重核一致，Context7 main资料不替代固定基线。原1,095类型/61,240成员行、任务ID和固定分母保持，引用库存刷新NOT_RUN。四控件/API补注、ROADMAP/execution/foundations/CHANGELOG/validation/batch同步，README实施列/tasks.csv由既有工具生成并校验；完整003/005/009及所有父项保持部分。
+- 下一继续启用时Ctrl+Backspace词删除、完整测量/default及必要编辑辅助，再恢复Rich/Masked标准直接层级和真实后端。实际剪贴板数据/格式/限制及custom菜单显示仍待；原反射父Form寿命/WM_NOTIFY、StringArrayEditor/Designer、ES_WANTRETURN/24/48、RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及API引用包/AOT/设备/Linux/macOS/98%继续原任务。不重复033～050、不重评全项目、不建context或调度框架。
+- 既有Validate-Roadmap.ps1 -ExportTasks实际PASS：438份Markdown、2,164任务、187实施索引行、0结构错误，整类型代码完成仍0；README实施列/tasks.csv工具生成。最终编码/无导出校验/diff及资源回执在050目录，固定成员库存和Demo源码不改。
+- 21个拥有路径UTF8严格/无NUL/字节往返及diff PASS，无导出复核同统计PASS；只读diff查看一次output_limit/exit=null已保留，缩为-U0后完成审阅，不记为构建/测试结果。最终dotnet名称快照0项/inaccessible0，只限名称观察，不称全机零进程。
+- 主Cordonix父PID53352/精确创建FILETIME134384943104118700已独立核，PS7.6.9用固定路径保存-File核验；两个任务无临时/持久workspace文档/独占服务。主无workspace_open/edit/commit，自有外部调用cleanup_complete=true，证据/reference/JSON/TRX/bin/obj保留，不按名杀/清共享缓存或MCP。进程名称快照只限观察范围，资源最终回执另记。STA finally OLE ExitThread后既有private visual-context清理，无outer cookie；046旧outer cookie最后逆序。
+- 持续授权逐批实施、多个互斥内部任务一人一任务/主独占共享接口interop文档集成Git；实现和独立归属交接分别成功commit/push并核三SHA，新local先只读准备、交接成功push后开始/明确确认实际接管，旧主立即停止共享写入/构建/Git并归档，不等下一批完成；后来暂停停止优先。监督NOT_FOUND、050绑定NOT_DONE不恢复，Windows两目标官方Drawing、固定Demo双目标与静态Designer/resx保持。
+
+## 批次049 实施与收尾（历史）
+
+- 049实现提交`94303a2e7a7708facd81020418fb1d1175162649`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；27拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch049/implementation-push.json。
+- 下一local只读接续聊天`01a1b3f7-925d-75a1-83c8-05623abd944f`（Lumina batch 050 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后049才发送“开始接管”；050收到后重新核交接SHA/HANDOFF/干净树，并明确向049确认实际接管，确认前只读、不建内部任务。确认后049立即停止共享写入/构建/Git并归档，不等050完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档与后来暂停停止优先全部保持；监督NOT_FOUND、050绑定NOT_DONE，不恢复可能用户删除项。
+
+- 049已重新核独立归属交接`38bdf2ec1d601899b61ba53d13a04aae8be682ed`三SHA一致、main干净/+0/-0，明确向048确认接管并实时核其归档；两个互斥内部任务均completed冻结。重挂任务只写新ControlReparentedEditCommandTests，Clear任务独占基类Clear成员/新TextBoxClearTests；主独占Control/Form生产连接、旧停车断言必要纠正、文档/集成/Git，无同源生产并发写入。
+- 只关闭Control-17e与TextBoxBase-005d。独立原生EDIT证明SetParent后EN_UPDATE/EN_CHANGE仍投创建父；固定Control.ReflectParent/ParkingWindow反射计数闭环。自有停车窗仅在确为当前原生句柄创建通知父时跨重挂保留，原句柄销毁/外部销毁/重建即回收；回调校验映射及自有归属。Form非零lParam按来源HWND反射，避免旧owner字典/ID碰撞，零lParam菜单/既有命令保留。Clear按标准public nonvirtual直接虚Text=null，不预读getter，原异常/重入保持。
+- 既有路线图工具导出PASS：437份Markdown、2,162任务、187实施索引行、0结构错误，整类型代码完成仍0；README实施列/tasks.csv由工具生成，索引总览停在046的历史滞后已纠正。27拥有路径UTF8严格/无NUL/字节往返与diff检查通过；最终编码/无导出校验另有回执。最终dotnet名称快照2项均为其他SonnetDB格式检查，保留未动，不称全机零进程，见049/resources.json。
+- 首跑13例11通过，独立原生目的地与Clear10通过，两个重挂通知用例失败保留049/tests-before-reparent-fix.json及TRX。修复后新增18（命令8/Clear10）与旧停车5/行为3组合26/26，完整4,954/4,954，0失败/跳过；Release方案/固定Demo双目标0错误/2既有NU1510。WarningLevel=0不表示分析告警清零。048“重挂即销毁停车窗”的原测试断言按固定反射寿命纠正，旧TextChanged=2硬期望未改；048全部失败/诊断/最终证据保留。
+- 新固定Control.v10.0.11.cs 467280字节/SHA256 42654f00b1e85bd96b44ac64df36c8728e5db6928510384d9bd22567f895f838，直连reset后仅该请求7890代理成功，回执保留；固定TextBoxBase/ParkingWindow复制hash一致，Context7 main资料不替代固定基线。原ID/1,095类型/61,240成员行与固定分母保持。
+- 下一真实依赖继续Copy/Cut/Paste、ShortcutsEnabled、完整测量/default及必要编辑辅助，再恢复Rich/Masked标准直接层级/真实后端。原反射父Form销毁/重建的完整关系、WM_NOTIFY/完整反射继续Control-17；StringArrayEditor/Designer、ES_WANTRETURN/24/48、RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及固定API引用包/AOT/设备/Linux/macOS/98%继续原任务。不重复033～049、不重评全项目、不新建context或调度框架。
+- 主Cordonix父PID51812/精确创建FILETIME134384916114242996已独立核，不复用048身份；PS7.6.9由固定路径保存的-File前置核PSVersionTable。全部自有有界外部调用cleanup_complete=true，两任务无临时/持久workspace文档/独占服务。首次dotnet名称快照两项均属其他SonnetDB格式检查，保留未动；最终快照收尾另记，不称全机零进程。证据/reference/JSON/TRX/bin/obj保留，不按名杀、不清共享缓存/MCP。新STA finally OLE ExitThread后既有private visual-context清理，无outer cookie；046旧outer cookie仍须最后逆序。
+- 持续授权、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备/交接成功push后开始/明确确认/旧主立即停止共享操作归档，不等下一批完成；后来暂停停止优先。监督NOT_FOUND、049绑定NOT_DONE，不恢复。Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx保持。
+
+## 批次048 实施与收尾（历史）
+
+- 048实现提交`c896813a2092995d9416111fb443f46e776807ee`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；25拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch048/implementation-push.json。
+- 下一local只读接续聊天`01a1b3ce-63d6-7b41-83ea-7d70ac57424e`（Lumina batch 049 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后048才发送“开始接管”；049收到后重新核交接SHA/HANDOFF/干净树，并明确向048确认实际接管，确认前只读、不建内部任务。确认后048立即停止共享写入/构建/Git并归档，不等049完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档与后来暂停停止优先全部保持；监督NOT_FOUND、049绑定NOT_DONE，不恢复可能用户删除项。
+
+- 048已重核独立归属交接`32b9ffffdce7b2e421ec84bfa062201f9415c23e`三SHA一致、main干净/+0/-0，向047明确确认实际接管并实时核其归档。048为唯一编码主；AppendText任务独占对应基类成员/新测试，Undo任务仅新测试/精确补丁，主等基类冻结后串行整合并独占interop/停车回调/文档/集成/Git。两个任务均completed冻结，无同源生产并发写入。
+- 本批只关闭TextBoxBase-005b标准AppendText、005c公开CanUndo/Undo/ClearUndo及必要Control-17d停车期间WM_COMMAND连接。AppendText空值直接返回，经GetEndPosition/SelectInternal和虚SelectedText复用047替换，零尺寸finally恢复选区；参数名value对齐text，旧value命名实参需迁移。CanUndo不建窗查询，Undo必要建窗，ClearUndo无窗不操作。原旧选择算法、24/48高度及047替换不改。
+- 停车窗由裸STATIC改用既有NativeWindowClass静态回调，只将实际子HWND的WM_COMMAND交既有HandleCommand，异常不跨native边界；停车窗不公开Control映射，原归属/释放保持。未挂父TextBox旧TextChanged=2断言恢复。TextBox/Rich/Masked/Form/Application/固定Demo源码no-op，Rich/Masked不计专有支持。
+- 最终Release方案/固定Demo双目标PASS，0错/2既有NU1510；新增43（Append22/Undo16/停车5）与旧行为3组合46/46，完整4,936/4,936，0失败/跳过。最终JSON为048/release-build-final.json、tests-new-scoped-verified.json、tests-full-final.json，对应TRX保留；WarningLevel=0不表示分析告警清零。
+- 原失败全保留：首新增37/38误期待空缓冲EM_UNDO返回0，独立同配置EDIT与Lumina分别硬断言1及文本/选区/CanUndo0/Modified0后通过，生产未为夹具改。首全量4,930/4,931暴露裸停车窗吞命令并修复。停车45/46先误用隐藏Form.Handle，改Show/CreateControl后又暴露重挂后的真实命令缺口；两次有界诊断证实父映射、同HWND、停车窗销毁和native ID1001正确，但Form/child均无后续命令，原因未闭环，留Control-17/TextBoxBase-006。最终停车5例只证明停车期间通知与重挂状态/释放，不能称重挂后编辑兼容。一次v:normal输出上限中止也保留，改v:q后通过最终检查。
+- 下一真实依赖先核停车转Form后的EDIT命令交付，再继续Copy/Cut/Paste、Clear完整虚调用、ShortcutsEnabled与测量/default，再恢复Rich/Masked直接层级/真实后端。StringArrayEditor/Designer、ES_WANTRETURN/24/48、完整RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及固定API引用包/AOT/设备/Linux/macOS/98%继续原任务。不重评全项目、不新建context或调度框架、不重复033～048。
+- 固定TextBoxBase69799字节/b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63重核复制；补固定Application.ParkingWindow5214字节/ab4f05f34e6c111eae03004848b98f873a96f5692e46b4f64f4f45b4c3bf6968。Context7不相关main/.NET11资料不代替固定源码。原ID/1,095类型/61,240成员行与固定分母保持，完整父项不关闭。
+- 既有路线图工具导出PASS：436份Markdown、2,160任务、187实施索引行、0结构错误，整类型代码完成0；README实施列/tasks.csv均由工具生成。最终dotnet名称快照0项/inaccessible0，只是该名称观察，不称全机零进程。
+- 25拥有路径UTF8严格解码/无NUL/字节往返与diff检查PASS，固定库存成员行未手改；失败/诊断与最终证据均保留048目录。
+- 主Cordonix父PID41588/精确创建FILETIME134384866751154767已核，不复用047身份；所有自有有界调用cleanup_complete=true，两任务无临时/持久workspace文档/独占服务。证据/bin/obj保留，不按名杀、不清共享缓存/MCP。新STA finally OLE ExitThread后既有private visual-context清理，无outer cookie，046旧outer cookie仍须最后逆序。
+- 持续授权、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备/交接成功push后开始/明确确认/旧主立即停止共享操作归档，不等下一批完成；后来暂停停止优先。监督NOT_FOUND、048绑定NOT_DONE，不恢复。Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx保持。
+
+## 批次047 实施与收尾（历史）
+
+- 047实现提交`c8f1ca67268b1974370eb3e92c6bbb78372ad9dc`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；22拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际命令回执保留artifacts/compatibility-batch047/implementation-push.json。
+- 下一local只读接续聊天`01a1b383-1005-7ef0-8c42-c926057b7d4c`（Lumina batch 048 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后047才发送“开始接管”；048收到后重新核交接SHA/HANDOFF/干净树，并明确向047确认实际接管，确认前只读、不建内部任务。确认后047立即停止共享写入/构建/Git并归档，不等048完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、048绑定NOT_DONE，不恢复可能用户删除项。
+- 实现收尾时dotnet名称快照2项均为其他SonnetDB任务，保留未动；创建048前最新快照0项/inaccessible0，只限该名称观察，不称全机零进程。资源最终回执在047/resources.json；新接续不得复用本主59772/134384837103585010身份。
+
+- 047已核独立归属交接`8768c3b72a530a49d4880577cea3d10f24d73b22`三SHA一致/main干净/+0/-0，向046明确确认实际接管并实时核其已归档；047为唯一编码主。两个互斥内部任务completed冻结：Lines独占基类Lines/新测试，SelectedText只写新测试和提供精确补丁，主等Lines冻结后整合SelectedText及必要MaxLength，主独占共享interop/文档/集成/Git。
+- 本批只关闭TextBoxBase-002b/002c/003c：SelectedText原生替换及clearUndo分支、Lines空值/CR/LF/CRLF、必要MaxLength默认32767/校验/创建与运行期输入限制。无窗Select(5,-2)的Substring长度异常按固定源码保留；程序Text/SelectedText可超过限制，后续用户输入/Undo仍受恢复后的限制。
+- 047既有路线图工具导出PASS：435份Markdown、2,157任务、187实施索引行、0结构错误，整类型代码完成仍0；22拥有路径UTF8严格/无NUL/字节往返及diff PASS。末次dotnet名称快照2项均属另一SonnetDB格式检查，保留未动，不称全机零进程。
+- 两次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增65/65（SelectedText23、Lines26、MaxLength16），最终全量4,893/4,893，0失败/跳过。首次62/65的两处AllowNull反射位置及Undo错误期望原JSON/TRX保留；按setter value参数核空值元数据，同配置独立EDIT与Lumina硬断言Undo=abd后比较，生产未为夹具改变。WarningLevel=0不表示分析告警清零。
+- 固定TextBoxBase 69,799字节SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63已独立核并复制047/reference；Context7无匹配不替代固定源码，引用库存刷新NOT_RUN。原ID/1,095类型/61,240成员行及固定分母保持；完整父项保持部分，TextBox-009按真实继承从全待办改部分，不重复计数。
+- 下一依赖继续AppendText空值/选择/撤销、公开CanUndo/Undo/ClearUndo/剪贴板及完整测量/default，再恢复Rich/Masked标准直接继承和真实后端；StringArrayEditor/Designer、ES_WANTRETURN/24/48、运行时RTL/镜像、模态/OLE宿主context/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及固定引用包/AOT/设备/Linux/macOS/98%继续原任务。不重复033～047、不重评全项目、不新建context或调度框架。
+- 所有自有有界Cordonix调用cleanup_complete=true，两个任务无临时文件/持久workspace文档/独占服务；主无workspace_open/edit/commit，当前父PID59772/精确创建FILETIME134384837103585010已独立核，不复用046的60188。新STA finally按OLE ExitThread→既有private visual-context cleanup，没有outer cookie；046已有null-context夹具的outer cookie必须最后逆序退出，产品ExitThread完整context仍待。证据/bin/obj保留。
+- 持续授权、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功commit/push并核三SHA、新local先只读准备/交接成功push后开始/明确接管确认/旧主立即停止共享操作归档、不等下一批完成，后来暂停停止优先全部保持。监督NOT_FOUND、047绑定NOT_DONE，不恢复；Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx保持。
+
+## 批次046 实施与收尾（历史）
+
+- 046实现提交`ccff4b5b275a701879de592d5f026f812fa8225c`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；24拥有路径UTF8严格解码/无NUL/字节往返及暂存diff PASS，真实回执在artifacts/compatibility-batch046/implementation-push.json。
+- 下一local只读接续聊天`01a1b355-d4a1-72a1-849a-d1086d4ca2e3`（Lumina batch 047 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后046才发送“开始接管”；047收到后重新核交接SHA/HANDOFF/干净树，并明确向046确认实际接管，确认前只读不建内部任务。确认后046立即停止共享写入/构建/Git并归档，不等047完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、047绑定NOT_DONE，不恢复可能用户删除项。
+
+- 046已核独立归属交接`383060a83ed53693836e2bb37ba4c1d885d7956e`三SHA一致/main干净/+0/-0，向045确认接管并实时核其归档。两个互斥任务completed冻结：TextBoxBase-007a BorderStyle（24例）及002a SelectAll/DeselectAll契约/回归（20例）；主整合共享选择接口，并完成必要Control-17c源窗口类身份缓存及2例回归。只关闭这三个子范围，完整父项保持部分。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510；新增46与旧对齐28组合74/74，最终完整4,828/4,828，0失败/跳过。WarningLevel=0不表示分析告警清零。原首两轮新增40/44、41/44、两轮全量6/8失败、直接源类2/2失败及一次全量4,604后中止均保留JSON/TRX/诊断，不当成功。
+- BorderStyle默认Fixed3D、标准元数据/事件槽/虚On*，状态→UpdateStyles→RecreateHandle→条件布局/通知，CreateParams清两种边框位再按枚举选择；保留旧protected ExStyle投影。原生EDIT规范化清公开WS_BORDER，以请求位硬断言和同配置独立EDIT回读分开验证。Upper原生初值在重建前硬断言大写，选择方法不修改文本/Modified；SelectAll仅读一次TextLength，DeselectAll走虚SelectionLength setter。
+- 新宿主场景暴露进程全局superclass缓存混用不同activation context中的EDIT。直接源类读回证明当前源窗口过程与缓存OriginalWindowProc不同；NativeWindowClass先解析当前源类，再按源hInstance/lpfnWndProc加入缓存，同源身份重复复用。旧RTL硬期望保留；测试显式null-context隔离运行器环境，finally按OLE→既有visual-context cleanup→外层cookie逆序退出。主一度错误早退外层cookie导致0xC015000F，4,604后的中止仍FAIL；产品ExitThread/线程context架构没改。
+- 固定TextBoxBase 69,799字节SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63已重核，复制046/reference；DISPID -504及null-context官方文档在reference.json。原1,095类型/61,240成员行与原ID/分母保持，固定10.0.11引用库存刷新NOT_RUN。所有证据保留artifacts/compatibility-batch046。
+- 下一真实依赖继续SelectedText、Lines/AppendText空值/CRLF/撤销、CanUndo/Undo/ClearUndo/剪贴板及完整测量/default，再恢复Rich/Masked标准直接继承/真实后端。ES_WANTRETURN/24/48、完整RTL/镜像视觉、模态/OLE宿主context/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase及关闭LostFocus/WM_QUIT，固定引用包/AOT/Designer/设备/Linux/macOS/98%继续原任务；不重复033～046，不重评全项目，不新建context或调度框架。044整数/旧二进制风险、041失败HRESULT和040有界MUI差异保持。
+- 所有自有Cordonix有界调用cleanup_complete=true，两个内部任务冻结、无临时文件/持久workspace文档/独占服务；主Cordonix父PID60188/精确创建FILETIME134384808039688794已独立核，不复用045的42616。证据/bin/obj保留，只读document_loads不是打开数。监督luminaforms-30保持NOT_FOUND、046绑定NOT_DONE，不恢复可能用户删除项。
+- 持续逐批实施、多互斥内部智能体一人一任务/主独占共享接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核HEAD/tracking/实际远端；新local先只读准备、交接成功push后发送开始并明确确认接管，旧主立即停止共享写入/构建/Git并归档，不等下一批完成。后来暂停/停止优先；Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx保持。
+
+- 046既有路线图工具导出PASS：434份Markdown、2,154任务、187实施索引行、0结构错误，整类型代码完成仍0；24拥有路径UTF8严格解码/无NUL/字节往返及diff检查通过。末次dotnet名称快照0项/inaccessible0，只表示该名称观察，不称全机零进程。提交/成功push/三SHA与下一local只读准备、独立交接须按下述规则完成，真实SHA保留在推送回执和后续交接中。
+
+## 批次045 实施与收尾（历史）
+
+
+- 045实现提交`892d003ba57e2c887ff190117d2ed70b5b7d9726`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；23拥有路径UTF8严格解码/无NUL/字节往返及暂存diff PASS，原回执保留artifacts/compatibility-batch045/implementation-push.json。
+- 下一local只读接续聊天`01a1b329-7d41-7530-ae78-ac19bcd5361f`（Lumina batch 046 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后045才发送“开始接管”；046收到后重新核交接SHA/HANDOFF/干净工作树，并明确向045确认实际接管，确认前只读不建子任务。确认后045立即停止共享写入/构建/Git并归档，不等046完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、046绑定NOT_DONE，不恢复可能用户删除项。
+
+- 045既有路线图工具导出PASS：433份Markdown、2,151任务、187实施索引行、0结构错误，整类型代码完成仍0；23拥有路径UTF8严格解码/无NUL/字节往返及diff通过。末次主dotnet名称快照0项/inaccessible0，不称全机零进程，证据保留artifacts/compatibility-batch045。
+
+- 045已重新核独立归属交接`74e05a9d2fe42c6482891bf1f5aa100713b7043e`三SHA一致/main干净/+0/-0，向044确认实际接管并实时核实044归档。两个互斥任务completed冻结：TextBoxBase-005a Modified状态/通知（20项）、TextBox-007b CharacterCasing设置/样式（25项）；主独占Control内部WindowText衔接、共享枚举/interop、文档/集成/Git。
+- Modified getter真实native位差异时保存后通知，setter先getter；EN_UPDATE同步，程序Text在WindowText原生提交期间抑制反射通知，公开TextChanged处理器内native编辑仍通知，最后清native位并由后续getter观测。创建/重建/销毁保存状态，不称完整撤销/编辑。CharacterCasing标准Normal0/Upper1/Lower2、非法value异常/同值no-op/变更重建，原生ES_UPPERCASE/ES_LOWERCASE，不手工转换或造Changed事件；Rich/Masked/Form/Application/固定Demo源码no-op。
+- 两次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增45/45、相关892/892、全量4,782/4,782，0失败/跳过。首轮新43/45的两例父Form未建窗、子EDIT落停车窗而无反射通知，原JSON/TRX保留。仅修夹具先建父HWND并硬断言GetParent/托管映射，保留原消息/trace期望，生产不为夹具改变。WarningLevel=0不表示分析告警清零。
+- 固定TextBox/Base hash复核042/043一致；新增固定CharacterCasing源码599字节SHA256为6442e9000941e1c594472431862d9819b2a2f2a3faec3a6a7a9bdac8adc38eaf，直连超时后临时7890代理GET200。命令JSON/四TRX/reference回执在artifacts/compatibility-batch045。仅新增005a/007b、004/006交叉引用005a；原ID/1,095类型/61,240成员行保持，README实施列/tasks.csv用既有工具生成并校验。
+- 下一依赖继续BorderStyle/标准通知、SelectedText/选择方法、Lines/AppendText空值/CRLF/撤销、剪贴板及完整测量/default，再恢复Rich/Masked标准直接继承/真实后端。PreferredSize/AutoSize/旧24/48高度、ES_WANTRETURN、运行时RTL/镜像、模态/OLE宿主context/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase及关闭LostFocus/WM_QUIT、固定引用包/AOT/Designer/设备/Linux/macOS/98%继续原任务。044旧HorizontalAlignment二进制/整数1/2迁移风险保持；不重复033～045、不重评全项目、不新建context或调度框架。
+- 两个任务无临时文件/持久文档/独占服务，Cordonix有界外部调用cleanup_complete=true。主当前Cordonix父PID42616/精确创建FILETIME134384794202258246已独立核，不复用044的46492；主无workspace_open/edit/commit，只读document_loads不表示打开数，证据/bin/obj保留。监督luminaforms-30保持NOT_FOUND、045绑定NOT_DONE，不恢复可能用户删除项。
+- 持续逐批实施、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核HEAD/tracking/实际远端，新local先只读准备，交接成功push后发送开始并确认实际接管，旧主立即停止共享写入/构建/Git并归档、不等下一批完成；后来暂停停止优先。Windows两目标官方Drawing、固定Demo双目标/静态Designer/resx、041失败HRESULT/040有界MUI差异保持。
+
+## 批次044 实施与收尾（历史）
+
+- 044实现提交`4c3724e77ced92eebedff447f8e0564883aa216a`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；24拥有路径严格UTF8/无NUL/字节往返及暂存diff PASS，原回执保留artifacts/compatibility-batch044/implementation-push.json。
+- 下一local只读接续聊天`01a1b314-5fc5-7df2-a31b-fede52d78bf5`（Lumina batch 045 continuation）已创建，编码归属指定给该聊天。本次独立归属交接commit/push并核三SHA后044才发送“开始接管”；045收到后重新核交接SHA/HANDOFF/干净工作树，并明确向044确认实际接管，确认前只读不建子任务。确认后044立即停止共享写入/构建/Git并归档，不等045完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、045绑定NOT_DONE，不恢复可能用户删除项。
+
+- 044既有路线图工具导出并无导出复核PASS：432份Markdown、2,149任务、187实施索引行、0结构错误，整类型代码完成仍0。主末次dotnet只读快照0项/inaccessible0，仅属该名称快照，不声称全机零进程；所有自有调用清理回执保留。
+
+- 044已重新核独立归属交接`c1ba696c4ae4926530a1bd72d89063eb29c21c55`三SHA一致/main干净/+0/-0，向043明确确认接管，实时已核043归档。两个互斥内部任务completed冻结：TextBoxBase-003b HideSelection标准设置/通知（14项）、TextBox-007a标准TextAlign/创建对齐（28项）；主独占共享常量/枚举、接口复核、文档/集成/Git。
+- HideSelection=true、Events槽/虚On*、同值/原异常/重入/CanRaiseEvents，变更先重建再通知，false设置ES_NOHIDESEL；TextAlign默认Left/校验value异常、同值no-op、变更重建/标准通知，创建时有效RTL翻译并清WS_EX_RIGHT，水平条须逻辑Left且不折行。文本/选择/modified/只读/密码与通知顺序保留。
+- 共享HorizontalAlignment原Center/Right整数反置，按固定v10.0.11修正Left0/Right1/Center2；ColumnHeader等按名字重编译保留名字语义，旧二进制常量及整数1/2存储需复核。RichTextBox仅补显式new保留既有独立HideSelection存值，Masked源码no-op；错误继承链/真实后端/掩码默认限制仍待。
+- Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新42/42、相关2,356/2,356、全量4,737/4,737，0失败/跳过。首次新38/42的4个RTL对照失败原回执保留：裸native创建缺少既有Control创建后UpdateStyles重提交步骤；夹具保留原组合/期望/RTL扩展位复现该管线后通过，生产Control no-op，不称完整RTL/镜像视觉验收。WarningLevel=0不表示分析告警清零。
+- 固定TextBox/Base hash已重核，新增固定HorizontalAlignment源码743字节SHA256为638f5f648ff50c7d7220939cb070653008aece28f0f8d015306926bcc5da4090，命令JSON/四个TRX/reference回执在artifacts/compatibility-batch044。只新增003b/007a；007父项改部分，004及基类004交叉引用已完子范围，不重复任务，原ID/1,095类型/61,240成员行保持。
+- 下一依赖按TextBoxBase共同编辑/默认事件（BorderStyle/Modified/SelectedText/Lines/AppendText等原任务）推进，再恢复Rich/Masked直接继承与真实后端。完整首选尺寸/AutoSize、CharacterCasing、运行时RTL/镜像视觉、模态/OLE宿主context/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl共享约束、HostedInWin32DialogManager、ButtonBase和关闭LostFocus/WM_QUIT及固定引用包/AOT/Designer/设备/Linux/macOS/98%仍未完；不重复033～044、不重评全项目、不新建context或调度框架。
+- 全部自有有界外部调用cleanup_complete=true；两个任务无临时文件/持久文档/独占服务。主仅为保留RichTextBox原CRLF/EOF使用一次workspace_open/edit/commit/close并已关闭；不以document_loads当打开文档数。主Cordonix当前父PID46492/创建FILETIME134384780859292528，子任务各自核身份，不复用043的52372；证据/bin/obj保留。监督luminaforms-30为NOT_FOUND、044绑定NOT_DONE，不恢复可能用户删除项。
+- 持续逐批实施、多个互斥内部智能体一人一任务/主独占接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核HEAD/tracking/实际远端，新local先只读准备，交接成功push后再发送开始，确认实际接管后旧主立即停止共享写入/构建/Git并归档、不等下一批完成；后来暂停停止优先。Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx、041失败HRESULT/040有界MUI差异保持。
+
+## 批次043 实施与收尾（历史）
+
+- 043实现提交`771f2f28a06071758f9a163cc0d23cb8190141cc`已成功push；HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0。18路径UTF8严格解码/无NUL/字节往返及暂存diff PASS；原始回执保留artifacts/compatibility-batch043/implementation-push.json。
+- 下一local只读接续聊天`01a1b300-03c0-76e2-b791-856489626d09`（Lumina batch 044 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后043主才发送“开始接管”；044收到后重新核交接SHA/HANDOFF/干净工作树，并明确向043确认实际接管，确认前只读不建子任务。确认后043立即停止共享写入/构建/Git并归档，不等044完成。持续授权、成功push/三SHA、只读准备/独立交接/确认/归档及后来暂停停止优先规则保持；监督NOT_FOUND、044绑定NOT_DONE，不恢复可能用户删除项。
+
+- 043路线图导出PASS：431份Markdown、2,147任务、187实施索引行、0结构错误，整类型代码完成仍0。主最后dotnet只读快照0项/inaccessible0，不以此覆盖子任务全局partial快照的限制；全部有界子树有独立清理回执。
+
+- 043已重新核独立归属交接`6a78daf2fc2e2ad9da5de72f9c17dae78a0a7d13`三SHA一致、main干净/+0/-0，向042明确确认实际接管；实时归档列表已核042主归档，本聊天为唯一编码主。
+- 两个互斥内部任务completed冻结：TextBoxBase-003a共同设置/标准通知（17项新测试）、TextBox-004a滚动条校验/样式/重建（24项）。主独占接口/interop/文档/集成/Git；本批无需新增interop，Control/Form/Application/固定Demo源码no-op。
+- AcceptsTabChanged按标准Events槽/虚On*、同值/原异常/重入；WordWrap改变真实EDIT折行/重建，所有赋值清自身首选缓存，AutoSize时含同值参与父布局。ScrollBars合法枚举/标准None默认，变更重建；多行水平条受WordWrap=false限制，纵条按请求。文本/选择/modified/只读/密码/创建事件顺序保持。
+- None不再强制纵条、WordWrap=false实际关闭折行，是原存值行为的运行修正；Rich/Masked间接消费变化但源码不改，标准直接继承/真实后端/默认限制仍待。完整TextBoxBase/TextBox父项不关闭，其他TextAlign/RTL、PreferredSize/AutoSize/编辑/HideSelection/BorderStyle、旧ES_WANTRETURN/24/48高度等差异保留。
+- 首次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增41/41、相关359/359、全量4,695/4,695，0失败/跳过，首次均通过。WarningLevel=0不表示分析告警清零。固定TextBox/布局事务v10.0.11源码、命令JSON和三个TRX在artifacts/compatibility-batch043；042基类固定源码hash复核一致。
+- 本批仅新增003a/004a两个明确子范围；TextBox-004从全待办改部分，TextBoxBase-004交叉引用003a的事件。纠正TextBoxBase历史“尚无实现文件提交”及当前WordWrap/ScrollBars仍存值的过时描述；固定API类型/成员库存、原ID/1,095类型/61,240成员行不改。README实施列/tasks.csv由既有工具生成后校验。
+- 两个内部任务无临时文件/打开workspace文档/独占服务，所有自有有界外部调用及主构建/测试子树cleanup_complete=true；一子任务的全局命令子串快照partial/inaccessible=236，不能据此声称全机零进程。主Cordonix当前父PID52372/创建FILETIME134384768873153663已实时核，不复用旧36000。证据及共享bin/obj保留。
+- 下一真实依赖继续TextBoxBase共同成员/标准默认事件，再按真实后端恢复Rich/Masked直接继承；不因改基类关闭富文本或掩码任务。完整模态/OLE宿主context/COM窗口顺序/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT和固定API引用包/AOT/Designer/设备/Linux/macOS/98%仍在原任务。不重复033～043、不重评全项目、不新增context或调度框架。
+- Windows两目标官方Drawing、固定Demo双目标/静态Designer/resx保持，041其他失败HRESULT显式抛出、040 MUI最多一次扩容差异保持。监督luminaforms-30为NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项。
+- 持续逐批实施、多个互斥内部智能体/一人一任务、主独占共享接口interop文档集成Git；实现与独立归属交接分别成功commit/push并核三SHA，新local先只读准备，独立交接成功push后才发送开始，确认实际接管后旧主立即停止共享写入/构建/Git并归档、不等待下一批结束。完整授权与后来暂停停止优先规则传给下一接续。
+
+## 批次042 实施与收尾（历史）
+
+- 042已核独立归属交接`a561ddb6b44dfdafe376ac4754db5833adc742d7`三SHA一致/干净并向041明确确认实际接管，实时已核041归档；本聊天为唯一编码主。
+- 两个互斥内部任务completed冻结：标准TextBoxBase共享EDIT首范围/8项测试、IME原生默认路由审计/11项测试。主独占接口整合、共享文档、interop、集成与Git。
+- TextBoxBase-001a建立abstract TextBoxBase : Control及internal构造，迁入已有文本/选择、多行/只读/Tab/主题和句柄状态；TextBox-001a直接继承并保留密码/Enter及旧SelectionChanged扩展。旧便利构造/状态恢复/事件顺序保持，TextLength为virtual；完整基类、Rich/Masked直接继承/真实后端和旧存值属性仍未完成。
+- 组合/SETCONTEXT/候选通知按固定10.0.11交原生默认过程，Control生产代码no-op；程序消息/隐藏EDIT测试不等于物理组合输入或候选UI。模态传播依赖真实Form.Modal/ShowDialog、owner恢复和ApplicationContext/线程寿命，当前均不以假状态或完整context重构补齐。
+- Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增19/19、相关318/318、全量4,654/4,654通过，0失败/跳过。首次构建与三组测试均通过；WarningLevel=0不代表分析告警清零。固定源码、命令JSON及三个TRX保留artifacts/compatibility-batch042。
+- TextBoxBase-001～009及TextBox-001按实际迁入实现由全待办改部分，只有两个001a子范围关闭；Control-12仅记审计不新增重复实现任务。API固定库存旧类型快照与当前TextBoxBase源码分别记录，原ID/1,095类型/61,240成员行保持；README实施列/tasks.csv用既有工具生成后校验。
+- 042路线图导出PASS：430份Markdown、2,145任务、187实施索引行，0结构错误，整类型代码完成仍0；TextBoxBase当前源码存在和固定API快照旧“缺失”明确分开，不手改旧类型/成员库存。
+- 下一依赖按TextBoxBase共享成员/默认事件及真实派生后端推进，RichTextBox/MaskedTextBox直接继承分批处理；完整模态/OLE宿主context、CurrentCulture/UseWaitCursor、AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT和全部平台/98%继续原任务。不重复033～042、不重评全项目、不新增调度框架。
+- 所有有界构建/测试子树cleanup_complete=true，两个内部任务无临时对象/打开workspace文档/独占服务，证据与共享bin/obj保留。Windows官方Drawing、固定Demo双目标/静态Designer/resx保持；其他失败HRESULT显式抛出与MUI最多一次扩容差异保持。
+- 持续授权、多互斥内部任务/主独占共享文档interop接口集成Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备后开始、确认接管后旧主立即停止共享操作并归档、后来暂停停止优先全部保持。监督luminaforms-30为NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。
+- 042实现提交`bd9f4d2c9f50dee14dc5f1e7a9ba4290d25be7e9`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；20路径UTF8严格解码/无NUL/字节往返和暂存diff通过，回执保留artifacts/compatibility-batch042/implementation-push.json。
+- 下一local只读接续聊天`01a1b2ed-b9ac-74a1-8409-5c2315ee56bb`（Lumina batch 043 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后042主才发送“开始接管”；043收到后重新核交接SHA/HANDOFF/干净工作树，并明确向042确认实际接管，确认前只读不建子任务。确认后042立即停止共享写入/构建/Git并归档，不等043完成。持续授权、成功push/三SHA、只读准备/独立交接/确认/归档及后来暂停停止优先规则保持；监督NOT_FOUND、043绑定NOT_DONE，不恢复可能用户删除项。
+
+## 批次041 实施与收尾（历史）
+
+- 041已重新核独立交接`358538d0afd23ddcf7ad49014690da3630871c0a`三SHA一致/干净并向040明确确认实际接管，实时已核040归档；041为唯一编码主。
+- 两个互斥内部任务completed冻结：最小线程OLE状态/9项测试；InputLanguage OLE前置/7项测试。主补Application标准入口、无循环ExitThread与最外层finally清理、Win32 LibraryImport及2项真实嵌套循环测试，独占共享文档、集成与Git。
+- 首次/最终Release方案/固定Demo双目标PASS，0错误/2既有NU1510；最终新增18/18、相关输入语言/IME/焦点/消息队列/同步上下文148/148、全量4,635/4,635通过，0失败/跳过。首轮新增9/18通过，另9项在调用库前错误假定CLR COM未初始化；修正显式STA/MTA/平衡原生探测夹具，保留原始JSON/TRX，生产代码未为夹具改变。
+- Application-11b补Current getter/setter的OleRequired前置；12a提供线程缓存/真实S_OK或S_FALSE配对一次、RPC_E_CHANGED_MODE返回MTA而不释放外部引用。真实HWND嵌套循环/回调退出不提前释放、外层返回清理；自然线程终止不新增managed清理，完整ThreadContext/外部宿主/COM对象及窗口销毁顺序/多UI寿命仍缺。
+- 其他失败HRESULT直接抛出、不缓存/不配对，明确区别于固定v10.0.11缓存STA；异常HRESULT未故障注入。040的HKL借用/只读注册表和MUI最多一次扩容/再增长fallback保持，不能把本批称完整InputLanguage/OLE兼容。
+- Application-12由全待办改部分，11/04、CNS-012、FND-019和Control/Form父项保留；原ID与1,095类型/61,240成员行不改。HANDOFF的036“当前批次”滞后已纠正为历史快照。README实施列/tasks.csv由既有工具生成并校验；不由测试数抵扣未完父项或98%。
+- 041路线图导出PASS：429份Markdown、2,143任务、187实施索引行，0结构错误，整类型代码完成仍0。两个新增ID仅代表明确完成子范围，未删除或缩小任何未完项/固定分母。
+- 下一依赖先核组合串/候选窗、模态宿主及真实前置，再按共享编辑依赖推进TextBoxBase；CurrentCulture/UseWaitCursor、完整UserControl AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%留原任务。不重复033～041，不新增完整context架构或调度框架，不重评全项目。
+- 所有Cordonix构建/测试子树cleanup_complete=true，两个内部任务无临时对象/打开workspace文档/独占服务；artifacts/compatibility-batch041固定源码/JSON/四个TRX及共享bin/obj保留。Windows两个目标官方Drawing、Demo固定双目标/静态Designer和net10.0 AOT方向保持。
+- 持续逐批实施、互斥内部任务、主独占文档/interop/集成/Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备后开始、确认接管后旧主立即停止共享操作并归档以及后来暂停停止优先规则保持。监督luminaforms-30为NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。
+- 041实现提交`9db88ccc01d51656ab77cda0653d0ac86aa3fa2b`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；18路径UTF8严格解码/无NUL/往返与暂存diff通过，回执保留artifacts/compatibility-batch041/implementation-push.json。
+- 下一local只读接续聊天`01a1b2db-40e3-7262-8536-b2dd17bbbfe4`（Lumina batch 042 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后041主才发送“开始接管”；042收到后重新核交接SHA/HANDOFF/干净工作树，并明确向041确认实际接管，确认前只读不建子任务。确认后041立即停止共享写入/构建/Git并归档，不等042完成。持续授权、成功push/三SHA、只读准备/独立交接/确认/归档与后来暂停停止优先规则保持；监督NOT_FOUND、042绑定NOT_DONE，不恢复可能用户删除项。
+
+## 批次040 实施与收尾（历史）
+
+- 040主聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`已核独立交接`6b7624a64b052080e4390fda4e3d273879c11eb0`三SHA一致/干净并向039确认实际接管；实时已核039归档，本聊天为当前唯一编码主。
+- 两个互斥内部任务completed/冻结：InputLanguage线程HKL服务与只读集合/13项测试；Form标准语言参数/委托/组件事件槽/虚通知及14项测试。主独占Application.CurrentInputLanguage转发、Control共享语言通知/请求取消、Win32 LibraryImport、文档、集成与Git。
+- 首次Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增27/27、相关IME/焦点96/96、全量4,617/4,617通过，0失败/跳过。真实HKL读回/可用布局setter/默认复位/线程隔离、MUI名称、参数/事件/顺序/取消/异常和真实HWND消息有回归；程序输入消息不等于物理语言切换/组合输入验收。
+- 代码子范围为Application-11a、Form-12d、Control-12m。Application-11由全待办改部分，CNS/FND/完整Control/Form父项保留；固定分母/原ID不变。固定源码的OleRequired持久初始化前置未实现，不能把直接HKL调用称完整InputLanguage兼容；MUI扩容最多一次，继续增长按原生失败fallback，普通成功/空串/字节长度保持。
+- 下一依赖先核输入语言与OLE初始化/线程退出寿命的最小衔接，再核组合态/候选窗、模态宿主和TextBoxBase共享编辑；UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定10.0.11引用包、Designer/AOT/设备/Linux/macOS/98%继续原任务。不重复033～040、不重评全项目，不新增调度框架或完整context架构。
+- 监督`luminaforms-30`保持NOT_FOUND、040绑定NOT_DONE，不创建或恢复可能用户删除项。持续逐批实施、互斥子任务、主独占文档/interop/集成/Git、实现与独立归属交接成功commit/push及三SHA、新local先只读准备后开始、确认实际接管后旧主立即停止共享操作并归档授权保留；后来暂停/停止优先。
+- 所有有界Cordonix构建/测试子树cleanup_complete=true；两个内部任务无临时对象/打开workspace文档/独占服务。artifacts/compatibility-batch040固定源码、JSON命令回执、三个TRX及共享bin/obj保留。Windows官方Drawing、固定Demo双目标/静态Designer与net10.0 AOT方向保持。
+- 040路线图导出PASS：428份Markdown、2,141任务、187索引行，0结构错误，整类型代码完成仍0；README实施列/tasks.csv由既有工具按真实子范围生成，固定1,095类型/61,240成员行及原ID保留。Application-11全待办遗漏本批服务已纠正为部分。
+- 本批26路径UTF8严格解码/无NUL/字节往返通过；主复核源码及全部新增测试，未新增运行依赖或修改固定Demo/Designer源码。实现与独立归属交接分别commit/push，SHA由成功推送后的回执与交接记录填写，不以本地提交冒充批次完成。
+- 040实现提交`47cd4c4c54facc439e67b9df1f316a1d6014cf30`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；26文件编码/暂存diff通过，推送回执保留artifacts/compatibility-batch040/implementation-push.json。
+- 下一local只读接续聊天`01a1b2c7-9ed3-7511-8764-6945f41d3ad5`（Lumina batch 041 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后040主才发送“开始接管”；041收到后重新核交接SHA/HANDOFF和干净工作树，并明确向040确认实际接管，确认前只读不建子任务。确认后040立即停止共享写入/构建/Git并归档，不等041完成。持续授权、成功push与三SHA、先只读准备/独立归属交接/确认接管/旧主立即归档及后来暂停停止优先规则保留；监督NOT_FOUND、041绑定NOT_DONE，不恢复可能用户删除项。
+
+## 批次039 实施与收尾（历史）
+
+- 039主聊天`01a1b29c-5372-7a83-a023-6682c09e110c`已重新核验独立交接`d1612c31f0ff91fe370c41fa069786cee6cf0b7d`的三SHA一致/干净并向038确认实际接管，实时已核038归档；本聊天为当前唯一编码主。
+- 两个互斥内部任务完成并冻结：TextBox-005a只读/密码受限IME与必要真实密码同步、Control-12l输入语言消息及非Form宿主传播。主补共享Win32常量、复核固定源码/测试夹具、统一集成与文档；不恢复TextBoxBase或新建框架。
+- 最终Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增22/22（13+9）、含旧028焦点的组合50/50、全量4,590/4,590通过，0失败/跳过。首轮CS0103、定向18/22和全量4,589/4,590均保留；原因与夹具修复见[039](039.md)，原行为断言未删，生产代码未为夹具错误改写。
+- TextBox受限时有效ImeMode为Disable，缓存的程序设置在解除限制后恢复；DesignMode读配置。PasswordChar getter创建真实EDIT并回读，系统密码开关真实重建、优先系统字符，关闭恢复自定义字符；ReadOnlyChanged在IME检查前。多行密码按独立系统EDIT实际回读对照，不推断显示/安全验收。
+- Control语言变化先更新上下文、unsupported传播Off，再默认过程；非Form根失焦恢复传播后重置Inherit，忽略通知finally复原。Form语言事件/取消、Application输入语言服务、模态宿主、实际中日韩/组合输入和候选窗仍待，不关闭完整IME。
+- 下一依赖先补标准输入语言服务与Form语言通知/取消的必要闭环，再核组合态/宿主模态/TextBoxBase共享编辑。UserControl完整AutoSize/共享约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT、固定API10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%保留未完。不重复033～039、不重评整个项目。
+- 监督`luminaforms-30`保持NOT_FOUND、039绑定NOT_DONE，未创建/恢复替代项。逐批实施、成功commit/push与三SHA回读、新local只读准备、独立归属交接成功push后开始、确认实际接管后旧主立即停止共享操作并归档授权保留，后来暂停/停止优先。
+- 两个内部任务所有Cordonix外部命令cleanup_complete=true，无临时对象/打开workspace文档/独占服务。主有界构建/测试子树均已清理；本批日志/TRX/固定源码证据及共享bin/obj保留。Windows官方Drawing、固定Demo双目标与静态Designer保持。
+- 039路线图导出/校验PASS：427份Markdown、2,138任务、187实施索引行，0结构错误，整类型代码完成仍0；README实施列/tasks.csv已按真实子范围重生成，固定1,095类型/61,240成员行及原ID保留。TextBox-005全待办遗漏已有ReadOnly映射已纠正为部分。
+- 039实现提交`e5bab06ad49e08b55144f491ed6081def9494e5f`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致且工作树干净；23文件UTF8严格解码/无NUL/往返和暂存diff通过，原始回执保留在artifacts/compatibility-batch039。
+- 下一local只读接续聊天`01a1b2b4-9ba2-7983-8d85-c1888809128b`（Lumina batch 040 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后039主才发送“开始接管”；040收到后重新核交接SHA/HANDOFF与干净工作树，并明确向039确认实际接管，确认前只读不建子任务。确认后039立即停止共享写入/构建/Git并归档，不等040完成。逐批实施/成功push/三SHA/每批新local接续及后来暂停停止优先规则保留；监督NOT_FOUND、040绑定NOT_DONE，不自动恢复可能用户删除的项。
+
+## 批次038 实施与收尾（历史）
+
+- 当前唯一编码主为038聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`，收到“开始接管”后核实独立交接`8c1e746322f22b8d5eefe37d0a50b1f0608c8414`三SHA一致、工作树干净并向037主确认实际接管；已只读核实037主已归档。
+- 三个互斥内部任务已完成并冻结：Control-12k有效ImeMode/IMM上下文首范围、TextBox-003c多行EDIT重建/选择与原生modified保存、UserControl-02d标准AutoSize属性/事件声明。主补共享LibraryImport声明和销毁通知/IME清理双错保留，不另建框架或恢复TextBoxBase。
+- 最终Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增32/32（12+14+6）、全量4,568/4,568通过，0失败/跳过。首次集成元组uint/整数0混用触发CS8506/CS8131，改0u后通过，原始失败保留；首轮31/4,567通过后主补双错回归并重新检查。
+- 真实HIMC新建/分离/恢复/借用不销毁/销毁事件抛错仍清理与双错保留有回归；实际中日韩转换/组合串/候选窗/物理输入仍NOT_RUN。TextBox ReadOnly/Password的CanEnableIme派生限制和setter联动未接，完整语言切换/宿主模态传播、TextBoxBase、尺寸/撤销、UserControl完整AutoSize/共享约束与Designer仍待，父任务不关闭。
+- 文档收尾纠正FND-019父表仍遗漏037、README引言停在035和TextBoxBase页“现有TextBox无句柄Select丢状态”的滞后描述。FND-026按UserControl有限元数据改部分，非Designer验收。按既有Validate-Roadmap.ps1 -ExportTasks生成README实施列/tasks.csv，固定基线1,095类型/61,240成员行及原ID不改，整类型完成仍0。
+- 下一依赖先补TextBox只读/密码IME限制与属性联动，再核语言切换/宿主传播和组合态；保留TextBoxBase/HostedInWin32DialogManager、ButtonBase、模态、关闭LostFocus/WM_QUIT、固定10.0.11引用包、AOT/Designer/设备/Linux/macOS/98%未完。不重复033～038、不重评全项目。
+- 监督`luminaforms-30`为NOT_FOUND，038绑定NOT_DONE；依据037 app更新的明确不存在结果，不将旧ACTIVE描述当当前状态，不新建或恢复可能已被用户删除的自动化。持续逐批实施/成功commit及push/三SHA回读/每批新local聊天、确认接管后旧主立即停止共享操作并归档授权保留；后来暂停/停止优先。
+- 所有Cordonix有界构建/测试子树cleanup_complete=true，三个内部任务无临时文件/未关闭workspace文档/独占服务；仅本批验证日志/TRX、共享bin/obj保留作证据。实现SHA与独立归属交接SHA分别在成功push后记录并核验，未推送不算批次完成。
+- 038路线图导出/校验PASS：426份Markdown、2,136任务、187实施索引行，0结构错误，整类型完成0；diff --check通过。逐控件实施列及tasks.csv按真实完成子范围重生成，未缩减固定分母。
+- 038实现提交`32d343720aa5432a34f014a67083e840193209d0`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、工作树干净；25个本批文件UTF8严格解码/无NUL/编码往返及暂存diff通过。原始检查与推送回读保留在artifacts/compatibility-batch038。
+- 下一local只读接续聊天`01a1b29c-5372-7a83-a023-6682c09e110c`（Lumina batch 039 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核实三SHA后038主才发送“开始接管”；039收到后重新核验交接SHA/HANDOFF及干净工作树并明确向038确认实际接管，确认前只读不创建子任务。确认后038立即停止共享写入/构建/Git并归档，不等039完成。逐批实施/成功push/三SHA/每批新local接续与后来暂停停止优先规则保留；监督NOT_FOUND、039绑定NOT_DONE，不自动恢复可能被用户删除的项。
+
+## 批次037 实施与收尾（历史）
+
+- 当前唯一编码主为037聊天`01a1b27b-6152-7792-a700-4989923b44a9`，已重新核验交接`1a8fecc4fa761d1bc9b04a84db87b046fc94858f`三SHA一致/干净后确认接管，并只读核实036主已归档。
+- 三个互斥智能体已完成并冻结：Control-12j有限IME字符消息/重复计数、TextBox-003b输入键判别/对话框路由、UserControl-05a原生焦点入口/嵌套验证导航；主完成Win32两常量、文档与集成。来源固定WinForms v10.0.11，不恢复TextBoxBase或引入新框架。
+- Release方案/固定Demo双目标PASS，0错误/2条既有NU1510；新增22/22、全量4,536/4,536通过，0失败/跳过；diff --check通过。IME Handled后的重复计数保留固定源码行为，测试证明只消耗一次；不把程序消息/真实HWND当物理输入或完整IME验收。
+- 公共基础/Control-12父项遗漏036完成范围、validation总览遗漏036记录，本批按已有证据补录并纠正；UserControl-05按05a有限实现由全待办改部分。父任务/原ID/分母保留，使用既有Validate-Roadmap.ps1 -ExportTasks重生成索引。
+- 下一依赖先核剩余IME输入上下文/组合态与派生编辑输入，再补UserControl完整AutoSize。TextBoxBase、HostedInWin32DialogManager、ButtonBase、模态、关闭LostFocus/WM_QUIT、固定API引用包、AOT/Designer/设备/Linux/macOS/98%均保留未完；不重复033～037、不重评全项目。
+- 延续成功commit/push/三SHA回读、新local只读准备/独立归属交接成功推送后才开始/确认实际接管后旧主立即归档、30分钟监督及后续停止优先规则。036消息称heartbeat `luminaforms-30`已绑定037；037的app view仅显示卡片，不能当成ACTIVE/目标字段回读证据。交接时完整update由app明确返回该automation不存在、可能已被用户手动删除；本机automations目录也未检出该项。监督状态为NOT_FOUND，038绑定NOT_DONE，未新建替代项；新主不得把旧描述当当前已生效，也不得因缺失自动恢复可能被用户删除的监督。
+- 三个内部任务报告所有Cordonix子进程cleanup_complete=true；IME参考源码临时文件已精确删除，其余无临时对象。主的有界构建/测试子树已清理，忽略bin/obj保留。
+- 037收尾使用既有Validate-Roadmap.ps1 -ExportTasks：425份Markdown/2,133任务/187索引行，0结构错误，整类型代码完成仍为0；README实施列/tasks.csv已再生成，源码/任务页/历史/批次/总览边界已同步。
+- 037实现提交`f1521009a40514f32b1efee155dd434efe048999`已成功推送，HEAD/origin/main/实际远端refs/heads/main三SHA一致且工作树干净；暂存仅本批21文件，UTF8严格解码/无NUL/往返和暂存diff检查通过。
+- 下一local只读接续聊天`01a1b287-2fe8-7cc0-927f-98c1d27174d5`（Lumina batch 038 continuation）已创建。编码归属指定给该聊天：本次独立归属交接commit/push并核验三SHA后，037主才发送“开始接管”；038主收到后重新核SHA/HANDOFF及工作树并明确确认实际接管，确认前只读准备不创建子任务。确认后037主停止共享写入/构建/Git并立即归档，不等038完成。持续逐批实施/成功push/三SHA回读/新local接续/30分钟监督授权保留，后续暂停停止优先。
+
+## 批次036 实施与收尾（历史）
+
+- 036是当前唯一编码主；三个互斥内部任务已完成并冻结：Control原生输入判别、Button原生点击验证源码审计/真实HWND回归、Form默认按钮生命周期；主完成共享interop、队列字符抑制、验证取消清理、文档和集成验证。Button.cs本批为no-op，避免重复注入验证。
+- 沿035已确认的输入判别→队列抑制→点击验证/默认生命周期依赖完成明确范围。完整AutoSize、ButtonBase/模态、IME及平台留在原任务，不重复033～035、不重评整个项目。
+- 已读盘核实heartbeat `luminaforms-30`为ACTIVE，target_thread_id为036聊天；复用现有监督，不新建。持续逐批实施/commit与push/三SHA回读/只读接续准备/独立归属交接/确认后旧主立即归档授权保留，后来的暂停停止优先。
+- 036验证：新增9/9，既有键盘/队列14/14，全量4,514/4,514；Release双目标构建0错误、2条既有NU1510。首次集成构建发现缺少Win32.WM_IME_CHAR常量并已修复后重跑通过；固定API10.0.11引用包缺失、枚举整数迁移、AOT/Designer/设备/平台/98%边界保留。
+
+- 036仅关闭上述明确子范围：Control-12i、Form-12c及Button-002b。Button-002b按固定10.0.11源码确认Button.cs原生BN_CLICKED不重复调用验证，真实HWND Prevent/Allow回归通过；Control共享ValidationCancelled父链、鼠标抬起清理和队列字符消息有界移除由主整合。完整Control/ContainerControl/Form/UserControl/Button/平台父项仍保持部分或待办。
+- `git -c core.whitespace=cr-at-eol diff --check`、双目标Release构建、036新增测试、既有14项键盘队列回归和4,514全量测试均通过。固定API库存、AOT发布/运行、VS Designer、物理设备、Linux/macOS、生产/现场及98%继续NOT_RUN/UNKNOWN，不由本批测试数推出兼容率。
+- 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl继续，优先完整IME/派生输入及剩余原生验证组合，再补UserControl完整AutoSize；不重复033～036。批次边界完成后创建只读local接续聊天，归属交接独立commit/push并核验三SHA后发送开始，确认实际接管后本聊天停止写入并归档。
+- 036实现提交 `6683445a550e8a79757fd271bb3892cf6ac9b4a3` 已成功push；提交后HEAD、origin/main、实际远端refs/heads/main三SHA一致且工作区干净。三个036内部任务均completed/冻结，所有有界Cordonix子进程cleanup_complete=true，无本批临时对象。
+- 下一local接续聊天 `01a1b27b-6152-7792-a700-4989923b44a9`（Lumina项目，037 continuation）已创建并处于只读准备；本归属交接独立commit/push并核验三SHA后，036主才发送“开始接管”。037主收到后重新核对交接SHA/HANDOFF并明确实际接管；确认后036主停止共享写入/构建/Git并立即归档，不等037完成。
+
+## 批次035 实施与收尾
+
+- 当前实施批次：[035](035.md)。message_preprocess独占Application.cs/Control.cs及新消息循环测试，form_dialog_buttons独占Form.cs/Button.cs/IButtonControl/DialogResult及新默认取消测试，autosize_identity独占CompatibilityEnums.cs/UserControl.cs及新枚举身份测试。主会话独占ContainerControl必要协作、共享interop/文档、集成验证与Git；Control默认初始化在其所有者停止写入后统一整合。
+- 三个内部智能体均完成并停止写入。实际消息循环预处理、Form默认/取消按钮的有限验证消费和AutoSizeMode数值身份/命名默认保持已实现；主补实际队列Enter/Escape和共享容器协作。新增37/37、全量4,505/4,505、Release方案/固定Demo双目标构建通过。首次Keys.Return编译失败和无transition位KeyUp fixture导致额外WM_CHAR的36/37失败已定位并保留，不改预期次数掩盖错误。
+- AutoSizeMode现为GrowAndShrink=0/GrowOnly=1，Control显式保留GrowOnly。旧二进制常量/持久化整数0/1须复核，按名字源码重编译保留名字语义。UserControl.cs本已按名字实现，未重复改算法；完整AutoSize父项继续部分。
+- 下一依赖按Control/Component→ScrollableControl/ContainerControl→Form/UserControl推进：原生输入键/字符判别与队列字符抑制、原生按钮点击验证前置/默认按钮生命周期、UserControl完整AutoSize；不重做033～035，不扩为整ButtonBase或模态已完成。固定API引用包仅10.0.14/9.0.22/8.0.33，10.0.11缺失，库存导出NOT_RUN且分母未换。Designer/AOT/设备/Linux/macOS/98%继续待验。
+- 延续逐批实施、成功commit/push和三SHA回读、下一只读local聊天及归属交接成功推送后才发送开始、确认实际接管后旧主立即归档、30分钟监督的现有授权；后来的暂停停止优先。不创建额外调度框架。
+- 已实时确认034原主归档；当前只有035主写共享工作区。现有配置目录未检出Lumina监督后，通过Codex app建立并回读heartbeat `luminaforms-30`（每30分钟，当前绑定本聊天）；后续交接优先更新这一个heartbeat的归属，避免重复创建。
+- 收尾已按实际代码同步ROADMAP/execution、相关控件/公共任务页/历史、CHANGELOG/validation/本批记录；既有工具生成README实施列/tasks.csv，423份Markdown/2,127任务/187索引行0结构错误，整类型完成仍为0。27个本批文件UTF-8严格检查、暂存diff --check均PASS；暂存仅本批27路径，未带入外来改动。
+- 035实现提交`aabff5a05dd9f64fd0d15285c91cdb9c474280da`已成功push；HEAD/origin/main/实际远端refs/heads/main三SHA已回读一致，工作区干净。三个035内部任务均completed/冻结，所有有界任务子进程cleanup_complete=true；独占临时文件`Lumina.Forms/DialogResult.cs.form-dialog-buttons-owned-lf.tmp`已只读核实不存在。
+- 下一local接续聊天`01a1b263-dec8-74f3-90c9-d1ed0757bfbf`（Lumina项目，036 continuation）已创建，只读准备中。下一编码归属指定给该聊天：本归属交接独立commit/push并核验三SHA后，035主才发送“开始接管”；036主收到后重新核对开始消息的交接SHA/HANDOFF并明确实际接管。其确认后035主停止共享写入/构建/Git并立即归档，不等036结束；其确认前035仅做本次交接，036不创建子任务或写共享区。
+- 30分钟监督沿用现有heartbeat `luminaforms-30`，归属交接期间由035主更新其target到036并回读，036先核对避免重复新建。用户持续逐批实施/commit与push/新local接续/监督授权及后来的暂停停止优先全部保留。
+
+## 批次034 新增接续记录
+
+- 三个互斥智能体已停止写入：control_keyboard独占Control.cs/新键管线测试；container_navigation独占ContainerControl.cs/新Tab边界测试；usercontrol_defaults独占UserControl.cs/新默认契约测试。主独占Form.cs/新预览测试、共享文档、集成和Git。
+- Release方案构建PASS（0错误/2条既有NU1510，WarningLevel=0不代表分析警告清零）；新增29/29、全量4,468/4,468 PASS。首轮定向27/29失败原因及修复保留在034。真实HWND程序Tab和边框样式检查不等于物理设备验收。
+- AutoSizeMode历史数值身份与官方相反未修，留在UserControl-02父任务；固定10.0.11 API引用包缺失，未重跑库存导出、不替换基线。AOT/Designer/物理设备/Linux/macOS/现场仍NOT_RUN/UNKNOWN。
+- 下一依赖：Control消息循环实际预处理→容器验证/导航→Form默认取消按钮与UserControl完整AutoSize；先核对枚举数值身份影响，不重复033/034。仅明确子范围代码完成，父任务和98%不关闭。
+- 本批实现及交接须成功commit/push并核对HEAD/tracking/实际远端；新聊天先只读准备，更新归属交接提交推送后再发送“开始接管”，确认实际接管后旧主停止写入并归档。保持多个互斥智能体、主独占共享文档/集成/Git、有界执行和资源归属规则。
+- 034实现提交`11c811ac1cb6fab4517cabe4f4ac14626755e60b`已成功push且三SHA一致。下一local接续聊天`01a1b247-6da3-7f51-8a25-3e523fca616e`（Lumina项目）已创建，只读准备中；本归属交接独立commit/push核验后，034主才发送“开始接管”。新主以开始消息的交接SHA核验，确认接管后034主停止写入/构建/Git并归档，不等035完成。持续逐批实现/推送/新聊天与30分钟监督授权保留，后来的暂停停止优先。
+
+## 批次033 新增接续记录
+
+- 并行子任务已停止写入：`control_keyboard_preprocess`完成Control-12f/FND-019键盘预处理首范围；`container_keyboard_route`完成ContainerControl-06b Tab/助记键后代路由；`scrollable_tab_scroll`完成ScrollableControl-07a已有偏移下的后代可见坐标修正。主会话复核源码、测试、任务页、索引和 Git。
+- 验证：双目标 `dotnet build Lumina.slnx -c Release --no-restore --nologo -v:q -p:WarningLevel=0` PASS，0错误（2条既有NU1510）；新增定向测试9/9；`Lumina.Tests`全量4,439/4,439；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git diff --check` PASS。
+- API库存刷新 `Export-Inventory.ps1 -ReferenceVersion 10.0.11 -SkipBuild` 因本机仅有SDK `10.0.403`、缺少固定 `Microsoft.WindowsDesktop.App.Ref/10.0.11/ref/net10.0` 阻断，未用其他SDK替代，API基线保持原值。Native AOT、真实物理键鼠/滚轮/触摸板、Designer、Linux/macOS、生产/现场仍NOT_RUN/UNKNOWN，不宣称98%。
+- 实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa` 与交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已成功 push；当前 `HEAD`、`origin/main` 和 `git ls-remote origin refs/heads/main` 三者均为 `8b333d249ffdcc420aad489d3e694a5cf16ac235`，工作区干净。只读 continuation chat `01a1b239-e70b-7bb1-ada5-5323cb50aeab` 已创建并完成准备，待发送“开始接管”后承接下一批；忽略的 `bin/`、`obj/` 只属于构建/测试产物，不纳入 Git。
+
+## 批次031 新增接续记录
+
+- 并行子任务已停止写入：`control_inheritance`完成Control-11c/FND-013托管与Win32 RTL样式；`scrollable_foundation`完成ScrollableControl-02a～05a托管滚动；`container_chain`完成ContainerControl-05a/06a；第二轮完成ScrollableControl-06a受保护契约、`usercontrol_chain`完成UserControl-01a/02a、`rtl_native_bridge`完成RightToLeft原生桥接。主会话复核并修正 `AutoScroll` virtual/`AutoScrollOffset` 标准契约和滚动内容范围逻辑。
+- 验证：Release方案构建0错误；`Lumina.Tests`全量4,419/4,419通过；本批六组新增测试22/22通过；`Validate-Roadmap.ps1 -ExportTasks`返回0结构错误；`git -c core.whitespace=cr-at-eol diff --check`通过。既有警告保留。
+- 未运行：Native AOT发布/运行、真实Designer往返、物理设备、完整滚动条消息、Cursor/完整ambient、Linux/macOS、生产/现场。所有父任务和跨平台门禁保持部分或待办，不宣称98%。
+- 批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b` 已成功推送；后续交接文档收口提交只修改本交接记录，主会话将在其后回读 HEAD、tracking 分支与实际远端 ref，保留完整验证证据。
+## 批次032 新增接续记录
+
+- 并行子任务已停止写入：`panel_scrollable_migration`完成Panel-01b/02a；`usercontrol_load`完成UserControl-03a；`scroll_win32_messages`完成ScrollableControl-08a。主会话修复AutoScroll=false下额外布局请求导致的SplitContainer事件回归。
+- 验证：Release方案构建0错误；`Lumina.Tests`全量4,430/4,430通过；本批三组新增测试11/11通过；路线图校验待本批文档生成后复跑；既有警告保留。
+- 未运行：Native AOT、真实物理滚轮/触摸板、Designer往返、Linux/macOS、生产/现场。Panel/ScrollableControl/UserControl和FND-016父任务继续部分或待办，不宣称98%。
+- 批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已成功推送；交接文档收口后回读 HEAD、tracking 分支与实际远端 ref，保留全量回归和路线图证据。
+## 历史029停止记录
+
+- 调度状态：用户于2026-10-17要求“当前这批任务完成后，停止任务”。029实现、必要验证、文档提交推送并核验远端后停止；不创建030/下一聊天、不继续完整Control专项、不恢复luminaforms巡检。此指示覆盖此前持续接续授权；完整Control/Windows全面验收/Linux/macOS仍未完成，保留任务等待新指示。
+- 当前编码归属：029主聊天`01a14565-97a2-76f0-8645-317df65705a7`（local）已核实交接`9ff6f26000533469d2b07340bec5ce345b764697`、三SHA一致及工作区干净后实际接管；029实现已成功推送并核验三SHA一致，主及三个内部子任务停止实施；没有新编码主，不发送开始接管。028旧主及更早归档记录作为历史保留。
+- 028历史接管：`01a14527-ef1d-7440-8ca2-fc11b53f515f`于2026-10-16核对独立交接`ab5a23866774d0adc9bae17b20fd5e5b9ab63939`的三SHA/干净状态后接管，027旧主已核实归档。028实现`496e632d13e7e4f26dcb649093e69d589c9128d0`已成功推送且核对三SHA/干净状态，三个内部任务全部冻结。
+- 027历史接管：027主聊天`01a144ef-726b-78a3-8b32-d9bd4e73eb2d`（host `local`）于2026-10-16收到单独“开始接管”后，已核实工作区干净、HEAD/origin/main/实际远端refs/heads/main均为交接SHA `32f65b9e411d9838ebcc5c1f0a1af7f61add972b`并实际接管。已只读核实026旧主`01a144c0-6427-79a2-a2cd-55d0dd562990`归档。
+- 026历史接管：01a144c0-6427-79a2-a2cd-55d0dd562990于2026-10-16收到单独开始消息后核实干净状态与三SHA同为f9a3a3e9d737309d45e76a0b263c7126c2b3c64c并实际接管，已核实025旧主归档。026实现与路线图收尾c0f4c3d8bc12e2684cb9ddb6bca765373f8c4c60已成功推送，三个内部任务全部冻结，无后续写入/构建/Git。
+- 024历史接管：01a14443-9c60-7a71-910f-29f6e9368dcd于2026-10-16核实干净状态、HEAD/origin/main/实际远端同为db602797a3b575edca04ca64481d6fa65fbd4973后实际接管，已核实023旧主归档。024实现5784c22610f768e05dc44ccf496bb275df11634e已成功推送并核对三SHA/干净状态；原三个内部任务已完成冻结，不再写入/构建/Git。
+- 023历史接管归属：01a143ef-9e5b-76f2-9cfc-bb811bf4a0e2于2026-10-16接管时已核实干净状态，HEAD/origin/main/实际远端均为交接17ede2ed1e5dbad89981411eb1adb9cb370de0d9；已核实022旧主归档。023实现`7225e947495a7007f94377b5a0972ac91288c3cd`已成功推送，独立归属交接SHA由开始消息及artifacts/compatibility-batch023/handoff-push.json记录。
+- 022历史接管归属：01a143be-8230-74b0-aa82-837bcf0b8563于2026-10-16收到开始消息后核实干净状态和HEAD/origin/main/实际远端同为d6644d771521127ee3391133afbcfa4ec0322efc并实际接管，已只读确认021旧主归档。022实现98cde66ca344ccbf8755faaca314e6936788df73已推送，独立交接SHA由本次开始消息及artifacts/compatibility-batch022/handoff-push.json记录。
+- 021历史接管归属：`01a142ba-a2e6-75e1-a249-96cbb7a07e75`（Control默认布局与首选尺寸批次021，本地Lumina项目）。2026-10-16收到独立“开始接管”后已实际接管；接管时工作区干净，HEAD、origin/main与实际远端refs/heads/main均为已推送交接SHA `c9f4f2880429e648f81e7fbbf487a611547c82d3`。旧主`01a14286-0053-71b1-9348-6dda086ffc1e`及020三个内部子任务已停止写入/构建/Git；旧主只读确认实际接管后立即归档，不等待021完成。020接管SHA为`10588cf8086e4083c5b19cbe19550d07d7b382a2`；019旧主`01a14257-6797-7f83-963a-5c5022103f53`已确认停止且已核实归档，更早主归档记录保留。
+- 历史监督会话：`01a13bd2-e505-79c0-ab49-1d428c85f592`。自动化`luminaforms`保持PAUSED；本次新授权不恢复30分钟巡检，后续用户暂停/停止优先。
+- 当前范围：029有限自动焦点转移/程序验证、必要消费者及全部文档收尾；不是整Control完成。实现、测试与AOT结果见[029](029.md)，按用户指示本批后停止。
+- 当前实施批次：[029](029.md)限定范围代码完成，4,392测试通过；按用户指示本批后停止，无下一批归属交接。
+- 028历史完成批次：028实现与路线图收尾`496e632d13e7e4f26dcb649093e69d589c9128d0`已成功push，HEAD/origin/main/实际远端refs/heads/main一致且干净，见artifacts/compatibility-batch028/implementation-push.json。本独立交接另行commit/push并记录handoff-push.json，029按开始消息的交接SHA核验后接管，本地commit不算完成。027实现c87c52849e19098c02dc00898c9960424abf21da及独立交接ab5a23866774d0adc9bae17b20fd5e5b9ab63939保留。
+- 018证据：3,996测试全部通过、双目标Release 0错误/400警告；固定参考/JIT391行中390相同，隐藏父级原生重挂的中间VisibleChanged缺失保持strictMatches=false。AOT实际运行全部391行，32条非零下界数组fixture因运行时不支持而明确CopyTo未运行，其余359同JIT；严格driver仍失败，原始记录不得归一化或删除。完整Demo AOT已真实显示、复选框0→1、正常exit0且记录HWND全部失效；截图仍有文字裁切/布局问题，模态/完整UI/Designer未验收。探针3,667,456字节、Demo4,147,712字节，均CLR目录0；IL2026/IL3050/IL3053与Demo既有IL3050保留。首轮29旧驱动通过，最终16个Control/上下文驱动复核结果在artifacts/compatibility-batch018/final-regressions/results.json；完整证据见evidence.json/018。
+- 019证据：最终4,027测试全部通过、双目标Release 0错误/428警告；生命周期16场景/204行固定10.0.11参考/JIT/实际AOT严格全同，最终run为`20261016-021319-9490794`。父子集合391行参考/JIT全同，018隐藏重挂的中间VisibleChanged缺口已修复；集合AOT仍有32行非零下界数组fixture明确CopyTo未运行，其余359行同JIT，严格失败保留。16个旧Control/context驱动全通过。Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全部失效；生命周期EXE4,115,456字节、Demo4,156,928字节，CLR目录均0。原始失败/警告/路径见`artifacts/compatibility-batch019/evidence.json`，不由这些记录宣称整Control/98%。
+- 019收尾：Control-07/Form-06标部分并登记07a/06a完成子范围，FND及总览/历史同步；修正“标准句柄入口不存在”和“018隐藏重挂可见差异仍未修”的当前表述，保留原始历史失败。API固定1,095类型/61,240行/187页，成员运行仍unverified；408份Markdown、2,037项任务、187行逐控件实施索引0错误，整类型代码完成0。13项目/17目标均.NET10，原始Demo源码/Designer/resx不改，Windows官方Drawing10.0.0且net10.0依赖无WinForms/System.Resources.Extensions。
+- 020责任：layout_core完成Control.cs/标准布局参数委托/25项回归，layout_containers完成10个必要容器文件/31项回归，layout_probe完成固定24场景探针/驱动；三者已冻结。主聊天独占共享文档/API/索引、顺序集成与Git。基础标准事务已完成，下一批沿Control-09/10补LayoutEngine/首选尺寸/完整几何；不要重复旧空入口评估。
+- 历史完成批次：[017](017.md)，两项代码、必要验证、路线图整理及推送完成；原内部子任务已结束。实现提交`2df2cca120f38b94d5c469b3687cd5cc5a800f15`，结束记录提交`77955c4066b3b8933133742ff7c3c9200b9f0fc6`均已成功推送。创建Control聊天前HEAD/origin/main/实际远端refs/heads/main三者均为77955c4，工作区干净。本次归属交接另行commit/push，成功核对后在开始消息中给出交接SHA，新主不得把017实现或结束记录SHA误作本次交接SHA。
+- 历史实现提交：`10c106002acff0517bcb547f526fef446ec32871`（批次016），已成功推送origin/main；推送后HEAD/origin/main/远端refs/heads/main均为该SHA，工作区干净。本记录随后单独提交并成功推送归属交接，新主实际接管时核对并记录其SHA。015实现`21a71fc3646c736baa59132b39d5270a135e8688`/交接`79ccc4a9b4a177beccf6bdb79528906fc16b3f41`、014实现`3894f281a88ff00e806c14440ce5c332af974d6a`/交接`7f1d0709d32ff95340a2a0611a6cc603831f8d39`及013实现`a0e2ec02e15cc92f7f337812bb22b13b17f0a691`/交接`2434d48bbecda25112951cb11f2962c9b7761634`均已验证；原代码基点`b83f534`不是回退要求。
+- 全量进度：[tasks.csv](../tasks.csv)，由控件页及 FND/REP/CNS/XPL 任务表生成；逐 API 分母仍在 [api](../api/baseline.json)。
+- 当前边界：029有限自动焦点转移、移除候选及程序验证完成；点击提交取消、键盘/IME、全部派生仍缺，关闭多余LostFocus/WM_QUIT与SplitContainer继承投影差异真实保留。027基础鼠标范围完成，LockScreenBackstopFrame导致目标命中失败，物理点击/成功Click命中未验收；四消费者默认样式/事件顺序、AutoCheck/组同步和完整键盘验证仍缺。026有限05c/08c收尾保留；普通Parent/child/Site错误及活HWND失败仍短路，全部Dispose事务/并发wait释放未完。RTL/mirror/滚动/主题透明、owner draw/反射/缓冲、ambient/Cursor、DPI/派生布局/Designer/资源/模态和GTK4/AppKit未完成。旧004/005各两行、025四项、026九项增强、自定义Param AOT四差异/GetLParam IL3050、palette三差异、Form.Created、Text DispId AOT、集合32行fixture/中文Designer/Container.Add IL2026/TypeConverter IL3053及Demo既有IL3050全部保留，不宣称整Control/98%。
+
+## 批次029完成与停止记录
+
+批次029完成Control-12c/12d自动焦点转移与验证事件、ContainerControl-02b/03a移除候选及程序验证状态机、Form-07a关闭验证前置，并补Panel/ScrollableControl/TabControl必要批量验证消费。4,392项测试（新增49）全通过，双目标Demo Release 0错误/339警告。16场景全部正常退出/无HWND残留；最终固定参考1,832行、JIT1,880行、AOT1,847行：JIT对参考1/16严格相同，其余为15个额外WM_QUIT及11场景关闭LostFocus；JIT/AOT仅5/16严格相同，11场景相差关闭LostFocus的33行，未定位根因，严格失败保留。旧Focus157/父子集合391/生命周期204行参考JIT全同；028仍18/30同参考，保留11个WM_QUIT及SplitContainer投影差异。探针/Demo AOT为3,065,344/4,297,216字节，CLR目录0，Demo实际显示/复选框0→1/WM_CLOSE退出及原HWND失效通过。全部派生、点击提交取消、键盘/IME、物理设备、Designer/资源及GTK4/AppKit仍未完成，不宣称整Control或98%。
+
+- 接管SHA：`9ff6f26000533469d2b07340bec5ce345b764697`；实现SHA：`4dd229ee106eec28eed33571752e1e9139fee0b6`，2026-10-17 01:47（Asia/Shanghai）已成功push，HEAD/origin/main/实际远端均一致且干净；见implementation-push.json。本停止记录另行提交推送，最终核验记stop-push.json。完整证据：`artifacts/compatibility-batch029/evidence.json`；固定参考run `20261017-001742-0376196`，最终run `20261017-013511-9230398`。
+- 原始早期成功、fixture/PowerShell失败、父子集合7行回归及最终修复全部保留；最终JIT-AOT关闭LostFocus差异不能用早期16/16一致替代。关闭验证取消场景后续由fixture显式Dispose清理，不称Close已接受关闭。
+- 收尾纠正FND-021验证任务漏记、Control-02遗漏028 Select/CanSelect、TabControl既有局部实现状态；未完父项/任务ID/固定分母保留。关闭/循环归属、全部派生验证消费、键盘/设备/Designer/资源/GTK4/AppKit继续待办。
+- 用户新指示覆盖历史接续提示：029推送核验完成后停止；不创建下一聊天/030、不发送“开始接管”、不恢复巡检。只有新的明确用户指示才可恢复未完任务。
+
+## 批次028完成证据与下一依赖（历史）
+
+- 实现已成功推送`496e632d13e7e4f26dcb649093e69d589c9128d0`并核对三SHA/干净状态；029本地只读聊天`01a14565-97a2-76f0-8645-317df65705a7`已创建。本交接独立提交/推送并核对远端后才发送开始，确认新主实际接管即归档028。
+
+- 批次028完成Control-12a基础选择导航、12b标准焦点通知、ContainerControl-02a逻辑活动链、Form-08a必要激活及TextBox-003a通知去重。4,343测试（新增28+26）全通过，双目标Release 0错误/646警告。30场景JIT/实际AOT全同，对固定10.0.11参考18同/12差异：11场景关闭后多出WM_QUIT，另1场景为SplitContainer继承链导致的活动容器投影差异；严格driver exit1保留。旧Focus157/父子集合391/句柄生命周期204行参考JIT全同。探针/Demo AOT为3,119,616/4,305,920字节，CLR目录0；Demo窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0且原HWND全部销毁。13项目/17目标仅.NET10，官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API重新导出且1,095类型/61,240行/187页与运行unverified不变。自动焦点转移/完整派生导航、验证/键盘/IME、物理输入、Designer/资源与GTK4/AppKit仍未完成。
+- 固定参考run `20261016-231510-4119028`；最终JIT/AOT `20261016-232925-3027818`；源码SHA256 `80527FBB6C3C20353A58CC4D105605A67B163CE05BEBA171F332729D4C064555`。参考6,770行/Lumina6,781行，全部exit0、complete标记和原HWND释放齐全；strictMatches=false/aotMatches=true。
+- 11项差异仅增加pump-quit=True，属于既有Form/OpenForms消息循环退出缺口；container-lookup另1行少split:null，属于SplitContainer继承缺口。不得归一化、标成strict全同或把原生程序消息当物理输入。
+- 首轮测试两失败及旧生命周期4行差异保留；Form句柄可见性恢复改SW_SHOWNOACTIVATE，避免早激活创建子HWND。最终4,343测试与旧157/391/204行回归通过，不修改旧期望。焦点探针IL3050、Demo既有IL3050/IL3053及全部历史边界保留。
+- 已同步五个完成子项/未完父项、Form-08/12历史漏标与Focus(bool)误述，并纠正ROADMAP总标题026滞后；417份Markdown、2,088任务、187行逐类型实施索引校验0错误，整类型代码完成0。完整证据artifacts/compatibility-batch028/evidence.json。下一批[029](029.md)先固定自动焦点转移/验证前置，不重做全项目评估。
+
+## 批次027完成证据与下一依赖（历史快照）
+
+- 实现已成功推送c87c52849e19098c02dc00898c9960424abf21da，三SHA/干净状态已核；028只读准备聊天01a14527-ef1d-7440-8ca2-fc11b53f515f已创建。本交接另行commit/push/核远端后才发开始，确认实际接管即归档027。
+
+- 批次027完成Control-13a坐标/捕获、13b基础鼠标事件/消息跟踪及五处必要消费者共享Click子范围。4,289测试（新增21+25）通过，双目标Release 0错误/645警告；25共同场景549行、固定参考20同/5差异，JIT/实际AOT24同/1异常文本差异，所有进程exit0。锁屏导致参考10、JIT/AOT20次WindowFromPoint命中失败，成功命中与物理点击未验收。生命周期204及消息绘制558行参考/JIT回归全同。输入探针/Demo AOT为3,107,840/4,298,752字节且CLR目录0；Demo原生窗口可见、BM_CLICK复选框0→1、WM_CLOSE正常exit0/原HWND全失效，无强制清理。13项目/17目标仅.NET10、官方Drawing10.0.0、固定双目标及原始Designer/resx保持；API已重导出但固定1,095类型/61,240行/187页及运行unverified不变。完整Control/派生输入/键盘验证/资源Designer/平台和旧差异仍未关闭。
+- 027主为`01a144ef-726b-78a3-8b32-d9bd4e73eb2d`（local）；接管32f65b9e411d9838ebcc5c1f0a1af7f61add972b时三SHA相同且干净，026旧主已归档。control_input_core/input_consumers/reference_probe均冻结，无后续写入/构建/Git；主统一完成共享interop、API和收尾。
+- 参考run `20261016-220702-8990064`；最终JIT/AOT run `20261016-222106-7575539`；源SHA256 `A47B7CDA7FF8E64917279641FC0C3689E0DE644B82DB6DA265449E1C0743D407`。FlatStyle.System另3场景仅参考，不进共同分母。direct-helpers保留命名空间/Native AOT原生异常文本，四消费者保留实际差异；strict driver exit1不隐藏。
+- 锁屏诊断为LockScreenBackstopFrame，visible=true、enabled=false、rect0,0,1920,1080；尚无用户解锁回复。原生Capture/坐标/消息和程序BM_CLICK有证据，成功WindowFromPoint点击/物理设备仍待验。下一主不得用程序消息或修改期望冒充解锁验收。
+- FND-020/CNS和七个明确子项同步；纠正Control-12已有Enter/Leave、CheckBox/RadioButton既有CheckedChanged及RadioButton Parent旧阻塞遗漏。父项、平台、原ID/未完项/固定分母保留，README实施完成ID列和tasks.csv由原工具生成；本机证据artifacts/compatibility-batch027/evidence.json。
+- 收尾校验416份Markdown、2,083项任务、187行逐控件实施索引0错误，整类型代码完成0。已重导出API并保持固定分母及运行unverified；原始Demo/Designer/resx未改。
+- 下一批[028](028.md)先固定焦点/选择导航与必要ContainerControl/Form协作参考；完整键盘/验证/IME后续按依赖继续，完整Control目标、Linux/macOS代码和Windows验收不因本批结束而停止。
+
+## 批次026完成证据与下一依赖
+
+- Control-05c：失败通知结算全部已接受未执行InvokeAsync任务；保留取消先后/原错token/重建/已开始工作/ValueTask单消费，不重复ThreadException。Control-08c：实际HWND已销毁后的原生错误继续正常托管步骤，后续托管失败仍短路，单错EDI/多错按序聚合，未改Form.cs或公共API。28+20新增回归与全部4,243测试通过。
+- 参考run `20261016-210951-8765335`，JIT/AOT run `20261016-211451-3933342`，源码SHA256 `CCEA907A90096CF37AEB12372B978D9C95BE4FB7A38B0B2C13FDA43B6216D5F4`。25标准场景16同/9增强差异，另7旧Task只Lumina；32场景JIT/AOT全同、全部exit0，严格参考driver exit1保留。pendingTaskObservations包含before-source门控中间值，不是最终悬挂任务数。
+- 双目标Release0错误/643警告；探针AOT3,851,776字节、Demo4,289,024字节，CLR目录均0。Demo真实显示/复选框0→1/WM_CLOSE exit0/原始HWND全失效，无强制清理。旧投递69/context57/生命周期204行参考JIT同；旧004/005各两行关闭增强差异，025仍四同四差异，原始旧日志/首轮fixture失败均保存。本批旧AOT未重跑，证据artifacts/compatibility-batch026/evidence.json。
+- 13项目/17目标仅.NET10，原始Demo/Designer/resx未改，Windows官方Drawing10.0.0且net10.0两依赖图无WinForms/Resources.Extensions/自有Drawing。Control/FND当前缺口按实际范围修正；Form-07已有Close/WM_CLOSE/取消/Dispose却仍全待办，纠正为部分并保留全部剩余。仅05c/08c代码完成，父项/平台/固定API运行unverified保留。
+- 下一批027先固定Control-13的坐标、Capture和鼠标输入参考，核心Control、必要Form/消费、参考三个互斥内部任务；共享interop/API/文档/顺序构建/Git由主独占。按已有基础继续真实交互，未完竞态/资源/Designer/平台不删除，不恢复无关循环或暂停巡检。
+- 收尾校验：415份Markdown、2,076项任务、187行逐控件实施索引0错误，整类型代码完成0；README引言和验证页025遗漏历史已纠正。实现已成功推送c0f4c3d8bc12e2684cb9ddb6bca765373f8c4c60；027只读准备聊天01a144ef-726b-78a3-8b32-d9bd4e73eb2d已创建，本次独立交接成功核对后才发送开始，确认实际接管即归档026。
+
+## 批次025完成证据与下一依赖
+
+- 025完成Control-04c、Control-07b、Control-17b、Form-16c、WindowsFormsSynchronizationContext-06a。`Lumina.Tests` 4,195/4,195 通过；`Lumina.slnx` Release 0错误/641警告；固定WinForms 10.0.11参考、Lumina JIT、Lumina Native AOT各8场景均 `exit=0` 且 `complete=True`，4场景严格相同，4项真实差异保留在`artifacts/compatibility-batch025/control-boundary/comparison.json`。
+- NativeFormsDemo `net10.0` AOT 实际显示、Enable option 复选框 0→1、WM_CLOSE 正常退出，原始 HWND 全部失效；Demo PE 4,287,488 字节、Control 探针 PE 2,989,056 字节，CLR directory RVA/size 均为0。现有IL3050/IL3053/NU1510/CA1416和XML/分析器警告按原始日志保留，未全局 suppress。
+- 下一批先按只读准备聊天`01a144c0-6427-79a2-a2cd-55d0dd562990`核对025实现/文档/远端状态，再由当前主更新本节、提交并推送交接SHA，发送“开始接管”并确认新主实际接管；确认后当前主停止写入/构建/Git并立即归档，不等待下一批完成。
+
+## 批次024完成证据与下一依赖
+
+- 批次024完成Control-04b/14b、Form-16b：关闭/失败投递完成余队列后保留错误，真实销毁HWND；补背景图像五布局、真实父子透明/alpha与DC/Graphics状态，Form取消默认COMPOSITED修复失效区域。4,188测试（新增30）通过，双目标Release 0错误/641警告。21场景307行JIT/实际AOT全同，对固定10.0.11保留16行关闭增强差异及严格失败；6组旧参考/JIT回归全同，外观仍3条palette差异。背景/Demo AOT为3,450,880/4,284,928字节，CLR目录0；Demo实际显示/复选框0→1/exit0/窗口全销毁。既有IL3050和023自定义Param AOT四差异保留；普通Drain、InvokeAsync关闭、native双错/Dispose后续清理、完整输入/绘制/Designer/资源/DPI及GTK4/AppKit仍缺。
+
+- 本批固定参考run 20261016-104912-4009835，最终JIT/AOT run 20261016-110417-5852973，源码SHA256 C796161745EA4AB770586AAACC8B7EB2600A78ADEAB1C8F8472B1010D7C416A5。原始差异与进程/TRX/PE/依赖/索引汇总见artifacts/compatibility-batch024/evidence.json；仅三个明确子范围✅，父项、187类型索引及运行unverified保留。
+
+- 下一批025的执行收尾独占WindowThreadDispatcher，native边界独占Control/Form/context，参考任务独占新探针；统一主负责文档/顺序集成/Git。先修普通Drain与回调/清理双错，InvokeAsync包装终止按共享文件依赖后续串行，不扩为所有竞态已完成。
+
+## 批次023历史证据与当时下一依赖
+
+- 明确范围：Control-14a/17a、Form-16a；标准Message/CreateParams/WndProc/DefWndProc、样式与基础真实绘制/失效/更新/打印，原生控件保留原过程。原生回调外层无条件释放映射/句柄/root/HFONT，公共OnPrint保留背景回调状态修改，native打印隔离背景状态；透明子项Invalidated移除/释放重入已修。
+- 4,158项测试全部通过，新增20项；双目标Release 0错误/635警告。四组旧差分：布局512、事务394、生命周期204、父子集合391行参考/JIT全同，旧AOT未重跑；集合旧32行fixture边界保留。
+- 消息绘制18场景558行JIT严格同固定10.0.11；实际AOT完成558行，554同、4条自定义CreateParams.Param差异，strictMatches=false/aotInScopeMatches=true，原始输出不变。最终run 20261016-101835-1132631；原参考20261016-091744-1927945，源码SHA256 B9964B910AE3E42AF3D2E988BC0E806C924EA43186B20CF1D78CBDD9B62E18F7。
+- 外观最终run 20261016-101947-4132109位于既有batch022驱动目录：212行JIT/AOT全同，对原参考仍3条palette前景差异/driver exit1，原10条WM_GETFONT差异由真实UserPaint修复。保留022历史13条失败快照。消息/外观探针与Demo实际AOT分别3,088,896/3,091,968/4,265,984字节，CLR目录均0；Demo显示/复选框0→1/exit0/记录窗口全销毁，无强制清理。
+- Message.GetLParam(Type)存在IL3050，AOT仅显式根化Payload有证据；任意marshaller和custom Param不宣称支持。透明/alpha探针没有HWND、PRINTCLIENT像素为位图，不证明屏幕透明合成。全证据artifacts/compatibility-batch023/evidence.json；原失败、TRX、进程/PE/警告保存。
+- 13项目/17目标均.NET10，原Demo源码/Designer/resx未改，Windows官方Drawing10.0.0且net10.0无WinForms/Resources.Extensions/自有Drawing；API固定1,095类型/61,240行/187页、运行unverified。仅三个明确子范围✅，父项仍部分，历史状态/任务索引按实际代码重整，不由测试数推98%。
+- 下一批024先处理已释放AsyncWaitHandle使WindowThreadDispatcher.Close中断剩余回调，以及DestroyHandle预先Close阻止销毁；随后补BackgroundImage/Layout与有HWND透明绘制。投递关闭/背景绘制/参考子任务互斥；主统一构建、共享文档/API/索引、Git。完整授权与收尾/推送/归档规则见024及下方接续提示。
+
+## 批次022历史证据与当时下一依赖
+
+- 实现98cde66ca344ccbf8755faaca314e6936788df73已成功推送并核对三SHA/干净状态；023只读准备聊天01a143ef-9e5b-76f2-9cfc-bb811bf4a0e2已创建。本归属交接独立提交推送，确认新主实际接管后旧主立即归档。
+- 批次022完成Control-11b基础Font/BackColor/ForeColor局部值、父级继承/Reset/通知及08b借用Font/独占HFONT寿命，必要Form/TextBox/GroupBox/Tab/条带消费接入。16场景212行JIT与实际AOT全同；对固定10.0.11仍有13条真实差异：10条基础Control缺UserPaint路径的WM_GETFONT，3条默认palette前景色，strictMatches=false。4,138项测试（新增31）通过，旧默认布局512/事务394/生命周期204/集合391行参考/JIT均同；双目标Release 0错误/478警告，Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。探针2,971,136字节、Demo4,196,352字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
+- 完整Styles/UserPaint/消息绘制、其余ambient来源/RightToLeft/Cursor、字体自动缩放/DPI、全部派生布局/输入、Designer/资源/模态与GTK4/AppKit仍缺；父任务保持部分，不宣称整Control或98%。
+- 固定参考run 20261016-082323-2290099，最终JIT/AOT 20261016-084839-8131815；旧事务20261016-084716-3291017、生命周期20261016-084724-2175337、默认布局20261016-084735-6315609，父子集合在022目录。完整证据artifacts/compatibility-batch022/evidence.json。仅4组旧差分在本批重跑，不能写成16驱动。
+- 20核心+11资源新测试，首次编译/运行失败和GetObjectType假阳性诊断保留；MenuStrip宿主错误替换已真实修复。13项目/17目标、原始Demo与官方Drawing约束不变，API固定分母和187页运行unverified不变。
+- 已核对本批与受影响历史状态：GroupBox标准集合/局部默认/原生、Form继承缩放/原生、Tab/条带原生、Control/FND已有Invalidate/内部窗口过程改为部分；仅明确子范围✅，不删除任务或关闭整类型。
+- 下一批023核心/必要契约原生衔接/固定参考三个互斥内部任务，主独占共享interop/文档/顺序集成/Git。先对照Message/CreateParams/Styles及真实UserPaint，不伪装WM_GETFONT；完整Control目标与所有授权/验收/推送交接归档规则不变。
+
+## 批次021完成证据与剩余依赖（历史快照）
+
+- 实现已推送accc4f92ab9ea1e334a9419872542cb8f3227bf3并核对三SHA/干净状态；022只读接续聊天01a143be-8230-74b0-aa82-837bcf0b8563已创建。本次归属交接独立提交推送，确认实际接管后旧主立即归档。
+
+- 021完成Control-09d/10c基础默认布局、首选尺寸/缓存和标准LayoutEngine及必要容器衔接。18场景512行固定10.0.11/JIT/实际AOT严格相同；旧020事务394行参考/JIT七行差异清零，019生命周期204行和父子集合391行参考/JIT同。4,107项测试及16个旧Control/context驱动全部通过，双目标Release 0错误/464警告；Demo AOT真实显示、复选框0→1、正常exit0且记录HWND全失效。布局探针3,041,280字节、Demo4,192,256字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
+- 完整派生测量/滚动/Flow/Table/条带/Split边界、DPI/RTL及复杂布局缓存重入、非Control布局对象仍缺；Control-09/10、FND-014/015和容器父项继续部分。Control-11字体/颜色继承及必要主题/原生资源消费是下一依赖；完整Control Windows/Designer/资源/模态与GTK4/AppKit未关闭，不宣称98%。
+- 默认布局最终run为20261016-074614-3648884，固定参考为20261016-073734-9109514；旧事务run为20261016-074817-1254094，生命周期run为20261016-074822-9151166。完整证据artifacts/compatibility-batch021/evidence.json。核心13项+容器11项新增回归；首轮两个失败、fixture编译失败和中间9行差异保留，最终不做输出归一化。
+- 收尾更正Control-17已存在Win32代码仍全标待办、Flow/Table有限测量及CNS-008引擎仍全待办；父项/平台/98%不关闭，固定分母和187页运行unverified不变。README逐控件实施列及tasks.csv用既有工具重生成，13项目/17目标均.NET10，原Demo源码/Designer/resx未改。
+- 下一批022沿Font/BackColor/ForeColor继承和实际资源/主题消费；Control核心、必要容器资源、独立固定参考三个内部任务，先约定接口；共享interop/文档/API/顺序构建/Git由主独占。完整授权、验收、提交推送/远端核对、只读准备→归属交接→开始接管→确认后归档规则不变。
+
+## 批次020完成证据与剩余依赖（历史快照）
+
+- 020完成Control-10b标准布局事务及Form/Flow/Table/Split/Tab/条带必要衔接；4,083测试、16个旧Control/context驱动、204行生命周期及391行父子集合JIT回归通过。24场景394行JIT/实际AOT严格同；参考有7行Dock/Split几何差异，strictMatches=false，原始失败保留。双目标Release 0错误/454警告；Demo AOT真实显示、复选框0→1、正常exit0且全部记录HWND失效。布局探针2,872,320字节、Demo4,159,488字节，CLR目录均0；探针无IL2xxx/IL3xxx，Demo既有IL3050保留。
+- 完整LayoutEngine/DefaultLayout、PreferredSize缓存、InitLayout/ResumeLayout(false)引擎初始化、Dock/Anchor/AutoSize及Split比例仍未完成；Control-09/10、FND-014/015和容器父项保持部分。Form.Created、完整Windows Control/Designer/资源/模态及GTK4/AppKit继续待办，不宣称整Control或98%。
+- 固定参考run为20261016-024318-6186215，最终JIT/AOT为20261016-025123-8344158；完整日志、原始差异、PE、约束与索引摘要在artifacts/compatibility-batch020/evidence.json。25项核心+31项容器新增回归；首次fixture失败保留。参考22个完整场景356行同，394总行387同，7行几何差异不归一化。
+- 收尾已同步Control/Form/ScrollableControl/ContainerControl/Panel与七容器、FND/CNS及总览历史；纠正Panel对018标准层/集合的遗漏、CNS对018事件/集合的遗漏及布局空入口过时描述。明确子范围才✅，完整父项继续🟡；固定1,095类型/61,240行/187页及unverified不变；409份Markdown、2,046项任务与187行逐控件实施索引校验0错误，整类型代码完成仍为0。
+- 收尾源码复核另发现Dock↔Anchor切换事件边界：当前Anchor setter通过公共Dock=None可能额外触发DockChanged，固定参考走内部SetDock；394行探针未覆盖该组合。后续默认布局需修正并取得独立证据，不将7行已观测几何差异泛化为全部剩余差异。
+- 021先定义实际默认布局/LayoutEngine/首选尺寸范围，再分配核心、必要容器和固定参考三个互斥内部任务；Control/Form/interop重叠串行，主统一顺序构建与Git，完整Control目标和全部交接规则不变。
+- 021内部责任已完成并冻结：default_layout_core负责Control/默认引擎/13测试，default_layout_containers负责10库文件/11测试，default_layout_probe负责18场景固定探针/驱动及只读审查；主独占共享文档/API/索引、旧fixture、集成/Git。旧020聊天已核实归档。
+
+## 批次017完成证据与结束范围
+
+- Control-11a：virtual ResetText消费虚Text setter，保留虚getter判等、通知/原异常/重入、null/Unicode/NUL/引用和释放后托管边界，219项新增回归通过。3,774条固定10.0.11参考/JIT相同；实际AOT只有Text属性列表缺DispId=-517，另3,773条原始记录相同。实际编译参数及CoreLib内嵌RemoveAttributeInstances证实原因，原始差异/首次失败保留，strictMatches=false，不改库AOT策略。
+- ListViewItem-04b：未挂接ImageIndex/ImageKey默认、验证/失败状态、key-index互斥及重复/引用身份完成，518条固定英文参考/JIT相同，363项新增回归。首项恢复/三枚举/各view key缓存/样式/借用资源保持；NoneExcludedImageIndexConverter、ImageKeyConverter和ImageIndexEditor仍缺，新范围未计实际AOT运行验收。
+- 集成：3,934项测试全部通过，0失败/跳过；29个旧驱动通过；双目标Release 0错误/最终增量301警告。文本AOT EXE2,049,024字节实际运行，无IL2xxx/IL3xxx；完整Demo AOT4,108,288字节仅发布，二者CLR Header 0。Demo既有IL3050、主窗交互/正常关闭、设计器及三平台验收保持待完成。
+- 13项目/17目标仅.NET10，Windows官方Drawing10.0.0，原始静态Designer/resx和net10.0依赖满足要求。API固定分母1,095类型/61,240行、运行unverified；405份Markdown/187组类型/API页/2,033项任务及187行实施索引检查0错误。Control-11和ListViewItem-04/FND-003保持部分完成，整类型代码完成0，没有整控件或98%声明。证据artifacts/compatibility-batch017/evidence.json。
+- 017结束时按当时用户要求停止接续，完成记录为77955c4；本节保留该历史边界。后续用户已另行授权上述Control专项，原ID/优先级和全部017证据继续保留，巡检仍不恢复。
+
+## 用户已经确定的范围
+
+2026-10-16最新授权：在新本地聊天完整实现Control，至少完成Windows验收，其他系统完成对应代码；本专项目标优先于旧轮次“017后停止接续”以及实施阶段统一后置真机验证的安排。使用多个互斥内部子智能体，保留单一编码主；Control.cs、Form及共享interop的写入责任需串行协调，主聊天统一集成/验证/共享文档/Git。按既有批次机制推进到整个目标完成，必要父类/容器/Application/平台资源依赖纳入，但不扩展到所有无关控件。代码完成、平台编译与真实运行验收分开记录；按既有coverage口径核对完整Control清单，不按测试数量计算98%。新授权不恢复已暂停的luminaforms自动化或无关路线图循环。
+
+用户于 2026-10-15 要求：提交推送后，在新会话用多个子智能体逐任务实现；每个子智能体负责一个任务，无文件冲突才并行；每批完成后新建会话接续；每半小时巡检；专注代码，不扩散、不做额外架构。用户授权该实施循环及每批必要的提交、推送、创建接续会话和监督消息；后续用户的暂停/停止指令优先。2026-10-16 补充：实现和交接都必须 commit 并成功 push，记录实现 SHA 和远端分支核对结果；仅本地提交不算批次完成。新会话实际接管后旧主会话立即停止写入并归档，不等待下一批结束。
+
+2026-10-16 新增用户要求：每批任务结束必须检查并重新整理路线图，“把已完成的要标记，不要虚标”；历史已完成和未完成项也须按实际证据统一回标。用户进一步明确 docs/roadmap/README.md 要逐个控件标注。每批实现提交前同步 ROADMAP.md、执行总览、相关控件/公共任务页、修改历史、批次与本文件，用现有Validate-Roadmap.ps1 -ExportTasks同时重生成逐类型README的实施状态/完成子任务列和tasks.csv，再校验一致性。明确子范围全部实现才 ✅，父任务未完保留 🟡/🚧并列完成子范围和剩余项；未开始 ⬜，实际已分配才 🚧。文档/签名/编译/局部探针/基类完成不能关闭整个控件或平台，🧪仅限可复现的对应范围/平台证据；真机/设计器/跨平台继续待验收。发现历史错标要纠正说明，保留ID、提交历史和固定分母，不删除未完项或用计数推出98%。按真实剩余依赖与既有优先级整理下一批，不重做全项目评估、不扩大本批测试、不另建调度/报告框架，随批次提交推送，完整传给接续聊天。
+
+固定 .NET 10.0.11 WinForms 基线。用户于本批进一步明确：所有项目（包括分析器和构建工具）只支持 .NET 10，使用 `net10.0` / `net10.0-windows`，不支持 `netstandard2.0` 或旧 .NET 目标。保留 `Lumina.Forms` 包/命名空间与 NativeFormsDemo 双目标：`net10.0-windows` 真实 WinForms/VS 设计器，`net10.0` Lumina.Forms/Native AOT。不引入替代 UI 栈。
+
+2026-10-16 的 PROJECT_REQUIREMENTS.md 修订已读取（提交 f424523）：Windows 两目标均继续使用官方 System.Drawing.Common；Linux 的自有 Drawing/身份验证按 XPL 任务推进，不阻塞当前 Windows 兼容批次，也不把 net10.0 等同 Linux。
+
+前期 **✅ 代码完成即关闭开发部分**：实现任务明确的范围，并通过必要编译/轻量检查即可。复杂 UI 自动化、真机、压力、设计器往返集中后置；后期先 Windows，再统一 Linux；macOS 尚无真机证据时如实留待验收。不得用空实现、常量成功或吞异常冒充完成。**🧪 验收通过**是另一状态，只有逐成员/场景证据才计入 98%。
+
+## 每批怎样继续
+
+1. 先查当前编码主会话、`git status`、批次任务和文件责任范围。同一工作区同一时刻只有一个编码主会话。
+2. 主会话选 2～3 个有边界的任务，用内部子智能体分配，一人一任务；涉及 Control/Form/共享 interop 等同一文件的工作串行。主智能体保留共享文档、集成构建和 Git 操作。
+3. 子智能体不提交、不推送、不创建接续会话，不覆盖其他人的修改；需要越过文件责任范围时先向主智能体报依赖。由主智能体统一构建，避免争用 obj/bin。
+4. 主智能体集成后按真实实现与必要检查逐项复核本批及受影响路线图，并核实收到的历史回标清单；同步 ROADMAP/执行总览、控件/公共任务页与历史、本批记录/HANDOFF，重新生成 tasks.csv 并校验一致性，再 commit 并成功 push。记录实现 SHA，用远端 refs/heads/main 核对推送结果；仅本地提交不算批次完成。完整实现的子范围才 ✅，父项保留部分及明确剩余，待真机/设计器/跨平台单列；历史错标纠正说明且保留ID/分母。遇到局部阻塞先做其他可实施任务。
+5. 每批结束后创建一个新的项目本地会话。先让新会话只读准备，旧会话把本文件的编码主会话 ID、下一批、文件责任、实现 SHA 和远端核对结果更新，commit 并成功 push 交接，再发送“开始接管”。新会话核实归属并实际接管后，旧会话停止所有写入/构建/Git，调用 set_thread_archived 归档（或由监督核对后归档），不能等待下一批全部结束。不要让多个主会话同时领取任务；接续提示保留全部授权、推送成功条件和归档规则。
+
+以下为历史巡检恢复时的协调规则，当前luminaforms仍暂停，不能凭本段自行恢复：巡检先读本文件，再查编码主会话状态和最新批次记录。会话正常运行时不另起竞争主会话；空闲但未完成时，按当时有效授权给该会话发送继续消息。批次完成但尚未接续时才创建下一会话。出现错误先读取必要上下文恢复，不在活跃写入时reset/clean/换分支。当前Control专项必须在结束前完成其Windows验收，无需等全部控件开发完成；最终专项目标完成或用户停止时结束。
+
+应用/机器需运行且有可用额度，定时巡检才可执行；该机制不承诺离线永久运行。
+
+## 已有成果与检查
+
+- 批次 001：FND-005、REP-002 及 ListViewItem 构造子范围完成；父任务 FND-003/ListViewItem-01/Application-01 保留部分完成。分析器也统一 net10.0；12 个项目均只声明 .NET 10 目标。
+- 批次 001 检查：双目标 Release 构建 0 错误；92 项测试全通过；14 组 DPI 隔离对照与本机 WinForms 10.0.11 一致；两种真实 NuGet 消费各触发 LNF003 且无工具运行依赖；完整 Demo Native AOT 发布通过、EXE 无 CLR Header。复杂 UI/真机/设计器/跨平台验收后置，不能从上述结果推算 98%。
+- 批次 002：可实例化 Control : Component/IWin32Window，Component Site/Container/Disposed/Disposing 与派生清理衔接；101 项纯托管测试、1 项基础 HWND 测试、5 项真实端生命周期观测通过。父 FND-001/Control-01/Control-08/FND-012 仍保留未完范围。
+- 批次 002 资源：五张真实 Demo Bitmap 的 WinForms/Lumina JIT/Native AOT 像素、文化、身份、重载/GC/错误语义相同，IL2026 消除；资源脚本仍因 IL3050 严格失败。原 IL3053 已展开为 Container.ValidateName 根化 InheritanceAttribute.ToString/Enum.GetValues(Type)，未改标准容器、未全局抑制。原始 Designer/resx 不变，资源转接在库内 Lumina.Forms.Resources，obj 生成副本仅供 net10.0。
+- 批次 002 最终主线双目标构建 0 错误；完整 Demo AOT 发布通过（4,085,248 字节），资源探针 AOT 已运行，两者无 CLR Header。13 项目/17 个目标仅 .NET 10；net10.0 Demo deps 无 WinForms/Resources.Extensions；完整主窗、设计器、Icon/Font/其他转换仍未验收。
+- 批次 003：Control/Form 接入真实 HWND 投递、ISynchronizeInvoke、标准同步 Action/Delegate/args/Func 与 BeginInvoke/EndInvoke；69 条观测在 WinForms/JIT/Native AOT 三端相同。Application 新增线程局部 ThreadException/OnThreadException，未 EndInvoke 的异步错误也会报告；完整 InvokeAsync、同步上下文/Form 继承及广泛关闭竞态仍待实现。
+- 批次 003 构造：ListViewItem 无参/string[]、null/空数组/null 元素、输入复制与延迟首项已完成，41 条差分相同。118 项测试全通过（117 托管 + 1 基础 HWND），主线双目标 Release 0 错误；13 项目/17 目标仅 .NET 10。Demo AOT 发布 4,094,464 字节，实际线程 AOT 探针 2,615,808 字节且运行对照通过，均无 CLR Header；Demo 的 IL3050 保留，线程探针无 IL2xxx/IL3xxx。原始 Designer/resx 无修改。
+- 批次 003 明确差异：有 HWND 的 null Delegate 用 ArgumentNullException 防止复制参考端挂起；默认线程错误仅原生 OK 提示，缺标准 Quit/Details/Help/异常模式，错误事件处理器再抛时在 native 边界前 FailFast。完整类型兼容未验收，不能据此算 98%。
+- 批次 004 文件责任：Control-05a 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立异步检查；ListViewSubItem-01a 子智能体负责 ListViewItem.cs 及独立子项构造/现有构造回归。共享 Application.cs/Win32.cs、全部文档/集成/Git 由主会话协调；子智能体不构建、不提交。
+- 批次 004：标准 Action/Func<T> InvokeAsync + CancellationToken 已真实排队，旧单 Action/Task 回调同样排队。59 条固定 WinForms 10.0.11/JIT/AOT 观测相同，旧 Task 专项也在 JIT/AOT 通过。空 callback/无自身 HWND 返回 Faulted Task；预取消成功跳过回调且 Func 返回 default，排队后取消/token 与回调原异常按参考端保留；Task 错误不报告 ThreadException。Dispose 丢弃的排队 Task 等待后续 token 取消，与参考端相同，完整无 token 关闭/重建/退出竞态仍待后续。
+- 批次 004 子项：公共无参/owner-text、可继承性、Text/Name/Tag 与属性元数据已完成，37 条对照相同，新增 13 项无 UI 回归；原 21 项 ListViewItem 构造/41 条观测及旧投递 69 条回归继续通过。131 项测试全部通过（130 托管 + 1 既有基础 HWND），主线双目标 Release 0 错误/本次增量 318 警告。
+- 批次 004 AOT：新异步探针实际运行三端对照，EXE 2,736,128 字节；完整 Demo 发布通过，EXE 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 详细告警仍为已定位 InheritanceAttribute/Enum.GetValues(Type) 的 IL3050。13 项目/17 目标仍仅 .NET 10，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing，原始 Designer/resx 无修改。
+- 批次 005 文件责任：Control-05b 子智能体负责 Control.cs/Form.cs/WindowThreadDispatcher.cs 及独立 ValueTask 检查；ListViewSubItem-01b 子智能体负责 ListViewItem.cs 与独立样式构造/未挂接样式检查。共享 Application.cs/Win32.cs、全部文档/API/索引、集成构建与 Git 由主会话协调，子智能体不构建、不提交；先跑固定 WinForms 10.0.11 参考端。ValueTask 初始 UI 调用与单次消费不等于 await 后 UI 恢复；已挂接 ListView 的样式继承/native/完整所属也继续保留。
+- 187 组独立类型任务页、固定基线/API/接口/类型责任清单；遗漏审计与三平台逐控件方案已落盘。
+- 批次 005：Control/Form 标准 ValueTask 两族在 UI 队列首次调用，固定参考/JIT/实际 AOT 的 90 条观测相同，含 IValueTaskSource 同步/延迟/取消后单次消费及结果/原异常/token；旧 Task 虚方法以 OverloadResolutionPriority(-1) 保留显式消费和派生 override，async token lambda 不歧义。旧 Action/Func 59 条三端、旧 Task 专项与同步投递 69 条回归通过。
+- 批次 005 子项：五参样式构造、ForeColor/BackColor/Font 与 ResetStyle 的独立/未挂接 owner 子范围完成，另 37 条样式观测相同，15 项新增测试；全线 146 项通过。默认 WindowText/Window 与惰性共享官方 MessageBoxFont，保留借用 Font 身份/寿命；全局默认字体、已挂接样式/完整所属/native 仍缺。原基础子项 37 条、ListViewItem 41 条回归保留。
+- 批次 005 集成：主线双目标 Release 0 错误/本次增量 318 警告；ValueTask AOT 探针实际运行通过，EXE 2,794,496 字节；完整 Demo AOT 发布 4,094,464 字节，二者 CLR Header 为 0。探针无 IL2xxx/IL3xxx；Demo 保留既有 InheritanceAttribute/Enum.GetValues(Type) IL3050。13 项目/17 目标仍仅 .NET 10，Demo 原始 Designer/resx 未改，net10.0 deps 无 WinForms/Resources.Extensions/自有 Drawing。
+- 批次 006 文件责任：WindowsFormsSynchronizationContext-01a 子智能体负责标准显式 context 类型/投递辅助、Control/Form/dispatcher 与独立探针；ListViewSubItem-03a 子智能体负责 ListViewItem.cs 与独立 key 检查。Application/Win32、文档/API/索引、集成构建和 Git 由主会话协调。先固定参考端，再实现；AutoInstall/Uninstall/默认 await 恢复与完整线程/关闭/模态竞态留后续，不造空方法。key 子范围不关闭完整集合所属/native。
+- 批次 006：显式标准 context 类型、无参构造/Post/Send/CreateCopy/Dispose 已实现；57 条固定参考/JIT/实际 AOT 观测相同，新增 7 项独立 STA 检查。message-only HWND 与既有 dispatcher 复用，创建登记 DPI，销毁释放 GCHandle；普通 Form 释放不影响目的地。同线程共享 Dispose 失效与重新构造仍失效按参考保留；null Post 接受、null Send 明确防挂差异（参考隔离超时，本实现 ArgumentNullException d）。AutoInstall/Uninstall/default await 恢复仍缺。
+- 批次 006 子项：四个标准 virtual key 成员与 209 条参考/JIT 观测相同，新增 38 项回归。用一个最后命中索引保留 Name/集合修改后重复 key 选择；null/空保留缓存、非空 miss 清除；先 UTF-16 等长再 InvariantCultureIgnoreCase，含 Unicode/嵌入 NUL。集合已解除 sealed，完整公共构造/IList/整数索引/所属/native 仍缺。
+- 批次 006 集成：191 项测试全部通过，主线双目标 Release 0 错误/本次增量 318 警告；旧线程69/Action59/旧Task/ValueTask90、Item41与子项基础/样式各37回归通过。context AOT 实际运行 EXE 2,688,512 字节，Demo AOT 4,094,464 字节，两者无 CLR Header；探针无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13 项目/17 目标仍仅 .NET 10，net10.0 deps 与原始 Designer/resx 保持要求，API 分母仍 1,095/61,240 且运行状态 unverified。
+- 批次 007 文件责任：WindowsFormsSynchronizationContext-01b 子智能体负责 context/Control/Form/Application/dispatcher 与独立默认安装探针；ListViewSubItem-02a 子智能体负责 ListViewItem.cs 与独立集合构造/整数索引/共享视图检查。Win32 必要衔接、文档/API/索引、集成/Git 由主会话协调；先固定参考。默认安装必须实际接入，不能只存 AutoInstall 或空 Uninstall；集合必须处理真实共享 owner 数据，不能只开放构造可见性。完整多线程/模态/退出与 IList/native 仍保留。
+- 批次 007：默认 AutoInstall/Uninstall、构造/现有消息循环安装还原与 callback await 恢复完成，204 条固定参考/JIT/实际 AOT 相同；公共集合构造/共享 owner 视图/整数索引的 72 条对照相同。236 项测试通过（新增 18 STA + 27 集合）；旧显式 context57、线程69、Action59/旧Task、ValueTask90、Item41、子项基础/样式各37、key209 回归保留。
+- 批次 007 原生退出：无 Form ExitThread 暴露提前 DeactivateActCtx SEH，改为退出请求与最外层 finally 释放本线程激活资源；两个不同 STA 无 Form 循环通过。Form 仍按进程全局 OpenForms 计数决定关闭后退出，完整多 UI/ApplicationContext/模态/线程退出和竞态未关闭。
+- 批次 007 集成：主线双目标 Release 0 错误/本次增量 315 警告；安装探针 AOT 2,750,464 字节、Demo AOT 4,105,216 字节，均无 CLR Header；探针无 IL2xxx/IL3xxx，Demo 保留既有 IL3050。13 项目/17 目标仍仅 .NET 10，原始 Designer/resx 与 net10.0 依赖满足约束；API 分母 1,095/61,240 与运行 unverified 状态不变。
+- 批次 008 文件责任：Control-02a 子智能体负责 Control.cs 和独立焦点 API/真实 HWND 检查；ListViewSubItem-02b 子智能体负责 ListViewItem.cs 与三个 typed Add 重载的返回/参数/样式/共享视图检查。Win32 必要衔接、Form 依赖、文档/API/索引、集成/Git 由主会话协调；先固定参考，不扩完整焦点键盘/布局和 IList/AddRange/native。
+- 批次 008：标准 bool Focus、virtual Focused、ContainsFocus/CanFocus 与标准元数据完成，157 条固定参考/JIT/实际 AOT 相同；三个 typed Add 的 74 条参考/JIT 相同，历史泛型 void 显式适配保留。真实 HWND 状态/无句柄不创建、重复/其他 owner 对象、共享视图/独立 key 缓存和借用 Font 寿命有对照；完整 Select/键盘/布局、IList/AddRange/所属/native 仍缺。
+- 批次 008 集成：主线双目标 Release 0 错误/本次增量 312 警告；293 项全线测试通过，新增 17 焦点 + 40 Add。旧线程69/Action59/旧Task/ValueTask90/context57/默认安装204、Item41/子项基础样式各37/key209/集合72 参考/JIT 回归保留。焦点 AOT 2,552,320 字节、Demo AOT 4,105,216 字节，二者无 CLR Header；焦点实际运行通过且无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13 项目/17 目标仅 .NET 10，原始 Designer/resx 与 net10.0 依赖满足约束；API 分母 1,095/61,240 与运行 unverified 状态不变。
+- 批次 009 文件责任：Control-02b 子智能体负责 Control.cs 与独立零尺寸/负尺寸归一/真实 HWND 矩形检查；ListViewSubItem-02c 子智能体负责 ListViewItem.cs 与三个 typed AddRange 的 null 数组/元素、顺序/身份、样式/借用 Font 和共享视图/key 缓存检查。Win32 必要衔接、文档/API/索引、集成/Git 由主会话协调；先固定参考，构造默认大小/全部派生约束/完整布局与 IList/Insert/所属/native 仍另列。
+- 批次 009 尺寸：无自身 HWND 时保留零/负尺寸且不创建句柄；有 HWND 时负数归零，实际零矩形可恢复。首次创建保留 USER32 原参数解释后 GetWindowRect 回读，HandleCreated 已见归一，int.MinValue 宽度对应 0×0。756 条固定参考/JIT/实际 AOT 相同，33 项新增回归；未改构造默认、全部派生尺寸限制、Form.ScaleSize、Min/Max、完整布局/事件。
+- 批次 009 子项：三个 typed void AddRange 完成，null 数组抛 items 且不改状态，三个重载均跳过 null 元素，包括文字数组；非 null 空 Text 对象/空字符串保留。151 条参考/JIT 相同，121 项新增回归；原构造 null 归空、单项 Add、身份/复制/重复/其他 owner、借用 Font、共享视图/主项 Text/各视图 key 缓存均保留，完整 IList/Insert/Remove/所属/挂接样式/native 仍缺，新 AddRange 未提前计实际 AOT 运行验收。
+- 批次 009 集成：最终 447 项测试全通过，主线双目标 Release 0 错误/最后成功增量 45 警告；旧组件5/线程69/Action59/旧Task/ValueTask90/context57/默认安装204/焦点157/Item41/子项基础样式各37/key209/集合72/Add74 参考JIT全部保留。尺寸 AOT 实际运行 756 条通过，EXE 2,562,048 字节，Demo AOT 4,105,728 字节，二者无 CLR Header；尺寸无 IL2xxx/IL3xxx，Demo 既有 IL3050 保留。13项目/17目标仅.NET10，原始Designer/resx及net10.0依赖满足约束，API运行状态仍unverified。
+- 批次 010 文件责任：Control-02c 子智能体负责 Control.cs、新 BoundsSpecified.cs 和独立指定边界/派生调用探针；ListViewSubItem-02d 子智能体负责 ListViewItem.cs 与独立 typed Insert/void Remove/RemoveAt/Clear 检查。Win32必要衔接、现有测试必要适配、文档/API/索引、集成/Git由主聊天协调；先固定参考，不扩完整布局/事件与非泛型IList/所属/native。
+- 批次 010 指定边界：BoundsSpecified 八标准值/Flags、x/y 命名 SetBounds 两族与 protected virtual SetBoundsCore 完成；外层保留未指定分量、未知位原样传递、有效矩形未变不调用，core 接完整矩形及派生调整。2,034 条固定参考/JIT/实际 AOT 相同，60 项新增回归；旧尺寸/首次创建回读/GetNativeHeight/OnBoundsChanged 保留，完整事件/布局/MinMax/派生约束仍缺。
+- 批次 010 子项：typed Insert 先 index 后 item；公开非虚 void Remove 用引用身份只删首项，null/缺失无操作，派生 Equals 不影响；历史泛型 bool Remove/Insert 显式保留，Clear/RemoveAt 维持接口 virtual-final。203 条参考/JIT 相同，110 项新增回归；共享视图/Text恢复/独立key缓存/借用Font保留，非泛型IList/Contains/IndexOf/CopyTo完整契约与所属/native仍缺，新范围未提前计实际AOT运行验收。
+- 批次 010 集成：617 项测试全通过，主线双目标 Release 0 错误/本次增量 304 警告；组件5/线程69/Action59/旧Task/ValueTask90/context57/默认安装204/焦点157/旧尺寸756/Item41/子项基础样式各37/key209/集合72/Add74/AddRange151参考JIT全部保留。指定边界实际AOT运行2,034条通过，EXE2,576,896字节，Demo AOT4,105,728字节，二者CLR Header为0；新探针无IL2xxx/IL3xxx，Demo既有IL3050保留。13项目/17目标仅.NET10，原始Designer/resx与net10.0依赖满足要求，API运行状态仍unverified。
+- 批次 011 文件责任：Control-10a 子智能体负责 Control.cs 与独立位置尺寸通知探针/测试；ListViewSubItem-02e 子智能体负责 ListViewItem.cs 与独立非泛型 IList/ICollection/必要 typed 查询复制探针/测试。Win32 必要衔接、现有测试适配、文档/API/索引、集成/Git由主聊天协调；先固定参考，完整客户区/外部原生自主移动/布局、完整枚举/并发/所属/native另列。
+- 批次 011 通知：四个标准事件/protected virtual On* 接入七属性/两族 SetBounds/直接 core，2,280 条固定参考/JIT/实际 AOT 相同，99 项新增回归通过。整矩形先提交、两族变化先快照，顺序 Move→LocationChanged→Resize→SizeChanged；OnSizeChanged 向 OnResize 传 Empty，SizeChanged 保留原参数。无 HWND/直接 protected 调用同步抛原异常，有 HWND setter 转既有 ThreadException；旧 OnBoundsChanged 独立保留，不依赖派生调用 base。
+- 批次 011 子项：非泛型 IList/ICollection 与 typed 引用查询/复制首范围完成，1,406 条固定参考/JIT 相同，270 项新增回归。对象变更类型先于位置，重复 Add 返回首次引用索引；CopyTo 为 private 显式 dest/index，空集合跳过验证、不恢复首项，非空保留 rank/索引/容量/类型顺序、非零下界与派生数组部分写入。各 view SyncRoot 为自身，IsSynchronized 按参考 true，不代表完整并发已验收。历史泛型/typed 消费、独立 key 缓存及借用 Font 保持，完整枚举/所属/native仍缺。
+- 批次 011 集成：986 项全线测试通过，主线双目标 Release 0 错误/本次增量 301 警告；组件/投递/异步/context/焦点/旧尺寸/指定边界及全部子项旧参考JIT回归通过。通知实际AOT运行2,280条相同，EXE2,618,880字节，Demo AOT4,106,240字节，两者CLR Header为0；新探针无IL2xxx/IL3xxx，Demo既有IL3050保留，新子项接口未计实际AOT运行验收。13项目/17目标仅.NET10，原始Designer/resx和net10.0依赖满足约束，API运行状态仍unverified。
+- 批次 012 文件责任：Control-09a 子智能体负责 Control.cs 与独立客户区/ClientSizeChanged 探针/测试；ListViewSubItem-02f 子智能体负责 ListViewItem.cs 与独立枚举消费/修改轨迹探针/测试。Win32必要interop、现有测试适配、文档/API/索引、集成/Git由主聊天协调；先固定参考，完整布局/所有派生约束/外部原生自主通知、多线程并发/压力/完整所属/native另列。
+- 批次 012 客户区：ClientSize/ClientRectangle/ClientSizeChanged、SetClientSizeCore/OnClientSizeChanged 完成，5,556 条固定参考/JIT/实际 AOT 全同，80 项新增回归。独立客户区缓存保留原始请求与重复通知；缓存变化使仅位置操作也可触发标准尺寸链，四有限边框/raw负值/重入/原异常有证据，旧边界/GetNativeHeight/OnBoundsChanged 保留。构造默认/SizeFromClientSize/全部派生/外部自主通知/完整布局另列。
+- 批次 012 枚举：public IEnumerator/直接 IEnumerable virtual-final 及历史泛型显式消费完成，2,531 条固定参考/JIT 全同，347 项新增回归。结构变化使 MoveNext/Reset 失效但 Current 缓存保留；空 Clear 不失效、owner.SubItems 恢复首项换表，全部 view 共享当前表、旧空枚举器仍为空。历史泛型 typed 无效 Current=null 另记；并发/完整所属/挂接样式/native 未关闭。
+- 批次 012 集成：1,413 项全线通过，双目标 Release 0 错误/最终增量298警告，19个既有差分驱动全部通过。客户区实际 AOT5,556条相同，EXE2,592,256字节、无IL2xxx/IL3xxx；Demo AOT4,107,264字节，两者CLR Header0。Demo既有IL3050和新枚举未计实际AOT运行验收的边界保留；13项目/17目标仅.NET10、原始Designer/resx/net10.0依赖满足要求，API1,095类型/61,240行与unverified不变。证据 artifacts/compatibility-batch012。
+- 批次 013 文件责任：Control-09b 子智能体负责 Control.cs 与独立 SizeFromClientSize 元数据/调用/换算探针测试；ListViewSubItem-06a 子智能体负责 ListViewItem.cs 与独立 ToString 探针测试。主聊天保留Win32必要interop、现有测试适配、全部共享文档/API/索引、集成与Git；先固定参考、主聊天统一顺序运行。
+- 批次 013 换算：标准 protected virtual SizeFromClientSize 完成，10,086 条固定参考/JIT/实际 AOT 全同，257 项新增独立回归。四有限边框/无有 HWND/正零负极值溢出/覆盖/base 绕过/重入/原异常均有证据；ClientSize/SetClientSizeCore 按参考不消费此虚扩展，原路由保留。直接 base 不创建句柄、不改外框/客户区缓存或发通知，009～012 边界/通知及旧 GetNativeHeight/OnBoundsChanged 保留。
+- 批次 013 字符串：标准子项 ToString override 完成，58 条固定参考/JIT 全同，63 项新增回归。原样文本/空值/Unicode/换行/嵌入 NUL、共享 view/重复/移除/跨 owner/三枚举与独立 key 缓存、派生分派/隐藏成员/原异常保留；读取不恢复首项/改集合/读 Tag/样式/消费或释放借用 Font。Clone/序列化/完整所属/已挂接样式/native 仍缺，新字符串未记实际 AOT 运行验收。
+- 批次 013 集成：1,733 项全线通过，双目标 Release 0 错误/本次增量 302 警告，21 个既有差分驱动全部通过。换算实际 AOT 10,086 条相同，EXE 2,610,176 字节、无 IL2xxx/IL3xxx；Demo AOT 4,107,264 字节，两者 CLR Header 0。Demo 既有分析警告、完整主窗操作/正常关闭及复杂 UI/设备/设计器后置。13 项目/17 目标仅 .NET 10，原始 Designer/resx/net10.0 依赖满足要求；API 1,095 类型/61,240 行与 unverified 不变。证据 artifacts/compatibility-batch013。应用工具已确认批次 012 旧主归档，没有等待本批结束。
+- 批次 014 文件责任：Control-09c 子智能体负责 Control.cs 与基础 MinimumSize/MaximumSize/必要默认扩展的独立参考/实现/测试；ListViewItem-04a 子智能体负责 ListViewItem.cs 与 Name/Tag/ToolTipText 及首子项/共享 view 的独立参考/实现/测试。主聊天保留必要 Win32 interop、现有测试适配、全部共享文档/API/索引、集成与 Git；仍先只准备参考，主聊天统一顺序运行后再授权实施，完整边界见批次 014。
+- WPF 适配项目及发布入口移除；独立美化/注入/效果展示隔离到 `Lumina.Effects.slnx`。Core、Ext.WinForms 与双目标 Demo 保留。
+- 上轮主线 Release 构建 0 错误；效果线 0 错误；77 项现有测试通过；4 个主线 NuGet 包本地打包成功。现有警告和真机缺口见 [验证记录](../validation.md)。
+- 重新生成任务索引：`./tools/compatibility/Validate-Roadmap.ps1 -ExportTasks`。无需每批重新导出全部 61,240 行 API；公共签名有变化后按需更新。
+
+## 批次 015 新增接续证据
+
+- Control-01b：基础 0×0、protected virtual DefaultSize 与构造期默认 Min/Max 的重复虚读取/公共 setter 消费完成，2,677 条固定 10.0.11/JIT/实际 AOT 全同，387 项新增回归。DefaultSize 直接提交宽高、保留重入位置，双轴非零才重算边框客户区；零轴保留重入缓存。context 在默认初始化成功后安装；默认扩展抛原异常时与派生构造体异常的 Current 不同，不能混记。
+- ListViewItem-01c：标准 ToString override/Object 槽完成，96 条固定 en-US 参考/JIT 全同，98 项新增回归。读取保留原样 Text、首项恢复/表身份、共享 view/三枚举/独立 key 缓存、Name 代理与独立 Tag/Tooltip；不消费 Tag 或借用 Font。新范围未计实际 AOT 运行验收。
+- 集成：2,713 项测试全部通过、0 失败/跳过，25 个旧差分驱动通过，双目标 Release 0 错误/本次增量 300 警告。构造 AOT 实际运行 2,677 条相同，EXE 2,020,864 字节、无 IL2xxx/IL3xxx；Demo AOT 4,108,288 字节，两者 CLR Header 0。Demo 既有 IL3050 与主窗运行、中文 Designer 本地化/AOT 动态属性转换、完整派生默认/构造/布局/Parent/Controls/Form 继承和列表所属/native/资源仍未关闭。
+- 13 项目/17 目标仅 .NET 10，原始静态 Designer/resx 与 net10.0 依赖满足要求；API 分母仍 1,095 类型/61,240 行、运行 unverified。404 份 Markdown/2,031 项任务结构校验无错误。证据 artifacts/compatibility-batch015/evidence.json。代码完成不计为 98% 兼容验收。
+- 下一批 016：Control-01c 子智能体独占 Control.cs 与独立无 parent 的 text/坐标尺寸构造探针及新测试；ListViewItem-06a 子智能体独占 ListViewItem.cs 与独立未挂接 BackColor/ForeColor/Font/UseItemStyleForSubItems 探针及新测试。先固定参考、主聊天统一顺序运行后授权实现，主聊天保留共享文档/API/索引、必要 interop、现有测试适配、集成与 Git；含 parent 构造与 Form 继承不在本批模拟。
+
+## 批次 016 新增接续证据
+
+- Control-01c：两个无parent文本构造与所需Text虚槽完成，text为string?，默认初始化/context→虚Text→分别Location/Size；4,584条固定10.0.11参考/JIT/实际AOT指定观测相同，311项新增回归。真实空值差异已修正，NullableContext放置与调用约定原始编码保留，精确#ctor/Text保留仅在探针，未改变库裁剪策略。
+- ListViewItem-06a：未挂接BackColor/ForeColor/Font为当前首子项代理，空表getter不恢复、Empty/null setter也换表恢复；主/子项共享惰性默认Font，UseItemStyle默认true独立保存。541条固定英文参考/JIT相同，328项新增回归；新范围未计实际AOT运行验收，已挂接/native/全局字体/完整所属和资源仍缺。
+- 集成：3,352项全线通过，0失败/跳过，27个旧驱动通过；双目标Release0错误/本次增量301警告。构造实际AOT EXE2,075,648字节，无IL2xxx/IL3xxx；完整Demo AOT4,108,288字节，二者CLR Header0。Demo详细警告仍为既有InheritanceAttribute/Enum.GetValues(Type) IL3050，主窗交互/正常关闭未验收。
+- 13项目/17目标仅.NET10、官方Drawing10.0.0、原始静态Designer/resx和net10.0依赖图保持。API1,095类型/61,240行/运行unverified；405份Markdown/2,033项任务/187行逐类型实施索引校验0错误。已合并监督三组历史只读核对清单，修正当前总览/任务页的过时待办与引用，不改历史批次快照或固定分母；没有整控件代码完成/98%声明。
+- 下一批017文件责任：Control-11a独占Control.cs及独立无HWND Text/ResetText探针/新测试；ListViewItem-04b独占ListViewItem.cs及独立未挂接ImageIndex/ImageKey探针/新测试。先固定参考，主聊天统一顺序运行后授权实现；共享文档/API/索引、集成/Git仍由主聊天独占。Parent/Controls/Form及图像列表/native/完整所属不模拟关闭。
+- 本批完整证据：artifacts/compatibility-batch016/evidence.json。实现已成功推送`10c106002acff0517bcb547f526fef446ec32871`并核对三SHA/干净状态；017只读接续聊天`01a14163-281b-7980-9fa1-558752cecf8b`已创建。本记录另提交推送归属交接，核对成功后才发送开始；新主实际接管后旧主立即归档。
+
+## 历史接续提示（2026-10-17停止指示优先，不可自动执行）
+
+“继续D:\source\Lumina的Control专项。用户要求在新会话把Control完整闭环，Windows取得实际验收证据，Linux/macOS完成对应代码；完整专项目标完成后结束，不仅完成一个小子范围，不恢复无关路线图循环。先只读AGENTS.md、PROJECT_REQUIREMENTS.md、HANDOFF.md、当前批次、Control任务/API页及coverage/platforms；收到旧主单独发送‘开始接管’和已成功推送的交接SHA、核实归属与Git状态后明确实际接管并开始实施。使用多个内部子智能体，一人一任务、互斥文件责任；Control.cs/Form/共享interop重叠串行协调，单一主聊天负责共享文档、集成、统一顺序构建/探针、提交推送。按真实依赖完成Parent/Controls/Form标准链及完整Control剩余清单，必要依赖纳入，不扩散到无关控件。所有项目含分析器/工具仅.NET10；保留Lumina.Forms标准API、固定双目标、原始Designer/resx、Windows官方Drawing及Native AOT；Linux GTK4/macOS AppKit与目标OS/RID Drawing策略遵循需求，不换UI栈或新公共抽象。Windows真实窗口/生命周期/布局/输入/绘制/投递、实际AOT运行正常关闭及相关设计器/资源验证是本次完成条件，不能沿用统一后置规则。其他平台实现、编译与真机验证分开，不以stub/空方法/吞异常/常量成功冒充实现。用户已授权必要实施/修复/验证、提交推送及按批本地接续；luminaforms自动化保持PAUSED，不恢复30分钟巡检，后续暂停/停止优先。每批实现和交接都必须commit并成功push，记录实现SHA、核对实际远端refs/heads/main，本地commit不算完成。每批提交前按真实代码/必要检查整理本批及受影响历史任务，同步ROADMAP/执行总览、相关控件/公共/平台任务页和历史、批次/HANDOFF，用现有Validate-Roadmap.ps1 -ExportTasks重生成逐控件README实施状态/完成ID列与tasks.csv并校验。明确子范围全部实现才✅，父项未完仍🟡/🚧且列剩余；🧪只限可复现的平台/范围证据。文档/签名/编译/局部探针/基类不能关闭整控件/平台；纠正历史错标并说明，保留ID/未完项/固定分母，不用测试或任务数量推98%，不另建调度报告框架或重启全项目评估。需要下一批接续时先创建下一本地只读准备聊天，再更新归属并commit/push/核对远端，之后发送‘开始接管’；确认新会话实际接管后旧主停止所有写入/构建/Git并set_thread_archived归档，不等待下一批结束。每份接续提示保留完整Control目标、用户授权、验收边界、commit/push/远端核对及归档规则。”
+
+## 批次 014 新增接续证据
+
+- Control-09c：明确初始化后的 Min/Max 运行期约束与默认虚扩展完成，33,408 条固定10.0.11/JIT/实际 AOT全同，394项新增回归。base getter仍读默认扩展，负值/零轴/冲突/取消按参考，core raw相等先返回，保留009～013边界/客户区/通知。构造期默认约束与DefaultSize统一留015的Control-01b，--constructors已有独立原始状态/调用/异常参考，不能当作已实现。
+- ListViewItem-04a：Name首项代理、独立Tag/ToolTipText完成，151条固定英文参考/JIT全同，101项新增回归。读空表不恢复，写null/空也恢复首项并换表；共享view/三枚举/独立key缓存/毒丸/隐藏成员有证据。中文Designer分类Data/Appearance与参考“数据/外观”不同，完整所属/挂接Tooltip/native/Clone/序列化仍缺，新范围未计实际AOT运行验收。
+- 集成：2,228项测试全通过，双目标Release 0错误/本次增量300警告，23个既有差分驱动通过。约束AOT实际33,408条相同，EXE2,641,920字节、无IL2xxx/IL3xxx；Demo AOT4,107,776字节，两者CLR Header0，Demo既有IL3050保留。首次AOT动态AmbientValueAttribute.Value抛原异常，最终仅核对构造元数据，该动态转换与中文分类/描述本地化缺口单列，未全局根化或吞异常。
+- 13项目/17目标仅.NET10，原始Designer/resx/net10.0依赖满足要求；API分母1,095类型/61,240行、运行状态unverified不变。日志/TRX/PE/项目/依赖及已知差异摘要在artifacts/compatibility-batch014。
+- 下一批015：Control-01b子智能体独占Control.cs及独立DefaultSize/构造探针测试（含构造期DefaultMin/Max消费）；ListViewItem-01c子智能体独占ListViewItem.cs及独立ToString探针测试。仍先固定参考、主聊天统一顺序运行后授权实现，主聊天独占共享文档/API/索引、必要interop、集成与Git。

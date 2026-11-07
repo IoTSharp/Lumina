@@ -13,18 +13,11 @@
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
-| ✅ | P0 / UserControl-02d | 批次038：按固定10.0.11补AutoSize标准override及Browsable/EditorBrowsable/DesignerSerializationVisibility声明，AutoSizeChanged订退转发同一基础事件槽。6项回归覆盖序列化属性、派生setter、单次通知、父布局完成状态和原异常。固定源码无UserControl独立OnLayout/GetPreferredSize覆盖，不新增另一套算法，不关闭完整02/04或Designer往返。 |
-| ✅ | P0 / UserControl-02c | 批次035：AutoSizeMode修正为GrowAndShrink=0/GrowOnly=1，Control字段显式GrowOnly，UserControl已有构造/setter按名字保持正确无需改算法。10项数值/四类默认/元数据和实际基础/复合布局回归通过。旧二进制及整数持久化0/1需复核；完整02/04不关闭。 |
-| ✅ | P0 / UserControl-02b | 批次034：DefaultSize=150×150，AutoSizeMode合法名字校验与父/自身AutoSize布局请求；BorderStyle校验、CreateParams边框位及UpdateStyles保持现有句柄。10项新增回归含真实HWND样式回读通过。范围不含AutoSizeMode枚举数值身份修正、完整AutoSize或Designer元数据；这些仍归02父项。 |
 | 🟡 | P0 / UserControl-01 | 031完成01a标准 `UserControl : ContainerControl`、STATIC子窗口和释放链；partial/InitializeComponent、完整Designer/resx和全部生命周期仍待。 |
-| ✅ | P0 / UserControl-01a | 批次031：UserControl改为标准ContainerControl派生，保留无参构造、STATIC类名/子窗口样式、主题应用和Component/IDisposable链。 |
 | 🟡 | P0 / UserControl-02 | 031～035的02a～02c保留；038的02d补AutoSize属性/事件公开与设计器序列化声明。完整AutoSize、其余默认元数据和Designer往返仍待，完整02/04不随局部声明关闭。 |
-| ✅ | P0 / UserControl-02a | 批次031：移除重复AutoScale存值属性，UserControl直接消费ContainerControl的ActiveControl/AutoValidate/AutoScale契约；不关闭完整默认值和设计器语义。 |
 | 🟡 | P0 / UserControl-03 | 032的03a已实现成功OnCreateControl后一次Load，重复Visible/重建不重复；035纠正父项仍全待办的历史状态。完整首次展示、嵌套创建/父级可见性、Designer与所有异常生命周期边界仍待对照。 |
-| ✅ | P0 / UserControl-03a | 批次032：增加标准Load/OnLoad，首次成功OnCreateControl后一次触发；重复Visible切换和句柄重建不重复，创建失败不伪造成功，处理器异常原样传播。 |
 | 🟡 | P1 / UserControl-04 | 已继承ContainerControl内容首选测量和基础MinMax/默认布局；035以明确数值模式验证有限AutoSize父反馈。完整嵌套Dock/Anchor、派生覆盖顺序/复杂反馈、缩放和Designer仍待，不由基类/局部布局用例关闭完整AutoSize。 |
 | 🟡 | P1 / UserControl-05 | 037的05a补原生焦点入口与嵌套Tab/Shift+Tab、Prevent/Allow/CausesValidation限定组合；原全待办按实际实现改部分。完整助记键、Enter/Escape、HostedInWin32DialogManager、全部验证重入/输入和设备仍待。 |
-| ✅ | P1 / UserControl-05a | 批次037：OnMouseDown焦点不在内部时先Focus再事件；WM_SETFOCUS无活动项时选首个可选后代，并消费ValidationCancelled守卫。7项真实HWND回归覆盖嵌套首次/已有子焦点、鼠标事件顺序、三种验证组合及Tab双向活动链。完整05和AutoSize仍未完成。 |
 | ⬜ | P1 / UserControl-06 | 校准 AutoScaleMode.Font/Dpi/Inherit/None、父容器字体继承、独立设计基准尺寸和跨 DPI 移动，无二次缩放。 |
 | ⬜ | P1 / UserControl-07 | 实现 ControlAdded/Removed、BindingContextChanged 和用户数据绑定传播；Controls.Clear 与 Dispose 的资源归属分别验收。 |
 | ⬜ | P2 / UserControl-08 | Windows 继续真实子 HWND，明确容器窗口样式与透明背景转发；不需要独立视觉框架。 |
@@ -45,6 +38,23 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P0 / UserControl-02d | 批次038：按固定10.0.11补AutoSize标准override及Browsable/EditorBrowsable/DesignerSerializationVisibility声明，AutoSizeChanged订退转发同一基础事件槽。6项回归覆盖序列化属性、派生setter、单次通知、父布局完成状态和原异常。固定源码无UserControl独立OnLayout/GetPreferredSize覆盖，不新增另一套算法，不关闭完整02/04或Designer往返。 |
+| ✅ | P0 / UserControl-02c | 批次035：AutoSizeMode修正为GrowAndShrink=0/GrowOnly=1，Control字段显式GrowOnly，UserControl已有构造/setter按名字保持正确无需改算法。10项数值/四类默认/元数据和实际基础/复合布局回归通过。旧二进制及整数持久化0/1需复核；完整02/04不关闭。 |
+| ✅ | P0 / UserControl-02b | 批次034：DefaultSize=150×150，AutoSizeMode合法名字校验与父/自身AutoSize布局请求；BorderStyle校验、CreateParams边框位及UpdateStyles保持现有句柄。10项新增回归含真实HWND样式回读通过。范围不含AutoSizeMode枚举数值身份修正、完整AutoSize或Designer元数据；这些仍归02父项。 |
+| ✅ | P0 / UserControl-01a | 批次031：UserControl改为标准ContainerControl派生，保留无参构造、STATIC类名/子窗口样式、主题应用和Component/IDisposable链。 |
+| ✅ | P0 / UserControl-02a | 批次031：移除重复AutoScale存值属性，UserControl直接消费ContainerControl的ActiveControl/AutoValidate/AutoScale契约；不关闭完整默认值和设计器语义。 |
+| ✅ | P0 / UserControl-03a | 批次032：增加标准Load/OnLoad，首次成功OnCreateControl后一次触发；重复Visible切换和句柄重建不重复，创建失败不伪造成功，处理器异常原样传播。 |
+| ✅ | P1 / UserControl-05a | 批次037：OnMouseDown焦点不在内部时先Focus再事件；WM_SETFOCUS无活动项时选首个可选后代，并消费ValidationCancelled守卫。7项真实HWND回归覆盖嵌套首次/已有子焦点、鼠标事件顺序、三种验证组合及Tab双向活动链。完整05和AutoSize仍未完成。 |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次039：UserControl.cs未改，继续继承有限Control IME路径；未以非Form根消息测试关闭HostedInWin32DialogManager、完整输入或AutoSize/共享约束，父任务保持原状态，见[039](../batches/039.md)。
 

@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+The entries below describe changes at the time they landed. Later batches may close some of their then-open subscopes; current implementation status is maintained only in the [task index](docs/roadmap/README.md) and its source task pages. Current unresolved checks are in [validation](docs/roadmap/validation.md).
+
+### Documentation — 2026-11-07
+
+- Stop the current roadmap at unfinished milestones and dependencies after batch 069. Move 212 completed task rows into their original pages' history without changing task IDs, statuses or scope. Keep the full 2,204-task export and fixed 1,095-type / 61,240-member inventory.
+- Consolidate document roles and navigation; replace the stale support-matrix snapshot with links to the current task index. Record the stop on continuous implementation in AGENTS and HANDOFF.
+- Preserve [all 001–069 batch records](docs/roadmap/batches/README.md), the [frozen handoff ledger](docs/roadmap/batches/handoff-through-069.md) and [full validation ledger](docs/roadmap/batches/validation-through-069.md). Original failures, strict comparison differences, unrun gates and resource limitations remain available.
+- This is a documentation change. No product/test implementation, build, full-suite, device or platform validation is performed by this cleanup.
+
 ### Added
 
 - Batch 069: implement RichTextBox Protected notifications and native protection vetoes, including allowed protection/full-document changes and protected stream error consumption. Carry WM_NOTIFY results through Form, containers and parking receivers, routing Form notifications by source HWND. 96 new and 1048 related tests pass; the fixed dual-target Release build has 0 errors/2 existing NU1510 warnings. Full LinkClicked/notifications/editing, MaskedTextProvider and platform acceptance remain pending; batch 064 failures and batch 065 timeout remain unresolved.
@@ -107,12 +116,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Correct AutoSizeMode numeric identity to GrowAndShrink=0 and GrowOnly=1 while preserving the existing named GrowOnly default. Previously compiled enum constants and persisted numeric 0/1 values require review; source using enum names retains the intended named behavior after recompilation.
 
-### Planned
-- DLL injection into `dwm.exe`
-- SystemBackdrop / AccentBlur / CustomBlur effect implementations
-- Win32 native GUI with Direct2D
-- XML config system
-- Multi-language support
+### Historical effects scope
+
+The former planned effects list (DWM injection, backdrop/blur effects, Direct2D UI, XML configuration and languages) belongs to the separate effects line; it is not a LuminaForms delivery claim or active compatibility milestone. See the [repository decisions](docs/roadmap/project-consolidation.md) and [effects documentation](docs/zh/blog/index.md).
 
 ---
 

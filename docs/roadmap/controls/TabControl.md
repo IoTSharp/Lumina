@@ -18,12 +18,9 @@
 | ⬜ | P1 / TabControl-03 | 实现 Deselecting/Deselected/Selecting/Selected 的可取消事件链，记录 SelectedIndexChanged 的准确相对顺序；鼠标、键盘、程序赋值三条路径一致。 |
 | ⬜ | P1 / TabControl-04 | 原生选项卡点击时在 TCN_SELCHANGING 阶段允许 Cancel；取消后原页 Visible、焦点、SelectedIndex 和原生索引不能分叉。 |
 | 🟡 | P1 / TabControl-05 | 029完成05a批量验证后代递归；GetTabRect、SelectTab/DeselectTab、焦点页导航/Ctrl+Tab/Ctrl+Shift+Tab/方向键完整契约仍待补齐；TabPage静态查询另行验收。 |
-| ✅ | P1 / TabControl-05a | 批次029：ShouldPerformContainerValidation覆盖允许批量验证进入TabPage及其后代，不依赖TabControl自身ContainerControl style。普通递归/ImmediateChildren及页面内leaf顺序有回归；不代表切页取消或全部派生默认样式完成。 |
 | ⬜ | P1 / TabControl-06 | 支持 ImageIndex/ImageKey、文字运行时变更、页工具提示和 DrawItem；绘制扩展是兼容能力，非跨平台全自绘默认路线。 |
 | 🟡 | P1 / TabControl-07 | 020完成07a标准布局入口衔接；完整DisplayRectangle/页边界/RTL/多行垂直/DPI/隐藏和重建仍待对照，切页不得重复建销业务控件。 |
-| ✅ | P1 / TabControl-07a | 批次020：现有页布局迁到标准OnLayout，复用Control暂停/恢复并移除重复Bounds布局；独立事务回归通过。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
 | 🟡 | P2 / TabControl-08 | 已有SysTabControl32、TCM插入/选择/矩形和部分TCN同步，原全待办更正；022完成08a主题默认隔离。完整native item/lParam归属、删除/可取消选择与资源寿命仍待验证。 |
-| ✅ | P2 / TabControl-08a | 批次022主题使用内部Surface默认槽，不再向public BackColor/ForeColor回写或清空TabPage显式颜色。主题刷新/局部状态及页面颜色保留有独立回归；完整Tab绘制/集合/事件和平台仍归父项。 |
 | ⬜ | P2 / TabControl-09 | Linux 使用 GtkNotebook + 每页原生容器；switch-page 默认非 WinForms 全套可取消链，需在动作提交前路由选择与取消。OwnerDraw/多行标签无完整原生等价项，单列。 |
 | ⬜ | P3 / TabControl-10 | macOS 使用 NSTabView/NSTabViewItem 与 delegate shouldSelectTabViewItem；多行/垂直排列、OwnerDraw 标签和工具提示差异逐项记录，禁止假称全量等价。 |
 | ⬜ | P1 / TabControl-V1 | 对完整 API 表逐项记录：签名、默认、getter/setter、运行时变更、事件订退和派生调用；把官方与 Lumina 同一场景的状态/事件序列作差异证据。缺失成员和只存值成员保留为未通过。 |
@@ -41,6 +38,19 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 修改内容与验收证据 |
+| --- | --- | --- |
+| ✅ | P1 / TabControl-05a | 批次029：ShouldPerformContainerValidation覆盖允许批量验证进入TabPage及其后代，不依赖TabControl自身ContainerControl style。普通递归/ImmediateChildren及页面内leaf顺序有回归；不代表切页取消或全部派生默认样式完成。 |
+| ✅ | P1 / TabControl-07a | 批次020：现有页布局迁到标准OnLayout，复用Control暂停/恢复并移除重复Bounds布局；独立事务回归通过。 仅该事务接入范围代码完成，不代表完整容器算法/平台验收。 |
+| ✅ | P2 / TabControl-08a | 批次022主题使用内部Surface默认槽，不再向public BackColor/ForeColor回写或清空TabPage显式颜色。主题刷新/局部状态及页面颜色保留有独立回归；完整Tab绘制/集合/事件和平台仍归父项。 |
+
+### 变更记录
+
 
 - 2026-10-17 · 批次029：增加05a必要验证递归消费，保留可取消切页与导航缺口；按现有代码将01由全待办纠正为部分，未关闭集合/控件，见[029](../batches/029.md)。
 

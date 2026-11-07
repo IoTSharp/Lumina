@@ -12,14 +12,11 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | 🟡 | P0 / WindowsFormsSynchronizationContext-01 | 批次 006/007 完成标准派生、显式投递及 AutoInstall/Uninstall 默认安装/还原首范围；完整异常/退出与模态范围未关闭。 |
-| ✅ | P0 / WindowsFormsSynchronizationContext-01a | 批次 006：真实 message-only HWND 复用 dispatcher，57 条参考/JIT/实际 AOT 观测相同，7 项独立 STA 回归通过；无 Form 投递、state/ExecutionContext/原异常、复制目的地、共享释放与显式 await 恢复已检。Send(null) 防挂差异见下文；默认安装及完整退出/模态竞态另列。 |
-| ✅ | P0 / WindowsFormsSynchronizationContext-01b | 批次 007：标准 AutoInstall/Uninstall、控件/窗体构造与现有消息循环默认安装/还原，204 条固定参考/JIT/实际 AOT 观测相同，18 项独立 STA 回归通过。线程局部开关、custom Current 保留、base 替换/前驱缓存、卸载不释放及默认 callback await 恢复已检；完整线程退出/关闭/多 UI/模态另列。 |
 | 🟡 | P0 / WindowsFormsSynchronizationContext-02 | 批次 006/007 完成显式及默认 context 投递，Post 异步队列、同线程 Send FIFO、跨线程 Send 和 callback await 恢复已有对照；完整线程退出/关闭竞态仍待验。 |
 | 🟡 | P0 / WindowsFormsSynchronizationContext-03 | 批次 007 随控件/窗体构造及现有消息循环实际安装，Uninstall 与最外层 loop finally 还原前驱；完整线程退出与模态生命周期仍待后续。 |
 | 🟡 | P1 / WindowsFormsSynchronizationContext-04 | 批次 006 完成相同目的地的 CreateCopy（含工作线程调用）、本实例 Dispose 后投递无动作、共享实例失效及排队丢弃对照。UI 线程已退出、跨线程释放和全部无句柄/关闭竞态仍待验。 |
 | 🟡 | P1 / WindowsFormsSynchronizationContext-05 | 批次 007 验证默认安装下直接 await、BeginInvoke、ValueTask/带结果回调及工作线程投递后的 UI 恢复；旧 Task 专项也覆盖。多 UI 线程、模态、取消/关闭组合仍待验。 |
 | 🟡 | P1 / WindowsFormsSynchronizationContext-06 | 批次006显式类型复用既有注册消息/dispatcher，静态unmanaged thunk实际AOT通过，异步异常仍在库内转ThreadException；默认安装/还原首范围已由007的01b完成，完整退出资源/模态/多UI/关闭竞态仍待后续。 |
-| ✅ | P1 / WindowsFormsSynchronizationContext-06a | 批次025：native WindowProc 捕获 dispatcher/default-process 异常并保证不越过 unmanaged callback；`WM_NCDESTROY` 继续关闭 dispatcher、清 USERDATA、释放 GCHandle，再分别报告清理失败。同步上下文边界场景在 JIT/AOT 通过；线程退出、多UI、模态和完整关闭竞态仍归父项。 |
 | ⬜ | P2 / WindowsFormsSynchronizationContext-07 | Linux 通过目标 GMainContext 的 invoke/source 投递并唤醒；同步 Send 不在 UI 线程阻塞自己，多个 thread-default context 的归属固定。 |
 | ⬜ | P3 / WindowsFormsSynchronizationContext-08 | macOS 通过 main run loop/dispatch 到 AppKit 主线程；模态 run-loop mode 下也必须能收到任务，不能只在默认 mode 工作。 |
 | ⬜ | 验收 / WindowsFormsSynchronizationContext-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -33,6 +30,19 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| 状态 | 优先级 / ID | 具体工作与验收 |
+| --- | --- | --- |
+| ✅ | P0 / WindowsFormsSynchronizationContext-01a | 批次 006：真实 message-only HWND 复用 dispatcher，57 条参考/JIT/实际 AOT 观测相同，7 项独立 STA 回归通过；无 Form 投递、state/ExecutionContext/原异常、复制目的地、共享释放与显式 await 恢复已检。Send(null) 防挂差异见下文；默认安装及完整退出/模态竞态另列。 |
+| ✅ | P0 / WindowsFormsSynchronizationContext-01b | 批次 007：标准 AutoInstall/Uninstall、控件/窗体构造与现有消息循环默认安装/还原，204 条固定参考/JIT/实际 AOT 观测相同，18 项独立 STA 回归通过。线程局部开关、custom Current 保留、base 替换/前驱缓存、卸载不释放及默认 callback await 恢复已检；完整线程退出/关闭/多 UI/模态另列。 |
+| ✅ | P1 / WindowsFormsSynchronizationContext-06a | 批次025：native WindowProc 捕获 dispatcher/default-process 异常并保证不越过 unmanaged callback；`WM_NCDESTROY` 继续关闭 dispatcher、清 USERDATA、释放 GCHandle，再分别报告清理失败。同步上下文边界场景在 JIT/AOT 通过；线程退出、多UI、模态和完整关闭竞态仍归父项。 |
+
+### 变更记录
+
 
 - 2026-10-16 · 批次025：同步上下文的native WindowProc按callback、默认过程、`WM_NCDESTROY`清理分层处理，保留每个异常并保证native边界不被managed异常穿透；完整退出/模态/多UI竞态仍未关闭，见[025](../batches/025.md)。
 

@@ -8,6 +8,8 @@ nav_key: "docs"
 
 # 兼容性说明
 
+本页属于历史 Windows 效果线，保留其平台/模式说明；不代表 LuminaForms 控件兼容状态或本次重新验收。主线状态统一见[控件任务索引](../roadmap/README.md)，效果线去留见[项目整合](../roadmap/project-consolidation.md)。
+
 ## 效果 × Windows 版本
 
 | 效果 | Windows 10 | Windows 11 | Windows 11 22H2+ |
@@ -41,12 +43,12 @@ nav_key: "docs"
 
 ## 运行时要求
 
-- .NET 10 或更高版本
+- 当前仓库项目只目标 .NET 10；本页不是其他运行时版本的支持承诺
 - 仅支持 x64 架构
 - 目标平台：Windows（`net10.0-windows`）
 
 ## 续读
 
-- [快速开始](/zh/getting-started/)
+- [快速开始](/quickstart/)
 - [SDK 使用指南](/zh/blog/sdk-guide/)
 - [高级模式指南](/zh/blog/advanced-guide/)

@@ -1,68 +1,10 @@
 # MaskedTextBox
 
-069本类生产/原任务状态no-op；RichTextBox-005d与Control-17g只补保护拒改及必要原生结果连接，不增加本类完成项。完整共享/Masked模型、缩放/线程/模态/原父Form寿命和平台保持；064FAIL/065超时未解，见[069](../batches/069.md)。下述068及以前为历史。
+本页任务表只列未完成范围；代码完成子项保留在[修改历史](#修改历史)，任务 ID 与验收状态均不因整理改变。直接 TextBoxBase 层级、真实 MaskedTextProvider 模型、掩码输入与验证仍是前置缺口。
 
-068本类生产/原任务状态no-op；RichTextBox-005b/005c仅消费既有选择/消息与067停车连接，不增加本类完成项。完整共享成员/Masked模型、原反射父Form寿命/线程/缩放/模态与平台保持；064全量FAIL/065超时未解，见[068](../batches/068.md)。下述067及以前为历史。
+[完整 API 与继承基线](../api/MaskedTextBox.md) · [任务索引](../README.md) · [依赖顺序](../execution.md) · [验证门槛](../validation.md) · [平台要求](../platforms.md)
 
-067本类源码/任务no-op；Rich专有Font/ContentsResized与停车通知连接不能抵扣MaskedTextProvider真实模型或标准直接层级。原ID/未完父项/固定分母及064全量FAIL/065超时保持，见[067](../batches/067.md)。下述066及以前为历史。
-
-066本类源码/任务no-op；颜色同步仅归RichTextBox-003e，不新增本类完成项。完整基类/派生、缩放/线程/反射/模态与平台门槛保持，064全量FAIL/065超时不被清除，见[066](../batches/066.md)。下述065及以前为历史。
-
-065本类源码/任务no-op；Rich-003d不实现MaskedTextProvider、标准直接层级或掩码输入。全部原父项/ID/固定分母保持，见[065](../batches/065.md)。下述064及以前为历史。
-
-064本类源码/任务no-op；Rich-003c/008a不实现MaskedTextProvider、掩码显示/逻辑映射、标准直接层级或专有输入。全部原父项/ID/固定分母保持，见[064](../batches/064.md)。下述063及以前为历史。
-
-063本类源码/任务no-op；Rich的004c/004d不增加本类完成范围。86新增/6,045全量通过，所有原ID/未完父项/固定分母与平台门槛保持。见[063](../batches/063.md)。下述062及以前为历史。
-
-基线：2026-10-15 · .NET 10.0.11。目标继承：`MaskedTextBox : TextBoxBase`。本页是实施与验收任务，未声称已完成兼容。
-
-## 当前证据与依赖
-
-062源码/任务no-op；Rich的003b/004b不实现Masked直接层级、MaskedTextProvider或专有输入。仍直接继承TextBox、Mask仅存值，原掩码父项/ID/固定分母与平台门槛保持。见[062](../batches/062.md)。下述061及以前为历史。
-
-061源码/任务no-op；Rich字符颜色/段落对齐不实现Masked直接层级、MaskedTextProvider或专有输入。原掩码父项及平台门槛保持，见[061](../batches/061.md)。下述060及以前为历史。
-
-060本类源码no-op；Rich的Rtf/SelectedRtf及格式持久化不实现MaskedTextProvider或掩码映射。本类仍直接继承TextBox、Mask仅存值，全部原父项/ID/固定分母保持；后续按真实模型依赖推进，见[060](../batches/060.md)。下述059及以前为历史。
-
-059本类源码no-op；Rich的纯文本流/逻辑读取不实现MaskedTextProvider、掩码显示/逻辑映射或标准直接继承。本类仍直接继承TextBox/Mask仅存值，全部原父项与固定分母保持，见[059](../batches/059.md)。下述058及以前为历史。
-
-058源码no-op；RichTextBox真实后端/标准直接层级的落地不代表本类型的MaskedTextProvider模型或层级已修复。本类仍直接继承TextBox、Mask仅存值，001～011/CLOSE原父项与固定分母保持，后续按真实模型依赖推进，见[058](../batches/058.md)。下述057及以前为历史。
-
-057源码no-op，错误TextBox层级间接消费普通EDIT原生TextLength及必要编辑元数据；不计掩码逻辑长度/显示映射、专有限制、标准直接继承或真实模型。原001/003/009等全部父项保持，下一优先核直接层级/MaskedTextProvider依赖，见[057](../batches/057.md)。下述056及以前为历史。
-
-056源码no-op，错误TextBox层级间接消费基类构造点击/元数据限定范围；不计掩码选区点击、专有隐藏成员/限制、直接继承或输入模型。原生命中均false，正向可见点击仍未验，全部原父任务保持，见[056](../batches/056.md)。下述055及以前为历史。
-
-055源码no-op，错误TextBox层级间接消费普通EDIT滚动条首选测量和基类创建请求；不计掩码模型、专有单行/隐藏ScrollBars限制或默认支持。标准直接继承、真实掩码模型及全部原父项仍待，见[055](../batches/055.md)。下述054及以前为历史。
-
-054源码no-op，错误TextBox层级间接消费普通EDIT的尺寸/default/AutoSize与缓存；不计掩码显示/逻辑文本度量、专有默认或限制。标准直接继承、真实模型及全部原父项仍待，见[054](../batches/054.md)。下述053及以前为历史。
-
-053源码no-op，错误TextBox层级间接消费普通EDIT首选计算与延期滚动，不实现掩码显示/逻辑文本度量、专有默认或选区模型；标准直接继承、真实模型及全部原父项仍待，见[053](../batches/053.md)。下述052及以前为历史。
-
-052源码no-op，错误TextBox层级间接消费普通EDIT六个行/位置查询；不实现掩码提示符/字面量/显示与逻辑索引映射，标准直接继承/真实模型和全部原父项保持，见[052](../batches/052.md)。下述051及以前为历史。
-
-051源码no-op，错误TextBox层级间接消费普通EDIT的启用词删除与内部redraw辅助；不实现掩码删除/选区过滤、Undo限制或专有输入，标准直接继承/真实模型和全部父项保持，见[051](../batches/051.md)。下述050及以前为历史。
-
-050源码no-op，错误TextBox层级间接消费普通EDIT剪贴板命令入口及快捷键禁用/菜单抑制；不实现掩码剪切复制格式、粘贴过滤或专有限制，标准直接继承/真实模型和全部父项保持，见[050](../batches/050.md)。
-
-049源码no-op，错误TextBox层级间接共享Clear虚Text=null及普通EDIT重挂命令连接；不实现掩码Clear/Undo限制、掩码输入模型或标准直接继承，全部原父任务保持，见[049](../batches/049.md)。
-
-048源码no-op，错误TextBox层级间接消费普通EDIT追加/撤销；标准MaskedTextBox的Undo等专有限制、掩码选区模型及直接基类仍缺。001/003/009等全部原父任务保持，见[048](../batches/048.md)。
-
-047源码no-op，错误TextBox层级间接共享SelectedText/Lines/MaxLength；掩码模型、SelectedText过滤与MaxLength等专有限制/隐藏元数据仍待，001/003/009及原父任务不关闭，见[047](../batches/047.md)。
-
-046源码no-op，错误TextBox层级间接消费共同BorderStyle/SelectAll/DeselectAll；标准直接继承、掩码执行/类型验证及专有限制仍待，001/009及全部原父任务不关闭，见[046](../batches/046.md)。
-
-045源码no-op，现有间接路径消费Modified和CharacterCasing；仍无掩码执行/类型验证，且MaskedTextBox的Modified/CharacterCasing等专有限制与隐藏元数据未按标准恢复。001/009及全部掩码父任务保留，见[045](../batches/045.md)。
-
-044源码no-op，现有TextBox间接路径消费共同HideSelection与新增TextAlign；这不实现本类型的标准直接继承、掩码模型或专有限制/隐藏元数据，001/009等原任务保持，见[044](../batches/044.md)。
-
-043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或掩码执行/专有限制，全部原任务状态保留。
-
-🟡 [MaskedTextBox.cs](../../../Lumina.Forms/MaskedTextBox.cs) 继承 TextBox，仅 Mask 自动属性；尚无掩码执行、MaskInputRejected、输入状态或类型验证。现有 API 名称出现不代表任何掩码行为已支持。
-
-源码定位：[Lumina.Forms/MaskedTextBox.cs](../../../Lumina.Forms/MaskedTextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、System.ComponentModel.MaskedTextProvider、验证与文化信息；不要另造公开掩码语言。
-
-公开成员（含继承的全部属性、事件和方法）逐项见 [MaskedTextBox API 清单](../api/MaskedTextBox.md)；共同行为、AOT、设计器与计数方法见 [基础任务](../foundations.md)。本表列出具体实现/验收动作，API 清单中余下成员也必须逐条关闭，不能把表外成员当作已支持。
+固定基线为 .NET 10.0.11。Windows、Linux、macOS 分别验收，当前没有完整逐控件 98% 结论。
 
 ## 按依赖排序的任务
 

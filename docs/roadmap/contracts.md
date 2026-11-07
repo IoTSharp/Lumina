@@ -1,22 +1,6 @@
 # 附属类型与命名空间任务
 
-069的RichTextBox-005d/Control-17g只补标准Protected事件/拒改与内部WM_NOTIFY结果连接；新增私有Pack4 ENPROTECTED及MessageBeep LibraryImport，Windows继续官方Drawing，无新公共附属类型/依赖或CNS/FND完成项。Link/完整共享、资源/线程/Masked及平台仍待，064FAIL/065超时保持，见[069](batches/069.md)。下述068及以前为历史。
-
-068只新增RichTextBox-005b/005c标准通知限定范围；私有Pack4 SELCHANGE与既有SendMessage/PostMessage封装在Rich内，无新公共类型/PInvoke/依赖，不新增CNS/FND完成项。完整共享/资源/线程/Masked与平台仍待，064FAIL/065超时保留，见[068](batches/068.md)。下述067及以前为历史。
-
-067在RichTextBox-005a内补标准ContentsResizedEventArgs/Handler及真实REQRESIZE接收；003f复用私有字符格式/LOGFONT，Windows仍用官方Drawing。两个附属类型按既有Rich任务归属，不新增CNS完成项或改变固定API分母；完整资源/ambient/字体DPI与平台仍待，见[067](batches/067.md)。下述066及以前为历史。
-
-066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或CNS完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
-
-065仅补Rich-003d标准SelectionFont，私有92字节LOGFONT/116字节CHARFORMAT2W和GetObjectW读取封装在Rich内；临时HFONT在finally释放，不增加公共附属类型/依赖或CNS完成项。Windows继续官方Drawing，完整Font/颜色同步与平台契约仍待，见[065](batches/065.md)。下述064及以前为历史。
-
-064为SelectionType增加标准RichTextBoxSelectionTypes五值int Flags（Empty0/Text1/Object2/MultiChar4/MultiObject8），固定官方v10.0.11源码已核。位置查询复用现有私有Win32.POINT/SendMessage，无新PInvoke/依赖/公共封送模型；不由Object枚举值宣称OLE对象支持，不新增CNS完成任务，见[064](batches/064.md)。下述063及以前为历史。
-
-063的Rich-004c/004d仅新增三个标准属性，复用现有私有PARAFORMAT/SendMessage/屏幕DC换算，无新公共类型/枚举/PInvoke/依赖，不新增CNS完成任务。见[063](batches/063.md)。下述062及以前为历史。
-
-062仅沿既有私有字符/段落结构及屏幕DC度量补Rich-003b/004b，不新增公共类型/枚举/封送模型或CNS完成任务；110新增/5,959全量首轮通过，完整附属契约/平台/98%仍待，见[062](batches/062.md)。
-
-逐控件页之外，事件参数、枚举、接口、条目/列/单元格/集合、布局与设计器契约仍属于兼容范围。全量成员已经进入 [members.csv](api/members.csv)，接口另见 [interfaces.csv](api/interfaces.csv)。[ownership.csv](api/ownership.csv) 把所有基线类型映射到任务入口；自动归组是责任建议，不是已完成或平台豁免。
+本页保存共享契约的任务状态；逐成员库存与责任映射保持固定。完成子范围列入[修改历史](#修改历史)，当前表保留完整父项和未完工作。参见[任务索引](README.md)、[依赖顺序](execution.md)和[验证门槛](validation.md)。
 
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
@@ -26,7 +10,6 @@
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
 | CNS-006 | P3 🟡 | 053的006a补System.Windows.Forms.TextRenderer六个无DC测量重载及必要枚举/间距依赖；完整IDeviceContext测量、DrawText、ControlPaint、绘制事件参数和System.Windows.Forms.VisualStyles主题类型/句柄仍待。纠正原表把TextRenderer/ControlPaint归入VisualStyles的命名空间描述 | Windows完整基线保留；Linux/macOS逐成员判断，不能整个命名空间先全划平台豁免 |
-| CNS-006a | P1 ✅ | 批次053：标准TextRenderer.MeasureText三个string及三个ReadOnlySpan无DC重载、完整TextFormatFlags值和必要Padding.Size；真实DrawTextExW/字体ceil与质量0/字形padding/约束/flags分离，初始系统DPI缓存只在成功SetHighDpiMode后刷新，自有HFONT/DC在finally释放。62例含独立DrawTextW字体/Unicode/布局对照通过。IDeviceContext/DrawText、整个TextRenderer、字体缓存优化、Designer/AOT/多DPI与跨平台不计完成 | 只关闭无DC测量必要子范围；为TextBoxBase-007b服务，不由API/测试数量推兼容率 |
 | CNS-007 | P2/P3 ⬜ | System.Windows.Forms.Design运行时导出契约：ComponentEditorForm/Page、PropertyTab、IUIService/IWindowsFormsEditorService、属性特性与编辑站点 | 保留真实VS设计器往返；不承诺重做整个VS设计器宿主 |
 | CNS-008 | P2 🟡 | 021新增标准Layout.LayoutEngine、Control默认引擎和基础扩展/事务协作；LayoutSettings、非Control布局对象、Flow/Table完整Settings/样式集合/序列化仍缺 | [布局基础](foundations.md)、[021](batches/021.md)；不新发明公共Layout API |
 | CNS-009 | P2/P3 ⬜ | Automation、AccessibleObject派生及相关UIA类型；Com2Interop/ActiveX类型、HtmlDocument/HtmlElement集合、DOM事件；各归所属控件 | 可访问性、OLE/浏览器能力各自验收；没有对应原生能力时公开边界 |
@@ -41,6 +24,17 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+### 已完成任务（历史台账）
+
+以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+
+| ID | 顺序/状态 | 负责范围与细节 | 验收 |
+| --- | --- | --- | --- |
+| CNS-006a | P1 ✅ | 批次053：标准TextRenderer.MeasureText三个string及三个ReadOnlySpan无DC重载、完整TextFormatFlags值和必要Padding.Size；真实DrawTextExW/字体ceil与质量0/字形padding/约束/flags分离，初始系统DPI缓存只在成功SetHighDpiMode后刷新，自有HFONT/DC在finally释放。62例含独立DrawTextW字体/Unicode/布局对照通过。IDeviceContext/DrawText、整个TextRenderer、字体缓存优化、Designer/AOT/多DPI与跨平台不计完成 | 只关闭无DC测量必要子范围；为TextBoxBase-007b服务，不由API/测试数量推兼容率 |
+
+### 变更记录
+
 
 - 2026-11-07 · 批次069：005d/17g限定完成；旧ID/未完父项/固定分母与064FAIL/065超时保持，见[069](batches/069.md)。
 

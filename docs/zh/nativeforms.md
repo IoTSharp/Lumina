@@ -6,37 +6,21 @@ layout: default
 
 # LuminaForms 概览
 
-LuminaForms 通过 `Lumina.Forms` 包和命名空间提供 WinForms 平替路径，目标不是重新发明一套桌面 UI，而是尽量贴近 WinForms 的命名、属性、方法、事件和启动方式，让旧项目可以把迁移成本集中在引用切换和少量兼容差异上。
+LuminaForms 通过 Lumina.Forms 包和命名空间提供 .NET 10 WinForms 替代路径，优先保留控件、属性、方法、事件与设计器源码，减少迁移改动。当前基于 Windows 原生控件，完整 WinForms 兼容仍在进行，Linux GTK4 与 macOS AppKit 需要独立原型和运行验收。
 
-## 当前能力
+## 查看当前能力
 
-- 顶层窗口与消息循环：`Application`、`ApplicationConfiguration`、`Form`
-- 基础控件：`Button`、`Label`、`TextBox`、`ComboBox`、`CheckBox`、`RadioButton`、`ListBox`
-- 基础容器：`GroupBox`、`Panel`
-- WinForms 风格自动缩放：`AutoScaleMode`、`AutoScaleDimensions`、`CurrentAutoScaleDimensions`、`PerformAutoScale()`
-- WinForms 风格集合操作：`Controls.AddRange(...)`、`Controls.Find(...)`、`Items.AddRange(...)`、`SelectedItem`
-- WinForms 风格启动入口：`ApplicationConfiguration.Initialize()`
-- 应用级视觉入口：`Application.EnableVisualStyles()`
-- 应用级与窗口级视觉覆盖：`ConfigureVisualStyles(...)`、`UseTheme(...)`、`SetThemeMode(...)`、`SetEffect(...)`、`SetPalette(...)`
-- JSON 主题文件：`NativeTheme`、`ThemePalette`
-- 分析器规则：`Lumina.Forms.Analyzers`
+控件与公共契约的状态只在[任务索引](../roadmap/README.md)维护。完成的明确子范围保留在原页修改历史，未完成父项继续列在任务表。[验证门槛](../roadmap/validation.md)另列完整测试、设计器、Native AOT 实际运行与各平台状态。
 
-## 默认视觉策略
+现有主题/视觉 API 的用法见[主题指南](nativeforms-themes.md)，配置和构建命令见[快速开始](../quickstart.md)。主题能力、旧 Windows 视觉映射与控件兼容验收是不同范围；本页不由旧版本视觉样式映射推断 .NET 10 的系统支持。
 
-调用 `Application.EnableVisualStyles()` 后，LuminaForms 会根据当前操作系统选择最接近系统的默认风格：
+## 固定 Demo
 
-- Windows 7：`VisualStyleKind.AeroGlass`
-- Windows 8 / 8.1：`VisualStyleKind.Modern`
-- Windows 10：`VisualStyleKind.Fluent`
-- Windows 11：`VisualStyleKind.Mica`
+NativeFormsDemo 保持双目标：
 
-`ThemeMode.System` 会优先跟随系统浅色 / 深色偏好。应用级设置更新后，已经打开的 LuminaForms 窗口也会刷新默认视觉样式。
+- net10.0-windows：真实 WinForms，保留 Visual Studio Designer。
+- net10.0：Lumina.Forms，保持 Native AOT 能力。
 
-## Demo 约束
+静态初始化继续保存在 .Designer.cs / .resx；主题与可复用行为属于库。Windows 两条路径都使用官方 System.Drawing.Common。
 
-`NativeFormsDemo` 当前保持固定双目标结构：
-
-- `net10.0-windows`：WinForms 路径，保持 Visual Studio 设计器友好
-- `net10.0`：LuminaForms 路径，用于 Native AOT 发布
-
-这个 Demo 的项目结构现在视为迁移验证边界，不再自动改成其他形态。
+[迁移指南](nativeforms-migration.md) · [项目需求](../../PROJECT_REQUIREMENTS.md) · [文档导航](../index.md)
