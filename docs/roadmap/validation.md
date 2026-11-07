@@ -1,6 +1,16 @@
 # 本轮验证与限制
 
-## 批次051 · 2026-11-07 当前验证
+## 批次052 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。新增102（行查询53、位置查询49）最终102/102，完整5,221/5,221，0失败/跳过；实际argv、时间、PID、父身份/cleanup_complete及TRX保留artifacts/compatibility-batch052。
+
+首轮93/102的9个失败保留tests-new.json与tests/batch052-new.trx。夹具对象初始化Text setter经Control.Text的虚getter产生首个text；快照变更回调Text setter产生合法末次text。仅清初始化轨迹，快照变更明确断言text/index/text，保留原字符c、变更后x、异常及索引硬预期；生产未为此改变。first-failure-analysis.json保留原因，最终为tests-new-retest.json与tests-full.json。
+
+[052](batches/052.md)只关闭TextBoxBase-008a/008b。消息截获验证精确参数/结果，真实EDIT覆盖UTF-16/CRLF/尾空行/软折行、字符位置回读及文本/选区/Modified/Undo/通知保持。无系统剪贴板或菜单访问；Designer、Native AOT发布运行、可见命中/物理输入、DPI/RTL完整端点、Linux/macOS与98%仍NOT_RUN/UNKNOWN。普通EDIT不计RichEdit或掩码专有支持。
+
+固定TextBoxBase v10.0.11从051复制，69,799字节/SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63。完整测量审计确认DPI度量/TextRenderer/独立AutoSize与请求高度生命周期依赖，未以桩或局部默认代替；完整007/008/003及派生父项保持部分。固定库存刷新NOT_RUN，1,095类型/61,240成员行/原ID/分母不改。README实施列/tasks.csv由既有工具生成，最终编码/一致性/资源回执另存052目录。
+
+## 批次051 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；仅测试夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。新增88（词边界52、命令26、redraw10）最终88/88，完整5,119/5,119，0失败/跳过；实际请求、PID、启动/结束、父身份/cleanup_complete和TRX保留artifacts/compatibility-batch051的tests-new-retest.json、tests-full.json与tests目录。
 

@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+052完成008a三个行查询和008b三个字符位置查询，直接消费真实EDIT消息，保留标准virtual/nonvirtual、参数校验、句柄创建、虚Text快照及16位坐标契约。新增102/102、全量5,221/5,221通过；首跑93/102的9个夹具轨迹错误保留，生产未为此改动。完整008仍含ScrollToCaret未建窗延期与完整端点/派生验收，完整测量/default仍待；固定源码审计确认控件DPI、文本测量、AutoSize独立状态/请求高度与生命周期依赖，未用局部默认或桩关闭。见[052](../batches/052.md)，下述051及以前为历史。
+
 051完成005f固定ClientUtils词边界辅助与009a启用Ctrl+Backspace/Ctrl+Shift+Backspace命令；依赖Control-14c内部Begin/EndUpdate计数，经选择和SetSelectedTextInternal(empty,false)保留native Undo/Modified/通知，不整串重写Text。最终88新增及5,119全量通过；首次三处夹具预期错误及原TRX保留。无窗选择查询仍经虚TextLength读取Text，选择setter异常按固定源码不增加finally；完整编辑/测量/default及派生后端仍待，见[051](../batches/051.md)。下述050及以前为历史。
 
 050完成005e标准Copy/Cut/Paste命令入口和003d的ShortcutsEnabled禁用/只读对齐/系统菜单抑制。77新增及5,031全量通过；剪贴板消息全部被测试WndProc截获，custom菜单只核owner0受限路由，实际剪贴板数据/菜单显示未验。启用时Ctrl+Backspace词删除、完整测量/default和派生真实后端仍待，见[050](../batches/050.md)。下述049及以前为历史。
@@ -56,7 +58,9 @@
 | TextBoxBase-006 | P1 | 🟡 | 042～048的EN_CHANGE/EN_UPDATE、程序设文守卫及停车期间通知保留；049通过Control-17e保留原停车接收者并按来源HWND反射，闭环048的parking→Form编辑/Undo通知缺口。原反射父Form销毁/重建的完整关系仍归Control-17；标准基类没有SelectionChanged，旧TextBox扩展保留，完整IME/粘贴/验证/失焦和RichEdit通知仍待。 |
 | TextBoxBase-007 | P1 | 🟡 | 042迁入既有颜色/主题与24/48最小原生高度，046的007a补BorderStyle设置/通知/创建样式及条件布局。AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的完整尺寸、选择/撤销保存仍未完整实现，旧高度差异保留。 |
 | TextBoxBase-007a | P1 | ✅ | 批次046：BorderStyle默认Fixed3D、Appearance/DefaultValue/DispId(-504)及合法枚举异常，变化保存后UpdateStyles、RecreateHandle，再在AutoSize条件父布局事务内通知；组件Events槽与虚OnBorderStyleChanged，同值no-op。CreateParams清WS_BORDER/CLIENTEDGE后按None/FixedSingle/Fixed3D选择真实请求。24项回归含缓存/布局/异常/重入、独立EDIT边框与状态恢复通过；原生EDIT规范化读回与创建请求分开，不含完整尺寸或视觉验收。 |
-| TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；未建句柄延期滚动及GetCharFromPosition/GetCharIndexFromPosition/GetPositionFromCharIndex/GetLineFromCharIndex/GetFirstCharIndexFromLine/GetFirstCharIndexOfCurrentLine仍待，换行/端点逐场景验收。 |
+| TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；052的008a/008b完成六个标准行/位置查询限定范围。ScrollToCaret未建窗延期、完整滚动/RTL/DPI端点、真实派生后端与辅助技术仍待，不以普通EDIT查询关闭父项。 |
+| TextBoxBase-008a | P2 | ✅ | 批次052：GetLineFromCharIndex为virtual且不加索引校验，GetFirstCharIndexFromLine非virtual且先拒绝负lineNumber，CurrentLine非virtual发送原生-1哨兵；经Handle必要建窗，不读取托管Text/Selection替代原生查询。53例含签名/消息参数/原结果、创建失败重试、UTF-16/CRLF/尾空行、caret行、真实软折行、状态通知保持及有限重入通过。完整008/派生/物理输入和平台未验。 |
+| TextBoxBase-008b | P2 | ✅ | 批次052：GetCharFromPosition先虚Text快照再虚索引；GetCharIndexFromPosition先Handle/EM_CHARFROMPOS、取无符号低16位，再按虚Text长度夹值；GetPositionFromCharIndex负值直接Empty，不负先虚Text.Length校验，合法才建窗/EM_POSFROMCHAR并有符号16位解坐标。49例含精确packing/原异常/null/快照/有限重入与真实EDIT字符回读、状态保持通过。固定16位原生索引限制保留，不计完整命中/DPI/派生或辅助技术验收。 |
 | TextBoxBase-009 | P2 | 🟡 | 042共享Tab/编辑键/只读IME限制和050的003d/005e保留；051的009a补启用词删除限定命令。真实剪贴板/密码完整限制、全部快捷键/菜单、RTL、物理组合输入/候选窗口与跨平台原生集成仍待，不重复计数或关闭父项。 |
 | TextBoxBase-009a | P2 | ✅ | 批次051：父命令路由及050守卫后，仅非只读的精确Ctrl+Back/ Ctrl+Shift+Back执行；有选区经SetSelectedTextInternal(empty,false)，无选区非起点经005f词边界和Control-14c成对redraw调整选择，再内部替换保留Undo。父返回true仍执行并保留消息修改；起点消费不建窗，私有选择查询仍消费虚TextLength。26例覆盖修饰键/禁用/隐藏ReadOnly、原异常/有限重入、真实EDIT文本/选择/一次通知/Modified/限制/Undo及消息顺序。选择setter抛错按固定源码没有finally恢复；物理输入/可见绘制、完整009和Rich/Masked专有语义未验。 |
 | TextBoxBase-010 | P2 | ⬜ | 控件焦点与原生编辑子对象同步，辅助技术 text/value/selection/read-only 状态；Dispose 解除 field editor/剪贴板和通知回调。 |
@@ -76,6 +80,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次052：只新增008a/008b，纠正008中六个查询仍全待办的当前描述，完整父项保持部分。102新增/5,221全量及固定双目标Release通过；首93/102九例轨迹错误来自初始化Text setter及回调setter的合法虚getter读取，清初始化轨迹并保留回调末次读取，原字符/异常硬预期不改、生产不改。完整测量/default的真实依赖已核，不将PreferredHeight/DefaultSize或普通EDIT查询当完整布局/派生实现，见[052](../batches/052.md)。
 
 - 2026-11-07 · 批次051：005f只计固定词边界辅助，009a只计使用它的启用词删除命令，必要redraw辅助另归Control-14c。88新增/5,119全量及固定双目标Release通过；首轮85/88三个夹具预期错误已按固定无窗TextLength调用链纠正，原回执不改。完整003/005/009等父项保持部分，见[051](../batches/051.md)。
 

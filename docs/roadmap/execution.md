@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[052](batches/052.md)完成TextBoxBase-008a/008b六个标准行/位置查询，102新增/5,221全量及固定双目标Release通过；首93/102九个夹具初始化/回调Text读取轨迹错误保留，生产未为此改动。测量源码审计确认完整AutoSize/PreferredHeight/DefaultSize/GetPreferredSize依赖控件DPI、标准文本测量和请求高度生命周期，本批未引入局部替代。下一继续这些真实测量/default依赖及ScrollToCaret未建窗延期，再恢复Rich/Masked标准直接层级与真实后端；完整反射/线程/模态、平台与98%留原任务。不重复033～052、不重评全项目、不建context或调度框架。下述051及以前为历史。
+
 当前[051](batches/051.md)完成固定词边界辅助TextBoxBase-005f、启用Ctrl+Backspace/Ctrl+Shift+Backspace命令009a及必要Control-14c内部redraw计数。88新增/5,119全量和固定双目标Release通过；首轮85/88的三处夹具预期错误有原回执，固定无窗选择经TextLength读取Text的语义保持。下一沿TextBoxBase完整测量/default及必要编辑辅助推进，再恢复Rich/Masked标准直接继承与真实后端；实际剪贴板/菜单、完整反射/线程/模态和平台仍留原任务。不重复033～051、不重评全项目、不建context或调度框架。下述050及以前为历史。
 
 当前[050](batches/050.md)完成TextBoxBase-005e剪贴板命令入口及003d快捷键禁用/只读对齐/系统菜单抑制的限定范围；77新增、5,031全量和固定双目标Release通过。命令测试截获WM_COPY/CUT/PASTE，未读写用户系统剪贴板；custom菜单只核owner0受限路由，真实显示待验。下一继续启用时Ctrl+Backspace词删除、完整测量/default和必要编辑辅助，再恢复Rich/Masked标准直接层级及真实后端；原反射父Form寿命/完整反射、线程/模态和平台继续原任务。不重复033～050，不重评全项目、不建context或调度框架。下述049及以前为历史。

@@ -705,6 +705,61 @@ public abstract class TextBoxBase : Control
         SelectionLength = 0;
     }
 
+    /// <summary>Returns the physical line containing the specified character index.</summary>
+    public virtual int GetLineFromCharIndex(int index)
+        => (int)Win32.SendMessageW(Handle, Win32.EM_LINEFROMCHAR, (nint)index, 0);
+
+    /// <summary>Returns the first character index of the specified physical line.</summary>
+    public int GetFirstCharIndexFromLine(int lineNumber)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(lineNumber);
+        return (int)Win32.SendMessageW(Handle, Win32.EM_LINEINDEX, (nint)lineNumber, 0);
+    }
+
+    /// <summary>Returns the first character index of the line containing the caret.</summary>
+    public int GetFirstCharIndexOfCurrentLine()
+        => (int)Win32.SendMessageW(Handle, Win32.EM_LINEINDEX, (nint)(-1), 0);
+
+    /// <summary>Returns the character nearest to the given point.</summary>
+    public virtual char GetCharFromPosition(Point pt)
+    {
+        string text = Text;
+        int index = GetCharIndexFromPosition(pt);
+        return index < 0 || index >= text.Length ? '\0' : text[index];
+    }
+
+    /// <summary>Returns the index of the character nearest to the given point.</summary>
+    public virtual int GetCharIndexFromPosition(Point pt)
+    {
+        int index = Win32.LowWord(Win32.SendMessageW(Handle, Win32.EM_CHARFROMPOS, 0, Win32.MakeLParam(pt.X, pt.Y)));
+        if (index < 0)
+        {
+            index = 0;
+        }
+        else
+        {
+            string text = Text;
+            if (index >= text.Length)
+            {
+                index = Math.Max(text.Length - 1, 0);
+            }
+        }
+
+        return index;
+    }
+
+    /// <summary>Returns the location of the character at the given index.</summary>
+    public virtual Point GetPositionFromCharIndex(int index)
+    {
+        if (index < 0 || index >= Text.Length)
+        {
+            return Point.Empty;
+        }
+
+        nint position = Win32.SendMessageW(Handle, Win32.EM_POSFROMCHAR, index, 0);
+        return new Point(unchecked((short)Win32.LowWord(position)), unchecked((short)Win32.HighWord(position)));
+    }
+
     /// <summary>
     /// Scrolls the text box so that the caret is visible.
     /// </summary>

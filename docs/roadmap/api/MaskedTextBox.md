@@ -1,6 +1,6 @@
 # MaskedTextBox：逐成员待办
 
-051当前源码补充：错误TextBox层级间接消费普通EDIT词删除不计掩码删除/过滤、Undo限制或专有输入支持；源码no-op、标准层级与真实模型仍缺。固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/MaskedTextBox.md)。
+052当前源码补充：错误TextBox层级间接消费普通EDIT六个行/位置查询，不计掩码提示符/字面量/显示与逻辑索引映射；源码no-op、标准层级与真实模型仍缺。固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/MaskedTextBox.md)。
 
 050当前源码补充：源码no-op，错误TextBox层级的普通EDIT命令入口/快捷键禁用不实现掩码剪贴板格式、粘贴过滤或专有限制；原父任务、固定成员行/原ID/分母保持，引用包刷新NOT_RUN，见[当前任务](../controls/MaskedTextBox.md)。
 

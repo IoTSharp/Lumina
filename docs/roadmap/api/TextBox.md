@@ -1,6 +1,6 @@
 # TextBox：逐成员待办
 
-051当前源码补充：源码no-op，继承TextBoxBase-009a启用词删除及005f词边界，不重复新增继承完成项。真实剪贴板/Paste(string)、完整输入/测量及平台仍待，固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBox.md)。
+052当前源码补充：源码no-op，继承TextBoxBase-008a/008b六个行/位置查询；真实EDIT UTF-16/CRLF/软折行/字符回读及状态保持有102新增/5,221全量证据，不重复新增继承完成项。完整输入/测量/default及平台仍待，固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBox.md)。
 
 050当前源码补充：源码no-op，继承基类005e剪贴板命令入口及003d快捷键禁用/菜单抑制，不重复计数。真实数据/格式/粘贴限制、启用时Ctrl+Backspace词删除和完整测量/平台仍待；固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBox.md)。
 
