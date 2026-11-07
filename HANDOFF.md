@@ -38,6 +38,9 @@
 
 ## 批次049 实施与收尾（当前）
 
+- 049实现提交`94303a2e7a7708facd81020418fb1d1175162649`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；27拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch049/implementation-push.json。
+- 下一local只读接续聊天`01a1b3f7-925d-75a1-83c8-05623abd944f`（Lumina batch 050 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后049才发送“开始接管”；050收到后重新核交接SHA/HANDOFF/干净树，并明确向049确认实际接管，确认前只读、不建内部任务。确认后049立即停止共享写入/构建/Git并归档，不等050完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档与后来暂停停止优先全部保持；监督NOT_FOUND、050绑定NOT_DONE，不恢复可能用户删除项。
+
 - 049已重新核独立归属交接`38bdf2ec1d601899b61ba53d13a04aae8be682ed`三SHA一致、main干净/+0/-0，明确向048确认接管并实时核其归档；两个互斥内部任务均completed冻结。重挂任务只写新ControlReparentedEditCommandTests，Clear任务独占基类Clear成员/新TextBoxClearTests；主独占Control/Form生产连接、旧停车断言必要纠正、文档/集成/Git，无同源生产并发写入。
 - 只关闭Control-17e与TextBoxBase-005d。独立原生EDIT证明SetParent后EN_UPDATE/EN_CHANGE仍投创建父；固定Control.ReflectParent/ParkingWindow反射计数闭环。自有停车窗仅在确为当前原生句柄创建通知父时跨重挂保留，原句柄销毁/外部销毁/重建即回收；回调校验映射及自有归属。Form非零lParam按来源HWND反射，避免旧owner字典/ID碰撞，零lParam菜单/既有命令保留。Clear按标准public nonvirtual直接虚Text=null，不预读getter，原异常/重入保持。
 - 既有路线图工具导出PASS：437份Markdown、2,162任务、187实施索引行、0结构错误，整类型代码完成仍0；README实施列/tasks.csv由工具生成，索引总览停在046的历史滞后已纠正。27拥有路径UTF8严格/无NUL/字节往返与diff检查通过；最终编码/无导出校验另有回执。最终dotnet名称快照2项均为其他SonnetDB格式检查，保留未动，不称全机零进程，见049/resources.json。
