@@ -60,7 +60,8 @@
 
 - 既有ExportTasks/普通Validate-Roadmap与独立Python核447MD/2,185任务（2,135控件+50共享）/187实施行/整类型完成0/0错误；接管前快照比对只新增002a/002b、无原ID删除、未完父项保持。独立TRX核首61/64与最终64/64、5,728/5,728；20个自有交付路径严格UTF8/noNUL/roundtrip及CRLF兼容whitespace检查PASS。
 
-- 仅完成RichTextBox-002a纯文本Text/Unicode StreamIn与002b专有TextLength/SelectedText/SelectionLength首范围；完整父项保持部分。当前实现commit/push与独立归属交接须分别完成、核HEAD/tracking/实际远端三SHA，不能把本地代码称已交付。接管前为`14c0c9abeb406b92a6278278c89022e1c5248d7c`，058实现`e2de04a3fc15aba5a6034152b0021304fbebeacf`独立保留。
+- 059实现提交`05f98b39ee2892cab256eb786389acea804322f8`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致，main干净/+0/-0；实现前为`14c0c9abeb406b92a6278278c89022e1c5248d7c`，058实现`e2de04a3fc15aba5a6034152b0021304fbebeacf`独立保留。20个自有交付文件严格UTF8/无NUL/roundtrip、暂存归属及CRLF兼容whitespace检查PASS；实现与独立归属交接分开，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b542-6334-7303-ac39-f47c7f462cd6`（Lumina batch 060 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后059才发送“开始接管”；060先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向059确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后059立即停止共享写入/构建/Git并归档，不等060完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。
 - 两个内部任务completed冻结，分别只新RichTextBoxTextTests.cs与TextModelTests.cs；主独占生产/必要内部连接、共享文档/集成/Git。Text无窗仅缓存/不通知，有窗逻辑LF读取与Unicode流、临时扩限后恢复配置MaxLength；SelectedText为GT_SELECTION/选区流，原始空值WM_CLEAR；TextLength强制Handle/GTL_NUMCHARS，SelectionLength有窗排EOF。静态Stdcall回调/每次cookie，SDK独立核Pack4（x64 EDITSTREAM20/GETTEXTEX28）。
 - 必要共享连接：Control既有父链Disposing查询仅改internal；TextBoxBase选择恢复按固定源移至CreateHandle收尾，并供Rich流恢复后消费。纯文重建保选择/Modified/限长，格式持久化仍待。未改Application/Masked生产、项目、固定Demo/Designer/resx。
 - 最终Release方案/固定Demo双目标0错/2既有NU1510，最终64新增（27Text+37模型）与5,728全量0失败/跳过；首共享常量缺失编译失败与首61/64原JSON/TRX保留。两项新夹具修定位/错误fault寿命，真实Modified重建缺口修生产，原状态/异常硬要求不降；测试项目重建0错0警告。058旧测试明确保独立WM_SETTEXT native17反例，流路径恢复配置3。无系统剪贴板读写；WarningLevel=0不是分析告警清零。
