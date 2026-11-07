@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 059主聊天`01a1b528-2104-7af2-85d2-abd9d2b7fe98`于2026-11-07完成必要只读准备并收到“开始接管”，独立核交接`14c0c9abeb406b92a6278278c89022e1c5248d7c`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向058明确确认实际接管并实时核其归档。059为唯一编码主；两个互斥任务只写新的Rich Text和长度/选区模型测试，主独占Rich生产/必要共享连接、文档/集成/Git。当前推进纯文本Text/Unicode StreamIn及专有TextLength/SelectedText限定范围；RTF/格式/完整坐标/Masked与平台/98%门槛保持。监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项；下述058及以前归属为历史。
+
 - 058主聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向057明确确认实际接管并实时核其归档。058为唯一编码主；两个互斥内部任务分别只写新的RichTextBox原生后端与构造/default测试，主独占生产/interop、共享文档/集成/Git。沿RichTextBox标准直接层级及真实RICHEDIT50W必要默认推进；完整RTF/格式、MaskedTextProvider、平台与98%门槛不关闭。监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项；下述057及以前归属为历史。
 
 - 057主聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向056明确确认实际接管并实时核其归档。057为唯一编码主；两个互斥内部任务分别只写新TextLength原生读取和必要文本/选区元数据/Paint转发测试，主独占TextBoxBase生产、共享文档/集成/Git。限定002d有窗原生TextLength和003h必要元数据，不扩展真实派生后端或设备门槛；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。下述056及以前归属为历史。
@@ -54,7 +56,20 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次058 实施与收尾（当前）
+## 批次059 实施与收尾（当前）
+
+- 既有ExportTasks/普通Validate-Roadmap与独立Python核447MD/2,185任务（2,135控件+50共享）/187实施行/整类型完成0/0错误；接管前快照比对只新增002a/002b、无原ID删除、未完父项保持。独立TRX核首61/64与最终64/64、5,728/5,728；20个自有交付路径严格UTF8/noNUL/roundtrip及CRLF兼容whitespace检查PASS。
+
+- 仅完成RichTextBox-002a纯文本Text/Unicode StreamIn与002b专有TextLength/SelectedText/SelectionLength首范围；完整父项保持部分。当前实现commit/push与独立归属交接须分别完成、核HEAD/tracking/实际远端三SHA，不能把本地代码称已交付。接管前为`14c0c9abeb406b92a6278278c89022e1c5248d7c`，058实现`e2de04a3fc15aba5a6034152b0021304fbebeacf`独立保留。
+- 两个内部任务completed冻结，分别只新RichTextBoxTextTests.cs与TextModelTests.cs；主独占生产/必要内部连接、共享文档/集成/Git。Text无窗仅缓存/不通知，有窗逻辑LF读取与Unicode流、临时扩限后恢复配置MaxLength；SelectedText为GT_SELECTION/选区流，原始空值WM_CLEAR；TextLength强制Handle/GTL_NUMCHARS，SelectionLength有窗排EOF。静态Stdcall回调/每次cookie，SDK独立核Pack4（x64 EDITSTREAM20/GETTEXTEX28）。
+- 必要共享连接：Control既有父链Disposing查询仅改internal；TextBoxBase选择恢复按固定源移至CreateHandle收尾，并供Rich流恢复后消费。纯文重建保选择/Modified/限长，格式持久化仍待。未改Application/Masked生产、项目、固定Demo/Designer/resx。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510，最终64新增（27Text+37模型）与5,728全量0失败/跳过；首共享常量缺失编译失败与首61/64原JSON/TRX保留。两项新夹具修定位/错误fault寿命，真实Modified重建缺口修生产，原状态/异常硬要求不降；测试项目重建0错0警告。058旧测试明确保独立WM_SETTEXT native17反例，流路径恢复配置3。无系统剪贴板读写；WarningLevel=0不是分析告警清零。
+- 根路线图/执行、5控件与公共页/历史、验证/README实施列/tasks.csv已按实际范围同步；只新增002a/002b，002改部分，完整008/格式/RTF/专有通知/撤销重做/坐标/Masked仍待。根汇总停057的历史滞后已纠正，原ID/未完父项/1095类型61240成员行/分母保持，固定API刷新NOT_RUN。
+- 固定058完整Rich参考123535字节/SHA256`76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0`与053基类69799字节/SHA`b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63`独立重核；不依赖partial。主Cordonix PID62800/精确FILETIME134385142694639671只属059；自有调用有界/cleanup_complete=true，STA ExitThread→private visual-context，无临时/持久文档/独占服务，保留证据/bin/obj/共享缓存/MCP，不按名杀进程。
+- 下一沿Rich格式/RTF持久化、专有选择/坐标与MaskedTextProvider真实依赖继续，不以其余基类元数据阻塞派生，不重做033～059、不重评全项目、不建context/调度/报告框架。完整缩放/跨屏DPI/字体、反射父Form寿命/WM_NOTIFY、线程/模态、056正向点击/物理输入、Designer/绑定/资源/Native AOT运行/Linux/macOS/98%继续原任务。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立回读，官方Drawing/固定双目标静态Demo保持。
+- 持续授权、多互斥内部任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停止共享写入构建Git并归档保持，后来暂停停止优先；监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次058 实施与收尾（历史）
 
 - 根路线图、执行总览、5控件/公共页及历史、验证/README实施列/tasks.csv同步；ExportTasks与独立Python复核均446MD/2,183任务（2,133控件+50共享）/187实施行/整类型完成0/0错误。只新增RichTextBox-001a/007a，原ID快照对比全部保留、所有未完父项保持；独立TRX计数确认首94/96和最终96/96、5,664/5,664。
 

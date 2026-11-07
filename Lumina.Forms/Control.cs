@@ -4368,7 +4368,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
         if (_foreColor.IsEmpty) { OnForeColorChanged(e); }
     }
 
-    private bool GetAnyDisposingInHierarchy()
+    internal bool GetAnyDisposingInHierarchy()
     {
         for (Control? control = this; control is not null; control = control._parent)
         {

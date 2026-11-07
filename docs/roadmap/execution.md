@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[059](batches/059.md)完成RichTextBox-002a纯文本Text/Unicode StreamIn和002b专有TextLength/SelectedText/SelectionLength首范围。64新增/5,728全量及固定双目标Release通过；首61/64包含真实Modified重建缺口及两项新夹具问题，原回执保持。下一按Rich格式/RTF持久化、专有选择/坐标及MaskedTextProvider模型依赖继续；完整格式/Protected/OLE/通知、缩放/反射/线程/模态、Designer/AOT/设备/平台/98%仍待。不重做033～059、不重评全项目、不建context/调度框架；下述058及以前为历史。
+
 当前[058](batches/058.md)完成RichTextBox-001a标准直接层级/真实系统RichEdit和007a必要默认/原生选项，96新增/5,664全量及固定双目标Release通过。下一沿已落地RichEdit的Text/StreamIn、逻辑长度/选区契约及MaskedTextProvider真实模型依赖继续，不以其余基类元数据阻塞真实后端。Rich Text当前仍经WM_SETTEXT，其原生扩限差异明确保留，不以原生模型存在关闭002；完整格式/RTF、反射/线程/模态/缩放、Designer/AOT/正向可见点击/物理输入/平台/98%仍待。不重做033～058、不重评全项目、不建context/调度框架。下述057及以前为历史。
 
 当前[057](batches/057.md)完成TextBoxBase-002d有窗原生TextLength/无窗虚Text与003h必要默认事件/绑定、选区/分类及Paint转发。41新增/5,568全量首轮及固定双目标Release通过，旧测试未改。下一先核Rich/Masked标准直接继承所需专有默认、原生类/真实模型依赖，推进真实后端；剩余DefaultCursor/ToString/Designer/editor等基类项继续原任务，不以元数据全集阻塞实际派生。完整缩放/线程/模态/反射父寿命、可见绘制/正向点击/物理输入、Designer/AOT/平台/98%仍待，不重做033～057、不重评全项目、不建context/调度框架。下述056及以前为历史。

@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次059 · 2026-11-07 当前验证
+
+最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json）；首共享消息常量缺失编译失败保留release-build.json，后补Rich内部常量。WarningLevel=0不是分析告警清零。最终64/64新增（Text27/模型37）及5,728/5,728全量0失败/跳过，独立TRX另核，回执位于artifacts/compatibility-batch059。
+
+首新增61/64原JSON/TRX保留：AllowNull新夹具查错位置；错误长度fault延续到销毁再次查询/默认提示导致Join超时；生产纯文重建清了Modified。前两项仅修新夹具定位/fault范围，原错误码/异常/无读取断言保持；最后一项修生产保Modified，文本/选择/限长/通知硬要求不降。重建测试项目0错0警告。058旧测试只按本批有意改动区分独立WM_SETTEXT扩限17与新流恢复配置3，其他原硬要求保持。
+
+Unicode流、50k文本多回调、NUL/空值分支、精确消息/结构Pack4、逻辑LF/UTF16/70k选区、只读双分支/限长0→65536/Undo/Modified/通知、原生dwError/重试及纯文重建通过，无系统剪贴板读写。固定Rich/基类完整源码字节/hash重核；独立只读复核无新增阻断。完整RTF/格式持久化/专有通知/坐标/Masked、物理输入/正向点击、Designer/Native AOT运行/Linux/macOS/98%未关闭；CI包smoke/Notepad publish本地NOT_RUN、hosted CI未读回，固定API刷新NOT_RUN。官方Drawing/固定双目标静态Demo、原ID/分母保持，见[059](batches/059.md)。
+
 ## 批次058 · 2026-11-07 当前验证
 
 最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-final.json），首构建消息常量uint与现有SendMessageW(int)不匹配的失败回执保留；WarningLevel=0不表示分析告警清零。两项新夹具修正后测试项目重建0错/0警告，最终96/96新增（原生15、默认43、选项38）与5,664/5,664全量0失败/跳过，旧测试未改。JSON/TRX与独立计数回执保留artifacts/compatibility-batch058。

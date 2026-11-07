@@ -1134,7 +1134,6 @@ public abstract class TextBoxBase : Control
         {
             _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, (nint)1, 0);
         }
-        RestoreSelectionOnHandle();
         if (_scrollToCaretOnHandleCreated)
         {
             ScrollToCaret();
@@ -1226,7 +1225,7 @@ public abstract class TextBoxBase : Control
         selectionEnd = (int)Math.Clamp((long)selectionStart + length, 0L, textLength);
     }
 
-    private void RestoreSelectionOnHandle()
+    internal void RestoreSelectionOnHandle()
     {
         if (NativeHandle == 0 || !_restoreSelectionOnHandleCreated) { return; }
         _restoreSelectionOnHandleCreated = false;

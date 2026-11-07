@@ -154,14 +154,11 @@ public sealed class RichTextBoxNativeBackendTests
                 Assert.Equal(1, changes);
                 Assert.False(richTextBox.Modified);
                 Assert.Equal(3, richTextBox.MaxLength);
-                // The inherited Control setter uses WM_SETTEXT. RichEdit
-                // expands its native limit to accept this 17-character text.
-                // Fixed WinForms RichTextBox instead streams text and restores
-                // MaxLength afterwards; that separate Text/StreamIn scope is
-                // still pending, and this native-backend test does not close it.
+                // Batch059 streams programmatic text and restores MaxLength.
+                // Retain WM_SETTEXT on the independent native window as the
+                // counterexample: that message expands its input limit to 17.
                 Assert.Equal((nint)17, SendMessageW(independent, EmGetLimitText, 0, 0));
-                Assert.Equal(SendMessageW(independent, EmGetLimitText, 0, 0),
-                    SendMessageW(handle, EmGetLimitText, 0, 0));
+                Assert.Equal((nint)3, SendMessageW(handle, EmGetLimitText, 0, 0));
                 Assert.Equal(handle, richTextBox.Handle);
             }
             finally { Assert.True(DestroyWindow(independent)); }
