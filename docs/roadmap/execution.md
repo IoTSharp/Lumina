@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[058](batches/058.md)完成RichTextBox-001a标准直接层级/真实系统RichEdit和007a必要默认/原生选项，96新增/5,664全量及固定双目标Release通过。下一沿已落地RichEdit的Text/StreamIn、逻辑长度/选区契约及MaskedTextProvider真实模型依赖继续，不以其余基类元数据阻塞真实后端。Rich Text当前仍经WM_SETTEXT，其原生扩限差异明确保留，不以原生模型存在关闭002；完整格式/RTF、反射/线程/模态/缩放、Designer/AOT/正向可见点击/物理输入/平台/98%仍待。不重做033～058、不重评全项目、不建context/调度框架。下述057及以前为历史。
+
 当前[057](batches/057.md)完成TextBoxBase-002d有窗原生TextLength/无窗虚Text与003h必要默认事件/绑定、选区/分类及Paint转发。41新增/5,568全量首轮及固定双目标Release通过，旧测试未改。下一先核Rich/Masked标准直接继承所需专有默认、原生类/真实模型依赖，推进真实后端；剩余DefaultCursor/ToString/Designer/editor等基类项继续原任务，不以元数据全集阻塞实际派生。完整缩放/线程/模态/反射父寿命、可见绘制/正向点击/物理输入、Designer/AOT/平台/98%仍待，不重做033～057、不重评全项目、不建context/调度框架。下述056及以前为历史。
 
 当前[056](batches/056.md)完成TextBoxBase-003f构造样式/专用左键点击和003g八项必要绘图/间距声明转发；46新增/5,527全量首轮及固定双目标Release通过。独立WindowFromPoint均false，正向可见点击/双击与物理输入仍待，不由负向回归关闭验收。下一核剩余基类元数据/默认与实际派生依赖，推进Rich/Masked标准直接层级、专有默认和真实模型/后端；完整ScaleControl/跨屏DPI/字体缩放、原反射父Form寿命和线程/模态继续原任务。不重做033～056、不重评全项目、不建context/调度框架；平台/Designer/AOT/98%门禁保持，下述055及以前为历史。

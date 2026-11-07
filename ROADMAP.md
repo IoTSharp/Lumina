@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[058](docs/roadmap/batches/058.md)完成RichTextBox-001a标准直接继承/真实系统RICHEDIT50W及007a必要构造默认、扩展限长与原生选项。最终96新增/5,664全量通过，固定双目标Release0错/2既有NU1510；首构建消息类型错误及首94/96两项夹具失败保留。Rich Text仍沿WM_SETTEXT，其扩限差异与专有StreamIn/长度/选区、RTF/格式留原任务；Masked模型、完整缩放/线程/模态、Designer/AOT/设备/平台/98%仍待。下述057及以前为历史。
+
 当前批次[057](docs/roadmap/batches/057.md)完成TextBoxBase-002d有窗原生TextLength/无窗虚Text分支和003h必要默认事件/绑定、选区元数据与Paint转发。41新增/5,568全量首轮通过，Release固定双目标0错/2既有NU1510；旧测试未改。真实派生层级/模型/后端优先继续，完整基类/绑定/Designer/AOT/可见绘制/物理输入/平台/98%仍待。下述056及以前为历史。
 
 当前批次[056](docs/roadmap/batches/056.md)完成TextBoxBase-003f构造四样式/专用左键点击链和003g八项必要绘图/间距成员声明转发。46新增/5,527全量首轮通过，Release固定双目标0错/2既有NU1510。独立WindowFromPoint均no-hit，只验证负向路由，正向可见点击/物理输入仍待；完整003、其余元数据/缩放、真实Rich/Masked后端与Designer/AOT/平台/98%不关闭。下述055及以前为历史。

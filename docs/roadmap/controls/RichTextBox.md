@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+058完成001a标准直接TextBoxBase层级与真实系统RICHEDIT50W、007a必要构造/default/原生选项。默认100×96、AutoSize=false、Multiline=true、MaxLength=int.MaxValue；HideSelection恢复基类共享状态。实际superclass保留系统RichEdit原过程，System32模块身份和RichEdit特有消息均有独立对照；96新增/5,664全量及固定双目标Release通过。普通EDIT不再作为本类后端。完整Text/StreamIn、TextLength/选区/坐标、RTF/格式/专有通知及全部平台验收仍待；下述057及以前为历史快照，见[058](../batches/058.md)。
+
 057源码no-op，错误TextBox层级间接消费普通EDIT原生TextLength及必要编辑元数据；不计RichEdit专有文本长度/格式、默认事件覆盖、标准直接继承或真实后端。原001等全部父项保持，下一优先核真实层级/原生类依赖，见[057](../batches/057.md)。下述056及以前为历史。
 
 056源码no-op，错误TextBox层级间接消费基类构造点击/元数据限定范围；不计RichEdit点击、专有默认、直接继承或后端支持。原生命中均false，正向可见点击仍未验，全部原父任务保持，见[056](../batches/056.md)。下述055及以前为历史。
@@ -34,7 +36,7 @@
 
 043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或RichEdit/富文本后端，全部原任务状态保留。
 
-🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前继承 TextBox，构造开启多行但原生类仍 EDIT；SelectionColor、HideSelection 仅存值。给 EDIT 发送 EM_SETBKGNDCOLOR 不能证明 RichEdit 支持。RTF、选区格式、RichEdit 事件、撤销重做尚缺。
+🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前直接继承TextBoxBase并使用系统RichEdit；SelectionColor仍仅存值，完整RTF、选区格式、专有事件与撤销重做尚缺。Text仍沿基类SetWindowTextW：输入配置3时设置17字符会使native限制扩至17，独立RichEdit同消息对照一致；固定WinForms的Text/StreamIn恢复限制、逻辑长度/选区等仍归002/008，不能把本批原生基础称完整文本兼容。
 
 源码定位：[Lumina.Forms/RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、原生 RichEdit 载入与回调、字体/颜色/图像策略、剪贴板和 RTF 流。
 
@@ -46,13 +48,15 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| RichTextBox-001 | P0 | ⬜ | 改为 RichTextBox : TextBoxBase 并实际创建 RICHEDIT50W；运行时探针断言类名，阻止 EDIT 继续冒充富文本；修正共享 API 与默认多行状态。 |
+| RichTextBox-001 | P0 | 🟡 | 058的001a完成直接TextBoxBase、系统RICHEDIT50W与基础通知；007a另记必要默认。完整Rich专有Text/选区/测量、共享成员覆盖与真实格式状态恢复仍待，不能由真实类创建关闭父项。 |
+| RichTextBox-001a | P0 | ✅ | 批次058：直接TextBoxBase，建窗前以System32专用路径惰性加载Msftedit并保留与superclass缓存同寿命的进程引用，实际窗口复制系统RICHEDIT50W类/原过程。base.OnHandleCreated前启用现已消费的ENM_CHANGE/UPDATE；15例核模块身份/特有EM_GETTEXTLENGTHEX/普通EDIT反例、隐藏原生编辑/通知/状态、独立窗口及重建/销毁/多实例。完整RTF/格式、Rich专有Text/长度/选择与通知仍待，其他必要默认归007a不重复计数。 |
 | RichTextBox-002 | P1 | ⬜ | Rtf、SelectedRtf、Text、SelectedText、LoadFile/SaveFile 各重载与 RichTextBoxStreamType；空/损坏/非RTF输入、编码、流位置、异常、文件锁及往返保真逐场景验收。 |
 | RichTextBox-003 | P1 | 🟡 | SelectionColor 从存值改真实 CHARFORMAT；SelectionBackColor、SelectionFont、SelectionCharOffset、SelectionProtected、SelectionType 和混合选区返回值逐项验收。 |
 | RichTextBox-004 | P1 | ⬜ | SelectionAlignment、SelectionBullet、BulletIndent、SelectionIndent、SelectionHangingIndent、SelectionRightIndent、SelectionTabs；空选区与混合段落、RTL 和缩进单位换算。 |
 | RichTextBox-005 | P1 | ⬜ | SelectionChanged、ContentsResized、LinkClicked、Protected、HScroll、VScroll、ImeChange 与 TextChanged：原生事件掩码、参数、次数/顺序及受保护文字拒绝修改场景。 |
 | RichTextBox-006 | P1 | ⬜ | CanUndo/CanRedo、Undo/Redo、UndoActionName/RedoActionName、ClearUndo；输入合并、粘贴/格式变化、程序赋值、只读和重建句柄的撤销边界。 |
-| RichTextBox-007 | P1 | ⬜ | DetectUrls、AutoWordSelection、AutoSize、HideSelection、MaxLength、RightMargin、ScrollBars、ShowSelectionMargin、ZoomFactor 的默认值、上下界、布局/滚动变化逐项对照。 |
+| RichTextBox-007 | P1 | 🟡 | 058的007a完成AutoSize/Multiline/MaxLength覆盖与必要初值、共享HideSelection、DetectUrls/AutoWordSelection及ScrollBars真实原生设置。RightMargin、ShowSelectionMargin、ZoomFactor、完整富文本测量/布局/滚动、格式/撤销的重建恢复与物理交互仍待。 |
+| RichTextBox-007a | P1 | ✅ | 批次058：100×96默认、MaxLength→Multiline→AutoSize虚setter构造顺序及声明，HideSelection直接继承唯一基类状态；扩展EM_EXLIMITTEXT、标准RichTextBoxScrollBars七值/请求/FixedSingle CLIENTEDGE与变化重建、DetectUrls旧窗发送后重建、AutoWordSelection每次单条OR2/XOR4（保留重复false的native toggle）。43默认+38原生选项回归、7条值×多行×折行28组请求及独立窗口对照通过；完整007及Rich专有模型不关闭。 |
 | RichTextBox-008 | P2 | ⬜ | Find 的文本/字符数组/范围/选项重载，GetCharIndexFromPosition/GetPositionFromCharIndex/行方法；UTF-16、CRLF、emoji、隐藏文字和选择方向边界。 |
 | RichTextBox-009 | P2 | ⬜ | AllowDrop、EnableAutoDragDrop、DragEnter/Over/Leave/Drop、GiveFeedback、QueryContinueDrag、RichTextShortcutsEnabled；OLE 专属格式单列，普通文本/RTF拖放不遗漏。 |
 | RichTextBox-010 | P2 | ⬜ | LanguageOption、输入法合成、CJK 字体回退、双向段落、组合字符与缩放后光标命中；原生辅助技术暴露文本、选区和格式。 |
@@ -73,6 +77,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次058：新增001a/007a；001/007从全待办改部分，纠正当前TextBox层级/EDIT后端及HideSelection独立存值描述，旧042～057快照保持。最终96新增/5,664全量通过；首94/96中程序设文native扩限和BOOL返回-1经独立RichEdit核实，只修新夹具，生产/旧测试未为失败改动。真实Text/StreamIn缺口明确留002；全部原ID/未完项/分母保持，见[058](../batches/058.md)。
 
 - 2026-11-07 · 批次057：普通EDIT的基类002d/003h不关闭本类型001/002或其他父项，源码no-op、不重复计数；真实RICHEDIT50W、专有默认与格式行为仍待，见[057](../batches/057.md)。
 

@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+058基类源码no-op；RichTextBox已按001a直接继承并使用真实系统RichEdit，必要专有默认见其007a。MaskedTextBox仍错误继承TextBox，Rich的专有Text/逻辑长度/选区/测量及完整基类仍待；不能由一个真实派生原生基础关闭001父项。96新增/5,664全量与固定双目标Release通过，见[058](../batches/058.md)。下述057及以前为历史。
+
 057完成002d有句柄原生TextLength/无句柄虚Text和003h必要编辑元数据。41新增/5,568全量首轮及固定双目标Release通过，旧测试未改；原生长度不读虚Text、不缓存，保持编辑状态。类默认事件/绑定、隐藏Paint/选区声明与两组分类只恢复限定设计契约，不补完整绑定/Designer/可见绘制。DefaultCursor、ToString、其余元数据、真实派生及平台仍待，见[057](../batches/057.md)。下述056及以前为历史。
 
 056完成003f构造点击样式/专用左键消息链及003g必要绘图/间距成员元数据。构造关闭StandardClick/StandardDoubleClick/UseTextForAccessibility/UserPaint，左双击消息先置私有位；OnMouseUp按验证/原生命中生成点击或双击并转发原参数，保留固定异常/清位顺序。隐藏成员继续直转Control状态/事件槽。46新增/5,527全量及Release固定双目标通过；两次独立WindowFromPoint检查均no-hit，只证明负向路由，不计正向可见点击/物理输入验收。完整003与Designer/AOT/平台保持未完成，见[056](../batches/056.md)。下述055及以前为历史。
@@ -46,7 +48,7 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| TextBoxBase-001 | P0 | 🟡 | 042完成001a标准基类及TextBox直接继承/已有行为迁移。RichTextBox/MaskedTextBox直接继承、对应原生实现与共享成员扩面仍待；ISupportInitialize等按各类型基线放置，不由一个派生迁移关闭父项。 |
+| TextBoxBase-001 | P0 | 🟡 | 042完成001a标准基类/TextBox直接继承；058的RichTextBox-001a/007a另记Rich直接继承、真实RichEdit及必要默认，不重复计数。MaskedTextBox标准直接层级/真实模型、Rich专有Text/选择/测量覆盖及完整共享成员仍待；ISupportInitialize按各类型基线放置，不由派生首范围关闭父项。 |
 | TextBoxBase-001a | P0 | ✅ | 批次042：建立abstract TextBoxBase : Control与internal无参构造，TextBox直接继承；迁移现有文本/选择、多行/只读、Tab、颜色/主题和EDIT句柄状态。TextLength为virtual，密码/Enter及既有SelectionChanged扩展保留TextBox。8项新增基类引用/真实重建/事件/派生hook回归与全量通过；不含另外两个派生直接层级或完整编辑能力。 |
 | TextBoxBase-002 | P1 | 🟡 | 042～047共享Text/选择、SelectedText/Lines保留；057的002d补有窗原生TextLength及无窗虚Text分支，003h另补必要选区元数据。完整端点/IME/辅助技术、派生覆盖及StringArrayEditor/Designer仍待，不以有限UTF-16案例关闭父项或重复计数。 |
 | TextBoxBase-002a | P1 | ✅ | 批次046：标准非virtual SelectAll/DeselectAll；SelectAll只读取一次虚TextLength并直接进入private protected virtual SelectInternal，DeselectAll调用虚SelectionLength setter。已有Select校验和无窗缓存/EM_SETSEL/创建重建恢复共用入口。20项回归含虚调用/原异常、CRLF/emoji、真实父映射及选区/只读/Modified保持通过；不含SelectedText、Lines、完整端点/输入或UIA。 |
@@ -100,6 +102,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次058：源码no-op，001当前“Rich仍待直接继承”的描述按真实代码纠正并交叉引用RichTextBox-001a/007a；不新增基类完成任务，完整父项与Masked/Rich专有模型缺口保持，见[058](../batches/058.md)。
 
 - 2026-11-07 · 批次057：新增002d/003h，纠正有窗TextLength仍取虚Text以及必要默认事件/绑定、Paint/选区/两组分类缺口。003e当前行中仍全待办的构造点击描述改为交叉引用已实现003f，原055历史/正向门槛保持。无窗异常/虚调用及Control既有直接Paint行为保留，全部原父项和固定分母保持；41新增/5,568全量首轮及固定双目标Release通过、旧测试未改，见[057](../batches/057.md)。不把设计声明/普通EDIT长度计为完整Designer、绑定或真实派生后端。
 

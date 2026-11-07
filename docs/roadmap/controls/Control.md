@@ -1,5 +1,7 @@
 # Control
 
+058源码no-op，RichTextBox沿现有NativeWindowClass复制真实系统RichEdit类并保留原过程；不增加Control/interop完成范围。独立模块/原过程与RichEdit特有消息对照归RichTextBox-001a，完整反射父寿命/WM_NOTIFY、DPI/线程/模态及平台门槛保持，见[058](../batches/058.md)。下述057及以前为历史。
+
 057源码no-op，基类002d直接消费现有GetWindowTextLengthW，003h的Paint声明继续转发Control.Paint。既有OnPaint直接调用事件（CanRaiseEvents=false仍调用）保留；不将声明元数据、借用Graphics或普通EDIT长度检查计为完整绘制/Designer/输入完成，不新增Control完成任务，见[057](../batches/057.md)。
 
 056源码no-op，TextBoxBase-003f关闭通用标准点击样式并由专用OnMouseUp生成事件；复用现有Control鼠标finally清捕获/验证状态。必要成员转发归003g，不新增Control完成任务。23项点击契约及23项元数据测试通过，但独立WindowFromPoint均false，正向可见命中/物理输入与完整Control-13仍待，见[056](../batches/056.md)。
@@ -109,6 +111,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次058：源码与原父项no-op，复用现有系统类注册/消息/生命周期；真实Rich后端不关闭完整Control-17或其他Control任务，见[058](../batches/058.md)。
 
 - 2026-11-07 · 批次057：源码no-op，必要TextLength原生读取/编辑元数据归TextBoxBase-002d/003h；不新增Control完成项或改变现有Paint调用语义，完整父任务保持，见[057](../batches/057.md)。
 

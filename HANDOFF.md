@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 058主聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向057明确确认实际接管并实时核其归档。058为唯一编码主；两个互斥内部任务分别只写新的RichTextBox原生后端与构造/default测试，主独占生产/interop、共享文档/集成/Git。沿RichTextBox标准直接层级及真实RICHEDIT50W必要默认推进；完整RTF/格式、MaskedTextProvider、平台与98%门槛不关闭。监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项；下述057及以前归属为历史。
+
 - 057主聊天`01a1b4ee-fb6e-7cd1-aec9-215ab893251d`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向056明确确认实际接管并实时核其归档。057为唯一编码主；两个互斥内部任务分别只写新TextLength原生读取和必要文本/选区元数据/Paint转发测试，主独占TextBoxBase生产、共享文档/集成/Git。限定002d有窗原生TextLength和003h必要元数据，不扩展真实派生后端或设备门槛；监督NOT_FOUND、057绑定NOT_DONE，不恢复或新建替代项。下述056及以前归属为历史。
 
 - 056主聊天`01a1b4dc-aa38-74e1-bbcd-9bdf038298f1`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`b07b8cbfbabb34155b5c939e85788c57e0ba63ec`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向055明确确认实际接管，实时归档列表确认055已归档。056为唯一编码主；两个互斥内部任务分别只写点击消息链及隐藏成员契约的新测试，主独占生产/共享接口interop、文档/集成/Git。限定构造点击样式/消息链与必要隐藏绘图/间距元数据；完整缩放、真实Rich/Masked后端与平台验收不关闭。监督NOT_FOUND、056绑定NOT_DONE，不恢复或新建替代项；下述055及以前归属为历史。
@@ -52,7 +54,20 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次057 实施与收尾（当前）
+## 批次058 实施与收尾（当前）
+
+- 根路线图、执行总览、5控件/公共页及历史、验证/README实施列/tasks.csv同步；ExportTasks与独立Python复核均446MD/2,183任务（2,133控件+50共享）/187实施行/整类型完成0/0错误。只新增RichTextBox-001a/007a，原ID快照对比全部保留、所有未完父项保持；独立TRX计数确认首94/96和最终96/96、5,664/5,664。
+
+- 058限定RichTextBox-001a/007a代码完成；本次实现commit/push及独立归属交接仍须分别完成并核HEAD/tracking/实际远端三SHA，不以当前本地改动称已交付。接管前SHA为`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`，057实现`b3f546b160ad86001e34228ee4b2322c79fe0da4`独立保留。
+- 两个互斥内部任务completed冻结：原生任务只新RichTextBoxNativeBackendTests.cs；默认任务只新RichTextBoxDefaultsTests.cs及NativeOptionsTests.cs。主独占RichTextBox生产/标准条枚举、共享文档/集成/Git；未改TextBoxBase/Control/interop/Application、Masked、既有测试、项目或Demo/Designer/resx。
+- Rich直接继承TextBoxBase，惰性从System32加载Msftedit并保留与superclass缓存同进程寿命引用，实际RICHEDIT50W原过程/特有消息独立核。默认100×96、AutoSize=false/Multiline=true/MaxLength=int.MaxValue；HideSelection移除独立存值。标准RichTextBoxScrollBars七值/请求/FixedSingle CLIENTEDGE、EM_EXLIMITTEXT、DetectUrls重建、AutoWordSelection单条OR2/XOR4及CHANGE/UPDATE掩码落地；完整RTF/格式/专有Text/通知不关闭。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510，测试夹具修正后项目重建0错/0警告；最终96新增（15原生+43默认+38选项）与5,664全量0失败/跳过。首构建消息常量uint/int错误及首94/96原JSON/TRX保留。两个失败独立RichEdit核实：WM_SETTEXT把限3扩到文本17，GETMODIFY=-1为真；只修新夹具、保原状态要求，生产未为失败改变。WarningLevel=0不是分析告警清零。
+- Rich Text仍继承Control.WindowText→SetWindowTextW，固定Text/StreamIn恢复MaxLength、逻辑长度/选择/坐标留002/008；原SelectionColor仅存值/完整RTF、格式、专有通知/Undo-Redo/格式重建、Masked直接层级/模型与全部设备/Designer/AOT/平台/98%仍待。下一沿这些真实模型依赖，不以其余基类元数据阻塞实际后端；不重做033～058、不重评全项目、不建context/调度框架。
+- 完整Rich参考123,535字节/SHA256`76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0`，标准条枚举1,394字节/SHA256`c55c741f94494285b2f709da98cbcff71718ed28f53ae3227a5f9b2d049316a3`；完整053基类/054 Control.proxy也重核。枚举下载直连超时后仅该请求代理成功，未改全局代理；首stdout截断不作完整参考。
+- 主Cordonix父PID47612/精确FILETIME134385117905504926独立核验，未复用057身份；有界调用cleanup_complete=true，STA保持ExitThread→private visual-context、不加outer cookie。无临时脚本/独占服务/持久workspace文档，保留证据/bin/obj/共享缓存/MCP，不按名杀进程。包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读；固定API刷新NOT_RUN，官方Drawing/固定双目标Demo与静态资源、原ID/未完父项及1,095类型/61,240成员行/分母保持。
+- 持续授权、多互斥内部任务一任务一负责人/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读准备/交接push核后才开始/明确确认/旧主立即停写构建Git并归档全部保持。后来暂停停止优先；监督NOT_FOUND、058绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次057 实施与收尾（历史）
 
 - 057实现提交`b3f546b160ad86001e34228ee4b2322c79fe0da4`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`16c983f57475f8d36fbe9788c9e0e78e36e2dc75`。17个交付文件严格UTF8/无NUL/字节roundtrip、staged ownership与diff均PASS；实现与独立归属交接分别保留，不以本地commit冒充交付。
 - 下一local只读接续聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`（Lumina batch 058 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后057才发送“开始接管”；058先完成必要只读准备，再核交接SHA/HANDOFF/干净树，并明确向057确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后057立即停止共享写入/构建/Git并归档，不等058完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项。

@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次058 · 2026-11-07 当前验证
+
+最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-final.json），首构建消息常量uint与现有SendMessageW(int)不匹配的失败回执保留；WarningLevel=0不表示分析告警清零。两项新夹具修正后测试项目重建0错/0警告，最终96/96新增（原生15、默认43、选项38）与5,664/5,664全量0失败/跳过，旧测试未改。JSON/TRX与独立计数回执保留artifacts/compatibility-batch058。
+
+原生模块System32身份、实际superclass/源过程、RichEdit特有EM_GETTEXTLENGTHEX及普通EDIT反例、隐藏编辑通知/限长/选择/Modified/Undo、重建/销毁/多实例与独立RichEdit对照通过。28组条/多行/折行请求、边框转换、原生条回读、URL旧窗发送→重建和词选择单条OR2/XOR4（含重复false toggle）通过。首94/96两项失败由独立原生核实：WM_SETTEXT的17字符扩限与EM_GETMODIFY=-1为真；只修新测试的原生语义假设，不改生产或原硬状态要求。现有Rich Text仍沿WM_SETTEXT，固定WinForms的StreamIn/限值恢复及逻辑文本/选区仍归002/008待办。
+
+只关闭RichTextBox-001a/007a；完整RTF/选区格式、专有通知、撤销重做/格式恢复、MaskedTextProvider、Rich富文本测量及Designer/AOT/设备/平台/98%仍待。056正向命中/物理输入门槛保留。完整固定Rich参考123,535字节/SHA256 76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0，Rich条枚举1,394字节及既有完整基类/Control参考均独立重核。固定API刷新、CI包/Notepad发布smoke本地NOT_RUN，hosted CI未独立回读；1,095类型/61,240成员行/原ID/分母、官方Drawing/固定双目标静态Demo保持，见[058](batches/058.md)。
+
 ## 批次057 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标首轮0错误/2既有NU1510（release-build.json）；WarningLevel=0不表示分析告警清零。新增41/41（TextLength 21、编辑元数据20）与全量5,568/5,568首轮通过，0失败/跳过，旧测试未改。tests-new.json/tests-full.json和对应TRX保留实际argv、时间、PID、父身份与cleanup_complete，位于artifacts/compatibility-batch057。
