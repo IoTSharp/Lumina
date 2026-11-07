@@ -351,6 +351,13 @@ public abstract class TextBoxBase : Control
 
     public virtual int TextLength => Text.Length;
 
+    /// <summary>Gets whether the previous editing operation can be undone.</summary>
+    [Category("Behavior")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool CanUndo
+        => IsHandleCreated && (int)Win32.SendMessageW(NativeHandle, Win32.EM_CANUNDO, 0, 0) != 0;
+
     /// <summary>Gets or replaces the selected text in the control.</summary>
     [Category("Appearance")]
     [Browsable(false)]
@@ -427,6 +434,21 @@ public abstract class TextBoxBase : Control
     public new void Clear()
     {
         Text = string.Empty;
+    }
+
+    /// <summary>Clears information about the most recent editing operation.</summary>
+    public void ClearUndo()
+    {
+        if (IsHandleCreated)
+        {
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_EMPTYUNDOBUFFER, 0, 0);
+        }
+    }
+
+    /// <summary>Undoes the last editing operation in the text box.</summary>
+    public void Undo()
+    {
+        _ = Win32.SendMessageW(Handle, Win32.EM_UNDO, 0, 0);
     }
 
     /// <summary>
@@ -520,21 +542,35 @@ public abstract class TextBoxBase : Control
     /// <summary>
     /// Appends text to the current text box contents.
     /// </summary>
-    /// <param name="value">The text to append.</param>
-    public void AppendText(string value)
+    /// <param name="text">The text to append.</param>
+    public void AppendText(string? text)
     {
-        ArgumentNullException.ThrowIfNull(value);
-
-        if (NativeHandle == 0)
+        if (string.IsNullOrEmpty(text))
         {
-            Text += value;
             return;
         }
 
-        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETSEL, (nint)int.MaxValue, (nint)int.MaxValue);
-        _ = Win32.SendMessageW(NativeHandle, Win32.EM_REPLACESEL, 0, value);
-        _ = UpdateTextFromHandle();
+        GetSelectionStartAndLength(out int selectionStart, out int selectionLength);
+        try
+        {
+            int endOfText = GetEndPosition();
+            SelectInternal(endOfText, endOfText, endOfText);
+            SelectedText = text;
+        }
+        finally
+        {
+            // Preserve the selection when a docked control has no extent,
+            // such as while its parent form is minimized.
+            if (Width == 0 || Height == 0)
+            {
+                Select(selectionStart, selectionLength);
+            }
+        }
     }
+
+    /// <summary>Gets the append position, including the native edit end marker.</summary>
+    internal virtual int GetEndPosition()
+        => IsHandleCreated ? TextLength + 1 : TextLength;
 
     /// <summary>
     /// Selects a range of text in the text box.

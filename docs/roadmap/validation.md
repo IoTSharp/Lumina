@@ -1,6 +1,20 @@
 # 本轮验证与限制
 
-## 批次047 · 2026-11-07 当前验证
+## 批次048 · 2026-11-07 当前验证
+
+最终Release方案/固定Demo双目标0错/2既有NU1510；新增43（AppendText22、公开Undo16、停车命令5）与旧ControlBehavior3组合46/46，完整4,936/4,936，0失败/跳过。最终命令分别在artifacts/compatibility-batch048/release-build-final.json、tests-new-scoped-verified.json与tests-full-final.json，对应TRX保留tests目录。WarningLevel=0不表示分析告警清零。
+
+[048](batches/048.md)只关闭TextBoxBase-005b/005c及必要Control-17d停车期间命令转发。标准AppendText null/空串不操作，经虚SelectedText及既有原生替换，零宽/高在finally恢复选择；CanUndo不建窗查询，Undo必要建窗，ClearUndo无窗不操作。停车窗仅接收实际原生子HWND的WM_COMMAND且不公开映射为Control；旧未挂父TextBox的TextChanged=2硬断言恢复。Copy/Cut/Paste、Clear完整虚调用、快捷键、尺寸及派生后端仍待。
+
+首次新增37/38：夹具误以为空撤销缓冲的EM_UNDO必须返回0。补同STA/activation/完整创建配置的独立EDIT后，两端分别硬断言返回1、文本/选择不变、CanUndo0/Modified0，生产未为夹具改。随后38/38通过。首次完整4,930/4,931暴露无父TextBox停车窗吞通知，已修复停车阶段连接。停车组45/46先暴露隐藏Form.Handle不重挂，改用已有Show/CreateControl路径；随后仍45/46暴露重挂后原生EDIT命令没有交付。两次限定诊断证实父映射、同HWND、停车窗销毁和native ID=1001，但Form/child没有后续命令。该原因未闭环，明确留Control-17/TextBoxBase-006；最终5例停车范围只证明停车期间通知及重挂的状态/释放，不证明重挂后编辑通知。原失败/诊断均保留，没有改旧事件期望或以移除未完任务取得完成。
+
+一次v:normal测试构建达到输出上限并由Cordonix清理，status=output_limit、exit_code=null，不记PASS；改回v:q后完成上述最终检查。固定TextBoxBase 69,799字节SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63重核并复制；补固定Application.ParkingWindow 5,214字节SHA256 ab4f05f34e6c111eae03004848b98f873a96f5692e46b4f64f4f45b4c3bf6968。Context7返回不相关main/.NET11资料，不替代固定源码。固定引用库存刷新、Designer/AOT发布运行/设备/Linux/macOS/98%本批NOT_RUN/UNKNOWN。
+
+既有路线图工具导出436份Markdown、2,160任务、187实施索引行、0结构错误，整类型代码完成仍0。最终dotnet名称快照0项/inaccessible0，只限该名称观察，不称全机零进程；全部自有外部调用cleanup_complete=true，证据/bin/obj保留。
+
+25拥有路径UTF8严格解码/无NUL/字节往返及diff检查PASS，未手改固定库存成员行。
+
+## 批次047 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标PASS，0错误/2既有NU1510；新增65/65（SelectedText23、Lines26、MaxLength16）和全量4,893/4,893，0失败/跳过。最终命令回执为artifacts/compatibility-batch047/release-build-verified.json、tests-new-verified.json及tests-full-verified.json，对应两个TRX保留tests目录。WarningLevel=0不表示分析告警清零。
 

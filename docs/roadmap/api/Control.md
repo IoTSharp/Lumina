@@ -12,6 +12,8 @@
 
 ## 公开成员
 
+048当前源码补充：17d仅补内部停车窗WM_COMMAND到既有HandleCommand的连接，恢复未挂父EDIT通知；未新增公共API。完整消息反射/线程context仍待，固定逐成员库存/原ID/分母保持，引用库存刷新NOT_RUN。
+
 | ID | 类别 | 签名 | 声明位置 / 元数据 | 当前形状 | Windows / Linux / macOS |
 | --- | --- | --- | --- | --- | --- |
 | API-5CD94112E20071AF | Constructor | `public Control()` | `System.Windows.Forms.Control`  | 🟡 签名匹配 | ⬜ / ⬜ / ⬜ |

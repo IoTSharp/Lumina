@@ -25,6 +25,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     private static readonly Lock s_subclassLock = new();
     private static readonly Dictionary<nint, Control> s_controlsByHandle = [];
     private static readonly Win32.WindowProc s_subclassProc = SubclassWindowProcThunk;
+    private static readonly Win32.WindowProc s_parkingWindowProc = ParkingWindowProcThunk;
     private static readonly Lazy<Font> s_defaultFont = new(static () => SystemFonts.MessageBoxFont!);
     private static readonly object s_clickEvent = new();
     private static readonly object s_doubleClickEvent = new();
@@ -3131,11 +3132,37 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         if (_parkingWindow == 0)
         {
-            _parkingWindow = Win32.CreateWindowExW(0, "STATIC", string.Empty, 0,
-                0, 0, 0, 0, 0, 0, Win32.GetModuleHandleW(null), 0);
+            nint instance = Win32.GetModuleHandleW(null);
+            NativeWindowClassRegistration windowClass = NativeWindowClass.GetOrRegister(
+                null, 0, Marshal.GetFunctionPointerForDelegate(s_parkingWindowProc), instance);
+            _parkingWindow = Win32.CreateWindowExW(0, windowClass.Name, string.Empty, 0,
+                0, 0, 0, 0, 0, 0, instance, 0);
             if (_parkingWindow == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
         }
         return _parkingWindow;
+    }
+
+    private static nint ParkingWindowProcThunk(nint hwnd, uint message, nint wParam, nint lParam)
+    {
+        try
+        {
+            // A parked child still sends native edit notifications to its
+            // native parent. Keep those notifications on the shared control
+            // path without exposing the parking window as a managed Control.
+            if (message == Win32.WM_COMMAND && lParam != 0
+                && Win32.GetAncestor(lParam, 1) == hwnd
+                && TryGetControlByHandle(lParam, out Control? child) && child is not null)
+            {
+                _ = child.HandleCommand(Win32.HighWord(wParam));
+                return 0;
+            }
+            return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
+        }
+        catch (Exception exception)
+        {
+            ReportNativeWindowException(exception);
+            return 0;
+        }
     }
 
     private void ReparentNativeWindow()

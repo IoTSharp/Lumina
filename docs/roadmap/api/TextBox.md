@@ -18,6 +18,8 @@
 
 ## 公开成员
 
+048当前源码补充：继承TextBoxBase-005b/005c的标准AppendText和CanUndo/Undo/ClearUndo，TextBox源码no-op；剪贴板、完整编辑/测量/输入仍待。不重复计数或修改固定库存成员行/ID/分母，引用库存刷新NOT_RUN。
+
 047当前源码补充：源码no-op，继承标准SelectedText/Lines/MaxLength，009任务按实际继承范围改部分；公开撤销/剪贴板、完整输入/测量仍待，不重复新增完成任务。固定逐成员库存行、原ID/分母保持。
 
 

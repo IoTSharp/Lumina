@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Batch 048: standard nullable AppendText now uses the existing selection/replacement path and restores the original selection for zero width or height. Add public CanUndo, Undo and ClearUndo with native EDIT semantics. A bounded internal parking-window command callback restores editing notifications while controls have no native parent. Notifications after an EDIT is reparented from parking to a Form remain an open Control/TextBoxBase gap.
+
 - Batch 047: standard TextBoxBase.SelectedText with native replacement, null deletion, undo/modified clearing and input-limit restoration; Lines now returns no entries for empty text and recognizes CR, LF and CRLF. The required MaxLength property validates its standard default and updates real EDIT input limits without recreating handles or truncating existing/programmatic text. Public undo/clipboard APIs, AppendText parity, full sizing and derived editing backends remain open.
 
 - Batch 046: standard TextBoxBase.BorderStyle/BorderStyleChanged with native border styles, handle recreation and conditional parent layout; SelectAll and DeselectAll now share the existing selection path through SelectInternal. Native system-class registrations now distinguish the source module/procedure resolved in the current activation context, preventing cross-STA EDIT superclass reuse across native versions. Full preferred-size behavior, SelectedText, undo/clipboard and derived editing backends remain open.
@@ -35,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Verification
 
+- Batch 048: Release fixed dual-target builds pass with 0 errors and 2 existing NU1510 warnings; 43 new tests plus 3 existing behavior tests pass, and all 4,936 full-suite tests pass without failures/skips. Original fixture, full-suite regression, parking/reparent diagnostics and an output-limit interruption are retained. Independent EDIT comparisons establish the observed empty-buffer EM_UNDO return and limited Undo behavior. The passing scope covers notifications while parked and reparenting state/lifetime; it does not establish editing notifications after reparenting. Designer, Native AOT, physical input and platform acceptance were not run.
+
 - Batch 047: Release fixed dual-target builds pass with 0 errors and 2 existing NU1510 warnings; all 65 new and 4,893 full-suite tests pass without failures/skips. The first new run passed 62/65: two fixtures read AllowNull metadata from the property instead of the setter parameter, and another expected Undo to ignore a restored MaxLength. An independent EDIT confirms the bounded Undo result. Original JSON/TRX receipts are retained; production behavior was not changed to satisfy these fixture errors. Designer, Native AOT, physical input and platform acceptance were not run.
 
 - Batch 045: Release fixed dual-target builds pass with 0 errors and 2 existing NU1510 warnings; final 45 new, 892 related and 4,782 full-suite tests pass without failures/skips. The first new run passed 43/45 because two fixtures created a child before its parent HWND, leaving native notifications at a parking window. Original receipts are retained; the corrected fixtures assert the actual parent HWND and managed mapping without changing production behavior or event expectations. Designer, Native AOT, physical input and platform acceptance were not run.
@@ -53,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release solution build and the full `Lumina.Tests` suite pass for the 033 scope (4,439 tests); complete command/dialog routing, IME, physical keyboard/wheel/touch input, Cursor, Native AOT, designer, and cross-platform gates remain open.
 
 ### Changed
+- AppendText's parameter name is aligned from value to the standard text. Existing named calls using value must use text; its CLR string parameter type is unchanged. Null now follows WinForms and performs no operation.
+
 - Correct AutoSizeMode numeric identity to GrowAndShrink=0 and GrowOnly=1 while preserving the existing named GrowOnly default. Previously compiled enum constants and persisted numeric 0/1 values require review; source using enum names retains the intended named behavior after recompilation.
 
 ### Planned

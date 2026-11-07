@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次048完成TextBoxBase-005b/005c的AppendText与公开撤销，以及必要Control-17d停车期间WM_COMMAND反射。43新增与3旧行为组合46/46、4,936全量及固定双目标Release通过；重挂后EDIT命令仍未交付的探针/诊断保留且继续原Control-17/TextBoxBase-006，完整编辑/派生后端/线程与平台门禁不关闭，见[048](batches/048.md)。下述047及以前为历史。
+
 2026-11-07 · 批次047完成TextBoxBase-002b/002c的SelectedText及Lines，并补必要003c的MaxLength；65新增/4,893全量及固定双目标Release通过。TextBox消费共享实现，Rich/Masked错误层级的间接消费不关闭其真实后端；完整AppendText/公开撤销/剪贴板、测量、StringArrayEditor/Designer和平台门禁仍待，见[047](batches/047.md)。下述046及以前为历史。
 
 2026-11-07 · 批次046补TextBoxBase边框设置/通知、SelectAll/DeselectAll及源窗口类身份缓存，限定范围为002a/007a/Control-17c。46新增与旧对齐组合74/74、最终4,828全量通过；完整测量/编辑、真实派生后端与平台门禁仍待，见[046](batches/046.md)。下述045及以前为历史。
@@ -28,7 +30,7 @@
 | ID | 状态 | 任务细节与验收 |
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
-| FND-011 | 🟡 | 019句柄、023标准消息/创建参数保留；024的04b保证Close失败后的实际销毁，025的07b/17b与Form-16c完成有限native callback/清理双错边界；046的Control-17c按当前源类身份缓存superclass，避免跨activation context混用EDIT。全部派生状态恢复、消息反射、自定义Param AOT、关闭竞态与三平台仍缺；Created隐藏属性差异保留 |
+| FND-011 | 🟡 | 019～046句柄/消息/销毁边界与源窗口类身份缓存范围保留；048的Control-17d补停车期间WM_COMMAND到已登记实际子控件的连接。重挂后EDIT未交付命令的现象已复现，原因未闭环，继续Control-17/TextBoxBase-006；全部派生状态恢复、完整反射、自定义Param AOT、关闭竞态与三平台仍缺，Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
 | FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap与046的BorderStyle复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
@@ -46,6 +48,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次048：只新增TextBoxBase-005b/005c与Control-17d，TextBox-002/009按真实继承交叉引用，Rich/Masked不计专有支持。重挂后编辑通知是新发现未完范围，保留诊断并进入原父任务，不因43新增通过或缩小测试范围称完整重挂兼容；原ID/1,095类型/61,240成员行和固定分母保留。README实施列/tasks.csv由既有工具生成，见[048](batches/048.md)。
 
 - 2026-11-07 · 批次047：只新增TextBoxBase-002b/002c/003c，完整002/003/005父项保持部分；TextBox-009因真实继承SelectedText/MaxLength从全待办纠正为部分，002同步Lines范围。Rich/Masked原父项不关闭，API固定成员行/原ID/1,095类型/61,240成员行保持；README实施列/tasks.csv由既有工具生成，见[047](batches/047.md)。
 

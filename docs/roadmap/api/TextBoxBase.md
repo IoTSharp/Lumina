@@ -22,6 +22,8 @@
 
 ## 公开成员
 
+048当前源码补充：005b对齐AppendText(string? text)及内部GetEndPosition，005c新增标准CanUndo/Undo/ClearUndo；普通EDIT路径的选择/限制/修改标志与撤销由真实消息消费。Copy/Cut/Paste、Clear完整语义、测量及派生真实后端仍待；原库存成员行/ID/固定分母保持，固定10.0.11引用库存刷新NOT_RUN。
+
 047当前源码补充：002b新增标准SelectedText/内部替换及clearUndo分支，002c修正Lines空文本/CR/LF/CRLF，003c补必要MaxLength及真实EDIT输入限制。完整AppendText/公开撤销/剪贴板、测量和派生后端仍待；原成员行、ID及固定分母保持，引用库存刷新NOT_RUN。
 
 

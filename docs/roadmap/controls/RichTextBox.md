@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+048源码no-op，错误TextBox层级间接消费普通EDIT的AppendText/CanUndo/Undo/ClearUndo；不实现RichEdit撤销/重做、动作名、富文本追加或标准直接基类。001/002/006等全部原父任务保持，见[048](../batches/048.md)。
+
 047源码no-op，错误TextBox层级间接共享SelectedText/Lines/MaxLength的EDIT实现；本类型需要的RichEdit选区/富文本、MaxLength覆盖及标准直接基类仍未实现，原001/002/006/007父任务不关闭，见[047](../batches/047.md)。
 
 046源码no-op，错误TextBox层级间接消费共同BorderStyle/SelectAll/DeselectAll；标准直接继承、RichEdit、选区格式/撤销及专有默认仍待，001/006/007和全部原父任务不关闭，见[046](../batches/046.md)。
@@ -53,6 +55,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次048：源码no-op，共享普通EDIT追加/撤销不计RichEdit专有支持，原父任务及真实后端继续待办，见[048](../batches/048.md)。
 
 - 2026-11-07 · 批次047：源码no-op，共享普通EDIT替换/分行/输入限制不实现RichEdit专有语义或标准直接层级；全部原父任务保留，见[047](../batches/047.md)。
 

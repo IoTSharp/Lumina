@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 048主聊天`01a1b383-1005-7ef0-8c42-c926057b7d4c`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`32b9ffffdce7b2e421ec84bfa062201f9415c23e`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向047明确确认实际接管并实时核047已归档。048为当前唯一编码主；AppendText任务独占基类AppendText/GetEndPosition及新测试，Undo任务仅新测试并提供精确成员补丁，主待基类冻结后串行整合，独占interop/文档/集成/Git。047实现`c8f1ca67268b1974370eb3e92c6bbb78372ad9dc`独立保留；监督`luminaforms-30`保持NOT_FOUND、048绑定NOT_DONE，不恢复可能用户删除项。下述047及以前归属为历史。
+
 - 047主聊天`01a1b355-d4a1-72a1-849a-d1086d4ca2e3`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`8768c3b72a530a49d4880577cea3d10f24d73b22`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向046明确确认实际接管并实时核实046已归档。047为当前唯一编码主；Lines任务独占基类Lines及新Lines测试，完成后冻结；SelectedText任务仅新测试与精确补丁，由主串行整合。主独占必要MaxLength依赖、共享接口/interop/文档/集成/Git。046实现`ccff4b5b275a701879de592d5f026f812fa8225c`独立保留；监督`luminaforms-30`保持NOT_FOUND、047绑定NOT_DONE，不恢复可能用户删除项。下述046及以前归属为历史。
 
 - 046主聊天`01a1b329-7d41-7530-ae78-ac19bcd5361f`于2026-11-07收到“开始接管”，完成必要只读准备并重新核独立归属交接`383060a83ed53693836e2bb37ba4c1d885d7956e`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向045明确确认实际接管并实时核实045已归档。046为当前唯一编码主；两个互斥内部任务分别负责TextBoxBase.BorderStyle标准设置/通知和SelectAll/DeselectAll选择契约/回归，主独占共享选择接口整合、文档/集成/Git。045实现`892d003ba57e2c887ff190117d2ed70b5b7d9726`独立保留；监督`luminaforms-30`保持NOT_FOUND、046绑定NOT_DONE，不恢复可能用户删除项。下述045及以前归属为历史。
@@ -32,7 +34,21 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次047 实施与收尾（当前）
+## 批次048 实施与收尾（当前）
+
+- 048已重核独立归属交接`32b9ffffdce7b2e421ec84bfa062201f9415c23e`三SHA一致、main干净/+0/-0，向047明确确认实际接管并实时核其归档。048为唯一编码主；AppendText任务独占对应基类成员/新测试，Undo任务仅新测试/精确补丁，主等基类冻结后串行整合并独占interop/停车回调/文档/集成/Git。两个任务均completed冻结，无同源生产并发写入。
+- 本批只关闭TextBoxBase-005b标准AppendText、005c公开CanUndo/Undo/ClearUndo及必要Control-17d停车期间WM_COMMAND连接。AppendText空值直接返回，经GetEndPosition/SelectInternal和虚SelectedText复用047替换，零尺寸finally恢复选区；参数名value对齐text，旧value命名实参需迁移。CanUndo不建窗查询，Undo必要建窗，ClearUndo无窗不操作。原旧选择算法、24/48高度及047替换不改。
+- 停车窗由裸STATIC改用既有NativeWindowClass静态回调，只将实际子HWND的WM_COMMAND交既有HandleCommand，异常不跨native边界；停车窗不公开Control映射，原归属/释放保持。未挂父TextBox旧TextChanged=2断言恢复。TextBox/Rich/Masked/Form/Application/固定Demo源码no-op，Rich/Masked不计专有支持。
+- 最终Release方案/固定Demo双目标PASS，0错/2既有NU1510；新增43（Append22/Undo16/停车5）与旧行为3组合46/46，完整4,936/4,936，0失败/跳过。最终JSON为048/release-build-final.json、tests-new-scoped-verified.json、tests-full-final.json，对应TRX保留；WarningLevel=0不表示分析告警清零。
+- 原失败全保留：首新增37/38误期待空缓冲EM_UNDO返回0，独立同配置EDIT与Lumina分别硬断言1及文本/选区/CanUndo0/Modified0后通过，生产未为夹具改。首全量4,930/4,931暴露裸停车窗吞命令并修复。停车45/46先误用隐藏Form.Handle，改Show/CreateControl后又暴露重挂后的真实命令缺口；两次有界诊断证实父映射、同HWND、停车窗销毁和native ID1001正确，但Form/child均无后续命令，原因未闭环，留Control-17/TextBoxBase-006。最终停车5例只证明停车期间通知与重挂状态/释放，不能称重挂后编辑兼容。一次v:normal输出上限中止也保留，改v:q后通过最终检查。
+- 下一真实依赖先核停车转Form后的EDIT命令交付，再继续Copy/Cut/Paste、Clear完整虚调用、ShortcutsEnabled与测量/default，再恢复Rich/Masked直接层级/真实后端。StringArrayEditor/Designer、ES_WANTRETURN/24/48、完整RTL/镜像、模态/OLE宿主/自然线程终止/多UI、CurrentCulture/UseWaitCursor、UserControl约束、HostedInWin32DialogManager、ButtonBase、关闭LostFocus/WM_QUIT及固定API引用包/AOT/设备/Linux/macOS/98%继续原任务。不重评全项目、不新建context或调度框架、不重复033～048。
+- 固定TextBoxBase69799字节/b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63重核复制；补固定Application.ParkingWindow5214字节/ab4f05f34e6c111eae03004848b98f873a96f5692e46b4f64f4f45b4c3bf6968。Context7不相关main/.NET11资料不代替固定源码。原ID/1,095类型/61,240成员行与固定分母保持，完整父项不关闭。
+- 既有路线图工具导出PASS：436份Markdown、2,160任务、187实施索引行、0结构错误，整类型代码完成0；README实施列/tasks.csv均由工具生成。最终dotnet名称快照0项/inaccessible0，只是该名称观察，不称全机零进程。
+- 25拥有路径UTF8严格解码/无NUL/字节往返与diff检查PASS，固定库存成员行未手改；失败/诊断与最终证据均保留048目录。
+- 主Cordonix父PID41588/精确创建FILETIME134384866751154767已核，不复用047身份；所有自有有界调用cleanup_complete=true，两任务无临时/持久workspace文档/独占服务。证据/bin/obj保留，不按名杀、不清共享缓存/MCP。新STA finally OLE ExitThread后既有private visual-context清理，无outer cookie，046旧outer cookie仍须最后逆序。
+- 持续授权、多互斥内部任务一人一任务/主独占共享接口interop文档集成Git、实现与独立归属交接分别成功commit/push及三SHA、新local先只读准备/交接成功push后开始/明确确认/旧主立即停止共享操作归档，不等下一批完成；后来暂停停止优先。监督NOT_FOUND、048绑定NOT_DONE，不恢复。Windows两目标官方Drawing与固定Demo双目标/静态Designer/resx保持。
+
+## 批次047 实施与收尾（历史）
 
 - 047实现提交`c8f1ca67268b1974370eb3e92c6bbb78372ad9dc`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；22拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际命令回执保留artifacts/compatibility-batch047/implementation-push.json。
 - 下一local只读接续聊天`01a1b383-1005-7ef0-8c42-c926057b7d4c`（Lumina batch 048 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后047才发送“开始接管”；048收到后重新核交接SHA/HANDOFF/干净树，并明确向047确认实际接管，确认前只读、不建内部任务。确认后047立即停止共享写入/构建/Git并归档，不等048完成。持续授权、成功push/三SHA、先只读准备/独立交接/确认/归档及后来暂停停止优先全部保持；监督NOT_FOUND、048绑定NOT_DONE，不恢复可能用户删除项。

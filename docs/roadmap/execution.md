@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[048](batches/048.md)完成AppendText的005b、公开撤销005c及停车期间命令转发Control-17d；43新增与3旧行为组合46/46、4,936全量及Release固定双目标通过。首轮夹具37/38、旧行为全量4,930/4,931、停车测试45/46和两次限定诊断原回执保留。停车期间通知已修复；先停车再重挂到Form后的EDIT命令仍缺，native ID=1001与实际映射一致而Form/child无通知，原因未闭环，下一批先继续Control-17/TextBoxBase-006，再做Copy/Cut/Paste/Clear完整虚调用、ShortcutsEnabled与完整测量/default。Rich/Masked标准直接层级和真实后端、完整context/模态/平台仍待。不重复033～048、不重评全项目、不新建context或调度框架；下述047及以前为历史。
+
 当前[047](batches/047.md)完成SelectedText/内部替换002b、Lines空值/CR/LF/CRLF的002c及必要MaxLength输入限制003c；65新增/4,893全量和Release固定双目标通过。首轮62/65的两处AllowNull反射位置错误按既有setter参数元数据断言纠正；独立EDIT证明恢复较小限制后Undo仍受限制，原失败保留。下一依赖继续AppendText空值/选择/撤销、公开CanUndo/Undo/ClearUndo/剪贴板、完整测量/default及必要编辑辅助成员，再按真实后端恢复Rich/Masked直接层级。StringArrayEditor/Designer、完整输入/RTL/模态/线程/平台仍待，不重复033～047、不新建context或调度框架；下述046及以前为历史。
 
 当前[046](batches/046.md)完成TextBoxBase-002a标准全选/取消选区、007a边框契约及Control-17c当前源窗口类身份缓存；46新增与旧对齐组合74/74，最终全量4,828/4,828，Release固定双目标0错/2既有NU1510。原生EDIT边框规范化、Upper初值、反射wrapper及activation环境/清理夹具失败均有原回执；完整输入/视觉/平台不因本批关闭。下一依赖继续SelectedText、Lines/AppendText空值/CRLF/撤销、CanUndo/Undo/ClearUndo/剪贴板及完整测量，再恢复真实Rich/Masked直接层级与后端。不重复033～046，不新建context或调度框架；下述045及以前为历史。
