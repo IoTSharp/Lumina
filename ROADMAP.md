@@ -1,5 +1,7 @@
 # LuminaForms 路线图
 
+066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](docs/roadmap/batches/066.md)。下述065及以前为历史。
+
 当前批次[065](docs/roadmap/batches/065.md)：003d完成标准SelectionFont与必要私有字体转换；93新增（契约50/原生43）通过，Release方案/固定双目标0错/2既有NU1510。首77/85的8项中英“单字体”夹具错误保留：独立RichEdit8/8证实原选区FACE掩码缺位，getter null正确；仅将均匀样式夹具改为单script文本，保留原中英独立对照。完整Font/颜色同步、文件/Protected/OLE/通知/UndoRedo、Find/完整选择测量、Masked模型及平台/98%仍待；064全量FAIL/超时未解门槛保留，065全量结果见批次页。下述064及以前为历史。
 
 当前批次[064](docs/roadmap/batches/064.md)：003c完成SelectionType及标准五值RichTextBoxSelectionTypes，008a完成RichEdit专有字符索引/坐标/物理行查询；新增101例（选择39/位置62）通过，Release固定双目标0错/2既有NU1510。全量保留FAIL/超时：首55秒超时，完整一次6145/6146（既有同步上下文回调超时），末180秒超时另有既有点击测试失败；对应两组独立18/18和23/23通过，原因未定，不能清除全量失败。完整Font/文件/Protected/OLE/通知/UndoRedo、Find/全部选择方向/测量、MaskedTextProvider、缩放/反射/线程/模态及Designer/AOT实际运行/设备/平台/98%仍待。下述063及以前为历史。
@@ -68,7 +70,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～064的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [064结果](docs/roadmap/batches/064.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～066的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [066结果](docs/roadmap/batches/066.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

@@ -401,6 +401,7 @@ public sealed class RichTextBoxSelectionFontContractTests
 
     private sealed class FormatRichTextBox : RichTextBox
     {
+        private bool _initializingHandle;
         internal byte[] Reply { get; set; } = MakeReply(CfmFace | CfmSize, 0, 240);
         internal List<FormatMessage> Messages { get; } = [];
         internal bool FailCreation { get; set; }
@@ -438,12 +439,25 @@ public sealed class RichTextBoxSelectionFontContractTests
 
         protected override void OnHandleCreated(EventArgs e)
         {
-            base.OnHandleCreated(e);
+            _initializingHandle = true;
+            try { base.OnHandleCreated(e); }
+            finally { _initializingHandle = false; }
             CreatedCount++;
         }
 
         protected override void WndProc(ref Message message)
         {
+            // Creation now initializes the default document color. Let those
+            // requests use RichEdit instead of injecting the selection-font
+            // reply. Outside creation, capture every range so a wrong flag
+            // still fails the original selection assertions.
+            if (_initializingHandle
+                && ((message.Msg == EmGetCharFormat && message.WParam == 0)
+                    || (message.Msg == EmSetCharFormat && message.WParam == 4)))
+            {
+                base.WndProc(ref message);
+                return;
+            }
             if (message.Msg is EmGetCharFormat or EmSetCharFormat)
             {
                 byte[] bytes = new byte[116];

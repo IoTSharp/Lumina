@@ -1,5 +1,7 @@
 # 逐控件任务索引
 
+066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](batches/066.md)。下述065及以前为历史。
+
 065限定完成RichTextBox-003d SelectionFont，仅新增该子项，003等未完父项/原ID/固定分母保持。93新增与Release通过；首77/85及独立native8/8揭示中英原选区FACE缺位，保留原回执和中英诊断，只修新均匀字体夹具。064全量FAIL/超时未解门槛保留，065全量结果见[065](batches/065.md)；实施列/tasks.csv继续由既有工具生成，不由数量推98%。下述064及以前为历史。
 
 064限定完成RichTextBox-003c SelectionType/标准flags与008a三项Rich专有字符位置/物理行查询；只新增这两个子项，008由全待办整理为部分，003及其他未完父项/原ID/固定分母保持。101新增与Release通过；全量6145/6146及两次超时保持FAIL/未解决，既有两组独立通过不能替代全量。实施列/tasks.csv继续由既有工具生成，不由数量推98%，见[064](batches/064.md)。下述063及以前为历史。
@@ -20,7 +22,7 @@
 
 056已完成TextBoxBase-003f构造样式/专用左键点击和003g八项必要绘图/间距成员声明转发。46新增/5,527全量首轮和固定双目标Release通过；WindowFromPoint均no-hit，只验证负向路由，正向可见点击/物理输入仍待。其余元数据/缩放、真实Rich/Masked后端和平台父项保持，见[056](batches/056.md)。以下055及以前为历史交付，实施列由既有工具继续生成，不将继承、局部回归或元数据当整类型完成。
 
-更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～065](batches/065.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。历史交付/首失败/负向命中回执保留；063曾纠正总述停060的滞后，064已同步至064；065继续同步至065并保留064全量FAIL/本批180秒超时。实施列由既有工具从任务页生成；完整缩放/跨屏DPI/其余元数据、真实剪贴板/菜单/输入、Rich完整格式API/文件/Find/完整选择测量/通知、Masked直接层级/真实模型、原反射父Form寿命、RTL/镜像视觉及未完父项保持。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～066](batches/066.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。历史交付/首失败/负向命中回执保留；063曾纠正总述停060的滞后，064已同步至064；065继续同步至065；066同步至066并保留064全量FAIL/065的180秒超时。实施列由既有工具从任务页生成；完整缩放/跨屏DPI/其余元数据、真实剪贴板/菜单/输入、Rich完整格式API/文件/Find/完整选择测量/通知、Masked直接层级/真实模型、原反射父Form寿命、RTL/镜像视觉及未完父项保持。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -59,7 +61,7 @@
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-001a、TextBox-003a、TextBox-003b、TextBox-003c、TextBox-004a、TextBox-004b、TextBox-005a、TextBox-007a、TextBox-007b、TextBox-010a；其余任务未完成 |
-| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-003b、RichTextBox-003c、RichTextBox-003d、RichTextBox-004a、RichTextBox-004b、RichTextBox-004c、RichTextBox-004d、RichTextBox-007a、RichTextBox-008a、RichTextBox-011a；其余任务未完成 |
+| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-003b、RichTextBox-003c、RichTextBox-003d、RichTextBox-003e、RichTextBox-004a、RichTextBox-004b、RichTextBox-004c、RichTextBox-004d、RichTextBox-007a、RichTextBox-008a、RichTextBox-011a；其余任务未完成 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [DomainUpDown](controls/DomainUpDown.md) | M2 | ⬜ 缺失 | 108 / 75 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

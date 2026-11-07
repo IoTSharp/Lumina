@@ -24,6 +24,7 @@ public class RichTextBox : TextBoxBase
     private const int EmSelectionType = 0x0442;
     private const int EmExLineFromChar = 0x0436;
     private const int EmSetCharFormat = 0x0444;
+    private const int EmSetBackgroundColor = 0x0443;
     private const int EmSetParaFormat = 0x0447;
     private const uint CfmColor = 0x40000000;
     private const uint CfmBackColor = 0x04000000;
@@ -85,6 +86,18 @@ public class RichTextBox : TextBoxBase
         Multiline = true;
         AutoSize = false;
         _ = DarkModeNative.TryEnableDarkScrollBar();
+    }
+
+    public override Color ForeColor
+    {
+        get => base.ForeColor;
+        set
+        {
+            if (!IsHandleCreated || InternalSetForeColor(value))
+            {
+                base.ForeColor = value;
+            }
+        }
     }
 
     [Localizable(true)]
@@ -599,6 +612,22 @@ public class RichTextBox : TextBoxBase
         finally { _ = Win32.ReleaseDC(0, screenDc); }
     }
 
+    private unsafe bool InternalSetForeColor(Color value)
+    {
+        CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
+        _ = Win32.SendMessageW(Handle, EmGetCharFormat, 0, (nint)(&format));
+        if ((format.Mask & CfmColor) != 0
+            && ColorTranslator.ToWin32(value) == format.TextColor)
+        {
+            return true;
+        }
+
+        format.Mask = CfmColor;
+        format.Effects = 0;
+        format.TextColor = ColorTranslator.ToWin32(value);
+        return Win32.SendMessageW(Handle, EmSetCharFormat, 4, (nint)(&format)) != 0;
+    }
+
     private unsafe CharFormat2 GetSelectionCharFormat()
     {
         CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
@@ -754,8 +783,19 @@ public class RichTextBox : TextBoxBase
         }
     }
 
+    protected override void OnBackColorChanged(EventArgs e)
+    {
+        if (IsHandleCreated)
+        {
+            int color = ColorTranslator.ToWin32(BackColor);
+            _ = Win32.SendMessageW(Handle, EmSetBackgroundColor, 0, color);
+        }
+        base.OnBackColorChanged(e);
+    }
+
     protected override void OnHandleCreated(EventArgs e)
     {
+        nint initialModified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0);
         UpdateMaxLength();
         // Enable only the notifications currently handled by TextBoxBase.
         // Hidden RichEdit controls otherwise omit these edit notifications.
@@ -766,6 +806,14 @@ public class RichTextBox : TextBoxBase
             SelectionBackColor = _selectionBackColorToSetOnHandleCreated;
         }
         AutoWordSelection = AutoWordSelection;
+        // Set the default colors before loading text/RTF, so automatic text
+        // colors use the control foreground while explicit RTF colors survive.
+        int background = ColorTranslator.ToWin32(BackColor);
+        _ = Win32.SendMessageW(Handle, EmSetBackgroundColor, 0, background);
+        _ = InternalSetForeColor(ForeColor);
+        // Formatting the new window is initialization, not a document edit.
+        // Restore its original bit before the base restores the old true bit.
+        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, initialModified, 0);
         base.OnHandleCreated(e);
         if (_textRtf is not null)
         {
@@ -1100,7 +1148,9 @@ public class RichTextBox : TextBoxBase
             return;
         }
 
-        ThemePalette palette = CurrentVisualStyle.Palette;
-        _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETBKGNDCOLOR, 0, unchecked((nint)Win32.ToColorRef(palette.ControlBackground)));
+        // Theme refresh also runs during base color notifications and handle
+        // creation. Keep the native background consistent with the public value.
+        int background = ColorTranslator.ToWin32(BackColor);
+        _ = Win32.SendMessageW(Handle, EmSetBackgroundColor, 0, background);
     }
 }

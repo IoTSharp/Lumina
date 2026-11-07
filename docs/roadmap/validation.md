@@ -1,5 +1,15 @@
 # 本轮验证与限制
 
+## 批次066 · 2026-11-07 当前验证
+
+收尾ExportTasks/普通校验及独立审计PASS：454MD/2197任务（2147控件+50共享）/187实施行/整类型完成0/0错误；旧2196ID/状态、1095类型/61240成员记录保持。19自有路径严格UTF8/noNUL/roundtrip、732个TRX逐结果、61新增分类与旧测试方法体逐字未变均已独立核对。
+
+最终Release方案/固定双目标0错/2既有NU1510；732/732相关RichTextBox通过，含61新增（ForeColor32/背景创建29）。首相关运行因输出上限停止，无完整TRX/总数；原回执保留。真实RTF重建Modified=false缺口已修：初始化前保存新窗口修改位、格式初始化后在base前恢复；旧false硬断言不降。旧SelectionFont夹具只分离创建期default GET/all SET，操作期所有范围/原完整载荷和数量断言保持，不能称旧测试未改。完整源码/测试SHA及TRX逐结果见[066](batches/066.md)和artifacts/compatibility-batch066。
+
+本批全量NOT_RUN；064全量FAIL/两次超时及065的180秒超时完整继承，相关组通过不能清除未解失败，不归因环境。完整Font/文件/Protected/OLE/通知/UndoRedo/Find/选择测量、Masked模型、缩放/反射/线程/模态及Designer/AOT实际运行/设备/Linux/macOS/98%仍待；包smoke/Notepad publish/固定API刷新NOT_RUN、hosted CI未独立读回，WarningLevel=0不表示告警清零。
+
+仅新增003e，旧2196任务ID/状态与固定1095类型/61240成员记录/分母保持；ExportTasks/普通verify和独立审计另记，不把审计PASS当全量PASS。根ROADMAP总述原停064已同步066；原历史不删。
+
 ## 批次065 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标0错/2既有NU1510，最终93新增（SelectionFont契约50/原生43）通过。首77/85的8个中英选区“均匀字体”样式夹具失败保留；独立RichEdit诊断8/8硬证两窗口原选区FACE掩码均缺位、getter null正确，并保持原文本与[1,6)选择。仅将原均匀样式夹具改为单script文本，8项中英诊断继续保留；生产行为/旧测试未为失败改变。测试重编通过；WarningLevel=0不代表分析告警清零。原JSON/TRX见artifacts/compatibility-batch065。

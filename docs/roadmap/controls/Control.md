@@ -1,5 +1,7 @@
 # Control
 
+066本类源码/任务no-op；颜色同步仅归RichTextBox-003e，不新增本类完成项。完整基类/派生、缩放/线程/反射/模态与平台门槛保持，064全量FAIL/065超时不被清除，见[066](../batches/066.md)。下述065及以前为历史。
+
 065本类源码/任务no-op；Rich-003d的字体转换由Rich私有LOGFONT/GetObjectW封装，不扩展Control资源模型或公共interop。完整反射/DPI/线程/模态与平台父项保持；064全量FAIL/超时未解门槛保留，见[065](../batches/065.md)。下述064及以前为历史。
 
 064本类源码/任务no-op；Rich-003c/008a复用既有Win32.POINT与SendMessage，不增加Control完成项。完整反射父寿命/WM_NOTIFY、DPI/线程/模态与平台门槛保持，见[064](../batches/064.md)。下述063及以前为历史。
@@ -125,6 +127,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次066：限定RichTextBox-003e颜色同步，原ID/未完父项/固定分母保持；064全量FAIL及065超时不由本批检查清除，见[066](../batches/066.md)。
 
 - 2026-11-07 · 批次065：源码/原任务状态no-op；Rich-003d不增加本类型完成项，原ID/未完父项/固定分母保持。 本批全量180秒超时未完成，064全量FAIL/超时未解门槛保留，见[065](../batches/065.md)。
 

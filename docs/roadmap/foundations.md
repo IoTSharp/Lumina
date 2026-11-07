@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或FND完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
+
 2026-11-07 · 批次065：Rich-003d只关闭SelectionFont及必要私有字体转换，不新增FND完成项；完整Font/颜色同步、Masked模型、缩放/反射/线程/模态与平台父项仍待。064全量FAIL/超时未解门槛保留，不由93新增通过清除，见[065](batches/065.md)。下述064及以前为历史。
 
 2026-11-07 · 批次064：Rich-003c/008a仅增加选择类型及专有查询限定范围，不新增FND完成项；完整共享成员、Masked模型、缩放/反射/线程/模态及平台父项仍待，原ID/分母保持，见[064](batches/064.md)。下述063及以前为历史。
@@ -68,6 +70,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次066：仅Rich-003e，不增加共享完成项，原ID/未完父项/固定分母保持；详见[066](batches/066.md)。
 
 - 2026-11-07 · 批次065：Rich-003d只增加选区字体限定范围，不新增FND完成项；完整Font/颜色同步及基础/平台父项保留。本批全量180秒超时，064全量FAIL/超时仍未解决，不由93新增通过清除，见[065](batches/065.md)。
 
