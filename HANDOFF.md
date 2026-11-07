@@ -60,7 +60,8 @@
 
 ## 批次060 实施与收尾（当前）
 
-- 完成RichTextBox-002c的Rtf/SelectedRtf字符串流与011a的RTF句柄格式缓存恢复；完整父项保持部分。当前实现commit/push与独立归属交接须分别成功、核HEAD/tracking/实际远端三SHA，不能把本地代码称已交付。接管前为`bce028b4790096e6b63018ca3c7f7e28b595b946`，059实现`05f98b39ee2892cab256eb786389acea804322f8`独立保留。
+- 完成RichTextBox-002c的Rtf/SelectedRtf字符串流与011a的RTF句柄格式缓存恢复；完整父项保持部分。060实现提交`71e51965e33d6a46154368c7e10d3b95bb735d2a`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地代码称已交付。接管前为`bce028b4790096e6b63018ca3c7f7e28b595b946`，059实现`05f98b39ee2892cab256eb786389acea804322f8`独立保留。
+- 下一local只读接续聊天`01a1b55a-cc3e-7803-9941-bc6c02bca5fe`（Lumina batch 061 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后060才发送“开始接管”；061先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向060确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后060立即停止共享写入/构建/Git并归档，不等061完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、061绑定NOT_DONE，不恢复或新建替代项。
 - 两个互斥任务completed冻结，分别只新RichTextBoxRtfTests.cs与RtfLifetimeTests.cs；另有只读复核无新增阻断。主独占Rich生产、文档/集成/Git；未改基类/Control/Application/Masked生产、项目、旧测试或固定Demo/Designer/resx。
 - Rtf默认无窗null，有plaincache读取才强制建窗；Rtf setter先比较再建窗/缓存/SF_RTF流入并显式通知，SelectedRtf选区0x8002流/空值WM_CLEAR。ACP/原始NUL/五字节前缀与短输入inner异常、输入限长恢复/修改位/行索引顺序保持。流出静态Stdcall/blittable/Pack4、逐调用MemoryStream/cookie及finally回收，无新PInvoke/依赖/公共模型。
 - 销毁先base再缓存最新真实RTF，创建先base再RTF优先/plain、后选择/ClearUndo；RTF快照恢复保Modified真/假与MaxLength，新无窗Text清RTF缓存并经Text setter清修改位。Text读取有RTF缓存时由RichEdit翻译，保disposed/recreating/disposing原分支。
