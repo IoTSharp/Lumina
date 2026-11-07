@@ -66,9 +66,11 @@
 
 ## 批次063 实施与收尾（当前）
 
+- 下一local只读接续聊天01a1b59c-e7bd-7921-976f-23b4a54bd381（Lumina batch 064 continuation，host local）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后063才发送“开始接管”；064先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向063确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后063立即停止共享写入/构建/Git并归档，不等064完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、064绑定NOT_DONE，不恢复或新建替代项。
+
 - 收尾实际导出/普通校验及独立核查PASS：451MD/2,193任务（2,143控件+50共享）/187实施行/整类型完成0，旧2,191任务ID与状态全部保持。18自有路径严格UTF8/noNUL/字节roundtrip与TRX逐结果核对通过。首独立核查误把CSV表头计入61,240成员记录，修为按CSV记录核对后通过；只修核查脚本，生产/测试未变，首失败independent-closeout-first.json保留，最终independent-closeout.json/independent-closeout-execution.json通过。
 
-- 063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。仅新增004c/004d，004及其他父项保持；接管前独立归属交接ee4752c8e3e115652b41d328d5b01381625263ac，实现与独立归属交接分开核验。
+- 063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。仅新增004c/004d，004及其他父项保持；063实现提交0f6f54fcd096e48d5558f554a2eab2c4246f085d已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立读回一致，main干净/+0/-0；接管前独立归属交接ee4752c8e3e115652b41d328d5b01381625263ac，实现与独立归属交接分开核验。
 - 项目符号测试48例/25467字节/SHA7a041f917567509b157e1b3099dd9213115df9ca6e0f97cfbd1afc889ea8b6d6；制表位38例/27154字节/SHAeddfaf54b52000c889c6dc0881544bf3331408a5e73d4318660c38af6b0f287d。两任务completed冻结，生产SHA b1768a27f9c6f468941299ae4ff22fc6792b877630c61f09aa59e260b2cc0d1a。
 - 004c：SelectionBullet为标准非virtual/默认false/隐藏属性，getter强制建窗后需NUMBERING mask且值1才真；setter新零156字节PARAFORMAT仅mask0x24/Numbering和Offset，true为bullet1与屏幕X像素转twip，false清两字段，每次SET无GET。BulletIndent标准非virtual/默认0/Behavior/Localizable，负值前置拒绝，先写缓存且无窗不建；有窗仅当前真bullet再提交，同值也查询。48例含精确载荷/混合/原生最新值/缓存时序/原异常/其他格式/RTF重建Modified真假的状态保持。
 - 004d：SelectionTabs为标准非virtual int[]/隐藏序列化/AllowNull，超过32在建窗前拒绝且ActualValue为空；getter按TABSTOPS有效mask逐槽转像素，无mask为空。setter先GET当前156字节结构，仅改mask/数量/前N槽，保留非目标字段及尾槽；null/空清数量，不排序/不校验元素，重复仍GET→SET并忽略返回。38例含32边界/全int/数组寿命/整结构/独立RichEdit/混合段落/其他格式及RTF重建通过。首AllowNull夹具只修setter参数反射，原失败保留。
