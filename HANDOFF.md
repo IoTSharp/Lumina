@@ -76,6 +76,8 @@
 
 ## 批次068 实施与收尾（当前）
 
+- 下一local只读接续聊天`01a1b63d-9855-75c0-9953-1c8e010d4e99`（Lumina batch 069 continuation，host local）已创建，编码归属指定给该聊天。068实现`083315e26ea6d7e9fef19ae1ac9db359868aabb2`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push核三SHA后068才发送“开始接管”。069先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树，向068原主`01a1b621-b24c-7d11-b6f6-59f0d242e692`明确确认实际接管；确认前不写/不构建/不提交推送/不创建内部任务。确认后068立即停共享写入/构建/Git并归档，不等069完成。持续授权、分别成功push核三SHA、先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、069绑定NOT_DONE，不恢复或另建替代项。068全量NOT_RUN、064FAIL/未解及065超时完整传递。
+
 - 收尾ExportTasks及独立核对PASS：456MD/2202任务（2152控件+50共享）/187实施行/整类型完成0/0错误；20自有路径严格UTF8/noNUL/roundtrip/SHA及952个TRX逐结果、原845项分组数量保持。仅新增005b/005c，旧2200ID及状态、固定1095类型/61240成员记录与分母保持。普通校验回执另见artifacts/compatibility-batch068/verify-roadmap.json，独立回执independent-closeout-final.json；审计不清064FAIL/065超时或平台门槛。
 
 - 068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。
