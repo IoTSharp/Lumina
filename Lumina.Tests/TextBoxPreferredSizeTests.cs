@@ -49,7 +49,7 @@ public sealed class TextBoxPreferredSizeTests
 
             Assert.True(preferred.Width > 0);
             Assert.Equal(123, preferred.Height);
-            Assert.Equal(new[] { "size", "multiline", "text", "font" }, textBox.Trace);
+            Assert.Equal(new[] { "multiline", "multiline", "size", "multiline", "text", "font" }, textBox.Trace);
             Assert.Equal(Size.Empty, textBox.LastClientSize);
             Assert.False(textBox.IsHandleCreated);
         });
@@ -65,7 +65,7 @@ public sealed class TextBoxPreferredSizeTests
 
             Assert.Same(failure, Assert.Throws<InvalidOperationException>(
                 () => textBox.GetPreferredSize(new Size(200, 200))));
-            Assert.Equal(new[] { "size" }, textBox.Trace);
+            Assert.Equal(new[] { "multiline", "multiline", "size" }, textBox.Trace);
             Assert.False(textBox.IsHandleCreated);
         });
 
@@ -80,7 +80,7 @@ public sealed class TextBoxPreferredSizeTests
 
             Assert.Same(failure, Assert.Throws<InvalidOperationException>(
                 () => textBox.GetPreferredSize(new Size(200, 200))));
-            Assert.Equal(new[] { "size", "multiline", "text" }, textBox.Trace);
+            Assert.Equal(new[] { "multiline", "multiline", "size", "multiline", "text" }, textBox.Trace);
             Assert.False(textBox.IsHandleCreated);
         });
 
@@ -95,7 +95,7 @@ public sealed class TextBoxPreferredSizeTests
 
             Assert.Same(failure, Assert.Throws<InvalidOperationException>(
                 () => textBox.GetPreferredSize(new Size(200, 200))));
-            Assert.Equal(new[] { "size", "multiline", "text", "font" }, textBox.Trace);
+            Assert.Equal(new[] { "multiline", "multiline", "size", "multiline", "text", "font" }, textBox.Trace);
             Assert.False(textBox.IsHandleCreated);
             textBox.FontGetter = null;
         });

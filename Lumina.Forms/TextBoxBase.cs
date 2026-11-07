@@ -638,7 +638,7 @@ public abstract class TextBoxBase : Control
                 | Win32.ES_AUTOHSCROLL | Win32.ES_AUTOVSCROLL;
             if (_multiline)
             {
-                style |= Win32.ES_MULTILINE | Win32.ES_WANTRETURN;
+                style |= Win32.ES_MULTILINE;
                 if (_wordWrap) { style &= ~Win32.ES_AUTOHSCROLL; }
             }
 
@@ -666,6 +666,7 @@ public abstract class TextBoxBase : Control
         get
         {
             const int WsBorder = 0x00800000;
+            SetStyle(ControlStyles.ApplyThemingImplicitly, true);
             CreateParams parameters = base.CreateParams;
             parameters.Style &= ~WsBorder;
             parameters.ExStyle &= ~(int)Win32.WS_EX_CLIENTEDGE;

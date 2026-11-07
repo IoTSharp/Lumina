@@ -1,6 +1,14 @@
 # 本轮验证与限制
 
-## 批次054 · 2026-11-07 当前验证
+## 批次055 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错误/2既有NU1510（release-build.json）；仅新夹具修正后测试项目重建0错/0警告（tests-build-after-fixture.json）。WarningLevel=0不表示分析告警清零。最终68/68新增（滚动条首选37、创建请求31）与5,481/5,481全量、0失败/跳过；tests-new-final.json、tests-full.json及TRX含实际argv、时间、PID、父身份和cleanup_complete，保留于artifacts/compatibility-batch055。
+
+首轮67/68仅RepeatedReads...末尾错误要求未建窗；固定ReadOnly setter→VerifyImeRestrictedModeChanged→CanEnableIme→PasswordProtect→PasswordChar会在关闭只读时创建EDIT。现分别断言关闭只读前未建窗、后已建窗，原参数复用/样式硬期望不改，生产未为失败改动。原tests-new.json/TRX及first-failure-analysis.json保留。053既有四个虚调用轨迹按新增TextBox测量覆写补前导Multiline两次，原尺寸/异常/基类后续顺序不降。
+
+无句柄ScrollBars变更保留固定Control.RecreateHandle直接返回的既有无约束缓存；带约束重算及已建窗重建刷新分别测试。SM2/3只在线程PMv2按内部DPI度量；创建请求位与EDIT边框规范化分别比较独立native。上述不计完整缩放/跨屏事件、主题视觉、点击双击、真实Rich/Masked、Designer/AOT/物理输入/三平台或98%验收。固定API刷新、CI包/Notepad发布smoke本地NOT_RUN，hosted CI须独立回读，原1,095类型/61,240成员行/分母不变，见[055](batches/055.md)。
+
+## 批次054 · 2026-11-07 历史验证
 
 最终Release方案/固定Demo双目标0错误/2既有NU1510（release-build-final.json）；WarningLevel=0不表示分析告警清零。最终84/84新增（度量33、AutoSize生命周期30、缓存/消费者21）、5,413/5,413全量，0失败/跳过；tests-new-metadata-final.json、tests-full-metadata-final.json及相应TRX为最终树证据，实际argv/时间/PID/父身份/cleanup_complete保留artifacts/compatibility-batch054。
 

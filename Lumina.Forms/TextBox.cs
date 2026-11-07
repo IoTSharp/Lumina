@@ -3,6 +3,7 @@
 // Portions adapted from dotnet/winforms v10.0.11 for Lumina.Forms.
 
 using System.ComponentModel;
+using System.Drawing;
 
 namespace Lumina.Forms;
 
@@ -229,6 +230,25 @@ public class TextBox : TextBoxBase
             parameters.ExStyle &= ~(int)Win32.WS_EX_RIGHT;
             return parameters;
         }
+    }
+
+    // Account for the requested scroll bars before measuring the text. The
+    // horizontal measurement intentionally does not use the alignment gate
+    // applied to the native creation style.
+    internal override Size GetPreferredSizeCore(Size proposedConstraints)
+    {
+        Size scrollBarPadding = Size.Empty;
+        if (Multiline && !WordWrap && (ScrollBars & ScrollBars.Horizontal) != 0)
+        {
+            scrollBarPadding.Height += Win32.GetHorizontalScrollBarHeightForDpi(DeviceDpiInternal);
+        }
+        if (Multiline && (ScrollBars & ScrollBars.Vertical) != 0)
+        {
+            scrollBarPadding.Width += Win32.GetVerticalScrollBarWidthForDpi(DeviceDpiInternal);
+        }
+
+        proposedConstraints -= scrollBarPadding;
+        return base.GetPreferredSizeCore(proposedConstraints) + scrollBarPadding;
     }
 
     /// <inheritdoc />

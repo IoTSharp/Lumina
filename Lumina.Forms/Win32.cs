@@ -1435,6 +1435,16 @@ internal static partial class Win32
                 GetSystemMetricsForDpi(6, unchecked((uint)dpi)))
             : new(GetSystemMetrics(5), GetSystemMetrics(6));
 
+    internal static int GetVerticalScrollBarWidthForDpi(int dpi)
+        => ApplicationHighDpi.GetCurrentMode() == HighDpiMode.PerMonitorV2
+            ? GetSystemMetricsForDpi(2, unchecked((uint)dpi))
+            : GetSystemMetrics(2);
+
+    internal static int GetHorizontalScrollBarHeightForDpi(int dpi)
+        => ApplicationHighDpi.GetCurrentMode() == HighDpiMode.PerMonitorV2
+            ? GetSystemMetricsForDpi(3, unchecked((uint)dpi))
+            : GetSystemMetrics(3);
+
     internal static int LowWord(nint value) => unchecked((ushort)(nuint)value);
 
     internal static int HighWord(nint value) => unchecked((ushort)(((nuint)value >> 16) & 0xFFFF));

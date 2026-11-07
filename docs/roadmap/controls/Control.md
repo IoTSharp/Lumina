@@ -1,5 +1,7 @@
 # Control
 
+055仅复用054的独立控件DPI读取和线程PMv2门禁，Win32新增SM2/3滚动条度量服务TextBox-004b；Control.cs源码no-op，不新增Control完成任务。固定RecreateHandle无句柄直接返回的缓存边界保留；完整缩放/跨屏事件/点击样式等原父项不关闭，见[055](../batches/055.md)。
+
 054为TextBoxBase-007c补必要DPI读取：构造在虚DefaultSize前保存独立DeviceDpiInternal，PMv2窗口创建后按真实HWND读取；公开非virtual DeviceDpi只在线程PMv2时投影控件值，其他线程返回初始系统DPI，元数据按固定源码。边框度量按当前线程感知选择系统API；只作为007c依赖记录，不重复新增完成任务。WmDpiChanged/BeforeParent、字体/常量重缩放、跨屏/Designer与完整DPI仍待，见[054](../batches/054.md)。
 
 051完成14c必要内部redraw更新辅助：short嵌套计数，无窗Begin不积累，首Begin发WM_SETREDRAW(0)，末End先减计数再经Handle发1并按参数Invalidate自身；无配对End返回false。10例含有限回调/异常/销毁重建回归与5,119全量通过，未新增公开API。可见绘制、资源压力、完整14/生命周期及平台仍待，见[051](../batches/051.md)。下述049及以前为历史。
@@ -103,6 +105,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次055：源码no-op，固定Control重建guard与DPI内部读取只为TextBox-004b提供依赖；不把新增两个系统度量helper计作完整DPI或Control完成，见[055](../batches/055.md)。
 
 - 2026-11-07 · 批次054：补标准DeviceDpi/独立内部缓存和真实窗口创建读取，为TextBoxBase-007c服务；保持完整Control/DPI父任务部分，不以初值/窗口读取代替缩放及跨屏事件验收，见[054](../batches/054.md)。
 
