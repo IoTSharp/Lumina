@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次064 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错/2既有NU1510；101新增（SelectionType39/位置62）全部通过，夹具修正后仅重编测试项目0错。首两轮各100/101的同一70k长段落用例失败保留：逻辑第二段并非必为物理行1；两个不同初始化窗口直接native行分别为4/5。只修新夹具，保持各自70001双向索引、字符、原生往返与公开方法精确等于本HWND原生行，生产/旧测试未为失败改变。全量保持FAIL/未解决：首55秒超时；完整一次6145/6146，唯一既有同步上下文用例UI callback超时；末次180秒超时并记录既有TextBox点击测试失败，未产生完整TRX。对应两组独立18/18、23/23通过，仅说明独立运行结果，原因尚未确定，不归因为环境、不降低旧断言、不称全量通过。两次超时均cleanup_complete=true/自有子树清零，原JSON/TRX保留在artifacts/compatibility-batch064。
+
+003c/008a只关闭选择类型与三项RichEdit专有查询限定范围，新增标准五值int flags，沿现有Win32.POINT/SendMessage，无新PInvoke/依赖/公共封送模型。完整Font/文件/Protected/OLE/通知/UndoRedo、Find/全部选择方向/测量、Masked模型与完整缩放/反射/线程/模态仍待；Designer/AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭，包smoke/Notepad publish本地NOT_RUN、hosted CI未读回、固定API刷新NOT_RUN。WarningLevel=0不是分析告警清零，见[064](batches/064.md)。
+
+ExportTasks导出452MD/2195任务（2145控件+50共享）/187实施行/整类型完成0/0错误；保旧2193任务ID、固定1095类型/61240成员记录与分母，仅008进入部分。普通校验与独立核查逐项记录在artifacts/compatibility-batch064；全量失败和未运行验收单独保留，不由任务/测试数量推出98%。
+
 ## 批次063 · 2026-11-07 当前验证
 
 收尾实际导出/普通校验及独立核查PASS：451MD/2,193任务（2,143控件+50共享）/187实施行/整类型完成0，旧2,191任务ID与状态全部保持。18自有路径严格UTF8/noNUL/字节roundtrip与TRX逐结果核对通过。首独立核查误把CSV表头计入61,240成员记录，修为按CSV记录核对后通过；只修核查脚本，生产/测试未变，首失败independent-closeout-first.json保留，最终independent-closeout.json/independent-closeout-execution.json通过。

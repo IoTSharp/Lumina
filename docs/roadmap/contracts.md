@@ -1,5 +1,7 @@
 # 附属类型与命名空间任务
 
+064为SelectionType增加标准RichTextBoxSelectionTypes五值int Flags（Empty0/Text1/Object2/MultiChar4/MultiObject8），固定官方v10.0.11源码已核。位置查询复用现有私有Win32.POINT/SendMessage，无新PInvoke/依赖/公共封送模型；不由Object枚举值宣称OLE对象支持，不新增CNS完成任务，见[064](batches/064.md)。下述063及以前为历史。
+
 063的Rich-004c/004d仅新增三个标准属性，复用现有私有PARAFORMAT/SendMessage/屏幕DC换算，无新公共类型/枚举/PInvoke/依赖，不新增CNS完成任务。见[063](batches/063.md)。下述062及以前为历史。
 
 062仅沿既有私有字符/段落结构及屏幕DC度量补Rich-003b/004b，不新增公共类型/枚举/封送模型或CNS完成任务；110新增/5,959全量首轮通过，完整附属契约/平台/98%仍待，见[062](batches/062.md)。
@@ -9,7 +11,7 @@
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
 | CNS-001 | P0 🟡 | 018～027既有事件契约保留；040补InputLanguageChanged/Changing两组参数/委托，保留Culture/InputLanguage构造、CharSet/SysCharSet和Cancel。其余准确委托、旧新值/索引/CloseReason及完整键盘契约仍待，动态封送AOT边界单列 | 相同事件处理器源码编译、真实触发参数与顺序正确 |
-| CNS-002 | P1 🟡 | 001～027枚举范围保留；035修AutoSizeMode数值身份并保持命名默认，补齐DialogResult缺失五成员、IButtonControl及实际默认/取消消费。旧AutoSizeMode整数0/1和已编译常量需复核；Keys.Return等别名、其余Anchor/Dock/AutoScale/DrawMode和完整契约仍待 | 不因同名枚举值个数大就稀释控件支持率 |
+| CNS-002 | P1 🟡 | 001～027枚举范围保留；035修AutoSizeMode数值身份并保持命名默认，补齐DialogResult缺失五成员、IButtonControl及实际默认/取消消费；064补SelectionType所需RichTextBoxSelectionTypes五值flags，完整OLE/对象行为仍待。旧AutoSizeMode整数0/1和已编译常量需复核；Keys.Return等别名、其余Anchor/Dock/AutoScale/DrawMode和完整契约仍待 | 不因同名枚举值个数大就稀释控件支持率 |
 | CNS-003 | P1 🟡 | 批次006～019的ListViewSubItem与ControlCollection/ArrangedElementCollection首范围保留；040补标准只读InputLanguageCollection的索引/Contains/IndexOf/CopyTo和快照。其他TabPage/Object/TreeNode/ListView/ToolStrip集合及完整Owner/并发/native仍缺 | [子项任务](controls/ListViewSubItem.md)、[集合场景](behavior-catalog.md)；局部集合不等于完整父子/原生同步 |
 | CNS-004 | P2 ⬜ | DataGridView列/单元格/行/样式/事件参数/编辑接口及共享行：所有文本/按钮/勾选/组合/图像/链接类型，Template/Clone/EditingControl、绘制格式与排序 | 行列、六组cell/column、表头、样式和集合已补独立任务页；[索引](README.md)，精确成员由附件及CSV逐条追踪 |
 | CNS-005 | P1/P2 ⬜ | 绑定及ComponentModel：IBindableComponent、BindingMemberInfo、BindingComplete、BindingManagerBase/PropertyManager/RelatedManager、IBindingList等；显式接口也必须支持 | [绑定任务](controls/Binding.md)、[上下文](controls/BindingContext.md)，AOT不靠未知动态代码生成 |
@@ -29,6 +31,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次064：增加SelectionType所需标准五值flags，三项Rich位置/行查询沿既有内部POINT；CNS-002与完整附属契约仍部分，不重复计数，见[064](batches/064.md)。
 
 - 2026-11-07 · 批次063：限定Rich-004c/004d，不增共享完成项、不关父项；同步真实代码/检查，纠正索引总述停060的滞后文字。原ID/1,095类型/61,240成员行/分母保持，见[063](batches/063.md)。
 

@@ -21,6 +21,8 @@ public class RichTextBox : TextBoxBase
     private const int EmExSetSel = 0x0437;
     private const int EmGetCharFormat = 0x043A;
     private const int EmGetParaFormat = 0x043D;
+    private const int EmSelectionType = 0x0442;
+    private const int EmExLineFromChar = 0x0436;
     private const int EmSetCharFormat = 0x0444;
     private const int EmSetParaFormat = 0x0447;
     private const uint CfmColor = 0x40000000;
@@ -190,6 +192,20 @@ public class RichTextBox : TextBoxBase
     {
         get => IsHandleCreated ? SelectedText.Length : base.SelectionLength;
         set => base.SelectionLength = value;
+    }
+
+    [Category("Behavior")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public RichTextBoxSelectionTypes SelectionType
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            return SelectionLength > 0
+                ? (RichTextBoxSelectionTypes)(int)Win32.SendMessageW(Handle, EmSelectionType, 0, 0)
+                : RichTextBoxSelectionTypes.Empty;
+        }
     }
 
     [DefaultValue(false)]
@@ -575,6 +591,33 @@ public class RichTextBox : TextBoxBase
         CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
         _ = Win32.SendMessageW(NativeHandle, EmGetCharFormat, 1, (nint)(&format));
         return format;
+    }
+
+    /// <summary>Returns the index of the character nearest to the given point.</summary>
+    public override unsafe int GetCharIndexFromPosition(Point pt)
+    {
+        Win32.POINT position = new() { x = pt.X, y = pt.Y };
+        int index = (int)Win32.SendMessageW(Handle, Win32.EM_CHARFROMPOS, 0, (nint)(&position));
+        string text = Text;
+        if (index >= text.Length)
+        {
+            index = Math.Max(text.Length - 1, 0);
+        }
+        return index;
+    }
+
+    /// <summary>Returns the physical line containing the specified character index.</summary>
+    public override int GetLineFromCharIndex(int index)
+        => (int)Win32.SendMessageW(Handle, EmExLineFromChar, 0, index);
+
+    /// <summary>Returns the location of the character at the given index, including the end position.</summary>
+    public override unsafe Point GetPositionFromCharIndex(int index)
+    {
+        if (index < 0 || index > Text.Length) { return Point.Empty; }
+        // RICHEDIT50W uses a POINTL buffer, unlike the packed EDIT result.
+        Win32.POINT position = default;
+        _ = Win32.SendMessageW(Handle, Win32.EM_POSFROMCHAR, (nint)(&position), index);
+        return new Point(position.x, position.y);
     }
 
     protected override Size DefaultSize => new(100, 96);
