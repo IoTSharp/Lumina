@@ -26,6 +26,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次054：新增尺寸范围及必要控件DPI/原生边框度量归TextBoxBase-007c/007d/007e；CNS-006a只保留053无DC测量范围，不将其扩写为完整TextRenderer/IDeviceContext/DrawText完成。原附属类型父项、任务ID及固定分母保持，见[054](batches/054.md)。
+
 - 2026-11-07 · 批次053：CNS-006从全待办纠正为无DC测量子范围完成/完整父项部分，保留未完Drawing/VisualStyles任务；006a登记六重载及必要TextFormatFlags/Padding.Size/DPI辅助，控件页不重复计数。固定API库存与原ID/分母不改，见[053](batches/053.md)。
 
 - 2026-11-07 · 批次041：CNS-012沿Application-11b/12a补OLE前置及最小owner退出配对；CNS-001/003的040事件/集合保持，未关闭任何完整父项。完整context/模态/输入法及平台仍待，固定源码其他失败HRESULT与MUI有界差异单列，见[041](batches/041.md)。

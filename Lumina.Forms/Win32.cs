@@ -1423,6 +1423,18 @@ internal static partial class Win32
     [DllImport("user32.dll")]
     internal static extern uint GetDpiForSystem();
 
+    [LibraryImport("user32.dll")]
+    internal static partial uint GetDpiForWindow(nint window);
+
+    [LibraryImport("user32.dll")]
+    private static partial int GetSystemMetricsForDpi(int index, uint dpi);
+
+    internal static Size GetBorderSizeForDpi(int dpi)
+        => ApplicationHighDpi.GetCurrentMode() == HighDpiMode.PerMonitorV2
+            ? new(GetSystemMetricsForDpi(5, unchecked((uint)dpi)),
+                GetSystemMetricsForDpi(6, unchecked((uint)dpi)))
+            : new(GetSystemMetrics(5), GetSystemMetrics(6));
+
     internal static int LowWord(nint value) => unchecked((ushort)(nuint)value);
 
     internal static int HighWord(nint value) => unchecked((ushort)(((nuint)value >> 16) & 0xFFFF));

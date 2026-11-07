@@ -61,6 +61,10 @@ internal static partial class ApplicationHighDpi
         return IsProcessDPIAware() != 0 ? HighDpiMode.SystemAware : HighDpiMode.DpiUnaware;
     }
 
+    internal static bool IsWindowPerMonitorV2(nint window)
+        => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393)
+            && AreDpiAwarenessContextsEqual(GetWindowDpiAwarenessContext(window), s_perMonitorV2Context) != 0;
+
     internal static bool SetProcessMode(HighDpiMode mode)
     {
         if (!OperatingSystem.IsWindows())
@@ -109,6 +113,9 @@ internal static partial class ApplicationHighDpi
 
     [LibraryImport("user32.dll")]
     private static partial nint GetThreadDpiAwarenessContext();
+
+    [LibraryImport("user32.dll")]
+    private static partial nint GetWindowDpiAwarenessContext(nint window);
 
     [LibraryImport("user32.dll")]
     private static partial int AreDpiAwarenessContextsEqual(nint firstContext, nint secondContext);

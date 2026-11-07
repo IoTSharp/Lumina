@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次054 · 2026-11-07 当前验证
+
+最终Release方案/固定Demo双目标0错误/2既有NU1510（release-build-final.json）；WarningLevel=0不表示分析告警清零。最终84/84新增（度量33、AutoSize生命周期30、缓存/消费者21）、5,413/5,413全量，0失败/跳过；tests-new-metadata-final.json、tests-full-metadata-final.json及相应TRX为最终树证据，实际argv/时间/PID/父身份/cleanup_complete保留artifacts/compatibility-batch054。
+
+首81新增通过，首全量5,404/5,410、6失败：Table公开AutoSize消费把80宽缩成4，生产修复Table并审计修复Flow同源消费者；另外5个AppendText零尺寸、BorderStyle非AutoSize隔离及菜单固定几何夹具明确AutoSize=false，原断言保持。两个父布局用例加入后83新增/5,412全量通过；固定源码复核再纠正DeviceDpi的EditorBrowsable=Always并补元数据一例，重建/新增/全量通过为最终84/5,413。所有早期失败和中间回执保留，不以最终PASS覆盖原失败。
+
+固定Control完整参考文件为metrics-reference/Control.v10.0.11.proxy.cs；无proxy后缀的Control.v10.0.11.cs仅11,024字节超时partial。SystemInformation完整参考与helper404也分别保留。控件DPI初值/真实窗口读取不等于跨屏消息、字体/常量重缩放或完整DPI生命周期。物理设备/可见命中、Designer、Native AOT、Linux/macOS及98%仍NOT_RUN或UNKNOWN；固定API刷新NOT_RUN，1,095类型/61,240成员行和分母保持，见[054](batches/054.md)。
+
 ## 批次053 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标最终0错误/2既有NU1510（release-build-retest.json）；首构建因缺少标准Padding.Size双目标失败，补齐getter后重建通过，原release-build.json保留。WarningLevel=0不表示分析告警清零。新增最终108/108（测量62、首选计算26、延期滚动20）、完整5,329/5,329，0失败/跳过；tests-new-final.json、tests-full.json与TRX、实际argv/时间/PID/父身份/cleanup_complete保留artifacts/compatibility-batch053。

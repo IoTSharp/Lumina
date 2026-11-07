@@ -37,11 +37,61 @@ public abstract class TextBoxBase : Control
     private bool _creatingHandle;
     private bool _codeUpdateText;
     private bool _scrollToCaretOnHandleCreated;
+    private bool _autoSize = true;
+    private int _requestedHeight;
+    private bool _integralHeightAdjust;
 
     internal TextBoxBase()
     {
         SetStyle(ControlStyles.UserPaint, false);
+        SetStyle(ControlStyles.FixedHeight, true);
+        CachePreferredSize = true;
+        _requestedHeight = Height;
     }
+
+    /// <summary>Gets or sets whether a single-line text box follows its font height.</summary>
+    [Category("Behavior")]
+    [DefaultValue(true)]
+    [Localizable(true)]
+    [RefreshProperties(RefreshProperties.Repaint)]
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool AutoSize
+    {
+        get => _autoSize;
+        set
+        {
+            if (_autoSize == value) { return; }
+            // Text boxes enforce their legacy height contract themselves. The
+            // layout engine's separate AutoSize state must remain unchanged.
+            _autoSize = value;
+            if (!Multiline)
+            {
+                SetStyle(ControlStyles.FixedHeight, value);
+                AdjustHeight(false);
+            }
+            OnAutoSizeChanged(EventArgs.Empty);
+        }
+    }
+
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new event EventHandler? AutoSizeChanged
+    {
+        add => base.AutoSizeChanged += value;
+        remove => base.AutoSizeChanged -= value;
+    }
+
+    /// <summary>Gets the preferred height for a single line, independently of wrapping.</summary>
+    [Category("Layout")]
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int PreferredHeight => FontHeight + (_borderStyle == BorderStyle.None
+        ? 0 : Win32.GetBorderSizeForDpi(DeviceDpiInternal).Height * 4 + 3);
+
+    /// <inheritdoc />
+    protected override Size DefaultSize => new(100, PreferredHeight);
 
     // Preserve the existing convenience constructor's raw initial state. Using
     // the public setters here would raise notifications and may create an EDIT
@@ -50,6 +100,7 @@ public abstract class TextBoxBase : Control
     {
         _multiline = multiline;
         _readOnly = readOnly;
+        SetStyle(ControlStyles.FixedHeight, !multiline && _autoSize);
     }
 
     /// <summary>
@@ -64,8 +115,11 @@ public abstract class TextBoxBase : Control
         set
         {
             if (_multiline == value) { return; }
+            using LayoutTransaction transaction = new(AutoSize ? Parent : null, this, nameof(Multiline));
             _multiline = value;
+            SetStyle(ControlStyles.FixedHeight, !value && AutoSize);
             RecreateHandle();
+            AdjustHeight(false);
             OnMultilineChanged(EventArgs.Empty);
         }
     }
@@ -622,8 +676,35 @@ public abstract class TextBoxBase : Control
     }
 
     /// <inheritdoc />
-    protected override int GetNativeHeight(int requestedHeight)
-        => _multiline ? Math.Max(48, requestedHeight) : Math.Max(24, requestedHeight);
+    protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
+    {
+        if (!_integralHeightAdjust && height != Height) { _requestedHeight = height; }
+        if (_autoSize && !_multiline) { height = PreferredHeight; }
+        base.SetBoundsCore(x, y, width, height, specified);
+    }
+
+    private void AdjustHeight(bool returnIfAnchored)
+    {
+        if (returnIfAnchored && (Anchor & (AnchorStyles.Top | AnchorStyles.Bottom))
+            == (AnchorStyles.Top | AnchorStyles.Bottom)) { return; }
+
+        int savedHeight = _requestedHeight;
+        try
+        {
+            if (_autoSize && !_multiline)
+            {
+                Height = PreferredHeight;
+            }
+            else
+            {
+                if (_multiline) { Height = Math.Max(savedHeight, PreferredHeight + 2); }
+                _integralHeightAdjust = true;
+                try { Height = savedHeight; }
+                finally { _integralHeightAdjust = false; }
+            }
+        }
+        finally { _requestedHeight = savedHeight; }
+    }
 
     /// <summary>
     /// Appends text to the current text box contents.
@@ -815,6 +896,20 @@ public abstract class TextBoxBase : Control
     }
 
     /// <inheritdoc />
+    protected override void OnFontChanged(EventArgs e)
+    {
+        base.OnFontChanged(e);
+        AdjustHeight(false);
+    }
+
+    /// <inheritdoc />
+    protected override void OnPaddingChanged(EventArgs e)
+    {
+        base.OnPaddingChanged(e);
+        AdjustHeight(false);
+    }
+
+    /// <inheritdoc />
     protected override bool OnCommand(int notificationCode)
     {
         // Native text submitted by code and initial/recreated window text must
@@ -897,6 +992,8 @@ public abstract class TextBoxBase : Control
     {
         base.OnHandleCreated(e);
         if (NativeHandle == 0) { return; }
+        ClearPreferredSizeCache();
+        AdjustHeight(true);
         UpdateMaxLength();
         if (_nativeModified)
         {

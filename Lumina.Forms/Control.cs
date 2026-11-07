@@ -153,6 +153,14 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     private const uint RightToLeftExStyleMask = WsExLayoutRtl | WsExRtlReading | WsExNoInheritLayout;
 
     internal bool CachePreferredSize { get; set; }
+    internal int DeviceDpiInternal { get; set; }
+
+    /// <summary>Gets the DPI used by this control in the current awareness context.</summary>
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Always)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int DeviceDpi => ApplicationHighDpi.GetCurrentMode() == HighDpiMode.PerMonitorV2
+        ? DeviceDpiInternal : Win32.InitialSystemDpi;
     internal bool ParticipatesInLayout => _visible;
     internal bool LayoutAutoSize => _autoSize;
     internal DockStyle LayoutDock => _dock;
@@ -169,6 +177,10 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     /// </summary>
     public Control()
     {
+        // Capture a per-control value before the virtual DefaultSize is read.
+        // A later HWND can supply its own monitor DPI; the system snapshot is
+        // only the initial value, not a replacement for that control state.
+        DeviceDpiInternal = Win32.InitialSystemDpi;
         // These extensions and setters are virtual. Preserve their construction
         // order and repeated reads while the initial bounds are still empty.
         if (DefaultMinimumSize != Size.Empty)
@@ -3306,6 +3318,11 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnHandleCreated(EventArgs e)
     {
+        if (NativeHandle != 0 && ApplicationHighDpi.IsWindowPerMonitorV2(NativeHandle))
+        {
+            uint dpi = Win32.GetDpiForWindow(NativeHandle);
+            if (dpi != 0) { DeviceDpiInternal = (int)dpi; }
+        }
         OnHandleCreated();
         HandleCreated?.Invoke(this, e);
     }

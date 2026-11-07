@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 054主聊天`01a1b49f-a8dc-7f32-87bc-f1dd796b03d6`于2026-11-07收到“开始接管”，完成必要只读准备，独立重核归属交接`43ce1bd82369650abb1257f599cb9f257bdc4d6a`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向053明确确认实际接管，并实时核053已归档。054为唯一编码主；三个互斥任务分别只写新度量、AutoSize生命周期、首选缓存测试（度量任务另独占必要参考证据）。主独占共享生产/interop、文档/集成/Git，沿真实尺寸/default依赖继续；整控件与平台验收不关闭。监督NOT_FOUND、054绑定NOT_DONE，不恢复或新建替代项；下述053及以前归属为历史。
+
 - 053主聊天`01a1b47b-4e92-7fe0-9a15-6c201ae4e615`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`525c3976c6dfc56405234a75d5a39991a3a33e3b`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向052明确确认实际接管并实时核其归档。053为唯一编码主，052实现`5c236295ec895bfee84bad9a9105842eb72ea6d9`独立保留。测量任务独占新TextRenderer/TextFormatFlags及新测量测试；两个契约任务分别只写新PreferredSize与ScrollToCaret测试。主独占基类/interop/Application必要DPI连接、文档/集成/Git；完整AutoSize/PreferredHeight/DefaultSize/缓存生命周期、真实派生后端与平台仍待。监督NOT_FOUND、053绑定NOT_DONE，不恢复或新建替代项；下述052及以前归属为历史。
 
 - 052主聊天`01a1b461-26a9-7d22-a676-820c668625c9`于2026-11-07收到“开始接管”，完成必要只读准备并独立核交接`3b12d48dfda408e6f5c7178ee30f8a56dc3f6794`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向051明确确认实际接管。051已声明停止共享写入/构建/Git并归档；052为唯一编码主。052限定TextBoxBase-008a行查询与008b字符位置查询，行任务独占三个行成员及新测试，位置任务只写新测试/提供补丁，主待基类冻结后串行整合，独占interop/共享文档/集成/Git。测量源码审计确认完整AutoSize/PreferredHeight/DefaultSize/GetPreferredSize仍依赖控件DPI、文本测量与请求高度生命周期，本批不以局部替代关闭。监督NOT_FOUND、052绑定NOT_DONE，不恢复或新建替代项；下述051及以前归属为历史。
@@ -44,7 +46,18 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次053 实施与收尾（当前）
+## 批次054 实施与收尾（当前）
+
+- 已独立核交接`43ce1bd82369650abb1257f599cb9f257bdc4d6a`三SHA/干净树，向053明确确认实际接管并实时核其归档。三个互斥任务completed冻结，主复核整合并补必要父布局/元数据回归，独占共享生产/interop、文档/集成/Git。
+- 只完成TextBoxBase-007c标准PreferredHeight/DefaultSize与必要独立控件DPI度量，007d独立AutoSize默认true/请求高度及SetBoundsCore/Font/Padding/Multiline/创建调整，007e首选缓存启用/真实失效。取消旧24/48原生下限；Table/Flow改读内部LayoutAutoSize，通用布局状态仍false。完整缩放/跨屏DPI消息与字体重缩放、其余元数据/样式、TextBox滚动条首选测量及Rich/Masked真实层级/模型/后端仍待。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510；84新增（33度量+30生命周期+21缓存/消费者）和5,413全量0失败/跳过，最终JSON/TRX带metadata-final后缀。首81新增通过、首全量6失败原回执完整：真实Table宽80→4消费者缺口已修，Flow同源消费同步修；其余5例明确固定夹具AutoSize=false，原尺寸/选择/缓存/坐标硬期望不改。中间83/5,412通过后固定源码复核纠正DeviceDpi EditorBrowsable=Always并补一例，最终重建/重跑84/5,413通过，见[054](docs/roadmap/batches/054.md)。
+- 现有CI还包括NuGet smoke pack/Notepad smoke publish，本批本地NOT_RUN，托管CI需独立回读；不以实施编译/测试冒充包/发布smoke或AOT运行验收。
+- 固定Control完整参考`artifacts/compatibility-batch054/metrics-reference/Control.v10.0.11.proxy.cs`为467,280字节/SHA256 42654f00b1e85bd96b44ac64df36c8728e5db6928510384d9bd22567f895f838；同目录无proxy后缀Control文件仅11,024字节下载超时partial。SystemInformation完整31,529字节/SHA256 d4c6a9fcf7f695c80c41af7965cdd4b6d41c8fb979b18e4ebf1e48f9855996b2；helper404、053目录tree部分响应均仅失败证据。固定API刷新NOT_RUN，原1,095类型/61,240成员行/ID/分母保持。
+- 主Cordonix父PID60124/精确FILETIME134385053257876636独立核验；自有有界调用cleanup_complete=true，三任务无持久文档/临时脚本/独占服务。线程DPI context恢复、STA ExitThread→private visual-context保持；证据/reference/JSON/TRX/bin/obj/共享缓存/MCP保留，不按名杀。Windows官方Drawing/固定双目标Demo/静态Designer/resx保持；物理/Designer/AOT/平台/98%不因程序回归关闭。
+- 受影响任务页/历史/共享文档已同步，纠正README正文停051的历史滞后，既有工具重生成实施列/tasks.csv并复核；442MD/2,175任务/187实施行、整类型完成0。未完父项不关闭、不重置ID/删除待办/缩小分母。下一按真实依赖继续剩余尺寸/缩放/样式与TextBox滚动条首选测量，再按依赖推进真实派生后端；不重做033～054、不重评全项目或建context/调度框架。
+- 持续授权、实现与独立归属交接分别成功push三SHA、下一local先只读准备/独立交接核验后开始/明确确认/旧主立即停止写入构建Git并归档规则保持。后来暂停停止优先；监督NOT_FOUND、054绑定NOT_DONE，不恢复或另建替代项。
+
+## 批次053 实施与收尾（历史）
 
 - 053实现提交`0e6bfa2dba773c7874feefe657d5409808e63510`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致，main干净/+0/-0；实现前远端为`525c3976c6dfc56405234a75d5a39991a3a33e3b`。实现与本独立归属交接分别保留，不以本地commit冒充交付。
 - 下一local只读接续聊天`01a1b49f-a8dc-7f32-87bc-f1dd796b03d6`（Lumina batch 054 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后053才发送“开始接管”；054完成必要只读准备后核交接SHA/HANDOFF/干净树，并明确向053确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后053立即停止共享写入/构建/Git并归档，不等054完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主归档及后来暂停停止优先保持；监督NOT_FOUND、054绑定NOT_DONE，不恢复或新建替代项。

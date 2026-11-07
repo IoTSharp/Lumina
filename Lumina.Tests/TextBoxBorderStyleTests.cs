@@ -193,7 +193,7 @@ public sealed class TextBoxBorderStyleTests
         => OnSta(() =>
         {
             using var parent = new Panel { Size = new Size(300, 180) };
-            using var textBox = new HookTextBox { Size = new Size(100, 30) };
+            using var textBox = new HookTextBox { AutoSize = false, Size = new Size(100, 30) };
             parent.Controls.Add(textBox);
             PropertyInfo cacheEnabled = typeof(Control).GetProperty("CachePreferredSize", BindingFlags.Instance | BindingFlags.NonPublic)!;
             FieldInfo cache = typeof(Control).GetField("_preferredSizeCache", BindingFlags.Instance | BindingFlags.NonPublic)!;

@@ -104,7 +104,7 @@ public sealed class TextBoxPreferredSizeTests
     public void PreferredSizeFollowsTextInsteadOfTheAssignedBounds()
         => OnSta(() =>
         {
-            using var textBox = new TextBox { BorderStyle = BorderStyle.None, Text = "i", Size = new Size(1000, 700) };
+            using var textBox = new TextBox { AutoSize = false, BorderStyle = BorderStyle.None, Text = "i", Size = new Size(1000, 700) };
             Size shortText = textBox.GetPreferredSize(Size.Empty);
             textBox.Text = "MMMMMMMMMMMMMMMMMMMM";
             Size longText = textBox.GetPreferredSize(Size.Empty);

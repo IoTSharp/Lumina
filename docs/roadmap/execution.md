@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[054](batches/054.md)完成TextBoxBase-007c/007d/007e的标准单行高度/默认、独立AutoSize与请求高度/创建/字体/间距/多行生命周期及首选缓存；必要控件DPI读取/边框度量和Table/Flow内部布局状态消费一并实现。最终84新增/5,413全量及固定双目标Release通过；首全量6失败原回执、真实消费者原因和夹具修正保留。下一核剩余尺寸/缩放/样式和TextBox滚动条首选测量的实际依赖，随后真实Rich/Masked层级/后端；完整跨屏DPI消息/字体重缩放、Designer/Native AOT/物理输入/平台及98%仍待。不重复033～054、不重评全项目、不建context/调度框架。下述053及以前为历史。
+
 当前[053](batches/053.md)完成必要无DC标准文本测量CNS-006a、TextBoxBase-007b首选尺寸计算及008c普通EDIT延期滚动，108新增/5,329全量与固定双目标Release通过。首构建暴露的Padding.Size已补标准getter；首104/105及第二107/108的夹具/错误诊断断言保留，独立EDIT证实本夹具隐藏首行0、可见未聚焦/聚焦均37，原滚动/状态硬期望不降低。完整AutoSize独立默认、PreferredHeight的控件DPI边框、DefaultSize、请求高度/Font/Multiline/SetBoundsCore和首选缓存生命周期仍待，本批未提前启用缓存。下一沿这些真实依赖继续，不重复033～053、不重评全项目、不建context框架；Rich/Masked标准层级/后端和全部平台门禁保持。下述052及以前为历史。
 
 当前[052](batches/052.md)完成TextBoxBase-008a/008b六个标准行/位置查询，102新增/5,221全量及固定双目标Release通过；首93/102九个夹具初始化/回调Text读取轨迹错误保留，生产未为此改动。测量源码审计确认完整AutoSize/PreferredHeight/DefaultSize/GetPreferredSize依赖控件DPI、标准文本测量和请求高度生命周期，本批未引入局部替代。下一继续这些真实测量/default依赖及ScrollToCaret未建窗延期，再恢复Rich/Masked标准直接层级与真实后端；完整反射/线程/模态、平台与98%留原任务。不重复033～052、不重评全项目、不建context或调度框架。下述051及以前为历史。

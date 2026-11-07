@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+054源码no-op，继承TextBoxBase-007c/007d/007e的PreferredHeight/100宽默认、独立AutoSize/请求高度和首选缓存；默认AutoSize改为标准true，旧24/48原生下限已取消。通用布局不按文本扩宽，原测量/零尺寸/菜单固定几何夹具明确关闭AutoSize。只在基类登记完成子范围；TextBox滚动条首选测量、完整样式/缩放/元数据与平台仍待，见[054](../batches/054.md)。下述053及以前为历史。
+
 053源码no-op，继承TextBoxBase-007b真实首选尺寸计算与008c普通EDIT延期/空文本滚动，108新增/5,329全量有界回归通过；只在基类登记，不重复计数。AutoSize/PreferredHeight/DefaultSize、24/48旧高度与完整缓存/请求高度生命周期仍待，见[053](../batches/053.md)。下述052及以前为历史。
 
 052源码no-op，继承TextBoxBase-008a/008b六个标准行/字符位置查询；真实EDIT的UTF-16/CRLF/尾空行/软折行及状态保持有102新增/5,221全量证据。仅在基类登记完成范围，不重复计数。AutoSize/PreferredHeight/DefaultSize/GetPreferredSize与完整端点/输入/平台仍待，见[052](../batches/052.md)。下述051及以前为历史。
@@ -43,7 +45,7 @@
 | TextBox-001 | P0 | 🟡 | 042的001a已改为TextBox : TextBoxBase并共用旧字体/选择/文本生命周期。完整基类成员与默认/Designer仍缺；现有SelectionChanged非WinForms成员暂留TextBox、不污染标准基类，正式迁移兼容决策仍待，不抵扣基线覆盖。 |
 | TextBox-001a | P0 | ✅ | 批次042：TextBox直接继承标准TextBoxBase，密码/系统密码、AcceptsReturn、ScrollBars、PlaceholderText及SelectionChanged留派生；便利构造保持原始字段初始化时序，选择扩展通过内部连接继续派发原虚On*。基类引用/真实重建/事件/密码与旧相关组通过；完整001父项不关闭。 |
 | TextBox-002 | P1 | 🟡 | 已有Text/EN_CHANGE与038的003c选择/重建范围保留；047～048继承SelectedText/Lines/AppendText/公开撤销，049继承005d标准Clear及Control-17e重挂命令。完整用户输入/通知重入及派生覆盖仍待，不能由有限编辑子范围关闭父项或重复新增继承任务。 |
-| TextBox-003 | P1 | 🟡 | 028完成003a焦点通知；037的003b补输入键判别与有限对话框路由；038的003c补Multiline真实重建及文本/选择/原生modified位保存。PreferredHeight/AutoSize/布局、撤销栈、其余样式与完整编辑/IME/设备仍待。 |
+| TextBox-003 | P1 | 🟡 | 028焦点、037输入判别、038多行重建保留；054继承基类007c/007d单行高度/默认和多行请求高度生命周期。完整缩放/跨屏DPI、布局、撤销栈、其余样式与完整编辑/IME/设备仍待；不重复计数继承范围。 |
 | TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
 | TextBox-003b | P1 | ✅ | 批次037：现有TextBox消费固定TextBox/TextBoxBase输入键规则：多行Enter/AcceptsReturn、Tab/AcceptsTab/Ctrl、多行Escape、可编辑Back及Home/End/Page；AcceptsTab下Ctrl+Tab去除Ctrl后交父对话框链。8项无句柄/真实EDIT/Form默认按钮回归通过。未恢复TextBoxBase、运行期原生样式重建和完整编辑输入。 |
 | TextBox-003c | P1 | ✅ | 批次038：Multiline变更真实重建EDIT后发MultilineChanged/虚OnMultilineChanged；同值不重建。Select/SelectionStart/SelectionLength支持创建前缓存、参数与有向范围、创建/重建恢复，保留Text及原生modified位并抑制创建中的重复EN_CHANGE。14项回归通过；仍直接继承Control，virtual Multiline为过渡声明，未完成TextBoxBase、尺寸/布局、撤销栈或完整编辑。 |
@@ -57,7 +59,7 @@
 | TextBox-007b | P1 | ✅ | 批次045：CharacterCasing标准非virtual属性、Behavior/DefaultValue(Normal)，Normal0/Upper1/Lower2；非法value异常不改状态/不建窗，同值no-op、变化保存后重建。创建消费ES_UPPERCASE/ES_LOWERCASE，不做手工转换或新增事件；25项回归含单双行ASCII/中文WM_CHAR硬期望、独立EDIT样式/程序设文/EM_REPLACESEL对照、文本/选择/modified/只读/滚动/密码/原异常保存通过。物理输入/剪贴板/完整文化/IME及007父项不关闭。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
 | TextBox-009 | P2 | 🟡 | 047～050替换/限制/撤销/剪贴板入口/快捷键禁用保留；051继承TextBoxBase-009a启用词删除与005f辅助，不重复新增继承完成任务。Paste(string)、真实剪贴板数据/超长粘贴、完整菜单/输入合并和UTF-16端点仍待。 |
-| TextBox-010 | P2 | 🟡 | 022的010a字体/颜色、046基类007a边框范围保留；053继承007b真实首选尺寸计算。单行PreferredHeight/AutoSize/DefaultSize、首选缓存/请求高度/控件DPI与固定24高度差异仍待，完整文本控件不关闭，不重复登记继承完成项。 |
+| TextBox-010 | P2 | 🟡 | 022字体/颜色、046边框和053首选计算保留；054继承007c/007d/007e标准单行高度/默认、独立AutoSize/请求高度及首选缓存，旧24/48原生下限已取消。完整缩放/跨屏DPI与字体重缩放、滚动条测量/元数据和真实Designer仍待，完整文本控件不关闭，不重复登记继承完成项。 |
 | TextBox-010a | P2 | ✅ | 批次022移除隐藏Font、克隆和外部Font释放，复用Control借用Font与独占HFONT创建/替换/销毁。无局部颜色时BackColor为Window（只读为Control）、ForeColor为WindowText，不继承父显式颜色；原生仍消费语义palette且明确记录默认前景差异。字体LOGFONT、Reset/重建/释放及派生颜色getter有限场景见022；全部文本/自动缩放/IME另列。 |
 | TextBox-011 | P3 | ⬜ | 静态 Designer 与 .resx 文本/字体、公开事件完整清单、AOT 输入与剪贴板、三平台原生可访问性和 Dispose 验收。 |
 | TextBox-CLOSE | P3 | ⬜ | 对照 API 清单逐个关闭剩余属性、事件、方法/重载与受保护兼容点；属性写入后读回、通知顺序/取消/重入、默认值、异常、未建句柄/重建/释放后行为分别有证据。Windows 与两原生平台各出属性/事件/行为分子分母，未验收项不能标🧪 验收通过。 |
@@ -75,6 +77,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次054：源码no-op，继承基类007c/007d/007e，不新增重复完成任务；旧尺寸/default当前缺口按有限实现纠正，完整缩放、样式和平台仍待，见[054](../batches/054.md)。
 
 - 2026-11-07 · 批次053：源码no-op，继承基类007b/008c，010按计算与完整生命周期分别记录；旧高度、AutoSize/default和平台父项保持，见[053](../batches/053.md)。
 

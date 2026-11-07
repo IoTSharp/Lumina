@@ -1,5 +1,7 @@
 # TableLayoutPanel
 
+054必要消费者修复：子项尺寸判断改读内部LayoutAutoSize，避免TextBox标准独立AutoSize=true使指定宽80被空文本首选宽4替换。原默认Margin/80宽断言保持并恢复通过，另覆盖TextBox长文本不扩宽；完整table算法/标准集合与平台父项仍部分。依赖归TextBoxBase-007d/007e，不重复计数，见[054](../batches/054.md)。
+
 🟡 **当前状态：**已有行列分配、Absolute/AutoSize/Percent 尺寸与 ColumnSpan 的部分算法；RowStyles/ColumnStyles 当前是 List，缺标准集合与 RowSpan、完整扩展属性/查询 API。020事务与021默认布局必要衔接已完成明确子范围，完整算法与控件仍未完成。
 
 基线为 `b83f534`，评估日期 2026-10-15。状态表示证据强度；本页的待办不代表已有功能完成。属性、事件、行为各自达到 ≥98% 才可通过；Windows 使用完整固定基线，Linux/macOS 使用已审核的可移植分母，平台例外逐项列明，不能当作完成。
@@ -40,6 +42,8 @@
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
 ## 修改历史
+
+- 2026-11-07 · 批次054：首轮全量暴露公开AutoSize消费的真实缺口，修正为内部布局状态；原ContainerControlTests固定80宽/Margin硬期望不改，全部原父项保留，见[054](../batches/054.md)。
 
 - 2026-10-16 · 批次021：专用引擎执行既有cell算法并使用内部布局边界；绝对40/60列、20行、Padding2的104×24测量/AutoSize有对照。现有样式列表无变更通知，因此明确禁用PreferredSize缓存，未伪装标准样式集合；完整table算法另列。 见[021](../batches/021.md)，父任务仍部分；020历史条带定位/无首选测量描述只代表当时状态。
 

@@ -164,7 +164,7 @@ public sealed class TextBoxAppendTextTests
         int expectedStart, int expectedLength)
         => OnSta(() =>
         {
-            using var textBox = new ObservingTextBox { Text = "abcdef", Size = new Size(width, height) };
+            using var textBox = new ObservingTextBox { AutoSize = false, Text = "abcdef", Size = new Size(width, height) };
             textBox.Select(1, 2);
             var failure = new InvalidOperationException("virtual SelectedText");
             textBox.SelectedTextFailure = failure;
@@ -314,7 +314,7 @@ public sealed class TextBoxAppendTextTests
             using var form = new Form();
             using var textBox = new UnconstrainedHeightTextBox
             {
-                Text = "abcdef", Size = new Size(width, height)
+                AutoSize = false, Text = "abcdef", Size = new Size(width, height)
             };
             nint handle = CreateHostedEdit(form, textBox);
             Assert.Equal(width, textBox.Width);

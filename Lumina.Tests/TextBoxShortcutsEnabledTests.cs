@@ -359,6 +359,7 @@ public sealed class TextBoxShortcutsEnabledTests
             using var menu = new ContextMenuStrip();
             using var textBox = new CommandTextBox
             {
+                AutoSize = false,
                 BorderStyle = BorderStyle.None,
                 Size = new Size(100, 40),
                 ShortcutsEnabled = false,

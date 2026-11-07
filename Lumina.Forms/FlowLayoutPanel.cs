@@ -170,7 +170,7 @@ public class FlowLayoutPanel : Panel
     }
 
     private static Size GetChildLayoutSize(Control child, Size availableSize)
-        => child.AutoSize
+        => child.LayoutAutoSize
             ? child.GetPreferredSize(new Size(
                 Math.Max(1, availableSize.Width - child.Margin.Horizontal),
                 Math.Max(1, availableSize.Height - child.Margin.Vertical)))

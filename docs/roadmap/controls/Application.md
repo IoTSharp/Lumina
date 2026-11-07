@@ -1,5 +1,7 @@
 # Application
 
+054仅在ApplicationHighDpi中封装真实窗口PMv2上下文判断，为Control的窗口DPI缓存读取服务；必要依赖归TextBoxBase-007c，不新增Application完成任务，也未补完整DPI/模态或线程context，见[054](../batches/054.md)。
+
 053必要依赖：成功SetHighDpiMode后刷新无DC标准文本测量的初始系统DPI快照；失败、非法值和已有窗口拒绝路径保持原结果。该内部连接归CNS-006a，不新增Application完成任务；全量5,329回归通过，完整DPI/线程/平台验收仍待，见[053](../batches/053.md)。
 
 🟡 **现状：**已有消息循环、样式activation context和open form跟踪；040线程HKL服务保留，041补OleRequired线程缓存、输入语言OLE前置与显式/最外层退出配对。Run()/Run(ApplicationContext)、完整消息过滤/退出与OLE宿主context、CurrentCulture/UseWaitCursor、标准异常对话框与异常模式仍缺。
@@ -46,6 +48,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次054：内部窗口感知判断按固定源码区分窗口与线程context，服务007c度量依赖；Application.cs源码no-op，原父任务保持，见[054](../batches/054.md)。
 
 - 2026-11-07 · 批次041：新增11b与12a，12由全待办改部分，保留全部原ID/未完API。最小ThreadStatic OLE状态复用现有退出路径，不引入完整ThreadContext；其他失败HRESULT显式传播是相对固定v10.0.11的明确差异。首轮9个内部服务测试在调用库前误假定CLR未初始化COM，保留失败并修正原生夹具；生产代码未为夹具改变，见[041](../batches/041.md)。
 

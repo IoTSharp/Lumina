@@ -365,7 +365,7 @@ public class TableLayoutPanel : Panel
     }
 
     private static Size GetChildLayoutSize(Control control, Size proposedSize)
-        => control.AutoSize ? control.GetPreferredSize(proposedSize) : control.SpecifiedBounds.Size;
+        => control.LayoutAutoSize ? control.GetPreferredSize(proposedSize) : control.SpecifiedBounds.Size;
 
     private Size MeasureTable(Size proposedSize)
     {
