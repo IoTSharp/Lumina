@@ -74,6 +74,8 @@
 
 ## 批次067 实施与收尾（当前）
 
+- 下一local只读接续聊天`01a1b621-b24c-7d11-b6f6-59f0d242e692`（Lumina batch 068 continuation，host local）已创建，编码归属指定给该聊天。067实现`95e827a367857f8c73a9cfca25f1aef0ff63496f`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push核三SHA后067才发送“开始接管”。068先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树，向067原主`01a1b5f9-5b07-7ea0-8d8b-c552146908ab`明确确认实际接管；确认前不写/不构建/不提交推送/不创建内部任务。确认后067立即停共享写入/构建/Git并归档，不等068完成。持续授权、分别push核三SHA、先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、068绑定NOT_DONE，不恢复或另建替代项。067全量NOT_RUN，064FAIL/未解及065超时完整传递。
+
 - ExportTasks/普通校验与独立收尾审计PASS：455MD/2200任务（2150控件+50共享）/187实施行/整类型完成0/0错误；23自有路径严格UTF8/noNUL/roundtrip/SHA、845个TRX逐结果、100新增分类和旧测试未改已核。旧2197ID与固定1095类型/61240成员记录保持，仅Rich-005随真实新子范围由pending整理为部分。
 
 - 限定完成RichTextBox-003f Font override、005a ContentsResized与Control-17f自有停车WM_NOTIFY必要连接，详情见[067](docs/roadmap/batches/067.md)。Windows仍用官方Drawing；共享TextBoxBase/Application/Form生产、项目/Demo/Designer/resx及旧测试均未改。
