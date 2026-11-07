@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次065 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错/2既有NU1510，最终93新增（SelectionFont契约50/原生43）通过。首77/85的8个中英选区“均匀字体”样式夹具失败保留；独立RichEdit诊断8/8硬证两窗口原选区FACE掩码均缺位、getter null正确，并保持原文本与[1,6)选择。仅将原均匀样式夹具改为单script文本，8项中英诊断继续保留；生产行为/旧测试未为失败改变。测试重编通过；WarningLevel=0不代表分析告警清零。原JSON/TRX见artifacts/compatibility-batch065。
+
+本批一次全量180秒超时，未产生完整TRX/通过数；清理5个自有进程后子树归零（cleanup_complete=true），不声称全量通过。064全量FAIL/两次超时及18/18、23/23独立组不能清除失败的原结论完整保留，原因未定，不归因为环境。003d只关闭SelectionFont；完整Font/颜色同步、文件/Protected/OLE/通知/UndoRedo、Find/完整选择测量、Masked模型、缩放/反射/线程/模态和Designer/AOT实际运行/设备/Linux/macOS/98%仍待。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立读回、固定API刷新NOT_RUN。
+
+收尾ExportTasks/普通校验及独立核查PASS：453MD/2196任务（2146控件+50共享）/187实施行/整类型完成0/0错误；旧2195任务ID/状态全部保留，仅新增003d，固定1095类型/61240成员记录及分母保持。18自有路径严格UTF8/noNUL/字节roundtrip、三个TRX逐结果与精确源码/新测试SHA及Git归属核查见artifacts/compatibility-batch065；审计PASS不等于全量测试PASS。
+
 ## 批次064 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标0错/2既有NU1510；101新增（SelectionType39/位置62）全部通过，夹具修正后仅重编测试项目0错。首两轮各100/101的同一70k长段落用例失败保留：逻辑第二段并非必为物理行1；两个不同初始化窗口直接native行分别为4/5。只修新夹具，保持各自70001双向索引、字符、原生往返与公开方法精确等于本HWND原生行，生产/旧测试未为失败改变。全量保持FAIL/未解决：首55秒超时；完整一次6145/6146，唯一既有同步上下文用例UI callback超时；末次180秒超时并记录既有TextBox点击测试失败，未产生完整TRX。对应两组独立18/18、23/23通过，仅说明独立运行结果，原因尚未确定，不归因为环境、不降低旧断言、不称全量通过。两次超时均cleanup_complete=true/自有子树清零，原JSON/TRX保留在artifacts/compatibility-batch064。

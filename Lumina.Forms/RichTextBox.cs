@@ -29,6 +29,9 @@ public class RichTextBox : TextBoxBase
     private const uint CfmBackColor = 0x04000000;
     private const uint CfmOffset = 0x10000000;
     private const uint CfmProtected = 0x10;
+    private const uint CfmFace = 0x20000000;
+    private const uint CfmSize = 0x80000000;
+    private const uint CfmCharSet = 0x08000000;
     private const uint CfeProtected = 0x10;
     private const uint CfeAutoBackColor = 0x04000000;
     private const uint PfmStartIndent = 1;
@@ -308,6 +311,16 @@ public class RichTextBox : TextBoxBase
             format.TextColor = ColorTranslator.ToWin32(value);
             _ = Win32.SendMessageW(NativeHandle, EmSetCharFormat, 1, (nint)(&format));
         }
+    }
+
+    /// <summary>Gets or sets the selection font; a mixed face has no single font.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DisallowNull]
+    public Font? SelectionFont
+    {
+        get => GetSelectionFont();
+        set => SetSelectionFont(value);
     }
 
     [Browsable(false)]
@@ -593,6 +606,86 @@ public class RichTextBox : TextBoxBase
         return format;
     }
 
+    private unsafe Font? GetSelectionFont()
+    {
+        if (!IsHandleCreated) { CreateHandle(); }
+        CharFormat2 format = GetSelectionCharFormat();
+        if ((format.Mask & CfmFace) == 0) { return null; }
+
+        float size = 13;
+        if ((format.Mask & CfmSize) != 0)
+        {
+            size = format.Height / 20.0f;
+            if (size == 0 && format.Height > 0) { size = 1; }
+        }
+        FontStyle style = FontStyle.Regular;
+        if ((format.Mask & format.Effects & 1) != 0) { style |= FontStyle.Bold; }
+        if ((format.Mask & format.Effects & 2) != 0) { style |= FontStyle.Italic; }
+        if ((format.Mask & format.Effects & 8) != 0) { style |= FontStyle.Strikeout; }
+        if ((format.Mask & format.Effects & 4) != 0) { style |= FontStyle.Underline; }
+
+        ReadOnlySpan<char> face = new(format.FaceName, 32);
+        int terminator = face.IndexOf('\0');
+        string name = new(terminator < 0 ? face : face[..terminator]);
+        try
+        {
+            return new Font(name, size, style, GraphicsUnit.Point, format.CharSet);
+        }
+        catch
+        {
+            // The fixed WinForms font conversion returns null when Drawing
+            // cannot construct this native format. Handle/message failures
+            // occur above and retain their normal exception behavior.
+            return null;
+        }
+    }
+
+    private unsafe void SetSelectionFont(Font value)
+    {
+        // Preserve the standard order, including a runtime null assignment:
+        // create the window before inspecting the supplied Font.
+        if (!IsHandleCreated) { CreateHandle(); }
+        uint effects = 0;
+        if (value.Bold) { effects |= 1; }
+        if (value.Italic) { effects |= 2; }
+        if (value.Strikeout) { effects |= 8; }
+        if (value.Underline) { effects |= 4; }
+
+        FontLogFont logicalFont = GetLogicalFont(value);
+        CharFormat2 format = new()
+        {
+            Size = (uint)sizeof(CharFormat2),
+            Mask = CfmFace | CfmSize | CfmCharSet | 0x0F,
+            Effects = effects,
+            Height = (int)(value.SizeInPoints * 20),
+            CharSet = logicalFont.CharSet,
+            PitchAndFamily = logicalFont.PitchAndFamily
+        };
+        new ReadOnlySpan<char>(logicalFont.FaceName, 32).CopyTo(new Span<char>(format.FaceName, 32));
+        _ = Win32.SendMessageW(Handle, EmSetCharFormat, 1, (nint)(&format));
+    }
+
+    private static unsafe FontLogFont GetLogicalFont(Font font)
+    {
+        // Font.ToHfont uses Drawing's typed LOGFONT conversion. Read its native
+        // result into a blittable buffer rather than using object marshaling
+        // or retaining/disposing the caller's managed Font.
+        nint handle = font.ToHfont();
+        try
+        {
+            FontLogFont logicalFont = default;
+            if (GetFontObject(handle, sizeof(FontLogFont), &logicalFont) != sizeof(FontLogFont))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+            return logicalFont;
+        }
+        finally { _ = Win32.DeleteObject(handle); }
+    }
+
+    [DllImport("gdi32.dll", EntryPoint = "GetObjectW", ExactSpelling = true, SetLastError = true)]
+    private static extern unsafe int GetFontObject(nint font, int bytes, FontLogFont* logicalFont);
+
     /// <summary>Returns the index of the character nearest to the given point.</summary>
     public override unsafe int GetCharIndexFromPosition(Point pt)
     {
@@ -877,8 +970,28 @@ public class RichTextBox : TextBoxBase
         }
     }
 
-    // Richedit.h packs both structures at four bytes. Fixed inline buffers
-    // keep these synchronous message payloads blittable on the AOT path.
+    // The LOGFONT buffer contains only native scalar values and an inline name.
+    [StructLayout(LayoutKind.Sequential)]
+    private unsafe struct FontLogFont
+    {
+        internal int Height;
+        internal int Width;
+        internal int Escapement;
+        internal int Orientation;
+        internal int Weight;
+        internal byte Italic;
+        internal byte Underline;
+        internal byte StrikeOut;
+        internal byte CharSet;
+        internal byte OutPrecision;
+        internal byte ClipPrecision;
+        internal byte Quality;
+        internal byte PitchAndFamily;
+        internal fixed char FaceName[32];
+    }
+
+    // Richedit.h packs the character and paragraph formats at four bytes.
+    // Inline buffers keep the synchronous payloads blittable on the AOT path.
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     private unsafe struct CharFormat2
     {

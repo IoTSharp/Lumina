@@ -1,5 +1,7 @@
 # LuminaForms 路线图
 
+当前批次[065](docs/roadmap/batches/065.md)：003d完成标准SelectionFont与必要私有字体转换；93新增（契约50/原生43）通过，Release方案/固定双目标0错/2既有NU1510。首77/85的8项中英“单字体”夹具错误保留：独立RichEdit8/8证实原选区FACE掩码缺位，getter null正确；仅将均匀样式夹具改为单script文本，保留原中英独立对照。完整Font/颜色同步、文件/Protected/OLE/通知/UndoRedo、Find/完整选择测量、Masked模型及平台/98%仍待；064全量FAIL/超时未解门槛保留，065全量结果见批次页。下述064及以前为历史。
+
 当前批次[064](docs/roadmap/batches/064.md)：003c完成SelectionType及标准五值RichTextBoxSelectionTypes，008a完成RichEdit专有字符索引/坐标/物理行查询；新增101例（选择39/位置62）通过，Release固定双目标0错/2既有NU1510。全量保留FAIL/超时：首55秒超时，完整一次6145/6146（既有同步上下文回调超时），末180秒超时另有既有点击测试失败；对应两组独立18/18和23/23通过，原因未定，不能清除全量失败。完整Font/文件/Protected/OLE/通知/UndoRedo、Find/全部选择方向/测量、MaskedTextProvider、缩放/反射/线程/模态及Designer/AOT实际运行/设备/平台/98%仍待。下述063及以前为历史。
 
 当前批次[063](docs/roadmap/batches/063.md)：063完成RichTextBox-004c SelectionBullet/BulletIndent真实项目符号与缓存缩进，以及004d SelectionTabs原生制表位。86新增（项目符号48/制表位38）与6,045全量通过，固定双目标Release0错/2既有NU1510。首85/86唯一失败为AllowNull反射落点夹具错误，仅修新测试为setter value参数，原失败回执保留、生产未改。SelectionFont/SelectionType、完整Font/ForeColor/BackColor同步、LoadFile/SaveFile各重载/StreamType/编码/文件锁、Protected通知/拒改、OLE/专有通知/UndoRedo/动作名、完整选择/行/坐标/测量、MaskedTextProvider真实模型与直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。下述062及以前为历史。
