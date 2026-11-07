@@ -1,5 +1,7 @@
 # Control
 
+062本类源码no-op；Rich的003b/004b复用现有SendMessage/屏幕DC度量和句柄连接，不新增Control完成任务。110新增/5,959全量首轮通过；完整反射父寿命/WM_NOTIFY、线程/缩放/平台保持待办，见[062](../batches/062.md)。下述061及以前为历史。
+
 061本类源码no-op；Rich字符/段落格式复用现有SendMessage和句柄连接，不新增Control完成任务。完整反射父寿命/WM_NOTIFY、线程/缩放/平台保持待办，见[061](../batches/061.md)。下述060及以前为历史。
 
 060本类源码no-op；Rich RTF流复用既有SendMessage/句柄寿命与选择连接，不增加Control公共API或完成任务。完整WM_NOTIFY/反射父寿命、线程/缩放/平台仍待，见[060](../batches/060.md)。下述059及以前为历史。
@@ -117,6 +119,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次062：源码no-op，Rich偏移/保护标记/段落缩进沿既有interop，不新增公共API或Control完成范围；完整父项与平台门槛保持，见[062](../batches/062.md)。
 
 - 2026-11-07 · 批次061：源码/任务no-op，Rich-003a/004a的私有blittable格式结构与标准属性不扩写Control完成范围，原父项/ID/分母保持，见[061](../batches/061.md)。
 

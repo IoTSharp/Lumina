@@ -1,5 +1,17 @@
 # 本轮验证与限制
 
+## 批次062 · 2026-11-07 当前验证
+
+062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。WarningLevel=0不是分析告警清零；旧测试、项目及固定Demo/Designer/resx未改，无系统剪贴板操作。回执位于artifacts/compatibility-batch062。
+
+字符43例核116字节Pack4/精确消息与mask/effects、Y屏幕DPI、非法偏移建窗前拒绝、原创建异常/重试、getter不检查offset mask、保护位混合读回、其他格式/状态保持与RTF重建Modified真/假。缩进67例核156字节Pack4/单字段mask、新零结构/noGET setter、右缩进前置拒负、其余完整int输入/浮点截断、X屏幕DPI、空/选中/混合段落、独立native最新值、无关缩进/对齐/Tab/粗体保持及RTF重建。只记属性契约，不把SelectionProtected标记读写称完整受保护编辑。
+
+固定Rich参考123535字节/SHA256 76a423048e60d9b0c34637ec121ac3de421dfc2ca6c6c9ccc588e3cab0be46c0已独立重核。沿既有Pack4结构/SendMessage和GetDC/GetDeviceCaps/ReleaseDC，无新PInvoke/依赖/公共封送模型，屏幕DC在finally释放。
+
+只新增003b/004b，003/004保持部分；纠正TextBoxBase页042历史段落中Rich仍经TextBox的滞后描述，保留原历史范围。导出/独立核450MD/2,191任务（2,141控件+50共享）/187实施行/整类型完成0，原ID/未完父项/1,095类型/61,240成员行/分母保持。SelectionFont/SelectionType、SelectionBullet/BulletIndent/SelectionTabs、完整Protected通知/拒绝修改、Font/ForeColor/BackColor同步、Load/Save各重载/StreamType/编码/文件锁、OLE/专有通知/UndoRedo/动作名/完整选择与坐标/测量、MaskedTextProvider真实模型及直接层级、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务。Designer/Native AOT实际运行/正向可见点击/物理设备/Linux/macOS/98%未关闭；固定API刷新、包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。官方Drawing/固定双目标静态Demo保持，见[062](batches/062.md)。
+
+独立核查前三次因脚本遗漏既有第三列/反引号ID、V1/V2/V3和带序号平台表格式失败；修为逐条CSV与所属Markdown表核对后通过，仅改核查脚本，生产/测试未变，原三个失败JSON与最终通过回执均保留。
+
 ## 批次061 · 2026-11-07 当前验证
 
 Release方案/固定Demo双目标首轮0错/2既有NU1510（release-build.json），67/67新增（颜色33/对齐34）与5,849/5,849全量首轮0失败/跳过；旧测试、项目与固定Demo/Designer/resx未改。WarningLevel=0不是分析告警清零，原JSON/TRX保留artifacts/compatibility-batch061。

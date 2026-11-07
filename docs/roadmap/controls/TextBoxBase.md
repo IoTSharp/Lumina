@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+062本类源码no-op；Rich的003b/004b沿现有句柄/选择/RTF恢复和原生消息连接，不新增共享基类完成任务。110新增/5,959全量首轮与固定双目标Release通过；完整基类/Masked模型与平台父项保持。见[062](../batches/062.md)。下述061及以前为历史。
+
 061本类源码no-op；Rich的003a/004a复用现有句柄/选择/RTF恢复连接，不新增共享基类完成任务。67新增/5,849全量首轮通过；完整基类、真实Masked模型与平台父项保持，见[061](../batches/061.md)。下述060及以前为历史。
 
 060本类源码no-op；Rich的002c/011a复用现有选择/Modified/句柄连接，增加RTF字符串流与格式缓存，不新增共享基类完成任务。销毁后新plain缓存的修改位修复在Rich生产中，完整共享成员/派生模型与父项保持，见[060](../batches/060.md)。下述059及以前为历史。
@@ -42,7 +44,7 @@
 
 043完成003a共同设置首范围：AcceptsTabChanged标准事件/虚hook及WordWrap真实样式/句柄重建、同值缓存失效和AutoSize条件父布局。17项新增及4,695项全量通过，见[043](../batches/043.md)。折行由真实EDIT行数验证；HideSelection/BorderStyle/MaxLength/ShortcutsEnabled、完整测量/编辑和派生后端仍待。
 
-🟡 批次042建立abstract TextBoxBase : Control及TextBox : TextBoxBase，迁入038/039等已有共享EDIT行为。内部无参构造按固定10.0.11保持internal；TextBox保留专属密码/Enter规则和非标准SelectionChanged扩展。MaskedTextBox/RichTextBox仍继承TextBox，直接层级和对应原生后端仍未恢复。新增8项基类回归及全量4,654项通过，只关闭001a限定提取范围，完整基类不关闭，见[042](../batches/042.md)。
+🟡 批次042建立abstract TextBoxBase : Control及TextBox : TextBoxBase，迁入038/039等已有共享EDIT行为。内部无参构造按固定10.0.11保持internal；TextBox保留专属密码/Enter规则和非标准SelectionChanged扩展。该批历史时两个派生仍经TextBox；058已恢复Rich直接层级与系统RichEdit后端，Masked直接层级/真实模型仍待。062收尾纠正此处当前叙述滞后，不改变042完成范围。新增8项基类回归及全量4,654项通过，只关闭001a限定提取范围，完整基类不关闭，见[042](../batches/042.md)。
 
 源码定位：[TextBoxBase.cs](../../../Lumina.Forms/TextBoxBase.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control.Text/键盘/IME/焦点与验证、剪贴板、字体和 native handle 重建。
 
@@ -108,6 +110,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次062：062本类源码no-op；Rich的003b/004b沿现有句柄/选择/RTF恢复和原生消息连接，不新增共享基类完成任务。110新增/5,959全量首轮与固定双目标Release通过；完整基类/Masked模型与平台父项保持。见[062](../batches/062.md)。
 
 - 2026-11-07 · 批次061：源码/任务no-op，Rich字符颜色与段落对齐归003a/004a，不重复计共享基类完成项；所有未完父项/ID/分母保持，见[061](../batches/061.md)。
 

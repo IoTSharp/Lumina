@@ -25,7 +25,13 @@ public class RichTextBox : TextBoxBase
     private const int EmSetParaFormat = 0x0447;
     private const uint CfmColor = 0x40000000;
     private const uint CfmBackColor = 0x04000000;
+    private const uint CfmOffset = 0x10000000;
+    private const uint CfmProtected = 0x10;
+    private const uint CfeProtected = 0x10;
     private const uint CfeAutoBackColor = 0x04000000;
+    private const uint PfmStartIndent = 1;
+    private const uint PfmRightIndent = 2;
+    private const uint PfmOffset = 4;
     private const uint PfmAlignment = 8;
     private const int EmStreamIn = 0x0449;
     private const int EmStreamOut = 0x044A;
@@ -350,6 +356,133 @@ public class RichTextBox : TextBoxBase
             };
             _ = Win32.SendMessageW(NativeHandle, EmSetParaFormat, 0, (nint)(&format));
         }
+    }
+
+    [DefaultValue(0)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe int SelectionCharOffset
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            return TwipToPixel(GetSelectionCharFormat().Offset, xDirection: false);
+        }
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 2000);
+            ArgumentOutOfRangeException.ThrowIfLessThan(value, -2000);
+            if (!IsHandleCreated) { CreateHandle(); }
+            CharFormat2 format = new()
+            {
+                Size = (uint)sizeof(CharFormat2),
+                Mask = CfmOffset,
+                Offset = PixelToTwip(value, xDirection: false)
+            };
+            _ = Win32.SendMessageW(NativeHandle, EmSetCharFormat, 1, (nint)(&format));
+        }
+    }
+
+    [DefaultValue(false)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public unsafe bool SelectionProtected
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            CharFormat2 format = GetSelectionCharFormat();
+            return (format.Mask & CfmProtected) != 0 && (format.Effects & CfeProtected) != 0;
+        }
+        set
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            CharFormat2 format = new()
+            {
+                Size = (uint)sizeof(CharFormat2),
+                Mask = CfmProtected,
+                Effects = value ? CfeProtected : 0
+            };
+            _ = Win32.SendMessageW(NativeHandle, EmSetCharFormat, 1, (nint)(&format));
+        }
+    }
+
+    [DefaultValue(0)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int SelectionIndent
+    {
+        get => GetSelectionParagraphIndent(PfmStartIndent);
+        set => SetSelectionParagraphIndent(PfmStartIndent, value);
+    }
+
+    [DefaultValue(0)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int SelectionHangingIndent
+    {
+        get => GetSelectionParagraphIndent(PfmOffset);
+        set => SetSelectionParagraphIndent(PfmOffset, value);
+    }
+
+    [DefaultValue(0)]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int SelectionRightIndent
+    {
+        get => GetSelectionParagraphIndent(PfmRightIndent);
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            SetSelectionParagraphIndent(PfmRightIndent, value);
+        }
+    }
+
+    private unsafe int GetSelectionParagraphIndent(uint mask)
+    {
+        if (!IsHandleCreated) { CreateHandle(); }
+        ParaFormat format = new() { Size = (uint)sizeof(ParaFormat) };
+        _ = Win32.SendMessageW(NativeHandle, EmGetParaFormat, 0, (nint)(&format));
+        int twips = (format.Mask & mask) == 0 ? 0 : mask switch
+        {
+            PfmStartIndent => format.StartIndent,
+            PfmRightIndent => format.RightIndent,
+            _ => format.Offset
+        };
+        return TwipToPixel(twips, xDirection: true);
+    }
+
+    private unsafe void SetSelectionParagraphIndent(uint mask, int pixels)
+    {
+        if (!IsHandleCreated) { CreateHandle(); }
+        ParaFormat format = new() { Size = (uint)sizeof(ParaFormat), Mask = mask };
+        int twips = PixelToTwip(pixels, xDirection: true);
+        switch (mask)
+        {
+            case PfmStartIndent: format.StartIndent = twips; break;
+            case PfmRightIndent: format.RightIndent = twips; break;
+            default: format.Offset = twips; break;
+        }
+        _ = Win32.SendMessageW(NativeHandle, EmSetParaFormat, 0, (nint)(&format));
+    }
+
+    // WinForms converts using a fresh screen DC, rather than the control DPI.
+    // Preserve its floating-point operation order and truncation at the cast.
+    private static int PixelToTwip(int pixels, bool xDirection)
+        => (int)((((double)pixels) / GetRichTextLogPixels(xDirection)) * 72.0 * 20.0);
+
+    private static int TwipToPixel(int twips, bool xDirection)
+        => (int)(((twips / 20.0) / 72.0) * GetRichTextLogPixels(xDirection));
+
+    private static int GetRichTextLogPixels(bool xDirection)
+    {
+        nint screenDc = Win32.GetDC(0);
+        if (screenDc == 0) { throw new Win32Exception(Marshal.GetLastWin32Error()); }
+        try
+        {
+            return Win32.GetDeviceCaps(screenDc, xDirection ? Win32.LOGPIXELSX : Win32.LOGPIXELSY);
+        }
+        finally { _ = Win32.ReleaseDC(0, screenDc); }
     }
 
     private unsafe CharFormat2 GetSelectionCharFormat()

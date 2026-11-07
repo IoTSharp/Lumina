@@ -1,5 +1,7 @@
 # 附属类型与命名空间任务
 
+062仅沿既有私有字符/段落结构及屏幕DC度量补Rich-003b/004b，不新增公共类型/枚举/封送模型或CNS完成任务；110新增/5,959全量首轮通过，完整附属契约/平台/98%仍待，见[062](batches/062.md)。
+
 逐控件页之外，事件参数、枚举、接口、条目/列/单元格/集合、布局与设计器契约仍属于兼容范围。全量成员已经进入 [members.csv](api/members.csv)，接口另见 [interfaces.csv](api/interfaces.csv)。[ownership.csv](api/ownership.csv) 把所有基线类型映射到任务入口；自动归组是责任建议，不是已完成或平台豁免。
 
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
@@ -25,6 +27,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次062：复用既有Pack4结构/SendMessage与GetDC/GetDeviceCaps/ReleaseDC，DC在finally释放；无新PInvoke/依赖/公共模型，不新增CNS完成任务，原ID与分母保持，见[062](batches/062.md)。
 
 - 2026-11-07 · 批次061：Rich-003a/004a使用私有Pack4 CHARFORMAT2W/PARAFORMAT映射及既有SendMessage，新增SelectionBackColor/SelectionAlignment标准属性，纠正SelectionColor存值行为；无新公共类型/依赖/PInvoke。不新增CNS完成项，完整格式/Font/ForeColor/BackColor、Designer/AOT运行与平台仍待，见[061](batches/061.md)。
 

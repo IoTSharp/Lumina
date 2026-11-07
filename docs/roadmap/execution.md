@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[062](batches/062.md)062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。下一沿上述真实剩余依赖继续，不重做033～062、不重评全项目、不建context/调度/报告框架；下述061及以前为历史。
+
 当前[061](batches/061.md)完成RichTextBox-003a颜色双属性真实CHARFORMAT2W状态与004a SelectionAlignment的PARAFORMAT对齐。67新增/5,849全量首轮与固定双目标Release通过；无窗背景缓存、原生mask/effects和混合读回、非法枚举前置及RTF重建保持。下一沿其余字符/段落格式、专有选择/坐标和MaskedTextProvider真实模型依赖继续；Font/Protected/SelectionType、Bullet/缩进/Tabs、完整格式/文件/OLE/通知/撤销重做、缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～061、不重评全项目、不建context/调度框架；下述060及以前为历史。
 
 当前[060](batches/060.md)完成RichTextBox-002c Rtf/SelectedRtf字符串流与011a RTF句柄格式缓存。54新增/5,782全量及固定双目标Release通过；首测试unsafe编译失败、首50/54和真实新纯文Modified恢复修复保留，空选区导出0字节独立native确认。下一沿Rich字符/段落格式真实状态、专有选择/坐标和MaskedTextProvider模型依赖继续；Load/Save文件/StreamType、Protected/OLE/通知/撤销重做、完整缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～060、不重评全项目、不建context/调度框架；下述059及以前为历史。

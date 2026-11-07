@@ -1,5 +1,7 @@
 # 逐控件任务索引
 
+062完成RichTextBox-003b SelectionCharOffset/SelectionProtected原生字符格式属性及004b SelectionIndent/SelectionHangingIndent/SelectionRightIndent原生段落缩进。110新增（字符43/缩进67）与5,959全量首轮通过，固定双目标Release0错/2既有NU1510。保留前置校验、屏幕DC像素/twip转换、每次原生提交、混合/最新状态与RTF重建；完整Protected通知/拒改、Font/SelectionType、Bullet/Tabs/文件/OLE/坐标/Masked及Designer/AOT实际运行/设备/平台/98%仍待。仅新增003b/004b，原ID/父项/固定分母保持；实施列由既有工具生成，不由数量推98%，见[062](batches/062.md)。以下061及以前为历史。
+
 061完成RichTextBox-003a SelectionColor/SelectionBackColor真实字符颜色与004a SelectionAlignment原生段落对齐。67新增/5,849全量首轮及固定双目标Release通过；无窗缓存/建窗时序、精确结构/消息、混合格式和RTF重建保持。004从全待办纠正为部分，其余字符/段落格式及全部未完父项保留，见[061](batches/061.md)。以下060及以前为历史，实施列由既有工具生成，不由数量推兼容率。
 
 060完成RichTextBox-002c Rtf/SelectedRtf原生字符串流与011a RTF句柄格式缓存。54新增/5,782全量及固定双目标Release通过，首unsafe测试编译失败与首50/54保留；真实新纯文Modified缺口修生产、空选区native零字节修新夹具。完整文件/格式API/Protected/OLE/通知/坐标、Masked及Designer/AOT/设备/平台父项保持，见[060](batches/060.md)。以下059及以前为历史，实施列由既有工具生成，不由数量推兼容率。
@@ -51,7 +53,7 @@
 | [Label](controls/Label.md) | M2 | 🟡 存在 | 98 / 73 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [LinkLabel](controls/LinkLabel.md) | M2 | 🟡 存在 | 106 / 74 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [TextBox](controls/TextBox.md) | M2 | 🟡 存在 | 110 / 79 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBox-001a、TextBox-003a、TextBox-003b、TextBox-003c、TextBox-004a、TextBox-004b、TextBox-005a、TextBox-007a、TextBox-007b、TextBox-010a；其余任务未完成 |
-| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-004a、RichTextBox-007a、RichTextBox-011a；其余任务未完成 |
+| [RichTextBox](controls/RichTextBox.md) | M2 | 🟡 存在 | 127 / 85 / 107 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ RichTextBox-001a、RichTextBox-002a、RichTextBox-002b、RichTextBox-002c、RichTextBox-003a、RichTextBox-003b、RichTextBox-004a、RichTextBox-004b、RichTextBox-007a、RichTextBox-011a；其余任务未完成 |
 | [MaskedTextBox](controls/MaskedTextBox.md) | M2 | 🟡 存在 | 123 / 83 / 92 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [NumericUpDown](controls/NumericUpDown.md) | M2 | 🟡 存在 | 111 / 75 / 86 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
 | [DomainUpDown](controls/DomainUpDown.md) | M2 | ⬜ 缺失 | 108 / 75 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
