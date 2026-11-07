@@ -126,6 +126,9 @@ internal static partial class Win32
     public const int WM_VSCROLL = 0x0115;
     public const int WM_INITDIALOG = 0x0110;
     public const int WM_CONTEXTMENU = 0x007B;
+    public const int WM_CUT = 0x0300;
+    public const int WM_COPY = 0x0301;
+    public const int WM_PASTE = 0x0302;
     public const int WM_SYSCHAR = 0x0106;
     public const int WM_INPUTLANGCHANGEREQUEST = 0x0050;
     public const int WM_INPUTLANGCHANGE = 0x0051;

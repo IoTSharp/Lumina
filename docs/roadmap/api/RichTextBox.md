@@ -1,5 +1,7 @@
 # RichTextBox：逐成员待办
 
+050当前源码补充：源码no-op，错误TextBox层级的普通EDIT命令入口/快捷键禁用不计RichEdit专有剪贴板、输入、菜单或标准直接层级支持；原父任务、固定成员行/原ID/分母保持，引用包刷新NOT_RUN，见[当前任务](../controls/RichTextBox.md)。
+
 049当前源码补充：错误TextBox层级间接共享普通EDIT的Clear/重挂通知，不实现RichEdit专有行为/真实后端或标准直接继承。本页固定成员行/原ID/分母不改，引用包刷新NOT_RUN，原父任务保持，见[当前任务](../controls/RichTextBox.md)。
 
 自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。

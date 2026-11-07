@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+050源码no-op，继承基类005e的Copy/Cut/Paste命令入口及003d的快捷键禁用/只读对齐/系统菜单抑制；77新增及5,031全量通过。入口消息截获测试不证明真实剪贴板数据，custom菜单只核受限路由。启用时Ctrl+Backspace词删除、完整测量/default和平台仍待，见[050](../batches/050.md)。下述049及以前为历史。
+
 049源码no-op，继承TextBoxBase-005d的标准Clear虚Text=null与Control-17e的重挂EDIT命令连接；原HWND与真实撤销/通知保留。Copy/Cut/Paste、ShortcutsEnabled、完整测量/默认及原反射父Form寿命继续原任务，见[049](../batches/049.md)。下述048及以前为历史。
 
 048源码no-op，继承TextBoxBase-005b标准AppendText及005c公开CanUndo/Undo/ClearUndo。空值追加不操作，非空经原生替换并清撤销/modified，零尺寸恢复原选区；公开撤销消费真实EDIT。Copy/Cut/Paste、Clear完整语义、测量/默认和运行时RTL仍待，见[048](../batches/048.md)。
@@ -48,7 +50,7 @@
 | TextBox-007a | P1 | ✅ | 批次044：TextAlign默认Left/Localizable、合法枚举与value异常、Events槽/虚On*、同值/重入/原异常/CanRaiseEvents；变化保存后重建再通知。创建时左右按有效RTL翻译并清WS_EX_RIGHT，水平条须逻辑Left且不WordWrap。共享枚举纠正Left0/Right1/Center2；28项回归通过。RTL原生对照复现既有Control创建后重提交样式，仅证样式消费，不是固定WinForms完整镜像/物理视觉验收。 |
 | TextBox-007b | P1 | ✅ | 批次045：CharacterCasing标准非virtual属性、Behavior/DefaultValue(Normal)，Normal0/Upper1/Lower2；非法value异常不改状态/不建窗，同值no-op、变化保存后重建。创建消费ES_UPPERCASE/ES_LOWERCASE，不做手工转换或新增事件；25项回归含单双行ASCII/中文WM_CHAR硬期望、独立EDIT样式/程序设文/EM_REPLACESEL对照、文本/选择/modified/只读/滚动/密码/原异常保存通过。物理输入/剪贴板/完整文化/IME及007父项不关闭。 |
 | TextBox-008 | P2 | ⬜ | AutoCompleteMode、AutoCompleteSource、AutoCompleteCustomSource；None 默认、增删候选、数据变更与密码/多行互斥，Shell 专属源标记 Windows 能力。 |
-| TextBox-009 | P2 | 🟡 | 047继承SelectedText/MaxLength，048继承基类005c的CanUndo/Undo/ClearUndo，消息/限制/只读程序替换见对应子项，不重复新增完成任务。Paste(string)、公开Paste/Copy/Cut、ShortcutsEnabled、超长粘贴和完整UTF-16端点仍待。 |
+| TextBox-009 | P2 | 🟡 | 047～048的替换/限制/公开撤销保留；050继承基类005e的Copy/Cut/Paste命令入口及003d的快捷键禁用/只读对齐/系统菜单抑制，不重复新增继承完成任务。Paste(string)、真实剪贴板数据/超长粘贴、启用时Ctrl+Backspace词删除、完整菜单/输入和UTF-16端点仍待。 |
 | TextBox-010 | P2 | 🟡 | 022完成010a基础Font继承/借用寿命与必要颜色默认，046继承TextBoxBase-007a边框设置/通知/创建样式。单行PreferredHeight/AutoSize、DPI/IME及固定最小24高度差异仍待实现，完整文本控件不关闭。 |
 | TextBox-010a | P2 | ✅ | 批次022移除隐藏Font、克隆和外部Font释放，复用Control借用Font与独占HFONT创建/替换/销毁。无局部颜色时BackColor为Window（只读为Control）、ForeColor为WindowText，不继承父显式颜色；原生仍消费语义palette且明确记录默认前景差异。字体LOGFONT、Reset/重建/释放及派生颜色getter有限场景见022；全部文本/自动缩放/IME另列。 |
 | TextBox-011 | P3 | ⬜ | 静态 Designer 与 .resx 文本/字体、公开事件完整清单、AOT 输入与剪贴板、三平台原生可访问性和 Dispose 验收。 |
@@ -67,6 +69,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次050：源码no-op，009按真实继承的命令入口及快捷键禁用范围同步，不重复新增任务或关闭父项。15个剪贴板消息用例和62个快捷键用例均通过，未读写系统剪贴板或实际弹出custom菜单；完整编辑/尺寸及平台门禁保持，见[050](../batches/050.md)。
 
 - 2026-11-07 · 批次049：源码no-op，002按真实继承Clear虚调用及重挂命令连接同步，不重复新增继承完成任务；005/009/010及平台父项保持，见[049](../batches/049.md)。
 

@@ -1,6 +1,22 @@
 # 本轮验证与限制
 
-## 批次049 · 2026-11-07 当前验证
+## 批次050 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错误/2既有NU1510；新增77（剪贴板入口15、快捷键62）/77，完整5,031/5,031，均0失败/跳过。实际请求、PID、启动/结束、父进程身份和cleanup_complete保留artifacts/compatibility-batch050/release-build.json、tests-new.json、tests-full.json，TRX在tests目录。WarningLevel=0不表示分析告警清零；本批没有执行AOT发布/运行、设计器往返或设备输入。
+
+[050](batches/050.md)仅关闭TextBoxBase-005e与003d两个明确子范围。Copy/Cut/Paste经Handle必要建窗，发送零参数原生命令并忽略返回值；15例全部在派生WndProc截获命令，不读写/备份恢复系统剪贴板，因而不是数据格式、实际复制粘贴或派生后端验收。ShortcutsEnabled默认true，setter包括同值赋值初始化精确14项表，命令先父路由后虚getter；禁用表包含CtrlJ而非注释摘要里的CtrlI，不扩展Alt，只读对齐只拦精确CtrlL/R/E/J。
+
+禁用时WM_CONTEXTMENU跳过native默认过程，保留有效客户区内显式ContextMenuStrip路由；两个真实EDIT参数及启用时默认转发被DefWndProc夹具安全观察。三个custom菜单场景用测试专用CreateHandle阻止建窗，保持owner0使既有ShowCore在TrackPopupMenu前返回，只证明中心/客户端/非客户区路由，不证明实际显示。启用时Ctrl+Backspace词删除尚未实现，完整003/005/009和派生/菜单父项不关闭。
+
+固定TextBoxBase.v10.0.11.cs从049复制并重核69,799字节/SHA256 b3c181e18131b1e00715db63079d75cc9e1088765d21ee70e0ebdfa83e764c63。Context7只给main的Clipboard/RichTextBox资料，不替代固定基线；引用库存刷新NOT_RUN。原ID/1,095类型/61,240成员行和分母保持。全部先前失败与证据保留，本批构建及两轮测试首跑通过。
+
+完整测量/default、原反射父Form寿命/WM_NOTIFY、完整线程/模态、Rich/Masked真实后端、Designer/Native AOT发布运行/物理设备/Linux/macOS/98%仍NOT_RUN/UNKNOWN；当前源码的命令入口和有限消息回归不提升这些验收状态。索引README实施列/tasks.csv由既有工具生成，最终导出和编码回执保留050目录；证据/reference/JSON/TRX/bin/obj保留。
+
+既有工具导出PASS：438份Markdown、2,164任务、187实施索引行、0结构错误，整类型代码完成0；对应roadmap-export.json保留。仅新增两个明确子范围，没有将继承消费重复记为TextBox/Rich/Masked整类完成。
+
+21个拥有路径UTF8严格/无NUL/字节往返及diff检查PASS，API固定库存与Demo源码diff为空，无导出复核PASS。只读diff查看一次触及14KB输出上限，output_limit/exit=null原状态单独保留，小范围-U0复读完成；不将该查看当构建/测试失败或成功。最终dotnet名称快照0项/inaccessible0，只限名称观察，不称全机零进程。自有Cordonix外部调用cleanup_complete=true，无临时/持久workspace文档/独占服务，document_loads不代表打开文档数。
+
+## 批次049 · 2026-11-07 历史验证
 
 Release方案/固定Demo双目标0错/2既有NU1510；新增18（重挂命令8、Clear10）与既有停车5/ControlBehavior3组合26/26，完整4,954/4,954，0失败/跳过。实际命令及结果为artifacts/compatibility-batch049/release-build.json、tests-new.json、tests-full.json，对应TRX在tests目录。WarningLevel=0不表示分析告警清零；两目标项目引用和静态Designer/resx未改。
 

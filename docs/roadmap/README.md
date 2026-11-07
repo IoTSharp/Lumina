@@ -1,6 +1,6 @@
 # 逐控件任务索引
 
-更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～049](batches/049.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。047～048共享替换/Lines/MaxLength/AppendText/公开撤销范围保留；049补原停车接收者寿命/来源HWND反射及标准Clear虚调用。纠正本索引总览仍停在046的历史滞后，实施列继续由既有工具从任务页生成。完整基类、Rich/Masked直接继承/真实后端、原反射父Form寿命、RTL/镜像视觉及所有父项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
+更新：2026-11-07。正文按控件族组织，实施按[执行顺序](execution.md)的依赖排序。每页包含任务、三平台方案和修改历史；完整成员在API附件。批次[001～050](batches/050.md)的明确子范围代码完成；029停止已由2026-10-26新授权覆盖。047～049共享编辑和原停车接收者范围保留；050补Copy/Cut/Paste命令入口及ShortcutsEnabled精确禁用/只读对齐/系统菜单抑制，消息截获不等于真实剪贴板/菜单显示验收。实施列继续由既有工具从任务页生成。完整基类、启用时Ctrl+Backspace词删除、测量/default、Rich/Masked直接继承/真实后端、原反射父Form寿命、RTL/镜像视觉及所有父项保留。当前按HANDOFF逐批接续，完整Control、Windows全面验收、Designer资源及Linux/macOS仍未完成。每批按真实证据整理受影响路线图并重生成[任务索引](tasks.csv)，不由数量或基类完成推导整控件完成。
 
 [简明路线图](../../ROADMAP.md) · [遗漏审计](scope-audit.md) · [98%口径](coverage.md) · [公共基础](foundations.md) · [行为场景](behavior-catalog.md) · [平台闸门](platforms.md) · [项目整合](project-consolidation.md) · [附属类型](contracts.md) · [全部任务台账](tasks.csv) · [验证](validation.md)
 
@@ -24,7 +24,7 @@
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a、UserControl-02b、UserControl-02c、UserControl-02d、UserControl-03a、UserControl-05a；其余任务未完成 |
 | [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-07a、Form-08a、Form-10a、Form-10b、Form-12a、Form-12b、Form-12c、Form-12d、Form-16a、Form-16b、Form-16c；其余任务未完成 |
 | [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
-| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a、TextBoxBase-002a、TextBoxBase-002b、TextBoxBase-002c、TextBoxBase-003a、TextBoxBase-003b、TextBoxBase-003c、TextBoxBase-005a、TextBoxBase-005b、TextBoxBase-005c、TextBoxBase-005d、TextBoxBase-007a；其余任务未完成 |
+| [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a、TextBoxBase-002a、TextBoxBase-002b、TextBoxBase-002c、TextBoxBase-003a、TextBoxBase-003b、TextBoxBase-003c、TextBoxBase-003d、TextBoxBase-005a、TextBoxBase-005b、TextBoxBase-005c、TextBoxBase-005d、TextBoxBase-005e、TextBoxBase-007a；其余任务未完成 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [UpDownBase](controls/UpDownBase.md) | M1 | ⬜ 缺失 | 103 / 74 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ScrollBar](controls/ScrollBar.md) | M1 | ⬜ 缺失 | 90 / 74 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |

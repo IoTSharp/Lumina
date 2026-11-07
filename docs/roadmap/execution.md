@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[050](batches/050.md)完成TextBoxBase-005e剪贴板命令入口及003d快捷键禁用/只读对齐/系统菜单抑制的限定范围；77新增、5,031全量和固定双目标Release通过。命令测试截获WM_COPY/CUT/PASTE，未读写用户系统剪贴板；custom菜单只核owner0受限路由，真实显示待验。下一继续启用时Ctrl+Backspace词删除、完整测量/default和必要编辑辅助，再恢复Rich/Masked标准直接层级及真实后端；原反射父Form寿命/完整反射、线程/模态和平台继续原任务。不重复033～050，不重评全项目、不建context或调度框架。下述049及以前为历史。
+
 当前[049](batches/049.md)完成Control-17e原停车通知接收者寿命及来源HWND反射、TextBoxBase-005d标准Clear虚Text=null。独立原生EDIT目的地回归通过；首跑11/13中的parking→Form和活Form间重挂两项真实失败保留。修复后18新增与8旧用例组合26/26、4,954全量及Release固定双目标通过；048提前销毁停车接收者的假设按固定ReflectParent计数纠正，不改旧TextChanged=2期望。下一依赖继续Copy/Cut/Paste、ShortcutsEnabled与完整测量/default，再按真实后端恢复Rich/Masked标准层级；原反射父Form销毁/重建、WM_NOTIFY/完整反射及线程/模态仍在Control-17等原任务，不重做033～049、不重评全项目、不建context或调度框架。下述048及以前为历史。
 
 当前[048](batches/048.md)完成AppendText的005b、公开撤销005c及停车期间命令转发Control-17d；43新增与3旧行为组合46/46、4,936全量及Release固定双目标通过。首轮夹具37/38、旧行为全量4,930/4,931、停车测试45/46和两次限定诊断原回执保留。停车期间通知已修复；先停车再重挂到Form后的EDIT命令仍缺，native ID=1001与实际映射一致而Form/child无通知，原因未闭环，下一批先继续Control-17/TextBoxBase-006，再做Copy/Cut/Paste/Clear完整虚调用、ShortcutsEnabled与完整测量/default。Rich/Masked标准直接层级和真实后端、完整context/模态/平台仍待。不重复033～048、不重评全项目、不新建context或调度框架；下述047及以前为历史。

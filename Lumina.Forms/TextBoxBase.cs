@@ -20,12 +20,14 @@ public abstract class TextBoxBase : Control
     private static readonly object s_modifiedChangedEvent = new();
     private static readonly object s_multilineChangedEvent = new();
     private static readonly object s_readOnlyChangedEvent = new();
+    private static Keys[]? s_shortcutsToDisable;
 
     private bool _multiline;
     private bool _readOnly;
     private bool _acceptsTab;
     private bool _hideSelection = true;
     private bool _wordWrap = true;
+    private bool _shortcutsEnabled = true;
     private BorderStyle _borderStyle = BorderStyle.Fixed3D;
     private int _maxLength = 32767;
     private int _selectionStart;
@@ -86,6 +88,50 @@ public abstract class TextBoxBase : Control
             _acceptsTab = value;
             OnAcceptsTabChanged(EventArgs.Empty);
         }
+    }
+
+    /// <summary>Gets or sets whether the standard editing shortcuts are enabled.</summary>
+    [Category("Behavior")]
+    [DefaultValue(true)]
+    public virtual bool ShortcutsEnabled
+    {
+        get => _shortcutsEnabled;
+        set
+        {
+            s_shortcutsToDisable ??=
+            [
+                Keys.Control | Keys.Z, Keys.Control | Keys.C, Keys.Control | Keys.X,
+                Keys.Control | Keys.V, Keys.Control | Keys.A, Keys.Control | Keys.L,
+                Keys.Control | Keys.R, Keys.Control | Keys.E, Keys.Control | Keys.Y,
+                Keys.Control | Keys.Back, Keys.Control | Keys.Delete,
+                Keys.Shift | Keys.Delete, Keys.Shift | Keys.Insert, Keys.Control | Keys.J
+            ];
+            _shortcutsEnabled = value;
+        }
+    }
+
+    /// <inheritdoc />
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        bool handled = base.ProcessCmdKey(ref msg, keyData);
+        if (!ShortcutsEnabled && s_shortcutsToDisable is not null)
+        {
+            foreach (Keys shortcut in s_shortcutsToDisable)
+            {
+                if (keyData == shortcut || keyData == (shortcut | Keys.Shift))
+                {
+                    return true;
+                }
+            }
+        }
+
+        if (_readOnly && keyData is (Keys.Control | Keys.L) or (Keys.Control | Keys.R)
+            or (Keys.Control | Keys.E) or (Keys.Control | Keys.J))
+        {
+            return true;
+        }
+
+        return handled;
     }
 
     /// <summary>Occurs when the <see cref="AcceptsTab"/> property changes.</summary>
@@ -437,6 +483,24 @@ public abstract class TextBoxBase : Control
         Text = null;
     }
 
+    /// <summary>Copies the current selection in the text box to the Clipboard.</summary>
+    public void Copy()
+    {
+        _ = Win32.SendMessageW(Handle, Win32.WM_COPY, 0, 0);
+    }
+
+    /// <summary>Moves the current selection in the text box to the Clipboard.</summary>
+    public void Cut()
+    {
+        _ = Win32.SendMessageW(Handle, Win32.WM_CUT, 0, 0);
+    }
+
+    /// <summary>Replaces the current selection with the contents of the Clipboard.</summary>
+    public void Paste()
+    {
+        _ = Win32.SendMessageW(Handle, Win32.WM_PASTE, 0, 0);
+    }
+
     /// <summary>Clears information about the most recent editing operation.</summary>
     public void ClearUndo()
     {
@@ -659,6 +723,23 @@ public abstract class TextBoxBase : Control
     /// <inheritdoc />
     protected override bool HandleWindowMessage(uint message, nint wParam, nint lParam, out nint result)
     {
+        if (message == Win32.WM_CONTEXTMENU && !ShortcutsEnabled)
+        {
+            if (ContextMenuStrip is not null)
+            {
+                Point client = lParam == (nint)(-1)
+                    ? new Point(Width / 2, Height / 2)
+                    : PointToClient(new Point(unchecked((short)(long)lParam),
+                        unchecked((short)((long)lParam >> 16))));
+                if (ClientRectangle.Contains(client))
+                {
+                    _ = TryShowAttachedContextMenuAtScreenPoint(NativeHandle, PointToScreen(client));
+                }
+            }
+            result = 0;
+            return true;
+        }
+
         if (message is Win32.WM_KEYUP or Win32.WM_LBUTTONUP)
         {
             _ = UpdateSelectionFromHandle();

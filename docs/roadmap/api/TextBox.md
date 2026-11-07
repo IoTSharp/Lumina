@@ -1,5 +1,7 @@
 # TextBox：逐成员待办
 
+050当前源码补充：源码no-op，继承基类005e剪贴板命令入口及003d快捷键禁用/菜单抑制，不重复计数。真实数据/格式/粘贴限制、启用时Ctrl+Backspace词删除和完整测量/平台仍待；固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBox.md)。
+
 049当前源码补充：继承基类005d标准Clear及Control-17e重挂EDIT命令连接，TextBox源码no-op，不重复计继承完成任务。完整编辑/尺寸/平台仍待，本页固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBox.md)。
 
 自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。
