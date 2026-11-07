@@ -58,7 +58,8 @@
 
 - 根路线图、执行总览、5控件/公共页及历史、验证/README实施列/tasks.csv同步；ExportTasks与独立Python复核均446MD/2,183任务（2,133控件+50共享）/187实施行/整类型完成0/0错误。只新增RichTextBox-001a/007a，原ID快照对比全部保留、所有未完父项保持；独立TRX计数确认首94/96和最终96/96、5,664/5,664。
 
-- 058限定RichTextBox-001a/007a代码完成；本次实现commit/push及独立归属交接仍须分别完成并核HEAD/tracking/实际远端三SHA，不以当前本地改动称已交付。接管前SHA为`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`，057实现`b3f546b160ad86001e34228ee4b2322c79fe0da4`独立保留。
+- 058实现提交`e2de04a3fc15aba5a6034152b0021304fbebeacf`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0；实现前为`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`，057实现`b3f546b160ad86001e34228ee4b2322c79fe0da4`独立保留。19个交付文件严格UTF8/无NUL/roundtrip、暂存归属及CRLF兼容whitespace检查PASS；实现与独立归属交接分开，不以本地commit冒充交付。
+- 下一local只读接续聊天`01a1b528-2104-7af2-85d2-abd9d2b7fe98`（Lumina batch 059 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后058才发送“开始接管”；059先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向058确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后058立即停止共享写入/构建/Git并归档，不等059完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项。
 - 两个互斥内部任务completed冻结：原生任务只新RichTextBoxNativeBackendTests.cs；默认任务只新RichTextBoxDefaultsTests.cs及NativeOptionsTests.cs。主独占RichTextBox生产/标准条枚举、共享文档/集成/Git；未改TextBoxBase/Control/interop/Application、Masked、既有测试、项目或Demo/Designer/resx。
 - Rich直接继承TextBoxBase，惰性从System32加载Msftedit并保留与superclass缓存同进程寿命引用，实际RICHEDIT50W原过程/特有消息独立核。默认100×96、AutoSize=false/Multiline=true/MaxLength=int.MaxValue；HideSelection移除独立存值。标准RichTextBoxScrollBars七值/请求/FixedSingle CLIENTEDGE、EM_EXLIMITTEXT、DetectUrls重建、AutoWordSelection单条OR2/XOR4及CHANGE/UPDATE掩码落地；完整RTF/格式/专有Text/通知不关闭。
 - 最终Release方案/固定Demo双目标0错/2既有NU1510，测试夹具修正后项目重建0错/0警告；最终96新增（15原生+43默认+38选项）与5,664全量0失败/跳过。首构建消息常量uint/int错误及首94/96原JSON/TRX保留。两个失败独立RichEdit核实：WM_SETTEXT把限3扩到文本17，GETMODIFY=-1为真；只修新夹具、保原状态要求，生产未为失败改变。WarningLevel=0不是分析告警清零。
