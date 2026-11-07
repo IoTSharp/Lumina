@@ -70,6 +70,8 @@
 
 ## 批次065 实施与收尾（当前）
 
+- 下一local只读接续聊天`01a1b5e0-d281-7831-bb7b-1f7c26de376f`（Lumina batch 066 continuation，host local）已创建，编码归属指定给该聊天。065实现提交`dca0da394c455cdaae551e6586a12af5ba5d9c24`已成功push并独立核HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；本独立归属交接commit/push并核三SHA后065才发送“开始接管”。066先完成必要只读准备，再独立重核交接SHA/HANDOFF/干净树并向065原主`01a1b5c5-685a-7330-852e-435ba2a38370`明确确认实际接管；确认前不写文件/不构建/不提交推送/不创建内部任务。确认后065立即停共享写入/构建/Git并归档，不等066完成。持续授权/分别成功push核三SHA/先只读/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、066绑定NOT_DONE，不恢复或另建替代项。本批180秒全量超时和064全量FAIL/未解门槛完整传递。
+
 - 065限定实现RichTextBox-003d SelectionFont及必要私有LOGFONT转换，两个互斥内部任务只新契约50/原生43测试；主独占生产/共享文档/集成/Git。Release方案/固定双目标0错/2既有NU1510，最终93新增通过。首77/85保留，独立中英诊断8/8确认原选区FACE缺位/null正确；仅修新均匀样式夹具，中英原文/选区/独立native硬断言保留，生产行为/旧测试未因失败改变。
 - 本批一次全量180秒超时，未产生完整TRX/通过数；清理5个自有进程后子树归零（cleanup_complete=true），不声称全量通过。064全量FAIL/两次超时及独立两组通过不能清除失败的边界完整传递，原因未定，不称环境问题。完整Font/ForeColor/BackColor同步、文件/Protected/OLE/通知/UndoRedo、Find/完整选择测量、MaskedTextProvider真实模型及缩放/反射/线程/模态与平台/98%仍待。监督NOT_FOUND、065绑定NOT_DONE，不恢复或新建替代项。
 
