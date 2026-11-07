@@ -40,6 +40,9 @@
 
 ## 批次050 实施与收尾（当前）
 
+- 050实现提交`ba59726ad90f6633fa3941e5c8c4ddcbd5e73d20`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA一致、main干净/+0/-0；21拥有路径UTF8严格/无NUL/字节往返及暂存diff PASS，实际回执保留artifacts/compatibility-batch050/implementation-push.json。
+- 下一local只读接续聊天`01a1b418-68f4-71f3-92ba-e43b81dcb719`（Lumina batch 051 continuation）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核三SHA后050才发送“开始接管”；051收到后先完成必要只读准备，再重核交接SHA/HANDOFF/干净树，并明确向050确认实际接管，确认前只读、不建内部任务。确认后050立即停止共享写入/构建/Git并归档，不等051完成。持续授权、成功push/三SHA、先只读准备/独立交接/明确确认/旧主归档与后来暂停停止优先全部保持；监督NOT_FOUND、051绑定NOT_DONE，不恢复可能用户删除项。
+
 - 050已重核独立归属交接`27ab70adf17e20ff232bfff1bbc7fa9c3b16cd03`三SHA一致、main干净/+0/-0，向049明确确认接管并实时核其归档。两个互斥内部任务均completed冻结：剪贴板任务只写基类Copy/Cut/Paste三个成员和新测试；快捷键任务只写新测试，主待基类冻结后串行整合，独占interop/共享文档/集成/Git，无同源生产并发写入。
 - 仅关闭TextBoxBase-005e命令入口与003d快捷键禁用/只读对齐/系统菜单抑制。Copy/Cut/Paste非virtual、经Handle必要建窗、零参数发送对应消息并忽略返回值，不读写虚Text/SelectedText等。ShortcutsEnabled标准virtual/true默认，每次setter包括同值初始化固定14项表，ProcessCmdKey先父路由后虚getter，精确表及附加Shift、不扩展Alt/CtrlI；私有只读态仅拦CtrlL/R/E/J。启用时Ctrl+Backspace词删除未实现，保留005/009完整任务。
 - 新增77（命令15/快捷键62）/77、完整5,031/5,031，0失败/跳过；Release方案/固定Demo双目标0错误/2既有NU1510，首跑通过。JSON为050/release-build.json、tests-new.json、tests-full.json，TRX保留tests目录；WarningLevel=0不表示分析告警清零。命令消息全部在测试WndProc截获，不读取/写入/备份恢复用户系统剪贴板。真实EDIT的上下文默认过程也被夹具截断；三个custom菜单场景仅owner0受限路由，不称实际显示/交互验收。
