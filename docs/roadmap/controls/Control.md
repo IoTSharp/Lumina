@@ -1,5 +1,7 @@
 # Control
 
+067的Control-17f仅补自有停车接收者WM_NOTIFY：按映射来源HWND与当前父/原接收者归属校验后交既有OnNotify，未处理走默认过程。RichTextBox-005a真实parentless与拒错来源/同ID/重挂回归覆盖该依赖；完整父Form反射寿命、其他WM_NOTIFY结果语义/平台仍待，见[067](../batches/067.md)。下述066及以前为历史。
+
 066本类源码/任务no-op；颜色同步仅归RichTextBox-003e，不新增本类完成项。完整基类/派生、缩放/线程/反射/模态与平台门槛保持，064全量FAIL/065超时不被清除，见[066](../batches/066.md)。下述065及以前为历史。
 
 065本类源码/任务no-op；Rich-003d的字体转换由Rich私有LOGFONT/GetObjectW封装，不扩展Control资源模型或公共interop。完整反射/DPI/线程/模态与平台父项保持；064全量FAIL/超时未解门槛保留，见[065](../batches/065.md)。下述064及以前为历史。
@@ -108,12 +110,13 @@
 | ✅ | P1 / Control-14a | 批次023明确首范围：ControlStyles默认/组合/未知位、GetStyle/SetStyle/UpdateStyles、DoubleBuffered/ResizeRedraw；Paint/Invalidated/StyleChanged及标准On*/InvokePaint/OnPrint、六个Invalidate重载、Update/Refresh/CreateGraphics，真实WM_PAINT/ERASEBKGND/PRINTCLIENT与缓冲/借用Graphics寿命。公共OnPrint借用Graphics并保留背景回调对其状态的修改，内部native绘制隔离背景状态；标准事件/重入/原异常和原生EDIT路径有指定对照。透明无句柄场景不计为可见合成验收，完整边界仍属14父项。 |
 | ⬜ | P1 / Control-15 | 实现 DataBindings/BindingContext/DataContext 与变化传播、拖放/IDataObject/剪贴板、AccessibleName/Description/Role/AccessibilityObject；各领域引用对应独立任务，不能全部留为存值。 |
 | ⬜ | P1 / Control-16 | DesignerSerializationVisibility/DefaultValue/DefaultEvent、ISupportInitialize、.resx Font/Image/Icon/TypeConverter 的消费和裁剪路径逐项验证；真实 VS 设计器与 Native AOT 运行均有证据。 |
-| 🟡 | P1 / Control-17 | 002～048的USER32/生命周期保留；049的17e补原停车接收者寿命及Form控件命令按来源HWND反射。原反射父Form销毁/重建的完整关系、WM_NOTIFY/完整反射、创建参数自定义对象AOT封送、所有派生同步/状态恢复及资源/关闭竞态仍缺，不由有限EDIT回归关闭整个Windows后端。 |
+| 🟡 | P1 / Control-17 | 002～049的USER32/生命周期及17e保留；067的17f仅补自有停车WM_NOTIFY按来源HWND连接。原反射父Form销毁/重建的完整关系、其他WM_NOTIFY结果语义/完整反射、创建参数自定义对象AOT封送、所有派生同步/状态恢复及资源/关闭竞态仍缺，不由限定回归关闭整个Windows后端。 |
 | ✅ | P1 / Control-17a | 批次023明确首范围：标准Message/CreateParams、WndProc(ref Message)/DefWndProc、Message.Result回传、原窗口类过程保留、早期创建消息绑定和原生销毁最终清理；CreateParams样式/位置/文本/Parent/Param真实参与Control/Form创建和重建。字符串及显式静态基础值封送已有实现，运行仅覆盖null/string/nint及JIT自定义Payload；自定义Payload/object的AOT明确NotSupportedException。Message.GetLParam(Type)仅验证显式根化Payload，IL3050/任意marshaller、全部其他值与派生类/竞态验收另列。 |
 | ✅ | P1 / Control-17b | 批次025：Control/Form 原生窗口过程先捕获 managed callback 异常，再执行 `WM_NCDESTROY` 清理；回调、映射、句柄、资源和 GCHandle 的独立失败分别进入 `ThreadException`，不让异常越过 unmanaged callback。同步上下文同样在 native 边界内处理。完整消息反射/自定义 Param AOT/关闭竞态仍归父项。 |
 | ✅ | P1 / Control-17c | 批次046：有源类名时先GetClassInfoExW解析当前activation context中的原生类，缓存键加入源hInstance/lpfnWndProc；同源身份重复复用注册，不按STA额外注册。2项交替hosted/plain STA回归核源过程与_originalWindowProc、反向顺序及注册名复用，修复前2/2失败、修复后与新增/旧RTL共74/74通过。限定系统类缓存身份，不关闭完整activation/OLE/线程生命周期或17父项。 |
 | ✅ | P1 / Control-17d | 批次048必要依赖：停车期间WM_COMMAND仅接收实际原生子HWND且映射已登记的Control，经HandleCommand反射；复用NativeWindowClass静态回调，不将停车窗注册为公开Control。其他消息默认转发，异常沿既有native边界报告。5项回归覆盖未挂父EDIT追加/修改/撤销、停车时通知、重挂原HWND/父映射且不重复通知及错误来源不路由；048原测试的提前释放停车窗假设由049纠正，接收者寿命与重挂后编辑通知见17e。WM_NOTIFY/完整反射、共享停车/ThreadContext及17父项不关闭。 |
 | ✅ | P1 / Control-17e | 批次049：保留当前原生句柄创建时使用的自有停车通知接收者至该句柄销毁；WM_COMMAND接受真实停车子或仍有映射且原接收者归属匹配的重挂控件，外部销毁/重建均回收旧接收者。Form非零lParam按来源HWND反射，零lParam保留既有菜单/命令路径，不因相同ID误通知其他控件。8项回归含独立原生EDIT目的地、parking→Form编辑/Undo、活Form间重挂、释放/外部销毁/重建、错误来源及ID碰撞通过。048“重挂即销毁停车窗”假设按固定反射寿命纠正，旧TextChanged=2期望保持；完整原反射父Form寿命/WM_NOTIFY/context不关闭。 |
+| ✅ | P1 / Control-17f | 批次067必要依赖：自有停车WM_NOTIFY以NMHDR.hwndFrom查映射，只接当前真实子窗或匹配且仍为原通知父的保留接收者，交既有HandleNotify；未映射/错误接收者/未处理走DefWindowProc，异常沿既有native边界报告。32例Rich尺寸组含4项错误来源/同ID/重挂及真实parentless检查，旧停车/重挂EDIT命令组同时回归。仅关闭该连接，原父Form寿命/其他通知结果和17父项仍待。 |
 | ⬜ | P2 / Control-18 | Linux 用真实 GtkWidget 和 shared GMainContext；非交互宿主可用 GtkFixed，焦点/输入/可访问性用原生 controller。HWND/WndProc 等 Windows 消息契约单列，普通布局/Font/Image 不任意排除。 |
 | ⬜ | P3 / Control-19 | macOS 用 NSView/NSControl 与 AppKit 主线程，target-action/delegate 映射标准事件；翻转坐标与 key-view loop 统一处理，native 指针不能冒称 HWND。 |
 | ⬜ | 验收 / Control-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |
@@ -127,6 +130,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次067：17f限定停车WM_NOTIFY连接，主仅改该分支，不关闭原父Form寿命/完整反射/17父项；原ID/平台/固定分母及064FAIL/065超时保持，见[067](../batches/067.md)。
 
 - 2026-11-07 · 批次066：限定RichTextBox-003e颜色同步，原ID/未完父项/固定分母保持；064全量FAIL及065超时不由本批检查清除，见[066](../batches/066.md)。
 

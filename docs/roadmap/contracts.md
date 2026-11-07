@@ -1,5 +1,7 @@
 # 附属类型与命名空间任务
 
+067在RichTextBox-005a内补标准ContentsResizedEventArgs/Handler及真实REQRESIZE接收；003f复用私有字符格式/LOGFONT，Windows仍用官方Drawing。两个附属类型按既有Rich任务归属，不新增CNS完成项或改变固定API分母；完整资源/ambient/字体DPI与平台仍待，见[067](batches/067.md)。下述066及以前为历史。
+
 066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或CNS完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
 
 065仅补Rich-003d标准SelectionFont，私有92字节LOGFONT/116字节CHARFORMAT2W和GetObjectW读取封装在Rich内；临时HFONT在finally释放，不增加公共附属类型/依赖或CNS完成项。Windows继续官方Drawing，完整Font/颜色同步与平台契约仍待，见[065](batches/065.md)。下述064及以前为历史。
@@ -35,6 +37,8 @@
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
 ## 修改历史
+
+- 2026-11-07 · 批次067：标准尺寸事件参数/delegate归Rich-005a，不以类型存在关闭共享契约；原ID/未完父项/分母及064FAIL/065超时保持，见[067](batches/067.md)。
 
 - 2026-11-07 · 批次066：仅Rich-003e，不增加共享完成项，原ID/未完父项/固定分母保持；详见[066](batches/066.md)。
 

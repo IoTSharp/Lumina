@@ -3197,6 +3197,17 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
                 _ = child.HandleCommand(Win32.HighWord(wParam));
                 return 0;
             }
+            if (message == Win32.WM_NOTIFY && lParam != 0)
+            {
+                Win32.NMHDR header = Marshal.PtrToStructure<Win32.NMHDR>(lParam);
+                if (TryGetControlByHandle(header.hwndFrom, out Control? notifyChild) && notifyChild is not null
+                    && (Win32.GetAncestor(header.hwndFrom, 1) == hwnd
+                        || (notifyChild._parkingWindow == hwnd && notifyChild._parkingWindowIsNotificationParent))
+                    && notifyChild.HandleNotify(unchecked((int)header.code), lParam))
+                {
+                    return 0;
+                }
+            }
             return Win32.DefWindowProcW(hwnd, message, wParam, lParam);
         }
         catch (Exception exception)

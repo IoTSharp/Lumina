@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+067仅关闭RichTextBox-003f/005a和Control-17f必要停车通知连接，不新增FND完成项。Font/尺寸通知与原生字体身份/量化/格式副作用均按限定范围记录；完整共享成员/反射父Form寿命/ambient/DPI/线程/Masked模型与平台仍待。064全量FAIL/未解与065超时保持，见[067](batches/067.md)。下述066及以前为历史。
+
 066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或FND完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
 
 2026-11-07 · 批次065：Rich-003d只关闭SelectionFont及必要私有字体转换，不新增FND完成项；完整Font/颜色同步、Masked模型、缩放/反射/线程/模态与平台父项仍待。064全量FAIL/超时未解门槛保留，不由93新增通过清除，见[065](batches/065.md)。下述064及以前为历史。
@@ -52,7 +54,7 @@
 | ID | 状态 | 任务细节与验收 |
 | --- | --- | --- |
 | FND-010 | 🟡 | 018的Control-06a完成集合/Parent及Windows重挂；019修复隐藏重挂的中间VisibleChanged，391行参考/JIT现全部相同。IList.Insert按标准不支持，AOT32条非零下界数组fixture未执行CopyTo仍保留。完整布局/继承通知、派生异常/重入全部组合与跨平台仍缺 |
-| FND-011 | 🟡 | 019～048句柄/消息/销毁边界、源窗口类缓存和停车WM_COMMAND连接保留；049的Control-17e已保留原停车通知接收者至源句柄销毁，并由Form按来源HWND反射，闭环048的parking→Form编辑/Undo通知缺口。原反射父Form销毁/重建寿命、WM_NOTIFY/完整反射、全部派生状态恢复、自定义Param AOT、关闭竞态与三平台仍缺，Created隐藏属性差异保留 |
+| FND-011 | 🟡 | 019～049句柄/消息/销毁边界与停车WM_COMMAND连接保留；067的Control-17f另记自有停车WM_NOTIFY来源HWND连接。原反射父Form销毁/重建寿命、其他WM_NOTIFY结果语义/完整反射、全部派生状态恢复、自定义Param AOT、关闭竞态与三平台仍缺，Created隐藏属性差异保留 |
 | FND-012 | 🟡 | 002～025资源/释放范围保留；026的Control-08c补HWND已销毁后异常继续正常托管阶段，原错和后续错不丢失；正常Parent/child/Site失败及活HWND失败保留短路重试。其余图像/菜单/派生资源、完整异常事务/事件解绑与竞态仍缺，不由局部收尾关闭父项 |
 | FND-013 | 🟡 | 018/022基础外观父链、023 Styles/UserPaint保留；024补BackgroundImage通知传播及基础可见父子透明/alpha；031补RightToLeft托管继承、Win32 RTL扩展样式和重建保持。Application/Site/ActiveX ambient、Cursor、滚动/主题/全部派生透明、DPI和完整Designer默认仍缺；默认palette三条前景差异保留 |
 | FND-014 | 🟡 | 009～021基础Bounds/通知/客户区/MinMax/默认布局与测量保留；035修正AutoSizeMode数值，038补UserControl标准AutoSize属性/事件公开并继续复用共享布局。043的WordWrap与046的BorderStyle复用条件父布局/首选缓存失效；完整派生测量/约束/RTL/DPI/重入、继承属性和平台仍缺 |
@@ -70,6 +72,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次067：Font/ContentsResized与必要停车通知均归既有控件子任务，不关闭FND父项；保持原任务ID/固定分母及未解全量失败，见[067](batches/067.md)。
 
 - 2026-11-07 · 批次066：仅Rich-003e，不增加共享完成项，原ID/未完父项/固定分母保持；详见[066](batches/066.md)。
 

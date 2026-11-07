@@ -61,6 +61,9 @@ public class RichTextBox : TextBoxBase
     private const int EsDisableNoScroll = 0x2000;
     private const int EnmChange = 1;
     private const int EnmUpdate = 2;
+    private const int EnmRequestResize = 0x40000;
+    private const int EnRequestResize = 0x0701;
+    private static readonly object s_contentsResizedEvent = new();
 
     // The registered superclass retains pointers into Msftedit. Keep its one
     // system-directory load alive for the same process lifetime as that cache.
@@ -74,6 +77,7 @@ public class RichTextBox : TextBoxBase
     private bool _detectUrls;
     private RichTextBoxScrollBars _scrollBars;
     private int _bulletIndent;
+    private bool _suppressContentsResized;
 
     /// <summary>
     /// Initializes a multi-line rich text box.
@@ -99,6 +103,52 @@ public class RichTextBox : TextBoxBase
             }
         }
     }
+
+    [AllowNull]
+    public override Font Font
+    {
+        get => base.Font;
+        set
+        {
+            if (!IsHandleCreated || Win32.GetWindowTextLengthW(NativeHandle) <= 0)
+            {
+                base.Font = value;
+                return;
+            }
+
+            if (value is null)
+            {
+                base.Font = null;
+                SetCharFormatFont(selectionOnly: false, Font);
+                return;
+            }
+
+            try
+            {
+                Font? font = GetCharFormatFont(selectionOnly: false);
+                if (font is null || !font.Equals(value))
+                {
+                    SetCharFormatFont(selectionOnly: false, value);
+                    // Base sends WM_SETFONT while accepting the font resolved
+                    // by RichEdit. Its intermediate size notification is not
+                    // part of the document format change's public event.
+                    _suppressContentsResized = true;
+                    base.Font = GetCharFormatFont(selectionOnly: false);
+                }
+            }
+            finally { _suppressContentsResized = false; }
+        }
+    }
+
+    [Category("Behavior")]
+    public event ContentsResizedEventHandler? ContentsResized
+    {
+        add => Events.AddHandler(s_contentsResizedEvent, value);
+        remove => Events.RemoveHandler(s_contentsResizedEvent, value);
+    }
+
+    protected virtual void OnContentsResized(ContentsResizedEventArgs e)
+        => ((ContentsResizedEventHandler?)Events[s_contentsResizedEvent])?.Invoke(this, e);
 
     [Localizable(true)]
     [RefreshProperties(RefreshProperties.All)]
@@ -332,8 +382,8 @@ public class RichTextBox : TextBoxBase
     [DisallowNull]
     public Font? SelectionFont
     {
-        get => GetSelectionFont();
-        set => SetSelectionFont(value);
+        get => GetCharFormatFont(selectionOnly: true);
+        set => SetCharFormatFont(selectionOnly: true, value);
     }
 
     [Browsable(false)]
@@ -635,10 +685,11 @@ public class RichTextBox : TextBoxBase
         return format;
     }
 
-    private unsafe Font? GetSelectionFont()
+    private unsafe Font? GetCharFormatFont(bool selectionOnly)
     {
         if (!IsHandleCreated) { CreateHandle(); }
-        CharFormat2 format = GetSelectionCharFormat();
+        CharFormat2 format = new() { Size = (uint)sizeof(CharFormat2) };
+        _ = Win32.SendMessageW(NativeHandle, EmGetCharFormat, selectionOnly ? 1 : 0, (nint)(&format));
         if ((format.Mask & CfmFace) == 0) { return null; }
 
         float size = 13;
@@ -669,7 +720,7 @@ public class RichTextBox : TextBoxBase
         }
     }
 
-    private unsafe void SetSelectionFont(Font value)
+    private unsafe void SetCharFormatFont(bool selectionOnly, Font value)
     {
         // Preserve the standard order, including a runtime null assignment:
         // create the window before inspecting the supplied Font.
@@ -691,7 +742,7 @@ public class RichTextBox : TextBoxBase
             PitchAndFamily = logicalFont.PitchAndFamily
         };
         new ReadOnlySpan<char>(logicalFont.FaceName, 32).CopyTo(new Span<char>(format.FaceName, 32));
-        _ = Win32.SendMessageW(Handle, EmSetCharFormat, 1, (nint)(&format));
+        _ = Win32.SendMessageW(Handle, EmSetCharFormat, selectionOnly ? 1 : 4, (nint)(&format));
     }
 
     private static unsafe FontLogFont GetLogicalFont(Font font)
@@ -797,9 +848,8 @@ public class RichTextBox : TextBoxBase
     {
         nint initialModified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0);
         UpdateMaxLength();
-        // Enable only the notifications currently handled by TextBoxBase.
-        // Hidden RichEdit controls otherwise omit these edit notifications.
-        _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0, EnmChange | EnmUpdate);
+        // Hidden RichEdit controls otherwise omit edit and size notifications.
+        _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0, EnmChange | EnmUpdate | EnmRequestResize);
         _ = Win32.SendMessageW(NativeHandle, EmAutoUrlDetect, DetectUrls ? 1 : 0, 0);
         if (_selectionBackColorToSetOnHandleCreated != Color.Empty)
         {
@@ -858,6 +908,20 @@ public class RichTextBox : TextBoxBase
             return true;
         }
         return base.OnCommand(notificationCode);
+    }
+
+    protected override unsafe bool OnNotify(int notificationCode, nint lParam)
+    {
+        if (notificationCode != EnRequestResize) { return base.OnNotify(notificationCode, lParam); }
+        if (!_suppressContentsResized)
+        {
+            RequestResize* resize = (RequestResize*)lParam;
+            if (BorderStyle == BorderStyle.Fixed3D) { resize->Bounds.Bottom++; }
+            Win32.RECT bounds = resize->Bounds;
+            OnContentsResized(new ContentsResizedEventArgs(
+                Rectangle.FromLTRB(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom)));
+        }
+        return true;
     }
 
     private unsafe string GetRichText(bool selection = false)
@@ -1016,6 +1080,13 @@ public class RichTextBox : TextBoxBase
             if (context is not null) { context.Failure = exception; }
             return 1;
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    private struct RequestResize
+    {
+        internal Win32.NMHDR Header;
+        internal Win32.RECT Bounds;
     }
 
     // The LOGFONT buffer contains only native scalar values and an inline name.

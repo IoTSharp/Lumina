@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次067 · 2026-11-07 当前验证
+
+收尾ExportTasks/普通校验与独立审计PASS：455MD/2200任务（2150控件+50共享）/187实施行/整类型完成0/0错误；23自有路径严格UTF8/noNUL/roundtrip/SHA、845个TRX逐结果、100新增及旧测试未改已核。旧2197ID与固定1095类型/61240成员记录保持，仅Rich-005按已实现新子范围由pending变部分；索引审核不等同全量通过或兼容率。
+
+Release方案/固定Demo双目标0错/2既有NU1510；最终相关845/845通过，含100新增（Font契约38/原生30/尺寸32）、旧Rich732与停车/重挂EDIT命令13。首构建RECT字段大小写错误、首相关821/836、第二843/844均保留JSON/TRX。独立Drawing/RichEdit8/8及完整格式1/1证实generic-family身份、HFONT字号量化、自动前景/偏移复位；只修新夹具的已证实假设，不放宽消息数量/字体载荷或字号容差，生产未因测试失败改变。详细范围与SHA见[067](batches/067.md)和artifacts/compatibility-batch067。
+
+本批全量NOT_RUN；064全量FAIL/未解、065180秒超时、066全量NOT_RUN完整保留。003f/005a/17f限定代码完成不关闭完整字符格式/通知/WM_NOTIFY/字体DPI、其余富文本/Masked模型或任何平台/98%门槛；Designer/AOT实际运行/正向可见点击/设备/Linux/macOS、固定API刷新/包smoke/Notepad publish本地NOT_RUN，hosted CI未独立读回。WarningLevel=0不表示告警清零。任务索引/编码/TRX逐结果独立审计另记，不把审计PASS当全量PASS。
+
 ## 批次066 · 2026-11-07 当前验证
 
 收尾ExportTasks/普通校验及独立审计PASS：454MD/2197任务（2147控件+50共享）/187实施行/整类型完成0/0错误；旧2196ID/状态、1095类型/61240成员记录保持。19自有路径严格UTF8/noNUL/roundtrip、732个TRX逐结果、61新增分类与旧测试方法体逐字未变均已独立核对。

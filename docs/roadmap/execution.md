@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+067限定完成RichTextBox-003f Font override与005a ContentsResized，Control-17f仅补自有停车WM_NOTIFY按来源HWND路由。默认字体每次原生读取/SCF_ALL/解析回写及finally尺寸通知恢复沿固定源；完整ambient/DPI、其余通知/文件/OLE/撤销、Find/选择测量与MaskedTextProvider模型继续原任务。064全量FAIL/未解、065超时、066全量NOT_RUN保持；检查见[067](batches/067.md)。不以DefaultCursor/元数据全集阻塞，不重做033～067、不重评全项目、不建context/调度/报告框架。下述066及以前为历史。
+
 066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](batches/066.md)。下述065及以前为历史。 下一优先沿完整Font及其ContentsResized依赖、Find/选择测量与MaskedTextProvider真实模型继续；不以DefaultCursor/元数据全集阻塞，不重做033～066、不重评全项目、不建context/调度/报告框架。
 
 当前[065](batches/065.md)限定实现Rich-003d SelectionFont/必要私有LOGFONT转换，93新增与固定双目标Release通过；首77/85、独立中英FACE缺位8/8及新夹具纠正保持回执。下一沿完整Font/颜色同步、Find/选择测量及MaskedTextProvider模型的真实依赖继续，原父项/平台/98%保持；064全量FAIL/超时未解门槛不由新增通过清除，065全量结果见批次页。不重做033～065，不重评全项目或另建context/调度/报告框架；下述064及以前为历史。
