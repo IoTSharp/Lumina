@@ -62,7 +62,8 @@
 
 ## 批次061 实施与收尾（当前）
 
-- 本批只完成RichTextBox-003a SelectionColor/SelectionBackColor真实字符颜色及004a SelectionAlignment原生段落对齐；003/004及全部未完父项保持部分。接管前独立归属交接`590f5f93ab238daf102fc65b3ab8d03d11c90087`，060实现`71e51965e33d6a46154368c7e10d3b95bb735d2a`独立保留。实现与独立归属交接必须分别commit/push并核HEAD/tracking/实际远端三SHA，不能把本地代码称已交付。
+- 本批只完成RichTextBox-003a SelectionColor/SelectionBackColor真实字符颜色及004a SelectionAlignment原生段落对齐；003/004及全部未完父项保持部分。061实现提交`d3725c2775f1af977095a362f5c1c4343dd044db`已成功push，HEAD/origin/main/实际远端refs/heads/main三SHA独立回读一致、main干净/+0/-0。实现与独立归属交接分开，不能把本地代码称已交付。接管前为`590f5f93ab238daf102fc65b3ab8d03d11c90087`，060实现`71e51965e33d6a46154368c7e10d3b95bb735d2a`独立保留。
+- 下一local只读接续聊天`01a1b572-44e9-7920-a136-e0d2d74e1d15`（Lumina batch 062 continuation，host `local`）已创建，编码归属指定给该聊天。本独立归属交接commit/push并核HEAD/tracking/实际远端三SHA后061才发送“开始接管”；062先完成必要只读准备，再核交接SHA/HANDOFF/干净树并明确向061确认实际接管，确认前不改文件/不构建/不提交推送/不建内部任务。确认后061立即停止共享写入/构建/Git并归档，不等062完成。持续授权、分别成功push三SHA、先只读/独立交接/明确确认/旧主立即归档及后来暂停停止优先保持；监督NOT_FOUND、062绑定NOT_DONE，不恢复或新建替代项。
 - 两个互斥任务completed冻结：只新增RichTextBoxSelectionColorTests.cs（33）与RichTextBoxSelectionAlignmentTests.cs（34）；主独占Rich生产/共享文档/集成/Git。未改基类/Control/Application/Masked生产、项目、旧测试或固定Demo/Designer/resx。
 - SelectionColor强制建窗、GET后仅改COLOR/effects0/Win32色再SET；SelectionBackColor无窗只缓存、有窗新零结构，auto effect优先、同值仍发、创建前重放非空缓存且RTF后加载优先。Empty背景mask0/effect按固定源与独立native对照保留。SelectionAlignment先校验再建窗，按mask8/native1/2/3映射，未知/无mask回Left，每次仅提交对齐。私有Pack4字符116/段落156、固定inline buffer与同步SendMessage，无新PInvoke/依赖/公共模型。
 - Release方案/固定Demo双目标首轮0错/2既有NU1510，67新增与5,849全量首轮0失败/跳过，原JSON/TRX保留artifacts/compatibility-batch061。结构/精确消息、混合状态/原生最新读回、其他格式/文本/选择/限长/Undo/通知保持、RTF优先与重建/Modified真假的必要范围通过；无系统剪贴板操作。WarningLevel=0不代表分析告警清零。
