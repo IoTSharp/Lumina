@@ -20,9 +20,11 @@ public class RichTextBox : TextBoxBase
     private const int EmGetLineCount = 0x00BA;
     private const int EmExSetSel = 0x0437;
     private const int EmStreamIn = 0x0449;
+    private const int EmStreamOut = 0x044A;
     private const int EmGetTextEx = 0x045E;
     private const int EmGetTextLengthEx = 0x045F;
     private const int SfTextUnicode = 0x0011;
+    private const int SfRtf = 0x0002;
     private const int SffSelection = 0x8000;
     private const int WmClear = 0x0303;
     private const int EmExLimitText = 0x0435;
@@ -41,6 +43,7 @@ public class RichTextBox : TextBoxBase
     private static readonly Lazy<nint> s_richEditModule = new(LoadRichEditModule);
 
     private string? _textPlain;
+    private string? _textRtf;
     private bool _creatingRichHandle;
     private Color _selectionColor = Color.Empty;
     private bool _autoWordSelection;
@@ -69,11 +72,14 @@ public class RichTextBox : TextBoxBase
         {
             if (IsDisposed) { return base.Text; }
             if (RecreatingHandle || GetAnyDisposingInHierarchy()) { return string.Empty; }
-            return IsHandleCreated ? GetRichText() : _textPlain ?? base.Text;
+            if (!IsHandleCreated && _textRtf is null) { return _textPlain ?? base.Text; }
+            if (!IsHandleCreated) { CreateHandle(); }
+            return GetRichText();
         }
         set
         {
             using LayoutTransaction transaction = new(AutoSize ? Parent : null, this, nameof(Text));
+            _textRtf = null;
             if (!IsHandleCreated)
             {
                 _textPlain = value;
@@ -84,6 +90,48 @@ public class RichTextBox : TextBoxBase
                 StreamPlainText(value ?? string.Empty, selection: false);
                 _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, 0, 0);
             }
+        }
+    }
+
+    /// <summary>Gets or sets the document text, including its RTF formatting.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [RefreshProperties(RefreshProperties.All)]
+    public string? Rtf
+    {
+        get
+        {
+            if (!IsHandleCreated && _textPlain is null) { return _textRtf; }
+            if (!IsHandleCreated) { CreateHandle(); }
+            return StreamRtfOut(selection: false);
+        }
+        set
+        {
+            value ??= string.Empty;
+            if (value.Equals(Rtf)) { return; }
+            if (!IsHandleCreated) { CreateHandle(); }
+            _textRtf = value;
+            StreamText(value, SfRtf);
+            if (!_creatingRichHandle) { OnTextChanged(EventArgs.Empty); }
+        }
+    }
+
+    /// <summary>Gets or sets the selected text, including its RTF formatting.</summary>
+    [DefaultValue("")]
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [AllowNull]
+    public string SelectedRtf
+    {
+        get
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            return StreamRtfOut(selection: true);
+        }
+        set
+        {
+            if (!IsHandleCreated) { CreateHandle(); }
+            StreamText(value ?? string.Empty, SfRtf | SffSelection);
         }
     }
 
@@ -261,16 +309,19 @@ public class RichTextBox : TextBoxBase
         _ = Win32.SendMessageW(NativeHandle, EmAutoUrlDetect, DetectUrls ? 1 : 0, 0);
         AutoWordSelection = AutoWordSelection;
         base.OnHandleCreated(e);
-        if (_textPlain is not null)
+        if (_textRtf is not null)
         {
             nint modified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0);
+            string text = _textRtf;
+            _textRtf = null;
+            Rtf = text;
+            _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, modified, 0);
+        }
+        else if (_textPlain is not null)
+        {
             string text = _textPlain;
             _textPlain = null;
             Text = text;
-            if (modified != 0)
-            {
-                _ = Win32.SendMessageW(NativeHandle, Win32.EM_SETMODIFY, modified, 0);
-            }
         }
         RestoreSelectionOnHandle();
         ClearUndo();
@@ -286,9 +337,11 @@ public class RichTextBox : TextBoxBase
     protected override void OnHandleDestroyed(EventArgs e)
     {
         base.OnHandleDestroyed(e);
-        // Only plain text is retained in this slice. RTF/format persistence is
-        // still tracked separately and must not be inferred from this cache.
-        if (NativeHandle != 0) { _textPlain = GetRichText(); }
+        if (NativeHandle != 0)
+        {
+            _textRtf = StreamRtfOut(selection: false);
+            if (_textRtf.Length == 0) { _textRtf = null; }
+        }
     }
 
     protected override bool OnCommand(int notificationCode)
@@ -325,8 +378,12 @@ public class RichTextBox : TextBoxBase
         }
     }
 
-    private unsafe void StreamPlainText(string value, bool selection)
+    private void StreamPlainText(string value, bool selection)
+        => StreamText(value, SfTextUnicode | (selection ? SffSelection : 0));
+
+    private unsafe void StreamText(string value, int flags)
     {
+        bool selection = (flags & SffSelection) != 0;
         if (value.Length == 0)
         {
             if (selection) { _ = Win32.SendMessageW(NativeHandle, WmClear, 0, 0); }
@@ -336,7 +393,8 @@ public class RichTextBox : TextBoxBase
 
         int terminator = value.IndexOf('\0');
         if (terminator >= 0) { value = value[..terminator]; }
-        var context = new TextStreamContext(Encoding.Unicode.GetBytes(value));
+        var context = new TextStreamContext(((flags & 0x10) != 0
+            ? Encoding.Unicode : RichTextEncoding).GetBytes(value));
         GCHandle cookie = GCHandle.Alloc(context);
         try
         {
@@ -346,6 +404,20 @@ public class RichTextBox : TextBoxBase
                 _ = Win32.SendMessageW(NativeHandle, EmExSetSel, 0, (nint)(&range));
             }
 
+            // Match the fixed WinForms stream contract: even rejected full
+            // documents first collapse the selection, but do not change limits.
+            if ((flags & SfRtf) != 0)
+            {
+                if (context.Bytes.Length < 5)
+                {
+                    throw new ArgumentException("Invalid file format.", new EndOfStreamException());
+                }
+                if (!context.Bytes.AsSpan().StartsWith("{\\rtf"u8))
+                {
+                    throw new ArgumentException("Invalid file format.");
+                }
+            }
+
             EditStream stream = new()
             {
                 Cookie = (nuint)GCHandle.ToIntPtr(cookie),
@@ -353,7 +425,7 @@ public class RichTextBox : TextBoxBase
             };
             _ = Win32.SendMessageW(NativeHandle, EmExLimitText, 0, int.MaxValue);
             _ = Win32.SendMessageW(NativeHandle, EmStreamIn,
-                SfTextUnicode | (selection ? SffSelection : 0), (nint)(&stream));
+                flags, (nint)(&stream));
             UpdateMaxLength();
             if (stream.Error != 0 || context.Failure is not null)
             {
@@ -363,6 +435,58 @@ public class RichTextBox : TextBoxBase
             _ = Win32.SendMessageW(NativeHandle, EmGetLineCount, 0, 0);
         }
         finally { cookie.Free(); }
+    }
+
+    private static Encoding RichTextEncoding
+        => CodePagesEncodingProvider.Instance.GetEncoding(0) ?? Encoding.UTF8;
+
+    private unsafe string StreamRtfOut(bool selection)
+    {
+        using var output = new MemoryStream();
+        var context = new OutputStreamContext(output);
+        GCHandle cookie = GCHandle.Alloc(context);
+        try
+        {
+            EditStream stream = new()
+            {
+                Cookie = (nuint)GCHandle.ToIntPtr(cookie),
+                Callback = &WriteTextStream
+            };
+            _ = Win32.SendMessageW(NativeHandle, EmStreamOut,
+                SfRtf | (selection ? SffSelection : 0), (nint)(&stream));
+            if (stream.Error != 0 || context.Failure is not null)
+            {
+                throw new InvalidOperationException("Failed to save text from the rich text box.", context.Failure);
+            }
+            string result = RichTextEncoding.GetString(output.GetBuffer().AsSpan(0, checked((int)output.Length)));
+            return result.EndsWith('\0') ? result[..^1] : result;
+        }
+        finally { cookie.Free(); }
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+    private static unsafe uint WriteTextStream(nuint cookie, byte* buffer, int count, int* written)
+    {
+        OutputStreamContext? context = null;
+        try
+        {
+            *written = 0;
+            context = (OutputStreamContext)GCHandle.FromIntPtr((nint)cookie).Target!;
+            context.Output.Write(new ReadOnlySpan<byte>(buffer, count));
+            *written = count;
+            return 0;
+        }
+        catch (Exception exception)
+        {
+            if (context is not null) { context.Failure = exception; }
+            return 1;
+        }
+    }
+
+    private sealed class OutputStreamContext(MemoryStream output)
+    {
+        internal readonly MemoryStream Output = output;
+        internal Exception? Failure;
     }
 
     // RichEdit consumes this callback synchronously. A separate cookie for each

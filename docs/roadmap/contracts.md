@@ -26,6 +26,8 @@
 
 ## 修改历史
 
+- 2026-11-07 · 批次060：Rich新增标准Rtf/SelectedRtf与静态Stdcall流出回调、逐调用cookie/MemoryStream，复用Pack4 EDITSTREAM和既有SendMessage，无新PInvoke/公共流模型/依赖。归Rich-002c/011a，不新增CNS完成项；完整文件/Protected/OLE、格式API与Designer/AOT运行仍待，见[060](batches/060.md)。
+
 - 2026-11-07 · 批次059：Rich纯文回调以静态UnmanagedCallersOnly/Stdcall和独立cookie实现，复用现有SendMessage；SDK核GETTEXTEX/EDITSTREAM的Pack4。必要内部结构归Rich-002a/002b，不新增公共契约或CNS完成项，完整RTF/格式/Protected/OLE/Designer/AOT运行保持待办，见[059](batches/059.md)。
 
 - 2026-11-07 · 批次058：补标准RichTextBoxScrollBars七值0/1/2/3/17/18/19及真实消费者，归RichTextBox-007a，不新增共同完成任务或命名；复用现有Win32加载/消息声明，未扩写完整绘制/绑定/Designer/OLE。原CNS父项、ID及固定分母保持，见[058](batches/058.md)。

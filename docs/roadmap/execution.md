@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[060](batches/060.md)完成RichTextBox-002c Rtf/SelectedRtf字符串流与011a RTF句柄格式缓存。54新增/5,782全量及固定双目标Release通过；首测试unsafe编译失败、首50/54和真实新纯文Modified恢复修复保留，空选区导出0字节独立native确认。下一沿Rich字符/段落格式真实状态、专有选择/坐标和MaskedTextProvider模型依赖继续；Load/Save文件/StreamType、Protected/OLE/通知/撤销重做、完整缩放/反射/线程/模态及Designer/AOT/设备/平台/98%仍待。不重做033～060、不重评全项目、不建context/调度框架；下述059及以前为历史。
+
 当前[059](batches/059.md)完成RichTextBox-002a纯文本Text/Unicode StreamIn和002b专有TextLength/SelectedText/SelectionLength首范围。64新增/5,728全量及固定双目标Release通过；首61/64包含真实Modified重建缺口及两项新夹具问题，原回执保持。下一按Rich格式/RTF持久化、专有选择/坐标及MaskedTextProvider模型依赖继续；完整格式/Protected/OLE/通知、缩放/反射/线程/模态、Designer/AOT/设备/平台/98%仍待。不重做033～059、不重评全项目、不建context/调度框架；下述058及以前为历史。
 
 当前[058](batches/058.md)完成RichTextBox-001a标准直接层级/真实系统RichEdit和007a必要默认/原生选项，96新增/5,664全量及固定双目标Release通过。下一沿已落地RichEdit的Text/StreamIn、逻辑长度/选区契约及MaskedTextProvider真实模型依赖继续，不以其余基类元数据阻塞真实后端。Rich Text当前仍经WM_SETTEXT，其原生扩限差异明确保留，不以原生模型存在关闭002；完整格式/RTF、反射/线程/模态/缩放、Designer/AOT/正向可见点击/物理输入/平台/98%仍待。不重做033～058、不重评全项目、不建context/调度框架。下述057及以前为历史。

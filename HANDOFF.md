@@ -4,6 +4,8 @@
 
 ## 当前接续点（2026-10-26 新授权）
 
+- 060主聊天`01a1b542-6334-7303-ac39-f47c7f462cd6`于2026-11-07完成必要只读准备并收到“开始接管”，独立重核归属交接`bce028b4790096e6b63018ca3c7f7e28b595b946`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向059明确确认实际接管并实时核其归档。060为唯一编码主；两个互斥任务分别只写新的RTF属性/流测试与RTF句柄持久化测试，主独占生产/接口interop、文档/集成/Git。沿RichTextBox-002c的Rtf/SelectedRtf原生流和011a的RTF缓存恢复限定范围继续；完整文件/格式API、Protected/OLE、通知/坐标、Masked及平台/98%门槛保持。监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。下述059及以前归属为历史。
+
 - 059主聊天`01a1b528-2104-7af2-85d2-abd9d2b7fe98`于2026-11-07完成必要只读准备并收到“开始接管”，独立核交接`14c0c9abeb406b92a6278278c89022e1c5248d7c`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向058明确确认实际接管并实时核其归档。059为唯一编码主；两个互斥任务只写新的Rich Text和长度/选区模型测试，主独占Rich生产/必要共享连接、文档/集成/Git。当前推进纯文本Text/Unicode StreamIn及专有TextLength/SelectedText限定范围；RTF/格式/完整坐标/Masked与平台/98%门槛保持。监督NOT_FOUND、059绑定NOT_DONE，不恢复或新建替代项；下述058及以前归属为历史。
 
 - 058主聊天`01a1b502-4e23-7c70-9f2e-78ececde3b54`于2026-11-07收到“开始接管”，完成必要只读准备并独立重核归属交接`1739c4b76cc66a303c954ccb7d5c3ae663ae7af3`的HEAD/origin/main/实际远端三SHA一致、main干净/+0/-0，已向057明确确认实际接管并实时核其归档。058为唯一编码主；两个互斥内部任务分别只写新的RichTextBox原生后端与构造/default测试，主独占生产/interop、共享文档/集成/Git。沿RichTextBox标准直接层级及真实RICHEDIT50W必要默认推进；完整RTF/格式、MaskedTextProvider、平台与98%门槛不关闭。监督NOT_FOUND、058绑定NOT_DONE，不恢复或新建替代项；下述057及以前归属为历史。
@@ -56,7 +58,20 @@
 - 忽略的 `bin/`、`obj/` 是前批及本批有界还原、构建和测试生成的验证产物，保留供复核，不纳入 Git。批次031实现提交 `927c815156c3bdf545aec5778833d147fdc74f9b`、交接提交 `5d19f6eea081173cc45edf5cabee90bda2ad851f`、批次032实现提交 `333204335a53df22519073a000a1eadca1aecce4` 已推送并核验；批次033实现提交 `cbf5173320d4455a6652ebd5d9b6fcd85b439caa`、交接提交 `8b333d249ffdcc420aad489d3e694a5cf16ac235` 已推送，三SHA已回读一致。
 - 2026-11-07实时list_projects已确认Lumina本地项目登记，projectId=`9ca61055-c431-489f-8903-c83fb676c6ef`，路径`D:\GitHub\Lumina`。纠正此前“仍需登记”的滞后描述；接续聊天使用此local项目，不创建worktree。
 
-## 批次059 实施与收尾（当前）
+## 批次060 实施与收尾（当前）
+
+- 完成RichTextBox-002c的Rtf/SelectedRtf字符串流与011a的RTF句柄格式缓存恢复；完整父项保持部分。当前实现commit/push与独立归属交接须分别成功、核HEAD/tracking/实际远端三SHA，不能把本地代码称已交付。接管前为`bce028b4790096e6b63018ca3c7f7e28b595b946`，059实现`05f98b39ee2892cab256eb786389acea804322f8`独立保留。
+- 两个互斥任务completed冻结，分别只新RichTextBoxRtfTests.cs与RtfLifetimeTests.cs；另有只读复核无新增阻断。主独占Rich生产、文档/集成/Git；未改基类/Control/Application/Masked生产、项目、旧测试或固定Demo/Designer/resx。
+- Rtf默认无窗null，有plaincache读取才强制建窗；Rtf setter先比较再建窗/缓存/SF_RTF流入并显式通知，SelectedRtf选区0x8002流/空值WM_CLEAR。ACP/原始NUL/五字节前缀与短输入inner异常、输入限长恢复/修改位/行索引顺序保持。流出静态Stdcall/blittable/Pack4、逐调用MemoryStream/cookie及finally回收，无新PInvoke/依赖/公共模型。
+- 销毁先base再缓存最新真实RTF，创建先base再RTF优先/plain、后选择/ClearUndo；RTF快照恢复保Modified真/假与MaxLength，新无窗Text清RTF缓存并经Text setter清修改位。Text读取有RTF缓存时由RichEdit翻译，保disposed/recreating/disposing原分支。
+- 最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json），54新增（31 RTF/23寿命）与5,782全量0失败/跳过。首新测试unsafe三处编译失败保留，改Marshal/测试委托不改项目；首50/54的三项是真实新plaincache错误恢复旧Modified，修生产且原false硬要求保持；另一空选区夹具由独立native全文正字节/选区零字节核实后改空串，旧测试未改。原JSON/TRX保留，无剪贴板操作；WarningLevel=0不是分析告警清零。
+- 根路线图/执行/5控件公共页及历史、验证/README实施列/tasks.csv已按实际范围同步；只新增002c/011a，011从全待办改部分，原ID/未完父项/固定分母保持，不由数量推98%。ExportTasks与独立Python均448MD/2,187任务（2,137控件+50共享）/187实施行/整类型完成0/0错误；独立TRX核首50/54和最终54/54、5,782/5,782。完整Rich参考123535字节/hash已独立重核。
+- 下一沿Rich字符/段落格式真实状态、专有选择/坐标与MaskedTextProvider真实模型依赖继续。Load/Save/StreamType、公共格式API、Protected/OLE、专有通知/UndoRedo/动作名、完整缩放/反射父Form寿命/WM_NOTIFY/线程/模态继续原任务；正向可见点击/物理输入、Designer/绑定/资源/Native AOT实际运行/Linux/macOS/98%未关闭。不重做033～060、不重评全项目、不建context/调度/报告框架。包smoke/Notepad publish本地NOT_RUN、hosted CI未独立回读、固定API刷新NOT_RUN；官方Drawing/固定双目标静态Demo保持。
+- 主Cordonix父PID32604/精确FILETIME134385159902671754独立核，外部调用有界/cleanup_complete=true；STA ExitThread→private visual-context，无临时脚本/持久文档/独占服务，保留证据/bin/obj/共享缓存/MCP，只清精确自有对象，不按名杀进程。
+- 17个自有交付路径严格UTF8/noNUL/字节往返检查PASS，最终完整dotnet快照0；暂存仅自有路径，提交前核普通路线校验/CRLF兼容whitespace与归属。
+- 持续授权、多互斥内部任务/主独占共享生产接口interop文档集成Git、每批实现与独立归属交接分别成功commit/push核三SHA、下一local先只读/交接push核后开始/明确确认/旧主立即停止共享写入构建Git并归档保持，后来暂停停止优先；监督NOT_FOUND、060绑定NOT_DONE，不恢复或新建替代项。
+
+## 批次059 实施与收尾（历史）
 
 - 既有ExportTasks/普通Validate-Roadmap与独立Python核447MD/2,185任务（2,135控件+50共享）/187实施行/整类型完成0/0错误；接管前快照比对只新增002a/002b、无原ID删除、未完父项保持。独立TRX核首61/64与最终64/64、5,728/5,728；20个自有交付路径严格UTF8/noNUL/roundtrip及CRLF兼容whitespace检查PASS。
 

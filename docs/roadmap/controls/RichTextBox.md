@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+060完成002c标准Rtf/SelectedRtf原生RTF字符串流与011a句柄RTF缓存恢复。54新增/5,782全量通过，固定双目标Release0错/2既有NU1510；首测试unsafe编译失败及首50/54保留。真实新纯文缓存错误恢复旧Modified位已修，空选区RTF零字节由独立原生回调确认后修新夹具。完整Load/Save、格式公共API、Protected/OLE、专有通知/坐标和平台父项保持，见[060](../batches/060.md)。下述059及以前为历史。
+
 059完成002a纯文本Text/Unicode StreamIn及002b专有TextLength/SelectedText/SelectionLength首范围：无窗Text仅缓存、有窗逻辑LF读取，流后恢复配置MaxLength，选区空值走WM_CLEAR，纯文重建保留选择/Modified。64新增/5,728全量及固定双目标Release通过；首61/64及真实重建Modified修复保持证据。完整RTF/格式持久化/通知/坐标和平台父项不关闭，见[059](../batches/059.md)。下述058及以前为历史。
 
 058完成001a标准直接TextBoxBase层级与真实系统RICHEDIT50W、007a必要构造/default/原生选项。默认100×96、AutoSize=false、Multiline=true、MaxLength=int.MaxValue；HideSelection恢复基类共享状态。实际superclass保留系统RichEdit原过程，System32模块身份和RichEdit特有消息均有独立对照；96新增/5,664全量及固定双目标Release通过。普通EDIT不再作为本类后端。完整Text/StreamIn、TextLength/选区/坐标、RTF/格式/专有通知及全部平台验收仍待；下述057及以前为历史快照，见[058](../batches/058.md)。
@@ -38,7 +40,7 @@
 
 043未改本类型源码；现有TextBox间接路径随共同基类消费真实WordWrap/ScrollBars，None不再强制纵条。此行为修正不补本类型的标准直接继承、默认覆盖或RichEdit/富文本后端，全部原任务状态保留。
 
-🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前直接继承TextBoxBase并使用系统RichEdit；059补纯文本Text/SelectedText流、逻辑长度/选区读取及纯文本重建恢复，配置3下程序设17字符后native限长恢复3，独立WM_SETTEXT仍扩限17作为反例。SelectionColor仍仅存值，完整RTF/选区格式、专有通知/撤销重做、格式持久化与坐标测量尚缺；纯文保持不证明格式保持。
+🟡 [RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs) 当前直接继承TextBoxBase并使用系统RichEdit；059纯文本/逻辑模型保留，060补Rtf/SelectedRtf字符串流、真实字符/段落格式往返及句柄RTF缓存恢复。配置3下程序流仍恢复3，独立WM_SETTEXT扩限17反例保持。SelectionColor仍仅存值；完整文件流/编码、字符/段落公共格式API、Protected/OLE、专有通知/撤销重做、坐标测量与所有格式/资源边界尚缺，不由RTF字符串范围关闭父项。
 
 源码定位：[Lumina.Forms/RichTextBox.cs](../../../Lumina.Forms/RichTextBox.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：TextBoxBase、原生 RichEdit 载入与回调、字体/颜色/图像策略、剪贴板和 RTF 流。
 
@@ -50,11 +52,12 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| RichTextBox-001 | P0 | 🟡 | 058的001a完成直接TextBoxBase、系统RICHEDIT50W与基础通知；007a另记必要默认。完整Rich专有Text/选区/测量、共享成员覆盖与真实格式状态恢复仍待，不能由真实类创建关闭父项。 |
+| RichTextBox-001 | P0 | 🟡 | 058的001a完成直接TextBoxBase、系统RICHEDIT50W与基础通知；059的002a/002b和060的002c/011a另记文本/RTF模型与句柄格式缓存，007a另记必要默认。完整Rich选择/测量、共享成员覆盖、所有格式/原生状态与资源恢复仍待，不重复计数或关闭父项。 |
 | RichTextBox-001a | P0 | ✅ | 批次058：直接TextBoxBase，建窗前以System32专用路径惰性加载Msftedit并保留与superclass缓存同寿命的进程引用，实际窗口复制系统RICHEDIT50W类/原过程。base.OnHandleCreated前启用现已消费的ENM_CHANGE/UPDATE；15例核模块身份/特有EM_GETTEXTLENGTHEX/普通EDIT反例、隐藏原生编辑/通知/状态、独立窗口及重建/销毁/多实例。完整RTF/格式、Rich专有Text/长度/选择与通知仍待，其他必要默认归007a不重复计数。 |
-| RichTextBox-002 | P1 | 🟡 | 059的002a/002b完成纯文本Text/SelectedText流与逻辑读取/长度首范围。Rtf、SelectedRtf、LoadFile/SaveFile各重载/StreamType、完整编码/文件锁/RTF往返、Protected/OLE及格式持久化仍待；不能由纯文流关闭完整父项。 |
+| RichTextBox-002 | P1 | 🟡 | 059的002a/002b完成纯文本Text/SelectedText流与逻辑读取/长度首范围；060的002c限定Rtf/SelectedRtf字符串流另列。LoadFile/SaveFile各重载/StreamType、完整编码/文件锁/RTF保真、Protected/OLE仍待；不能由字符串流关闭完整父项。 |
 | RichTextBox-002a | P1 | ✅ | 批次059：Text无窗仅缓存原始值且不通知/不读虚getter，有窗Unicode全文流入、同值重流、原始空值WM_SETTEXT/非空NUL截断、临时扩限后恢复配置MaxLength及固定修改位/行索引顺序；GETTEXTEX的CR→LF读取、EN_CHANGE与纯文本创建/重建恢复落地。27例含50kUnicode、错误回传/重试、原异常和真实输入限制；首Modified重建缺口已修，纯文/选择/Modified/通知硬要求保持。RTF/Protected/OLE/格式恢复及完整002未计完成。 |
 | RichTextBox-002b | P1 | ✅ | 批次059：TextLength强制Handle、GTL_NUMCHARS/CP1200；SelectedText强制建窗、GT_SELECTION读取与CR→LF、SFF_SELECTION Unicode流/原始空值WM_CLEAR；SelectionLength有窗取SelectedText.Length排除EOF。37例含Pack4结构/参数/原生返回、70k范围、只读双分支、MaxLength0/3、状态/Undo/通知与精确消息；静态Stdcall回调/逐调用cookie为必要依赖。完整专有选择方向/行坐标/格式/008及设备验收仍待。 |
+| RichTextBox-002c | P1 | ✅ | 批次060：标准非virtual Rtf/SelectedRtf属性与SF_RTF全文/选区流入流出，ACP编码、NUL/五字节前缀与异常、空值分支、同值短路、显式/原生通知及配置限制恢复；静态Stdcall流出回调/独立cookie。31例含真实粗体/Unicode往返、错误/重试/GC、只读/限长/精确消息；独立native核空选区导出0字节，保全文正字节对照。完整文件重载/Protected/OLE及002父项不关闭。 |
 | RichTextBox-003 | P1 | 🟡 | SelectionColor 从存值改真实 CHARFORMAT；SelectionBackColor、SelectionFont、SelectionCharOffset、SelectionProtected、SelectionType 和混合选区返回值逐项验收。 |
 | RichTextBox-004 | P1 | ⬜ | SelectionAlignment、SelectionBullet、BulletIndent、SelectionIndent、SelectionHangingIndent、SelectionRightIndent、SelectionTabs；空选区与混合段落、RTL 和缩进单位换算。 |
 | RichTextBox-005 | P1 | ⬜ | SelectionChanged、ContentsResized、LinkClicked、Protected、HScroll、VScroll、ImeChange 与 TextChanged：原生事件掩码、参数、次数/顺序及受保护文字拒绝修改场景。 |
@@ -64,7 +67,8 @@
 | RichTextBox-008 | P2 | ⬜ | Find 的文本/字符数组/范围/选项重载，GetCharIndexFromPosition/GetPositionFromCharIndex/行方法；UTF-16、CRLF、emoji、隐藏文字和选择方向边界。 |
 | RichTextBox-009 | P2 | ⬜ | AllowDrop、EnableAutoDragDrop、DragEnter/Over/Leave/Drop、GiveFeedback、QueryContinueDrag、RichTextShortcutsEnabled；OLE 专属格式单列，普通文本/RTF拖放不遗漏。 |
 | RichTextBox-010 | P2 | ⬜ | LanguageOption、输入法合成、CJK 字体回退、双向段落、组合字符与缩放后光标命中；原生辅助技术暴露文本、选区和格式。 |
-| RichTextBox-011 | P2 | ⬜ | RTF 资源、Font/ForeColor、图像/对象嵌入所有权和 Dispose；所有原生流/通知回调在释放后解除，未完成对象支持明确标缺失。 |
+| RichTextBox-011 | P2 | 🟡 | 060的011a限定真实RTF句柄缓存恢复另列；RTF资源、完整Font/ForeColor、图像/对象嵌入所有权和Dispose、持久通知/OLE回调解除仍待，未完成对象支持明确标缺失。 |
+| RichTextBox-011a | P1 | ✅ | 批次060：销毁先base再缓存最新真实RTF；创建先base、优先恢复RTF再选择/ClearUndo，保持原生Modified真/假与配置MaxLength。无窗Text覆盖清RTF缓存并按新纯文赋值清修改位，缓存RTF的Text读取经RichEdit翻译。23例含七重建入口/真实字符段落格式、最新native编辑、选择/限长/Undo/通知、失败重试/实例/释放；首新纯文恢复旧Modified缺口修生产，原false硬要求保持。字符/段落公共格式API、OLE/资源完整生命周期与011父项未完成。 |
 | RichTextBox-012 | P3 | ⬜ | 完整属性/事件/行为分别达到 Windows≥98%；GTK/AppKit可移植分母包含普通RTF与段落格式，无法原生表达的剩余能力有逐项证据；双目标 Designer 与 AOT 真实编辑验收。 |
 | RichTextBox-CLOSE | P3 | ⬜ | 对照 API 清单逐个关闭剩余属性、事件、方法/重载与受保护兼容点；属性写入后读回、通知顺序/取消/重入、默认值、异常、未建句柄/重建/释放后行为分别有证据。Windows 与两原生平台各出属性/事件/行为分子分母，未验收项不能标🧪 验收通过。 |
 
@@ -81,6 +85,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次060：新增002c/011a，011从全待办纠正为部分；002/001保留未完父项，当前RTF/格式缓存描述按实际代码更新。54新增/5,782全量及固定双目标Release通过；首测试unsafe编译失败与首50/54保留，修真实新纯文Modified恢复缺口及空选区新夹具。原ID/未完任务/分母保持，见[060](../batches/060.md)。
 
 - 2026-11-07 · 批次059：新增002a/002b，002由全待办改部分；当前Text/限长/逻辑读取描述按真实代码修正，058与此前失败证据保持。64新增/5,728全量通过，首61/64含真实Modified重建缺口及两项新夹具问题，058旧反例明确改为native17/流恢复3。只关闭纯文限定范围，原ID/未完父项/固定分母保持，见[059](../batches/059.md)。
 

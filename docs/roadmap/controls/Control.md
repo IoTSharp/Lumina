@@ -1,5 +1,7 @@
 # Control
 
+060本类源码no-op；Rich RTF流复用既有SendMessage/句柄寿命与选择连接，不增加Control公共API或完成任务。完整WM_NOTIFY/反射父寿命、线程/缩放/平台仍待，见[060](../batches/060.md)。下述059及以前为历史。
+
 059仅将既有GetAnyDisposingInHierarchy改internal供Rich Text getter读取，同一父链判断算法不变；不新增公共API或Control完成范围。Rich静态流回调/逻辑模型归其002a/002b，完整生命周期/反射/线程/缩放及平台仍待，见[059](../batches/059.md)。下述058及以前为历史。
 
 058源码no-op，RichTextBox沿现有NativeWindowClass复制真实系统RichEdit类并保留原过程；不增加Control/interop完成范围。独立模块/原过程与RichEdit特有消息对照归RichTextBox-001a，完整反射父寿命/WM_NOTIFY、DPI/线程/模态及平台门槛保持，见[058](../batches/058.md)。下述057及以前为历史。
@@ -113,6 +115,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次060：源码no-op，Rich静态RTF流回调/缓存归002c/011a，现有生命周期连接保持；不由隐藏窗口格式往返关闭完整反射/线程/资源或平台父项，见[060](../batches/060.md)。
 
 - 2026-11-07 · 批次059：既有父链Disposing查询仅放宽同库可见性，无算法/公共面扩写，64新增/5,728全量通过；不新增Control完成项，见[059](../batches/059.md)。
 

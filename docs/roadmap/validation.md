@@ -1,5 +1,13 @@
 # 本轮验证与限制
 
+## 批次060 · 2026-11-07 当前验证
+
+最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json），54/54新增（RTF31/寿命23）与5,782/5,782全量0失败/跳过。首方案构建因新测试三处unsafe且测试项目未开放而失败，修新测试为Marshal缓冲/测试委托，不改项目或生产接口；原release-build.json保留。WarningLevel=0不是分析告警清零，回执位于artifacts/compatibility-batch060。
+
+首新增50/54原JSON/TRX保留。三项新纯文赋值后Modified仍true是真实生产缺口：旧修改位仅在RTF快照恢复时保留，新plaincache仍经Text setter清位，保留原false硬断言。另一项空选区新夹具错误要求RTF头；独立native全文SF_RTF正字节/空选区0字节对照后改为硬要求空串，不改生产。其余原生格式/文本/选择/限长/通知断言保持，旧测试未改。
+
+覆盖真实粗体/颜色/字号/段落格式与Unicode往返、七种重建入口、缓存优先/最新原生编辑、Modified真/假/选择/限制/Undo/通知、输入输出错误及重试、GC多段回调/NUL/前缀异常。静态Stdcall回调、Pack4、每次cookie与finally资源回收只读复核无新增阻断，无系统剪贴板读写。复杂RTF保真、文件/编码/资源、公共格式API/Protected/OLE/专有通知/坐标/Masked、Designer/AOT实际运行/物理设备/Linux/macOS/98%未关闭；CI包smoke/Notepad publish本地NOT_RUN、hosted CI未独立回读、固定API刷新NOT_RUN。官方Drawing/固定双目标静态Demo、原ID与分母保持，见[060](batches/060.md)。
+
 ## 批次059 · 2026-11-07 当前验证
 
 最终Release方案/固定Demo双目标0错/2既有NU1510（release-build-verified.json）；首共享消息常量缺失编译失败保留release-build.json，后补Rich内部常量。WarningLevel=0不是分析告警清零。最终64/64新增（Text27/模型37）及5,728/5,728全量0失败/跳过，独立TRX另核，回执位于artifacts/compatibility-batch059。
