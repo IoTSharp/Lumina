@@ -1,5 +1,7 @@
 # LuminaForms 路线图
 
+068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。详见[068](docs/roadmap/batches/068.md)；下述067及以前为历史。
+
 067限定实现RichTextBox-003f标准Font override、005a ContentsResized及Control-17f自有停车WM_NOTIFY必要连接。原生默认字体判等、全篇格式提交、解析后托管字体回写及尺寸通知临时抑制沿固定10.0.11；完整输入/ambient/DPI、其余通知/富文本/Masked模型和平台/98%仍待。064全量FAIL/未解、065超时和066全量NOT_RUN保持，本批检查见[067](docs/roadmap/batches/067.md)。下述066及以前为历史。
 
 066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](docs/roadmap/batches/066.md)。下述065及以前为历史。
@@ -72,7 +74,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～067的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [067结果](docs/roadmap/batches/067.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～068的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [068结果](docs/roadmap/batches/068.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

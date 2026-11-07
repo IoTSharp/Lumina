@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+068只新增RichTextBox-005b/005c标准通知限定范围；私有Pack4 SELCHANGE与既有SendMessage/PostMessage封装在Rich内，无新公共类型/PInvoke/依赖，不新增CNS/FND完成项。完整共享/资源/线程/Masked与平台仍待，064FAIL/065超时保留，见[068](batches/068.md)。下述067及以前为历史。
+
 067仅关闭RichTextBox-003f/005a和Control-17f必要停车通知连接，不新增FND完成项。Font/尺寸通知与原生字体身份/量化/格式副作用均按限定范围记录；完整共享成员/反射父Form寿命/ambient/DPI/线程/Masked模型与平台仍待。064全量FAIL/未解与065超时保持，见[067](batches/067.md)。下述066及以前为历史。
 
 066只新增RichTextBox-003e颜色同步限定范围，复用既有私有116字节CHARFORMAT2W/SendMessage，不增公共附属类型、依赖、PInvoke或FND完成项。完整Font/Masked模型与共享父项及平台仍待；064全量FAIL/065超时完整保留，见[066](batches/066.md)。下述065及以前为历史。
@@ -72,6 +74,8 @@
 | FND-026 | 🟡 | 038的UserControl-02d补AutoSize属性/事件的标准公开与设计器序列化声明，限定元数据不等于Designer往返通过。ISupportInitialize/BeginInit/EndInit、IExtenderProvider、其余DefaultValue/DefaultEvent/DesignerSerializationVisibility、.resx/文化/图像/图标及保存/关闭/重开设计器仍待 |
 
 ## 收尾状态整理记录
+
+- 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](batches/068.md)。
 
 - 2026-11-07 · 批次067：Font/ContentsResized与必要停车通知均归既有控件子任务，不关闭FND父项；保持原任务ID/固定分母及未解全量失败，见[067](batches/067.md)。
 

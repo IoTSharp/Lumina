@@ -1,5 +1,7 @@
 # RichTextBox
 
+068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。见[068](../batches/068.md)；下述067及以前为历史。
+
 067限定完成003f Font override与005a ContentsResized；Control-17f只补自有停车通知连接。默认字体原生判等/全篇提交/解析回写及临时尺寸通知抑制沿固定源；全部ambient/DPI、其他富文本通知/输入/文件/OLE/撤销和平台/98%仍待。独立Drawing身份、HFONT量化及自动前景/偏移复位对照与保留的新夹具失败见[067](../batches/067.md)；064全量FAIL/未解与065超时保留。下述066及以前为历史。
 
 066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](../batches/066.md)。下述065及以前为历史。
@@ -84,8 +86,10 @@
 | RichTextBox-004b | P1 | ✅ | 批次062：三项标准非virtual缩进属性及DefaultValue(0)/隐藏序列化；getter强制建窗，以PARAFORMAT对应mask有效字段读取，否则0；setter新零结构只提交STARTINDENT/RIGHTINDENT/OFFSET一个字段且忽略native返回，右缩进先拒负，其余接受完整int。屏幕X DPI像素/twip沿固定浮点顺序截断，每次DC在finally释放。67例核156字节精确结构/无GET/零返回、极值/原异常、真实空/混合/独立native状态、无关格式和RTF重建Modified真/假；Bullet/Tabs及完整004仍待。 |
 | RichTextBox-004c | P1 | ✅ | 批次063：004c：SelectionBullet为标准非virtual/默认false/隐藏属性，getter强制建窗后需NUMBERING mask且值1才真；setter新零156字节PARAFORMAT仅mask0x24/Numbering和Offset，true为bullet1与屏幕X像素转twip，false清两字段，每次SET无GET。BulletIndent标准非virtual/默认0/Behavior/Localizable，负值前置拒绝，先写缓存且无窗不建；有窗仅当前真bullet再提交，同值也查询。48例含精确载荷/混合/原生最新值/缓存时序/原异常/其他格式/RTF重建Modified真假的状态保持。完整004仍待。 |
 | RichTextBox-004d | P1 | ✅ | 批次063：004d：SelectionTabs为标准非virtual int[]/隐藏序列化/AllowNull，超过32在建窗前拒绝且ActualValue为空；getter按TABSTOPS有效mask逐槽转像素，无mask为空。setter先GET当前156字节结构，仅改mask/数量/前N槽，保留非目标字段及尾槽；null/空清数量，不排序/不校验元素，重复仍GET→SET并忽略返回。38例含32边界/全int/数组寿命/整结构/独立RichEdit/混合段落/其他格式及RTF重建通过。首AllowNull夹具只修setter参数反射，原失败保留。完整004未关闭。 |
-| RichTextBox-005 | P1 | 🟡 | 067的005a限定ContentsResized/参数与必要Font抑制；SelectionChanged、LinkClicked、Protected、HScroll、VScroll、ImeChange及完整TextChanged掩码、参数、次数/顺序和拒改仍待，不由一种通知关闭父项。 |
+| RichTextBox-005 | P1 | 🟡 | 067的005a尺寸通知与068的005b选择/005c滚动及IME通知限定范围保持。LinkClicked、Protected及拒改、完整TextChanged掩码与其余通知次数/顺序/全部输入交互仍待，不由已完成通知关闭父项。 |
 | RichTextBox-005a | P1 | ✅ | 批次067：标准ContentsResizedEventArgs/Handler、Events槽事件与protected virtual OnContentsResized；创建/重建启用ENM_REQUESTRESIZE，EN_REQUESTRESIZE读取blittable REQRESIZE，Fixed3D原地bottom++后交标准Rectangle。Font非null解析回写base期间抑制，finally恢复；空文/null分支不抑制。真实Form/parentless、来源拒绝/同ID与重挂停车连接见32例；完整005/反射父寿命/平台仍待。 |
+| RichTextBox-005b | P1 | ✅ | 批次068：标准SelectionChanged/Events槽及protected virtual OnSelectionChanged；EN_SELCHANGE读取36字节x64 Pack4 SELCHANGE，起点/终点/short类型三项去重，构造/创建重置-1、事件前更新缓存，异常/有限重入/CanRaiseEvents不回退。保留Hangul/HangulFull下原生组合模式、WindowText长度与MaxLength门禁、焦点消息和PostMessage末字符选择，先处理再去重；不由基类选择方法合成重复事件。36契约及29原生案例（含独立raw对照）通过，完整物理IME/全部通知与005父项仍待。 |
+| RichTextBox-005c | P1 | ✅ | 批次068：标准HScroll/VScroll/ImeChange三个Events槽及protected virtual On*；EN_HSCROLL/EN_VSCROLL创建期交基类，运行期通知；WM_IME_NOTIFY先事件后base，WM_HSCROLL/WM_VSCROLL先base后按返回消息低16位只对4/5触发。创建/重建加入ENM_SCROLL/SCROLLEVENTS/IMECHANGE；42例含参数/事件隔离、精确前后顺序、原异常、改写消息及自有停车通知来源。仅程序通知契约，物理滚动/真实输入法及完整005未验。 |
 | RichTextBox-006 | P1 | ⬜ | CanUndo/CanRedo、Undo/Redo、UndoActionName/RedoActionName、ClearUndo；输入合并、粘贴/格式变化、程序赋值、只读和重建句柄的撤销边界。 |
 | RichTextBox-007 | P1 | 🟡 | 058的007a完成AutoSize/Multiline/MaxLength覆盖与必要初值、共享HideSelection、DetectUrls/AutoWordSelection及ScrollBars真实原生设置。RightMargin、ShowSelectionMargin、ZoomFactor、完整富文本测量/布局/滚动、格式/撤销的重建恢复与物理交互仍待。 |
 | RichTextBox-007a | P1 | ✅ | 批次058：100×96默认、MaxLength→Multiline→AutoSize虚setter构造顺序及声明，HideSelection直接继承唯一基类状态；扩展EM_EXLIMITTEXT、标准RichTextBoxScrollBars七值/请求/FixedSingle CLIENTEDGE与变化重建、DetectUrls旧窗发送后重建、AutoWordSelection每次单条OR2/XOR4（保留重复false的native toggle）。43默认+38原生选项回归、7条值×多行×折行28组请求及独立窗口对照通过；完整007及Rich专有模型不关闭。 |
@@ -111,6 +115,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](../batches/068.md)。
 
 - 2026-11-07 · 批次067：完成003f/005a限定范围，005从待办整理为部分；纠正当前总述/011仍把已完成颜色同步列全待办的滞后。保留原父项/ID/固定分母与064FAIL/065超时，原失败与独立原生诊断见[067](../batches/067.md)。
 

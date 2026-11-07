@@ -1,5 +1,7 @@
 # 本轮验证与限制
 
+2026-11-07 · 068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。回执artifacts/compatibility-batch068/release-build-final.json与rich-tests-final.json/TRX；WarningLevel=0不表示分析告警清零。长调用在存活期间保存CLI/外层PS7/根dotnet/host精确FILETIME、命令行与父链，Cordonix清理自有子树。全量本批NOT_RUN；固定API刷新/包smoke/Notepad publish本地NOT_RUN、hosted CI未独立读回，Designer/Native AOT实际运行/正向可见点击/设备/Linux/macOS/98%均未关闭。
+
 ## 批次067 · 2026-11-07 当前验证
 
 收尾ExportTasks/普通校验与独立审计PASS：455MD/2200任务（2150控件+50共享）/187实施行/整类型完成0/0错误；23自有路径严格UTF8/noNUL/roundtrip/SHA、845个TRX逐结果、100新增及旧测试未改已核。旧2197ID与固定1095类型/61240成员记录保持，仅Rich-005按已实现新子范围由pending变部分；索引审核不等同全量通过或兼容率。

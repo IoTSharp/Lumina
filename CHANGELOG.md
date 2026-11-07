@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Batch 068: add RichTextBox SelectionChanged from exact native ranges/types with cache-before-event deduplication, reset on handle creation and the fixed Hangul composition/MaxLength workaround. Add HScroll/VScroll/ImeChange with creation guards and fixed pre/post-default ordering. All 107 new and 952 related tests pass, and the fixed dual-target Release build has 0 errors/2 existing NU1510 warnings. Full notifications/editing, physical IME/scrolling, MaskedTextProvider and platform acceptance remain pending; batch 064 failures and batch 065 timeout remain unresolved.
+
 - Batch 067: add the standard RichTextBox Font override with native default-format comparison, all-text formatting and resolved-font readback; add ContentsResized and its temporary suppression during the base font update. Route notifications from owned parking receivers by source HWND. Keep the fixed Drawing font-family identity, HFONT size quantization and native automatic-foreground/offset-reset behavior. Validation and retained initial fixture failures are recorded in batch 067; full rich editing, ambient/DPI, MaskedTextProvider and platform acceptance remain pending.
 
 - Batch 066: synchronize RichTextBox ForeColor through native default-format reads and SCF_ALL writes before accepting managed changes; submit BackColor before its notification and initialize colors before text/RTF. Keep the existing Rich theme refresh consistent with the effective BackColor. Validation is recorded in batch 066; full Font, rich editing, MaskedTextProvider and platform acceptance remain pending. Retain batch 064 full-suite failures and batch 065 timeout.

@@ -61,9 +61,21 @@ public class RichTextBox : TextBoxBase
     private const int EsDisableNoScroll = 0x2000;
     private const int EnmChange = 1;
     private const int EnmUpdate = 2;
+    private const int EnmScroll = 4;
+    private const int EnmScrollEvents = 8;
     private const int EnmRequestResize = 0x40000;
+    private const int EnmSelChange = 0x80000;
+    private const int EnmImeChange = 0x800000;
     private const int EnRequestResize = 0x0701;
+    private const int EnSelChange = 0x0702;
+    private const int EnHScroll = 0x0601;
+    private const int EnVScroll = 0x0602;
+    private const int EmGetImeCompMode = 0x047A;
     private static readonly object s_contentsResizedEvent = new();
+    private static readonly object s_selectionChangedEvent = new();
+    private static readonly object s_hScrollEvent = new();
+    private static readonly object s_vScrollEvent = new();
+    private static readonly object s_imeChangeEvent = new();
 
     // The registered superclass retains pointers into Msftedit. Keep its one
     // system-directory load alive for the same process lifetime as that cache.
@@ -78,6 +90,9 @@ public class RichTextBox : TextBoxBase
     private RichTextBoxScrollBars _scrollBars;
     private int _bulletIndent;
     private bool _suppressContentsResized;
+    private int _currentSelectionStart = -1;
+    private int _currentSelectionEnd = -1;
+    private short _currentSelectionType = -1;
 
     /// <summary>
     /// Initializes a multi-line rich text box.
@@ -149,6 +164,46 @@ public class RichTextBox : TextBoxBase
 
     protected virtual void OnContentsResized(ContentsResizedEventArgs e)
         => ((ContentsResizedEventHandler?)Events[s_contentsResizedEvent])?.Invoke(this, e);
+
+    [Category("Behavior")]
+    public event EventHandler? SelectionChanged
+    {
+        add => Events.AddHandler(s_selectionChangedEvent, value);
+        remove => Events.RemoveHandler(s_selectionChangedEvent, value);
+    }
+
+    [Category("Behavior")]
+    public event EventHandler? HScroll
+    {
+        add => Events.AddHandler(s_hScrollEvent, value);
+        remove => Events.RemoveHandler(s_hScrollEvent, value);
+    }
+
+    [Category("Behavior")]
+    public event EventHandler? VScroll
+    {
+        add => Events.AddHandler(s_vScrollEvent, value);
+        remove => Events.RemoveHandler(s_vScrollEvent, value);
+    }
+
+    [Category("Behavior")]
+    public event EventHandler? ImeChange
+    {
+        add => Events.AddHandler(s_imeChangeEvent, value);
+        remove => Events.RemoveHandler(s_imeChangeEvent, value);
+    }
+
+    protected virtual void OnSelectionChanged(EventArgs e)
+        => ((EventHandler?)Events[s_selectionChangedEvent])?.Invoke(this, e);
+
+    protected virtual void OnHScroll(EventArgs e)
+        => ((EventHandler?)Events[s_hScrollEvent])?.Invoke(this, e);
+
+    protected virtual void OnVScroll(EventArgs e)
+        => ((EventHandler?)Events[s_vScrollEvent])?.Invoke(this, e);
+
+    protected virtual void OnImeChange(EventArgs e)
+        => ((EventHandler?)Events[s_imeChangeEvent])?.Invoke(this, e);
 
     [Localizable(true)]
     [RefreshProperties(RefreshProperties.All)]
@@ -846,10 +901,12 @@ public class RichTextBox : TextBoxBase
 
     protected override void OnHandleCreated(EventArgs e)
     {
+        _currentSelectionStart = _currentSelectionEnd = _currentSelectionType = -1;
         nint initialModified = Win32.SendMessageW(NativeHandle, Win32.EM_GETMODIFY, 0, 0);
         UpdateMaxLength();
-        // Hidden RichEdit controls otherwise omit edit and size notifications.
-        _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0, EnmChange | EnmUpdate | EnmRequestResize);
+        // Hidden RichEdit controls otherwise omit the notifications consumed here.
+        _ = Win32.SendMessageW(NativeHandle, EmSetEventMask, 0,
+            EnmChange | EnmUpdate | EnmScroll | EnmScrollEvents | EnmRequestResize | EnmSelChange | EnmImeChange);
         _ = Win32.SendMessageW(NativeHandle, EmAutoUrlDetect, DetectUrls ? 1 : 0, 0);
         if (_selectionBackColorToSetOnHandleCreated != Color.Empty)
         {
@@ -907,11 +964,21 @@ public class RichTextBox : TextBoxBase
             if (!_creatingRichHandle) { OnTextChanged(EventArgs.Empty); }
             return true;
         }
+        if (!_creatingRichHandle)
+        {
+            if (notificationCode == EnHScroll) { OnHScroll(EventArgs.Empty); return true; }
+            if (notificationCode == EnVScroll) { OnVScroll(EventArgs.Empty); return true; }
+        }
         return base.OnCommand(notificationCode);
     }
 
     protected override unsafe bool OnNotify(int notificationCode, nint lParam)
     {
+        if (notificationCode == EnSelChange)
+        {
+            HandleSelectionChange(*(SelectionChange*)lParam);
+            return true;
+        }
         if (notificationCode != EnRequestResize) { return base.OnNotify(notificationCode, lParam); }
         if (!_suppressContentsResized)
         {
@@ -922,6 +989,59 @@ public class RichTextBox : TextBoxBase
                 Rectangle.FromLTRB(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom)));
         }
         return true;
+    }
+
+    private void HandleSelectionChange(SelectionChange change)
+    {
+        int start = change.Range.Minimum;
+        int end = change.Range.Maximum;
+        short type = unchecked((short)change.Type);
+        // Keep the fixed RichEdit Hangul composition/MaxLength workaround
+        // before duplicate suppression, even for an unchanged selection.
+        if (ImeMode is ImeMode.Hangul or ImeMode.HangulFull)
+        {
+            nint compositionMode = Win32.SendMessageW(Handle, EmGetImeCompMode, 0, 0);
+            if (compositionMode != 0)
+            {
+                int length = Win32.GetWindowTextLengthW(Handle);
+                if (start == end && length == MaxLength)
+                {
+                    _ = Win32.SendMessageW(Handle, Win32.WM_KILLFOCUS, 0, 0);
+                    _ = Win32.SendMessageW(Handle, Win32.WM_SETFOCUS, 0, 0);
+                    _ = Win32.PostMessageW(Handle, Win32.EM_SETSEL, unchecked(end - 1), end);
+                }
+            }
+        }
+        if (start != _currentSelectionStart || end != _currentSelectionEnd || type != _currentSelectionType)
+        {
+            _currentSelectionStart = start;
+            _currentSelectionEnd = end;
+            _currentSelectionType = type;
+            OnSelectionChanged(EventArgs.Empty);
+        }
+    }
+
+    protected override void WndProc(ref Message m)
+    {
+        if (m.Msg == Win32.WM_IME_NOTIFY)
+        {
+            OnImeChange(EventArgs.Empty);
+            base.WndProc(ref m);
+            return;
+        }
+        if (m.Msg is Win32.WM_HSCROLL or Win32.WM_VSCROLL)
+        {
+            bool vertical = m.Msg == Win32.WM_VSCROLL;
+            base.WndProc(ref m);
+            int command = unchecked((ushort)m.WParam);
+            if (command is 4 or 5)
+            {
+                if (vertical) { OnVScroll(EventArgs.Empty); }
+                else { OnHScroll(EventArgs.Empty); }
+            }
+            return;
+        }
+        base.WndProc(ref m);
     }
 
     private unsafe string GetRichText(bool selection = false)
@@ -1087,6 +1207,14 @@ public class RichTextBox : TextBoxBase
     {
         internal Win32.NMHDR Header;
         internal Win32.RECT Bounds;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    private struct SelectionChange
+    {
+        internal Win32.NMHDR Header;
+        internal CharacterRange Range;
+        internal ushort Type;
     }
 
     // The LOGFONT buffer contains only native scalar values and an inline name.

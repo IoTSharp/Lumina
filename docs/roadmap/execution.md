@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+068限定完成RichTextBox-005b SelectionChanged与005c HScroll/VScroll/ImeChange通知。选择按原生起点/终点/short类型去重，创建前重置缓存、事件前写入，保留Hangul组合长度限制处理；滚动与IME保持固定默认过程顺序及创建守卫。107新增和952相关通过，Release固定双目标0错/2既有NU1510。首相关950/951保留，独立raw空文对照1/1证实SETSEL/EXSETSEL均不通知，仅修新空文夹具为无合成通知；生产/旧测试未为失败改变。滚动IME原手工45计数纠正为TRX42。完整Link/Protected拒改、TextChanged/通知、文件/OLE/撤销、Find/选择测量、Masked真实模型与平台/98%仍待；064全量FAIL/未解、065超时及066/067全量NOT_RUN保持。下一沿Link/Protected的真实拒改依赖、Find/完整选择测量与MaskedTextProvider模型继续；不以元数据全集阻塞，不重做033～068，不重评全项目或另建context/调度/报告框架。见[068](batches/068.md)，下述067及以前为历史。
+
 067限定完成RichTextBox-003f Font override与005a ContentsResized，Control-17f仅补自有停车WM_NOTIFY按来源HWND路由。默认字体每次原生读取/SCF_ALL/解析回写及finally尺寸通知恢复沿固定源；完整ambient/DPI、其余通知/文件/OLE/撤销、Find/选择测量与MaskedTextProvider模型继续原任务。064全量FAIL/未解、065超时、066全量NOT_RUN保持；检查见[067](batches/067.md)。不以DefaultCursor/元数据全集阻塞，不重做033～067、不重评全项目、不建context/调度/报告框架。下述066及以前为历史。
 
 066限定实现RichTextBox-003e：ForeColor按默认原生颜色读取/SCF_ALL提交及返回值门禁，BackColor在基类通知前提交，创建期先初始化颜色再恢复文本/RTF；Rich主题刷新改为保留有效BackColor。完整Font、其余富文本/Masked模型与平台/98%仍待；064全量FAIL/未解与065全量超时保留，本批检查见[066](batches/066.md)。下述065及以前为历史。 下一优先沿完整Font及其ContentsResized依赖、Find/选择测量与MaskedTextProvider真实模型继续；不以DefaultCursor/元数据全集阻塞，不重做033～066、不重评全项目、不建context/调度/报告框架。

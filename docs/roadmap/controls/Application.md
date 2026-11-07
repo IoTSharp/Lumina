@@ -1,5 +1,7 @@
 # Application
 
+068本类生产/原任务状态no-op；RichTextBox-005b/005c仅消费既有选择/消息与067停车连接，不增加本类完成项。完整共享成员/Masked模型、原反射父Form寿命/线程/缩放/模态与平台保持；064全量FAIL/065超时未解，见[068](../batches/068.md)。下述067及以前为历史。
+
 067本类生产/原任务状态no-op；Rich字体/尺寸通知不扩展Application线程、模态或DPI范围。064全量FAIL/未解、065超时不由相关组通过清除，完整线程/退出/平台仍待，见[067](../batches/067.md)。
 
 054仅在ApplicationHighDpi中封装真实窗口PMv2上下文判断，为Control的窗口DPI缓存读取服务；必要依赖归TextBoxBase-007c，不新增Application完成任务，也未补完整DPI/模态或线程context，见[054](../batches/054.md)。
@@ -50,6 +52,8 @@
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
 ## 修改历史
+
+- 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](../batches/068.md)。
 
 - 2026-11-07 · 批次067：生产与原任务状态保持；测试STA清理沿既有ExitThread再释放私有视觉context，不新增应用层完成项，见[067](../batches/067.md)。
 
