@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+049完成005d：Clear非virtual且直接调用虚Text setter传null，不预读Text，保留原异常与重入；10项回归通过。继承Control-17e修复parking→Form后的真实编辑/Undo通知及原停车接收者释放，未手工补发事件。完整剪贴板/快捷键、测量和派生后端仍待，见[049](../batches/049.md)。下述048及以前为历史。
+
 048完成005b标准AppendText与005c公开CanUndo/Undo/ClearUndo。非空追加经GetEndPosition/SelectInternal和虚SelectedText，零宽/零高在finally恢复原选择；null/空串不操作。CanUndo不建窗且每次读取native，Undo必要建窗，ClearUndo无窗不操作。普通EDIT范围不实现RichEdit或掩码限制；Copy/Cut/Paste、ShortcutsEnabled、完整测量/default及平台仍待，见[048](../batches/048.md)。
 
 047完成002b的SelectedText标准读取/原生替换、002c的Lines空值/换行契约及必要003c的MaxLength输入限制。SelectedText暂解限制后原生替换，按clearUndo决定修改标志/撤销清理，再恢复私有配置；Lines空文本改为空数组并识别CR/LF/CRLF。完整AppendText/撤销/剪贴板、测量、StringArrayEditor/Designer和派生真实后端仍待，见[047](../batches/047.md)。
@@ -39,11 +41,12 @@
 | TextBoxBase-003b | P1 | ✅ | 批次044：HideSelection=true、Behavior/DefaultValue元数据、HideSelectionChanged/虚On*与Events槽；同值不操作，合法变化保存后RecreateHandle再通知，false设置ES_NOHIDESEL。14项回归含独立EDIT样式、通知/重入/原异常/CanRaiseEvents及选择/modified/只读/密码保存通过。物理选区显示、RichEdit派生覆盖和完整003/004父项不关闭。 |
 | TextBoxBase-003c | P1 | ✅ | 批次047：SelectedText必要前置MaxLength标准virtual属性，默认32767/Behavior/Localizable，负值抛value异常；同值no-op、无窗缓存，有窗和创建后经internal virtual UpdateMaxLength提交EM_LIMITTEXT。0解除限制，现有/程序Text不截断、不重建句柄；真实字符输入、消息次数/状态和重建限制回读见047。不含派生专有限制、剪贴板/完整输入或003父项。 |
 | TextBoxBase-004 | P1 | 🟡 | 042迁入ReadOnlyChanged/MultilineChanged，043的003a补AcceptsTabChanged，044的003b补HideSelectionChanged，045的005a补ModifiedChanged，046的007a补BorderStyleChanged标准事件槽/虚通知。完整通知时序/元数据及派生覆盖仍待，事件子范围交叉引用不重复计数、不关闭父项。 |
-| TextBoxBase-005 | P1 | 🟡 | 045的005a修改标志、047的002b内部替换保留；048的005b补标准AppendText空值/选择/清撤销及零尺寸恢复，005c补公开CanUndo/Undo/ClearUndo。Copy/Cut/Paste、Clear完整虚调用、快捷键/输入合并、派生覆盖与全部编辑重入仍待；有限普通EDIT撤销不关闭父项。 |
+| TextBoxBase-005 | P1 | 🟡 | 045～048的修改标志/原生替换/AppendText/公开撤销保留；049的005d对齐Clear虚Text=null。Copy/Cut/Paste、快捷键/输入合并、派生覆盖与全部编辑重入仍待；有限普通EDIT编辑不关闭父项。 |
 | TextBoxBase-005a | P1 | ✅ | 批次045：Modified默认false、非virtual及Behavior/Browsable(false)/隐藏序列化元数据，Events槽/虚OnModifiedChanged；getter读取真实EDIT状态，差异时保存后通知，setter先消费getter再提交native/缓存/通知。EN_UPDATE同步，程序Text的native提交期间抑制反射通知，TextChanged处理器内native编辑仍可通知；最后直接清native位并延迟至getter通知，创建/重建和销毁观测保存状态。20项回归与全量通过；不含撤销/剪贴板/完整编辑或真实派生后端。 |
 | TextBoxBase-005b | P1 | ✅ | 批次048：标准非virtual AppendText(string? text)，null/空串直接返回；保存私有选择，GetEndPosition消费虚TextLength（已有句柄加1），SelectInternal(end,end,end)后经虚SelectedText进入047替换，不整串重写Text。finally在Width或Height为0时Select恢复原范围，虚调用原异常保留。22项回归覆盖无窗/有窗、UTF-16/CRLF、只读程序追加、输入限制、modified/undo及零尺寸；不含派生真实后端、物理输入或完整005。 |
 | TextBoxBase-005c | P1 | ✅ | 批次048：标准非virtual CanUndo及Behavior/Browsable(false)/Hidden，短路无窗且每次EM_CANUNDO原生查询；Undo经Handle必要建窗后发EM_UNDO，ClearUndo只在有窗时EM_EMPTYUNDOBUFFER。16项回归含消息参数、原建窗异常、真实缓冲/通知/虚Text setter不调用及同配置独立EDIT的MaxLength受限Undo；不实现剪贴板、RichEdit重做/动作名或Masked专有限制，不关闭005。 |
-| TextBoxBase-006 | P1 | 🟡 | 042共享EN_CHANGE/TextChanged、045的EN_UPDATE与程序设文守卫保留；048的005b/005c及Control-17d覆盖有真实父或停车期间的追加/撤销通知。048探针发现EDIT由停车窗重挂到Form后未交付后续命令，native ID/映射一致但原因未闭环，下一批优先核此依赖。标准基类没有SelectionChanged，旧TextBox扩展保留；完整IME/粘贴/验证/失焦和RichEdit通知仍待。 |
+| TextBoxBase-005d | P1 | ✅ | 批次049：标准public非virtual Clear直接执行Text=null，经虚Text setter且不先读getter；重复调用仍交虚setter，原异常/有限重入保留。10项回归含未建窗空/Unicode、TextChanged重入/原异常，以及有真实父的只读/可编辑EDIT清空全文/单次通知/清撤销且保持句柄和MaxLength通过。掩码/富文本派生专有行为、剪贴板及完整005仍待。 |
+| TextBoxBase-006 | P1 | 🟡 | 042～048的EN_CHANGE/EN_UPDATE、程序设文守卫及停车期间通知保留；049通过Control-17e保留原停车接收者并按来源HWND反射，闭环048的parking→Form编辑/Undo通知缺口。原反射父Form销毁/重建的完整关系仍归Control-17；标准基类没有SelectionChanged，旧TextBox扩展保留，完整IME/粘贴/验证/失焦和RichEdit通知仍待。 |
 | TextBoxBase-007 | P1 | 🟡 | 042迁入既有颜色/主题与24/48最小原生高度，046的007a补BorderStyle设置/通知/创建样式及条件布局。AutoSize、PreferredHeight、GetPreferredSize及Font/DPI/滚动条后的完整尺寸、选择/撤销保存仍未完整实现，旧高度差异保留。 |
 | TextBoxBase-007a | P1 | ✅ | 批次046：BorderStyle默认Fixed3D、Appearance/DefaultValue/DispId(-504)及合法枚举异常，变化保存后UpdateStyles、RecreateHandle，再在AutoSize条件父布局事务内通知；组件Events槽与虚OnBorderStyleChanged，同值no-op。CreateParams清WS_BORDER/CLIENTEDGE后按None/FixedSingle/Fixed3D选择真实请求。24项回归含缓存/布局/异常/重入、独立EDIT边框与状态恢复通过；原生EDIT规范化读回与创建请求分开，不含完整尺寸或视觉验收。 |
 | TextBoxBase-008 | P2 | 🟡 | 042迁入既有有句柄ScrollToCaret；未建句柄延期滚动及GetCharFromPosition/GetCharIndexFromPosition/GetPositionFromCharIndex/GetLineFromCharIndex/GetFirstCharIndexFromLine/GetFirstCharIndexOfCurrentLine仍待，换行/端点逐场景验收。 |
@@ -65,6 +68,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次049：只新增005d，Clear由Text=empty改为固定标准的虚Text=null，去掉无必要new（CLR签名/非virtual保持）。10项新增通过；006交叉引用Control-17e，不重复计数或关闭完整父项。首跑11/13中的两个失败来自重挂通知，不是Clear夹具；原回执及最终证据见[049](../batches/049.md)。
 
 - 2026-11-07 · 批次048：只新增005b/005c，完整005继续部分；AppendText参数名由value对齐标准text（旧value命名实参需改），nullable标记不改变CLR参数类型，null由异常改为no-op。首次38例37通过，一例误以为空撤销缓冲时EM_UNDO必返回0；独立原生对照与最后结果见[048](../batches/048.md)，生产未为夹具改变。原任务/固定分母不变，剪贴板/完整编辑/测量和派生后端仍待。
 

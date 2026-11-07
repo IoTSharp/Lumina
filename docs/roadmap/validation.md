@@ -1,6 +1,20 @@
 # 本轮验证与限制
 
-## 批次048 · 2026-11-07 当前验证
+## 批次049 · 2026-11-07 当前验证
+
+Release方案/固定Demo双目标0错/2既有NU1510；新增18（重挂命令8、Clear10）与既有停车5/ControlBehavior3组合26/26，完整4,954/4,954，0失败/跳过。实际命令及结果为artifacts/compatibility-batch049/release-build.json、tests-new.json、tests-full.json，对应TRX在tests目录。WarningLevel=0不表示分析告警清零；两目标项目引用和静态Designer/resx未改。
+
+[049](batches/049.md)只新增Control-17e与TextBoxBase-005d两个明确子范围。独立原生EDIT先在两个存活宿主间SetParent，实际GetParent改变后EN_UPDATE/EN_CHANGE仍仅投向创建父HWND。固定Control.ReflectParent/UpdateReflectParent及ParkingWindow反射引用计数解释接收者寿命。主保留确曾作为该原生句柄创建父的自有停车窗至原句柄销毁，回调接受自有原接收者或真实停车子；Form非零lParam按来源HWND反射，零lParam保持既有菜单/命令。外部销毁/重建、错误来源及ID碰撞均有硬断言。
+
+首跑13例11通过：独立EDIT与全部10个Clear用例通过，parking→Form和两个活Form间重挂的通知各失败一次。JSON tests-before-reparent-fix.json与TRX保留；生产修复后才通过26/26。048“重挂即停车窗销毁”的断言是历史实现假设，049按固定反射寿命纠正为原EDIT销毁时回收，旧TextChanged=2硬期望未改。048全部失败/诊断和最终证据继续保留，不把原失败改写为成功。
+
+固定Control.v10.0.11.cs为467,280字节，SHA256 42654f00b1e85bd96b44ac64df36c8728e5db6928510384d9bd22567f895f838；HTTPS直连reset后仅本请求使用7890代理成功取得，两个请求回执保留。048固定TextBoxBase与ParkingWindow复制时SHA256重核一致。Context7只返回main资料，不作为固定兼容依据；固定引用库存刷新NOT_RUN。
+
+Copy/Cut/Paste、ShortcutsEnabled、测量/default、原反射父Form销毁/重建的完整关系、WM_NOTIFY/完整反射、Rich/Masked真实后端、完整线程/模态、Designer/Native AOT发布运行/物理设备/Linux/macOS/98%仍NOT_RUN/UNKNOWN。必要程序消息/原生HWND回归不等于这些验收。
+
+既有路线图工具导出437份Markdown、2,162任务、187实施索引行、0结构错误，整类型代码完成0；README实施列/tasks.csv均由工具生成。27拥有路径UTF8严格解码/无NUL/字节往返与diff通过，固定API库存和Demo源码diff为空。最终dotnet名称快照2项均属其他SonnetDB格式检查，保留未动；自有外部调用cleanup_complete=true，无持久workspace文档/独占服务，证据/bin/obj保留。
+
+## 批次048 · 2026-11-07 历史验证
 
 最终Release方案/固定Demo双目标0错/2既有NU1510；新增43（AppendText22、公开Undo16、停车命令5）与旧ControlBehavior3组合46/46，完整4,936/4,936，0失败/跳过。最终命令分别在artifacts/compatibility-batch048/release-build-final.json、tests-new-scoped-verified.json与tests-full-final.json，对应TRX保留tests目录。WarningLevel=0不表示分析告警清零。
 

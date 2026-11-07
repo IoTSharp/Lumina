@@ -431,9 +431,10 @@ public abstract class TextBoxBase : Control
         }
     }
 
-    public new void Clear()
+    /// <summary>Clears all text from the text box control.</summary>
+    public void Clear()
     {
-        Text = string.Empty;
+        Text = null;
     }
 
     /// <summary>Clears information about the most recent editing operation.</summary>

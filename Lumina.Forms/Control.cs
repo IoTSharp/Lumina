@@ -103,6 +103,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     private int _tabIndex = -1;
     private bool _topLevel;
     private nint _parkingWindow;
+    private bool _parkingWindowIsNotificationParent;
     private bool _applyingBounds;
     private nint _handle;
     private bool _created;
@@ -2827,6 +2828,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
             using NativeCreateParameter nativeParameter = NativeCreateParameter.Create(parameters.Param);
             Control? previousCreatingControl = s_creatingControl;
             s_creatingControl = this;
+            _parkingWindowIsNotificationParent = parentHandle != 0 && parentHandle == _parkingWindow;
             nint createdHandle;
             try
             {
@@ -2982,7 +2984,8 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
             _handle = 0;
             _trackingMouseEvent = false;
             _created = false;
-            ReleaseNativeFont();
+            try { ReleaseNativeFont(); }
+            finally { ReleaseParkingWindow(); }
         }
     }
 
@@ -3146,12 +3149,13 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         try
         {
-            // A parked child still sends native edit notifications to its
-            // native parent. Keep those notifications on the shared control
-            // path without exposing the parking window as a managed Control.
+            // Native controls such as EDIT keep sending notifications to
+            // their creation parent after SetParent. Accept that control's
+            // retained receiver as well as children currently parked here.
             if (message == Win32.WM_COMMAND && lParam != 0
-                && Win32.GetAncestor(lParam, 1) == hwnd
-                && TryGetControlByHandle(lParam, out Control? child) && child is not null)
+                && TryGetControlByHandle(lParam, out Control? child) && child is not null
+                && (Win32.GetAncestor(lParam, 1) == hwnd
+                    || (child._parkingWindow == hwnd && child._parkingWindowIsNotificationParent)))
             {
                 _ = child.HandleCommand(Win32.HighWord(wParam));
                 return 0;
@@ -3177,7 +3181,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
         nint previous = Win32.SetParent(NativeHandle, parentHandle);
         int error = Marshal.GetLastPInvokeError();
         if (previous == 0 && error != 0) { throw new Win32Exception(error); }
-        if (parentHandle != _parkingWindow)
+        if (parentHandle != _parkingWindow && !_parkingWindowIsNotificationParent)
         {
             ReleaseParkingWindow();
         }
@@ -4546,6 +4550,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
     {
         nint parkingWindow = _parkingWindow;
         _parkingWindow = 0;
+        _parkingWindowIsNotificationParent = false;
         if (parkingWindow != 0)
         {
             _ = Win32.DestroyWindow(parkingWindow);

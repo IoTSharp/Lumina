@@ -4,6 +4,8 @@
 
 ## 当前证据与依赖
 
+049源码no-op，继承TextBoxBase-005d的标准Clear虚Text=null与Control-17e的重挂EDIT命令连接；原HWND与真实撤销/通知保留。Copy/Cut/Paste、ShortcutsEnabled、完整测量/默认及原反射父Form寿命继续原任务，见[049](../batches/049.md)。下述048及以前为历史。
+
 048源码no-op，继承TextBoxBase-005b标准AppendText及005c公开CanUndo/Undo/ClearUndo。空值追加不操作，非空经原生替换并清撤销/modified，零尺寸恢复原选区；公开撤销消费真实EDIT。Copy/Cut/Paste、Clear完整语义、测量/默认和运行时RTL仍待，见[048](../batches/048.md)。
 
 047源码no-op，继承TextBoxBase-002b/002c/003c的SelectedText、Lines与MaxLength；程序替换暂解限制后恢复，真实输入仍受配置限制。完整AppendText/公开撤销/剪贴板、测量/运行时RTL和派生后端仍待，见[047](../batches/047.md)。
@@ -32,7 +34,7 @@
 |---|---|---|---|
 | TextBox-001 | P0 | 🟡 | 042的001a已改为TextBox : TextBoxBase并共用旧字体/选择/文本生命周期。完整基类成员与默认/Designer仍缺；现有SelectionChanged非WinForms成员暂留TextBox、不污染标准基类，正式迁移兼容决策仍待，不抵扣基线覆盖。 |
 | TextBox-001a | P0 | ✅ | 批次042：TextBox直接继承标准TextBoxBase，密码/系统密码、AcceptsReturn、ScrollBars、PlaceholderText及SelectionChanged留派生；便利构造保持原始字段初始化时序，选择扩展通过内部连接继续派发原虚On*。基类引用/真实重建/事件/密码与旧相关组通过；完整001父项不关闭。 |
-| TextBox-002 | P1 | 🟡 | 已有Text/EN_CHANGE与038的003c选择/重建范围保留；047继承SelectedText/Lines，048继承005b标准AppendText和005c公开撤销入口。Clear完整虚调用、完整用户输入/通知重入及派生覆盖仍待，不能由有限编辑子范围关闭父项或重复新增继承任务。 |
+| TextBox-002 | P1 | 🟡 | 已有Text/EN_CHANGE与038的003c选择/重建范围保留；047～048继承SelectedText/Lines/AppendText/公开撤销，049继承005d标准Clear及Control-17e重挂命令。完整用户输入/通知重入及派生覆盖仍待，不能由有限编辑子范围关闭父项或重复新增继承任务。 |
 | TextBox-003 | P1 | 🟡 | 028完成003a焦点通知；037的003b补输入键判别与有限对话框路由；038的003c补Multiline真实重建及文本/选择/原生modified位保存。PreferredHeight/AutoSize/布局、撤销栈、其余样式与完整编辑/IME/设备仍待。 |
 | TextBox-003a | P1 | ✅ | 批次028：移除TextBox独立WM_SETFOCUS/KILLFOCUS→Enter/Leave，改用Control标准GotFocus/LostFocus与ContainerControl逻辑进入离开；真实EDIT程序Focus/Select保留参考顺序且每次通知一次，独立回归通过。未补TextBoxBase继承或完整键盘/验证。 |
 | TextBox-003b | P1 | ✅ | 批次037：现有TextBox消费固定TextBox/TextBoxBase输入键规则：多行Enter/AcceptsReturn、Tab/AcceptsTab/Ctrl、多行Escape、可编辑Back及Home/End/Page；AcceptsTab下Ctrl+Tab去除Ctrl后交父对话框链。8项无句柄/真实EDIT/Form默认按钮回归通过。未恢复TextBoxBase、运行期原生样式重建和完整编辑输入。 |
@@ -65,6 +67,8 @@
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
 ## 修改历史
+
+- 2026-11-07 · 批次049：源码no-op，002按真实继承Clear虚调用及重挂命令连接同步，不重复新增继承完成任务；005/009/010及平台父项保持，见[049](../batches/049.md)。
 
 - 2026-11-07 · 批次048：源码no-op，继承标准AppendText与公开撤销入口，002/009按实际范围同步且父项仍部分，不重复计数。AppendText旧value命名实参须改为text；完整剪贴板/测量/输入/运行时RTL仍待，见[048](../batches/048.md)。
 

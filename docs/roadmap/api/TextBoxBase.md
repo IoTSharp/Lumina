@@ -1,5 +1,7 @@
 # TextBoxBase：逐成员待办
 
+049当前源码补充：005d对齐标准非virtual Clear的虚Text=null调用，保留原异常/重入；通过Control-17e消费重挂后的普通EDIT通知。剪贴板/快捷键、测量和真实派生后端仍待，本页固定成员行/原ID/分母不改，引用包刷新NOT_RUN，见[当前任务](../controls/TextBoxBase.md)。
+
 自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。
 
 [控件任务](../controls/TextBoxBase.md) · [计量规则](../coverage.md) · [全量机器清单](members.csv) · [接口契约（含显式实现）](interfaces.csv) · [基线指纹](baseline.json)

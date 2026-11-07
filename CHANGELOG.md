@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Batch 049: retain an original parking notification receiver until its native control is destroyed, and reflect Form control commands by source HWND after reparenting, including numeric ID collisions. An independent native EDIT confirms that SetParent preserves the original command receiver. Clear now passes null directly to the virtual Text setter. All 18 new cases plus 8 existing cases pass (26/26), the full suite passes 4,954/4,954, and the fixed dual-target Release build reports 0 errors and 2 existing NU1510 warnings. The original 11/13 run retains both real reparenting failures; designer, Native AOT, physical input and platform acceptance were not run.
+
 - Batch 048: standard nullable AppendText now uses the existing selection/replacement path and restores the original selection for zero width or height. Add public CanUndo, Undo and ClearUndo with native EDIT semantics. A bounded internal parking-window command callback restores editing notifications while controls have no native parent. Notifications after an EDIT is reparented from parking to a Form remain an open Control/TextBoxBase gap.
 
 - Batch 047: standard TextBoxBase.SelectedText with native replacement, null deletion, undo/modified clearing and input-limit restoration; Lines now returns no entries for empty text and recognizes CR, LF and CRLF. The required MaxLength property validates its standard default and updates real EDIT input limits without recreating handles or truncating existing/programmatic text. Public undo/clipboard APIs, AppendText parity, full sizing and derived editing backends remain open.
@@ -57,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release solution build and the full `Lumina.Tests` suite pass for the 033 scope (4,439 tests); complete command/dialog routing, IME, physical keyboard/wheel/touch input, Cursor, Native AOT, designer, and cross-platform gates remain open.
 
 ### Changed
+
+- Correct the batch 048 assumption that a parking window can be destroyed immediately after SetParent. The original receiver stays private and is released when its native control is destroyed or recreated. The existing two-TextChanged contract is preserved. Full original Form receiver lifetime and WM_NOTIFY reflection remain open.
+- Clear keeps its nonvirtual CLR signature and now forwards null, rather than an empty string, to overridden Text setters as required by the fixed WinForms baseline.
+
 - AppendText's parameter name is aligned from value to the standard text. Existing named calls using value must use text; its CLR string parameter type is unchanged. Null now follows WinForms and performs no operation.
 
 - Correct AutoSizeMode numeric identity to GrowAndShrink=0 and GrowOnly=1 while preserving the existing named GrowOnly default. Previously compiled enum constants and persisted numeric 0/1 values require review; source using enum names retains the intended named behavior after recompilation.

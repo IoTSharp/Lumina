@@ -1,5 +1,7 @@
 # 公共基础：先修这些，再铺控件
 
+2026-11-07 · 批次049完成Control-17e原停车接收者寿命/按来源HWND反射及TextBoxBase-005d标准Clear。独立EDIT证明实际父与通知接收者可不同；18新增与8旧用例组合26/26、4,954全量及固定双目标Release通过。原反射父Form寿命/WM_NOTIFY、完整编辑/测量/派生后端与平台门禁继续原任务，见[049](batches/049.md)。下述048及以前为历史。
+
 2026-11-07 · 批次048完成TextBoxBase-005b/005c的AppendText与公开撤销，以及必要Control-17d停车期间WM_COMMAND反射。43新增与3旧行为组合46/46、4,936全量及固定双目标Release通过；重挂后EDIT命令仍未交付的探针/诊断保留且继续原Control-17/TextBoxBase-006，完整编辑/派生后端/线程与平台门禁不关闭，见[048](batches/048.md)。下述047及以前为历史。
 
 2026-11-07 · 批次047完成TextBoxBase-002b/002c的SelectedText及Lines，并补必要003c的MaxLength；65新增/4,893全量及固定双目标Release通过。TextBox消费共享实现，Rich/Masked错误层级的间接消费不关闭其真实后端；完整AppendText/公开撤销/剪贴板、测量、StringArrayEditor/Designer和平台门禁仍待，见[047](batches/047.md)。下述046及以前为历史。

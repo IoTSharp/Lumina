@@ -1545,6 +1545,19 @@ public class Form : ContainerControl
         int controlId = Win32.LowWord(wParam);
         int notificationCode = Win32.HighWord(wParam);
 
+        // A native control can still notify its original parent after
+        // SetParent. Reflect by the source HWND, even when its current owner
+        // has changed or another control now uses the same numeric ID.
+        if (lParam != 0)
+        {
+            if (Control.TryGetControlByHandle(lParam, out Control? source) && source is not null)
+            {
+                _ = source.HandleCommand(notificationCode);
+            }
+            OnCommand(controlId, notificationCode, lParam);
+            return true;
+        }
+
         if (_mainMenuStrip is not null && _mainMenuStrip.TryHandleNativeCommand(controlId))
         {
             return true;

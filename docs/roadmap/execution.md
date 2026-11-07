@@ -26,6 +26,8 @@
 
 ## 当前接续与每批收尾
 
+当前[049](batches/049.md)完成Control-17e原停车通知接收者寿命及来源HWND反射、TextBoxBase-005d标准Clear虚Text=null。独立原生EDIT目的地回归通过；首跑11/13中的parking→Form和活Form间重挂两项真实失败保留。修复后18新增与8旧用例组合26/26、4,954全量及Release固定双目标通过；048提前销毁停车接收者的假设按固定ReflectParent计数纠正，不改旧TextChanged=2期望。下一依赖继续Copy/Cut/Paste、ShortcutsEnabled与完整测量/default，再按真实后端恢复Rich/Masked标准层级；原反射父Form销毁/重建、WM_NOTIFY/完整反射及线程/模态仍在Control-17等原任务，不重做033～049、不重评全项目、不建context或调度框架。下述048及以前为历史。
+
 当前[048](batches/048.md)完成AppendText的005b、公开撤销005c及停车期间命令转发Control-17d；43新增与3旧行为组合46/46、4,936全量及Release固定双目标通过。首轮夹具37/38、旧行为全量4,930/4,931、停车测试45/46和两次限定诊断原回执保留。停车期间通知已修复；先停车再重挂到Form后的EDIT命令仍缺，native ID=1001与实际映射一致而Form/child无通知，原因未闭环，下一批先继续Control-17/TextBoxBase-006，再做Copy/Cut/Paste/Clear完整虚调用、ShortcutsEnabled与完整测量/default。Rich/Masked标准直接层级和真实后端、完整context/模态/平台仍待。不重复033～048、不重评全项目、不新建context或调度框架；下述047及以前为历史。
 
 当前[047](batches/047.md)完成SelectedText/内部替换002b、Lines空值/CR/LF/CRLF的002c及必要MaxLength输入限制003c；65新增/4,893全量和Release固定双目标通过。首轮62/65的两处AllowNull反射位置错误按既有setter参数元数据断言纠正；独立EDIT证明恢复较小限制后Undo仍受限制，原失败保留。下一依赖继续AppendText空值/选择/撤销、公开CanUndo/Undo/ClearUndo/剪贴板、完整测量/default及必要编辑辅助成员，再按真实后端恢复Rich/Masked直接层级。StringArrayEditor/Designer、完整输入/RTL/模态/线程/平台仍待，不重复033～047、不新建context或调度框架；下述046及以前为历史。

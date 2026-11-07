@@ -2,6 +2,8 @@
 
 更新：2026-11-07。目标是 **.NET 10 WinForms 平滑替换 + Native AOT**；包与命名空间保持 `Lumina.Forms`。
 
+当前批次[049](docs/roadmap/batches/049.md)完成Control-17e原停车通知接收者寿命/来源HWND反射及TextBoxBase-005d标准Clear虚Text=null。独立原生EDIT证实SetParent后通知仍投创建父；18新增与8旧用例组合26/26、完整4,954/4,954，Release固定双目标0错/2既有NU1510。首跑11/13的两个真实重挂失败保留；048“重挂即销毁停车窗”断言按固定反射寿命纠正，旧事件硬期望保持。原反射父Form寿命/完整反射、剪贴板/快捷键、测量及派生后端和平台门禁仍待；下述048及以前为历史。
+
 当前批次[048](docs/roadmap/batches/048.md)完成TextBoxBase-005b标准AppendText、005c公开CanUndo/Undo/ClearUndo及必要Control-17d停车期间WM_COMMAND转发。新增43与旧行为3组合46/46、全量4,936/4,936，Release固定双目标0错/2既有NU1510。首次夹具37/38、旧行为全量4,930/4,931及停车/重挂诊断失败均保留。重挂后EDIT命令缺口原因未闭环，下一批优先继续Control-17/TextBoxBase-006；剪贴板/Clear完整语义、测量/派生后端及平台门禁仍待，下述047及以前为历史。
 
 当前批次[047](docs/roadmap/batches/047.md)完成TextBoxBase-002b标准SelectedText原生替换、002c的Lines空值/CR/LF/CRLF及必要003c的MaxLength。65新增和4,893全量通过，Release固定双目标0错误/2既有NU1510；首轮62/65的两处AllowNull反射位置和受限Undo夹具错误及独立EDIT对照均保留。完整AppendText/公开撤销/剪贴板、测量、真实派生后端及模态/设备/Designer/AOT/平台/98%仍待；下述046及以前为历史。
@@ -34,7 +36,7 @@
 
 [逐控件任务与历史](docs/roadmap/README.md) · [遗漏审计](docs/roadmap/scope-audit.md) · [98%计量](docs/roadmap/coverage.md) · [执行排序](docs/roadmap/execution.md) · [三平台方案](docs/roadmap/platforms.md) · [项目整合](docs/roadmap/project-consolidation.md)
 
-**001～048的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [048结果](docs/roadmap/batches/048.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
+**001～049的明确子范围代码完成，完整父任务保持部分。** [当前记录](HANDOFF.md) · [049结果](docs/roadmap/batches/049.md) · [完整任务索引](docs/roadmap/tasks.csv)。029的停止记录已被2026-10-26新的明确用户授权覆盖；完整Control、Windows全面验收及Linux/macOS仍未完成。✅代码完成与🧪兼容验收分开，未完父项/固定分母/任务ID保留。每批按真实代码/必要检查同步索引，不以签名/基类/局部探针或测试数量推出整控件完成/98%。
 
 | 顺序 | 工作 | 状态 | 任务入口 |
 | --- | --- | --- | --- |

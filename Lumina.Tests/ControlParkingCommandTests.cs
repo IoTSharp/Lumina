@@ -99,15 +99,17 @@ public sealed class ControlParkingCommandTests
             Assert.Equal(form.Handle, GetParent(handle));
             Assert.Same(form, Control.FromHandle(GetParent(handle)));
             Assert.Same(textBox, Control.FromHandle(handle));
-            Assert.Equal((nint)0, (nint)ParkingField.GetValue(textBox)!);
-            Assert.False(IsWindow(parking));
+            // EDIT keeps its original notification receiver after SetParent.
+            // Retain it until this native child is destroyed.
+            Assert.Equal(parking, (nint)ParkingField.GetValue(textBox)!);
+            Assert.True(IsWindow(parking));
             Assert.Equal("aXd", textBox.Text);
             Assert.Equal(1, changes);
             Assert.Equal((int)typeof(Control).GetProperty("Id", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .GetValue(textBox)!, GetDlgCtrlID(handle));
-            // Notifications after native reparenting remain a separate
-            // Control-17/TextBoxBase-006 gap. The failed probe and native ID /
-            // Form-command trace are retained in compatibility-batch048.
+            // Post-reparent editing and receiver lifetime are covered by
+            // ControlReparentedEditCommandTests; the original failed probes
+            // remain in compatibility-batch048.
         });
 
     [Fact]

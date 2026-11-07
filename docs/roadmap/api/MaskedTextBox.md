@@ -1,5 +1,7 @@
 # MaskedTextBox：逐成员待办
 
+049当前源码补充：错误TextBox层级间接共享普通EDIT的Clear/重挂通知，不实现掩码Clear/Undo专有限制、输入模型或标准直接继承。本页固定成员行/原ID/分母不改，引用包刷新NOT_RUN，原父任务保持，见[当前任务](../controls/MaskedTextBox.md)。
+
 自动生成于 2026-10-15；固定 Microsoft.WindowsDesktop.App.Ref **10.0.11**。每一行都是独立待办，包含继承成员；不以正文任务数量代替全量清单。
 
 [控件任务](../controls/MaskedTextBox.md) · [计量规则](../coverage.md) · [全量机器清单](members.csv) · [接口契约（含显式实现）](interfaces.csv) · [基线指纹](baseline.json)
