@@ -3,6 +3,7 @@ using Lumina;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -85,8 +86,20 @@ public static partial class Application
     [ThreadStatic]
     private static int? t_pendingQuitExitCode;
 
+    // Each modal scope owns the windows it disabled.  Keeping the scope on the
+    // UI thread lets a form created after ShowDialog has started participate in
+    // the same owner-disable contract and be restored when that dialog closes.
+    [ThreadStatic]
+    private static List<List<nint>>? t_modalDisabledWindowScopes;
+
+    [ThreadStatic]
+    private static List<Form>? t_modalDialogStack;
+
     [ThreadStatic]
     private static MessageLoopCallback? t_messageLoopCallback;
+
+    [ThreadStatic]
+    private static bool t_hostedThreadServices;
 
     [ThreadStatic]
     private static ThreadLoopContext? t_threadLoop;
@@ -182,8 +195,10 @@ public static partial class Application
     /// </summary>
     /// <param name="t">The exception to report.</param>
     /// <remarks>
-    /// The default Windows prompt currently provides acknowledgement and continuation.
-    /// The full WinForms ThreadExceptionDialog and unhandled-exception modes remain unsupported.
+    /// A subscribed handler owns the exception decision.  Without a handler on
+    /// Windows, the standard-compatible <see cref="ThreadExceptionDialog"/>
+    /// is shown on the current UI thread.  Closing it continues the loop;
+    /// choosing Quit requests the normal application exit path.
     /// </remarks>
     public static void OnThreadException(Exception t)
     {
@@ -207,11 +222,14 @@ public static partial class Application
                 throw new PlatformNotSupportedException("The default thread exception dialog requires Windows.");
             }
 
-            // Keep error reporting independent of application themes, managed forms and
-            // nested framework initialization. Closing this prompt continues the UI loop.
-            if (Win32.MessageBoxW(0, t.ToString(), "Unhandled thread exception", Win32.MB_ICONERROR) == 0)
+            // Keep error reporting on the current UI thread.  The dialog uses
+            // only ordinary Lumina controls, so it does not introduce another
+            // process or an exception-specific message pump.
+            using ThreadExceptionDialog dialog = new(t);
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.Abort)
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+                Exit();
             }
         }
         finally
@@ -354,7 +372,14 @@ public static partial class Application
 
         // Without an application-owned loop there is no thread pump to quit.
         // In particular, do not leave a stale WM_QUIT for a later Run call.
-        ApplicationOleState.ReleaseCurrentThread();
+        if (t_hostedThreadServices)
+        {
+            ReleaseHostedThreadServices();
+        }
+        else
+        {
+            ApplicationOleState.ReleaseCurrentThread();
+        }
     }
 
     internal static void RequestExitThread()
@@ -599,6 +624,7 @@ public static partial class Application
                 // callback frames, on the thread that originally activated it.
                 Cleanup(DisposeThemedCommonControlsActivation);
                 Cleanup(ApplicationOleState.ReleaseCurrentThread);
+                t_hostedThreadServices = false;
                 t_applicationContext = null;
                 t_threadLoop = null;
                 t_exitRequested = false;
@@ -616,6 +642,7 @@ public static partial class Application
 
     private static void DispatchMessage(ref Win32.MSG nativeMessage)
     {
+        if (DisableNewModalInputWindow(in nativeMessage)) { return; }
         Message managedMessage = Message.Create(nativeMessage.hwnd, unchecked((int)nativeMessage.message),
             unchecked((nint)nativeMessage.wParam), nativeMessage.lParam);
         if (FilterMessage(ref managedMessage))
@@ -721,11 +748,31 @@ public static partial class Application
     /// <summary>Registers a callback that reports whether an external host is pumping messages.</summary>
     public static void RegisterMessageLoop(MessageLoopCallback? callback)
     {
-        t_messageLoopCallback = callback;
+        if (callback is null) { UnregisterMessageLoop(); }
+        else { t_messageLoopCallback = callback; }
     }
 
     /// <summary>Removes the current thread's message-loop callback.</summary>
-    public static void UnregisterMessageLoop() => t_messageLoopCallback = null;
+    public static void UnregisterMessageLoop()
+    {
+        t_messageLoopCallback = null;
+        if (t_messageLoopDepth == 0 && t_hostedThreadServices) { ReleaseHostedThreadServices(); }
+    }
+
+    private static void ReleaseHostedThreadServices()
+    {
+        t_hostedThreadServices = false;
+        try
+        {
+            try { WindowsFormsSynchronizationContext.Uninstall(turnOffAutoInstall: false); }
+            finally { WindowsFormsSynchronizationContext.ReleaseCurrentThread(); }
+        }
+        finally
+        {
+            try { DisposeThemedCommonControlsActivation(); }
+            finally { ApplicationOleState.ReleaseCurrentThread(); }
+        }
+    }
 
     /// <summary>Raises the modal-enter notification for the current thread.</summary>
     internal static void NotifyEnterThreadModal()
@@ -745,32 +792,156 @@ public static partial class Application
     internal static List<nint> DisableThreadWindowsForModal(Form dialog, nint owner)
     {
         List<nint> disabled = [];
-        uint threadId = Win32.GetCurrentThreadId();
-        foreach (Form form in GetOpenFormsSnapshot())
+        (t_modalDisabledWindowScopes ??= []).Add(disabled);
+        (t_modalDialogStack ??= []).Add(dialog);
+        try
         {
-            nint window = form.NativeHandle;
-            if (window != 0 && !ReferenceEquals(form, dialog)
-                && Win32.GetWindowThreadProcessId(window, out _) == threadId
-                && Win32.IsWindowEnabled(window))
+            foreach (nint window in SnapshotThreadWindows())
             {
-                _ = Win32.EnableWindow(window, false);
-                disabled.Add(window);
+                if (window != dialog.NativeHandle && Win32.IsWindowVisible(window)
+                    && Win32.IsWindowEnabled(window))
+                {
+                    disabled.Add(window);
+                    _ = Win32.EnableWindow(window, false);
+                }
             }
-        }
 
-        if (owner != 0 && owner != dialog.NativeHandle && !disabled.Contains(owner)
-            && Win32.IsWindowEnabled(owner))
+            if (owner != 0 && owner != dialog.NativeHandle && !disabled.Contains(owner)
+                && Win32.IsWindowEnabled(owner))
+            {
+                disabled.Add(owner);
+                _ = Win32.EnableWindow(owner, false);
+            }
+            return disabled;
+        }
+        catch
         {
-            _ = Win32.EnableWindow(owner, false);
-            disabled.Add(owner);
+            EnableThreadWindowsAfterModal(disabled);
+            throw;
+        }
+    }
+
+    private static unsafe nint[] SnapshotThreadWindows()
+    {
+        ThreadWindowSnapshot snapshot = new();
+        GCHandle state = GCHandle.Alloc(snapshot);
+        try
+        {
+            int result = Win32.EnumThreadWindows(Win32.GetCurrentThreadId(), &CollectThreadWindow, GCHandle.ToIntPtr(state));
+            if (snapshot.Failure is { } failure) { failure.Throw(); }
+            if (result == 0) { throw new Win32Exception(Marshal.GetLastPInvokeError()); }
+            return [.. snapshot.Windows];
+        }
+        finally { state.Free(); }
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+    private static int CollectThreadWindow(nint window, nint context)
+    {
+        ThreadWindowSnapshot snapshot = (ThreadWindowSnapshot)GCHandle.FromIntPtr(context).Target!;
+        try
+        {
+            if (snapshot.Windows.Count >= 4096 || Stopwatch.GetElapsedTime(snapshot.Started) > TimeSpan.FromSeconds(2))
+            {
+                throw new InvalidOperationException("The modal thread-window snapshot exceeded its bounded window/time limit.");
+            }
+            snapshot.Windows.Add(window);
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            snapshot.Failure = ExceptionDispatchInfo.Capture(exception);
+            return 0;
+        }
+    }
+
+    private sealed class ThreadWindowSnapshot
+    {
+        internal readonly long Started = Stopwatch.GetTimestamp();
+        internal readonly List<nint> Windows = [];
+        internal ExceptionDispatchInfo? Failure;
+    }
+
+    private static bool DisableNewModalInputWindow(in Win32.MSG message)
+    {
+        if (t_modalDialogStack is not { Count: > 0 } dialogs || message.hwnd == 0)
+        {
+            return false;
         }
 
-        return disabled;
+        bool input = message.message is >= 0x0100 and <= 0x0109
+            or >= 0x0200 and <= 0x020E or >= 0x00A0 and <= 0x00AD;
+        if (!input) { return false; }
+        nint window = Win32.GetAncestor(message.hwnd, 2 /* GA_ROOT */);
+        if (window == 0 || window == dialogs[^1].NativeHandle) { return false; }
+        // EDIT/combo/menu popups can be separate top-level native windows owned
+        // by the active dialog. They remain part of that dialog's input surface.
+        if (Win32.GetAncestor(window, 3 /* GA_ROOTOWNER */) == dialogs[^1].NativeHandle) { return false; }
+        if (Win32.GetWindowThreadProcessId(window, out _) != Win32.GetCurrentThreadId()) { return false; }
+
+        if (Win32.IsWindowEnabled(window) && t_modalDisabledWindowScopes is { Count: > 0 } scopes)
+        {
+            if (!scopes[^1].Contains(window)) { scopes[^1].Add(window); }
+            _ = Win32.EnableWindow(window, false);
+        }
+        // Native host windows created after the initial snapshot become part of
+        // the current modal scope before queued keyboard/mouse input is routed.
+        // No full thread enumeration is needed on each dispatched message.
+        return true;
     }
 
     internal static void EnableThreadWindowsAfterModal(List<nint> windows)
     {
-        foreach (nint window in windows)
+        // A failed setup already unwinds its own token. Form.ShowDialog's
+        // finally block can then pass its untouched empty list; it must not pop
+        // a still-active outer dialog's scope.
+        if (t_modalDisabledWindowScopes is not { Count: > 0 } activeScopes
+            || !ReferenceEquals(activeScopes[^1], windows))
+        {
+            return;
+        }
+
+        List<nint> disabled = windows;
+        if (t_modalDisabledWindowScopes is { Count: > 0 } scopes
+            && ReferenceEquals(scopes[^1], windows))
+        {
+            disabled = scopes[^1];
+            scopes.RemoveAt(scopes.Count - 1);
+            if (scopes.Count > 0)
+            {
+                // A window created while a nested dialog was active remains
+                // blocked by the outer modal scope. Transfer ownership instead
+                // of briefly re-enabling it between the two dialogs.
+                List<nint> parent = scopes[^1];
+                nint parentDialog = t_modalDialogStack is { Count: > 1 } dialogStack
+                    ? dialogStack[^2].NativeHandle : 0;
+                List<nint> enableNow = [];
+                foreach (nint window in disabled)
+                {
+                    if (window == parentDialog)
+                    {
+                        enableNow.Add(window);
+                    }
+                    else if (!parent.Contains(window))
+                    {
+                        parent.Add(window);
+                    }
+                }
+                disabled = enableNow;
+            }
+            else
+            {
+                t_modalDisabledWindowScopes = null;
+            }
+        }
+
+        if (t_modalDialogStack is { Count: > 0 } dialogs)
+        {
+            dialogs.RemoveAt(dialogs.Count - 1);
+            if (dialogs.Count == 0) { t_modalDialogStack = null; }
+        }
+
+        foreach (nint window in disabled)
         {
             if (Win32.IsWindow(window)) { _ = Win32.EnableWindow(window, true); }
         }
@@ -779,6 +950,7 @@ public static partial class Application
     internal static void RunDialog(Form dialog)
     {
         bool outerLoop = t_messageLoopDepth > 0;
+        bool externalHost = !outerLoop && (t_messageLoopCallback?.Invoke() ?? false);
         if (!outerLoop)
         {
             t_exitRequested = false;
@@ -809,7 +981,7 @@ public static partial class Application
                     // a closing dialog or LeaveThreadModal callback pumps again.
                     t_exitRequested = true;
                     t_threadLoop?.MarkQuitReceived();
-                    if (outerLoop) { t_pendingQuitExitCode = unchecked((int)message.wParam); }
+                    if (outerLoop || externalHost) { t_pendingQuitExitCode = unchecked((int)message.wParam); }
                     break;
                 }
 
@@ -823,23 +995,29 @@ public static partial class Application
             {
                 if (--t_messageLoopDepth == 0)
                 {
+                    int? hostQuitExitCode = externalHost ? t_pendingQuitExitCode : null;
                     try
                     {
-                        try { WindowsFormsSynchronizationContext.Uninstall(turnOffAutoInstall: false); }
-                        finally { WindowsFormsSynchronizationContext.ReleaseCurrentThread(); }
+                        if (externalHost && t_messageLoopCallback is not null)
+                        {
+                            // The registered host continues using these UI
+                            // services after its nested dialog returns. Their
+                            // final cleanup belongs to Unregister/ExitThread.
+                            t_hostedThreadServices = true;
+                        }
+                        else
+                        {
+                            ReleaseHostedThreadServices();
+                        }
                     }
                     finally
                     {
-                        try { DisposeThemedCommonControlsActivation(); }
-                        finally
-                        {
-                            try { ApplicationOleState.ReleaseCurrentThread(); }
-                            finally
-                            {
-                                t_exitRequested = false;
-                                t_pendingQuitExitCode = null;
-                            }
-                        }
+                        t_exitRequested = false;
+                        t_pendingQuitExitCode = null;
+                        // A native host has no managed outer pump to observe
+                        // our pending slot. Return its consumed quit only after
+                        // the Lumina nested-pump cleanup has completed.
+                        if (hostQuitExitCode is int exitCode) { Win32.PostQuitMessage(exitCode); }
                     }
                 }
             }
@@ -1282,6 +1460,21 @@ public static partial class Application
                 s_openForms.Add(form);
                 s_openFormsCollection.Add(form);
             }
+        }
+
+        // A form can be created by code running inside a modal dialog's pump.
+        // Disable it immediately so it cannot become an interactive ownerless
+        // window while the dialog has the thread's modal ownership.
+        if (t_modalDialogStack is { Count: > 0 }
+            && !ReferenceEquals(t_modalDialogStack[^1], form)
+            && form.NativeHandle != 0
+            && Win32.IsWindowEnabled(form.NativeHandle))
+        {
+            List<nint> scope = t_modalDisabledWindowScopes is { Count: > 0 } scopes
+                ? scopes[^1]
+                : throw new InvalidOperationException("The modal window-disable scope is missing.");
+            if (!scope.Contains(form.NativeHandle)) { scope.Add(form.NativeHandle); }
+            _ = Win32.EnableWindow(form.NativeHandle, false);
         }
     }
 

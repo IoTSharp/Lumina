@@ -26,6 +26,62 @@
         }
         var convertedResources = new List<Microsoft.Build.Framework.ITaskItem>();
         var convertedSources = new List<Microsoft.Build.Framework.ITaskItem>();
+        bool aotComponentContainerAdded = false;
+        const string aotComponentContainerSource = """
+internal sealed class AotComponentContainer : System.ComponentModel.IContainer
+{
+    private readonly System.Collections.Generic.List<System.ComponentModel.IComponent> _components = new();
+
+    public System.ComponentModel.ComponentCollection Components => new(_components.ToArray());
+    public void Add(System.ComponentModel.IComponent component) => Add(component, null);
+    public void Add(System.ComponentModel.IComponent component, string? name)
+    {
+        System.ArgumentNullException.ThrowIfNull(component);
+        if (component.Site?.Container is { } existing && !object.ReferenceEquals(existing, this))
+            throw new System.InvalidOperationException();
+        if (object.ReferenceEquals(component.Site?.Container, this))
+        {
+            if (name is not null) component.Site.Name = name;
+            return;
+        }
+        component.Site = new AotComponentSite(this, component, name);
+        _components.Add(component);
+    }
+    public void Remove(System.ComponentModel.IComponent component)
+    {
+        if (component is null) return;
+        if (_components.Remove(component) && object.ReferenceEquals(component.Site?.Container, this))
+            component.Site = null;
+    }
+    public void Dispose()
+    {
+        for (int index = _components.Count - 1; index >= 0; index--)
+        {
+            System.ComponentModel.IComponent component = _components[index];
+            if (object.ReferenceEquals(component.Site?.Container, this)) component.Site = null;
+            component.Dispose();
+        }
+        _components.Clear();
+    }
+    private sealed class AotComponentSite : System.ComponentModel.ISite
+    {
+        private readonly System.ComponentModel.IContainer _container;
+        private readonly System.ComponentModel.IComponent _component;
+        internal AotComponentSite(System.ComponentModel.IContainer container, System.ComponentModel.IComponent component, string? name)
+        {
+            _container = container;
+            _component = component;
+            Name = name;
+        }
+        public System.ComponentModel.IComponent Component => _component;
+        public System.ComponentModel.IContainer Container => _container;
+        public string? Name { get; set; }
+        public bool DesignMode => false;
+        public object? GetService(System.Type serviceType)
+            => serviceType == typeof(System.ComponentModel.IContainer) ? _container : null;
+    }
+}
+""";
         var primitiveTypes = new HashSet<string>(StringComparer.Ordinal)
         {
             "System.String", "System.Byte[]", "System.Boolean", "System.Char",
@@ -108,6 +164,14 @@
                 {
                     bytes = EncodeInvariantFont(value.InnerText);
                 }
+                else if (mimeType == "application/x-microsoft.net.object.binary.base64"
+                    && type == "System.Drawing.Font")
+                {
+                    // Read records, never deserialize runtime objects. This runs
+                    // in MSBuild; the application still consumes primitive bytes.
+                    bytes = EncodeBinaryFont(value.InnerText);
+                    resourceType = "System.Drawing.Font";
+                }
                 else if ((!string.IsNullOrEmpty(type) && !primitiveTypes.Contains(type)) || !string.IsNullOrEmpty(mimeType))
                 {
                     throw new InvalidDataException("Unsupported resource type or serialization: " + name + " (" + type + ", " + mimeType + ")");
@@ -178,6 +242,16 @@
                     throw new InvalidDataException("Designer resource manager count changed in " + sourcePath + ": " + names[i] + " expected " + expected + ", found " + count);
                 }
                 source = source.Replace(names[i], replacements[i]);
+            }
+            const string componentContainerConstructor = "new System.ComponentModel.Container()";
+            if (source.IndexOf(componentContainerConstructor, StringComparison.Ordinal) >= 0)
+            {
+                source = source.Replace(componentContainerConstructor, "new global::AotComponentContainer()");
+                if (!aotComponentContainerAdded)
+                {
+                    source = aotComponentContainerSource + Environment.NewLine + source;
+                    aotComponentContainerAdded = true;
+                }
             }
             string destination = Path.Combine(sourceOutput, convertedSources.Count.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Path.GetFileName(sourcePath));
             File.WriteAllText(destination, source, new UTF8Encoding(false));
@@ -289,6 +363,97 @@
                 throw new InvalidDataException("The Font resource size must be finite and positive: " + value);
             }
 
+            return EncodeFont(familyName, size, style, unit, familyName.StartsWith("@", StringComparison.Ordinal));
+        }
+
+        static byte[] EncodeBinaryFont(string value)
+        {
+            if (value.Length > 131072)
+            {
+                throw new InvalidDataException("A binary Font resource is limited to 64 KiB of decoded data.");
+            }
+            byte[] payload = Convert.FromBase64String(value);
+            if (payload.Length > 65536)
+            {
+                throw new InvalidDataException("A binary Font resource is limited to 64 KiB of decoded data.");
+            }
+
+            // The SDK owns this decoder dependency. Reflection is confined to
+            // this build task so it can retain RoslynCodeTaskFactory's reference
+            // profile without adding NRBF or reflection to the deployed app.
+            string sdkDirectory = Path.GetDirectoryName(typeof(Microsoft.Build.Utilities.Task).Assembly.Location);
+            var assembly = System.Reflection.Assembly.LoadFrom(Path.Combine(sdkDirectory, "System.Formats.Nrbf.dll"));
+            Type decoderType = assembly.GetType("System.Formats.Nrbf.NrbfDecoder", true);
+            Type optionsType = assembly.GetType("System.Formats.Nrbf.PayloadOptions", true);
+            Type classRecordType = assembly.GetType("System.Formats.Nrbf.ClassRecord", true);
+            var decode = decoderType.GetMethod("DecodeClassRecord", new[] { typeof(Stream), optionsType, typeof(bool) });
+            var rawValue = classRecordType.GetMethod("GetRawValue", new[] { typeof(string) });
+            var memberNames = classRecordType.GetProperty("MemberNames");
+            var typeName = classRecordType.GetProperty("TypeName");
+            if (decode == null || rawValue == null || memberNames == null || typeName == null)
+            {
+                throw new InvalidDataException("The .NET SDK NRBF decoder does not expose the required record reader API.");
+            }
+
+            using (var input = new MemoryStream(payload, false))
+            {
+                object record;
+                try { record = decode.Invoke(null, new object[] { input, null, true }); }
+                catch (System.Reflection.TargetInvocationException exception)
+                {
+                    throw new InvalidDataException("The binary Font resource is not a supported NRBF class record.", exception.InnerException ?? exception);
+                }
+                if (input.Position != input.Length)
+                {
+                    throw new InvalidDataException("The binary Font resource contains trailing data.");
+                }
+                RequireType(record, "System.Drawing.Font");
+                var expected = new HashSet<string>(StringComparer.Ordinal) { "Name", "Size", "Style", "Unit" };
+                foreach (string member in (IEnumerable<string>)memberNames.GetValue(record))
+                {
+                    if (!expected.Remove(member)) throw new InvalidDataException("Unsupported binary Font member: " + member);
+                }
+                if (expected.Count != 0) throw new InvalidDataException("The binary Font resource is missing required fields.");
+                object nameValue = Read(record, "Name");
+                object sizeValue = Read(record, "Size");
+                if (!(nameValue is string familyName) || familyName.Length == 0 || familyName.Length > 16384
+                    || !(sizeValue is float size) || !(size > 0) || float.IsInfinity(size))
+                {
+                    throw new InvalidDataException("The binary Font resource has an invalid family name or size.");
+                }
+                int style = ReadEnum(Read(record, "Style"), "System.Drawing.FontStyle");
+                int unit = ReadEnum(Read(record, "Unit"), "System.Drawing.GraphicsUnit");
+                if ((style & ~15) != 0 || unit < 0 || unit > 6)
+                {
+                    throw new InvalidDataException("The binary Font resource has invalid style or unit values.");
+                }
+                return EncodeFont(familyName, size, style, unit, familyName.StartsWith("@", StringComparison.Ordinal));
+            }
+
+            object Read(object record, string member)
+                => rawValue.Invoke(record, new object[] { member });
+
+            void RequireType(object record, string expectedName)
+            {
+                if (record == null || !classRecordType.IsInstanceOfType(record))
+                    throw new InvalidDataException("Expected a binary record for " + expectedName + ".");
+                object name = typeName.GetValue(record);
+                string fullName = name.GetType().GetProperty("FullName").GetValue(name) as string;
+                if (!string.Equals(fullName, expectedName, StringComparison.Ordinal))
+                    throw new InvalidDataException("Unexpected binary resource type: " + fullName);
+            }
+
+            int ReadEnum(object record, string expectedName)
+            {
+                RequireType(record, expectedName);
+                object number = Read(record, "value__");
+                if (!(number is int value)) throw new InvalidDataException("Invalid binary enum value: " + expectedName);
+                return value;
+            }
+        }
+
+        static byte[] EncodeFont(string familyName, float size, int style, int unit, bool vertical)
+        {
             using (var output = new MemoryStream())
             {
                 using (var writer = new BinaryWriter(output, new UTF8Encoding(false, true), true))
@@ -299,7 +464,7 @@
                     writer.Write(style);
                     writer.Write(unit);
                     writer.Write((byte)1); // FontConverter's default GDI charset.
-                    writer.Write(false);  // FontConverter's default vertical flag; @ names remain intact.
+                    writer.Write(vertical); // The serialized Font contract infers this from an @ family name.
                 }
                 return output.ToArray();
             }

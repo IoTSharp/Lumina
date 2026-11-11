@@ -6,21 +6,27 @@
 
 固定基线为 .NET 10.0.11。Windows、Linux、macOS 分别验收，当前没有完整逐控件 98% 结论。
 
+## 2026-11-11 M0 代码状态
+
+- 已补同线程外部宿主窗口快照、模态期间新增窗口禁用、嵌套模态 scope 转移、ThreadExceptionDialog 默认路径及外部宿主消息泵寿命边界。
+- 代码证据：`Lumina.Forms/Application.cs`、`ThreadExceptionDialog.cs`、`Win32.Application.cs`；新增 ThreadExceptionDialog 无窗口回归并入本轮 12 项定向测试。
+- 完整 COM/OLE 宿主协作、真实外部窗口/模态/重入运行、Designer、完整 AOT 交互仍未关闭；Application 父项保持 🟡。
+
 ## 顺序任务
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| 🟡 | P0 / Application-01 | Run()/Run(Form)/Run(ApplicationContext) 的标准 void 入口、null 主窗、同线程主循环嵌套拒绝、Context 主窗寿命及模态独立消息泵已实现。普通 Run 外最后窗口关闭不再 PostQuitMessage。完整宿主模态、极端重入/并发及历史028/029严格差分的实际重验仍待。 |
-| 🟡 | P0 / Application-03 | 默认 context 安装/还原现已覆盖 Run(Context) 与 ShowDialog；多 UI 循环按原生线程登记，退出在所属线程清理派发窗口/Context、activation 与 OLE。完整外部宿主、关闭竞态和实际多 UI/模态运行验证仍待。 |
+| 🟡 | P0 / Application-01 | Run()/Run(Form)/Run(ApplicationContext) 的标准入口、主循环归属和模态独立消息泵已实现；本轮补外部宿主窗口 scope。极端重入/并发及历史028/029严格差分的实际重验仍待。 |
+| 🟡 | P0 / Application-03 | 默认 context 安装/还原、多 UI 循环、activation/OLE 清理及外部宿主模态保留边界已接入；完整 COM 宿主、关闭竞态和真实多 UI/模态运行仍待。 |
 | 🟡 | P1 / Application-04 | Exit()/Exit(CancelEventArgs) 预检 FormClosing.Cancel，取消则不主动销毁窗口，通过后完成关闭；Context/各 UI 循环分别请求退出，ThreadExit/ApplicationExit 在循环清理后触发。极端重入/动态新窗、原生失败和完整多 UI 退出运行验收仍待。 |
 | ✅ | P1 / Application-05 | 标准 FormCollection/OpenForms 已实现，保持稳定集合对象、索引/名称查询和集合锁；首次显示登记、隐藏保留、关闭/释放移除。既有 HashSet 不再作为公开集合；Windows 可见/隐藏/多线程实际运行验收后置。 |
 | 🟡 | P1 / Application-06 | 已接 AddMessageFilter/RemoveMessageFilter/FilterMessage/IMessageFilter 的线程列表及重入快照；公共 filter 的 ref 修改供后续过滤器观察，不改最终 MSG。GetMessage=-1 抛 Win32Exception，WM_QUIT 传递退出码；原有键盘预处理保留。完整快捷键、IsDialogMessage/外部宿主仍待。 |
-| 🟡 | P1 / Application-07 | Idle/RaiseIdle、DoEvents、EnterThreadModal/LeaveThreadModal、MessageLoop/AllowQuit 及宿主循环回调已实现。DoEvents 单次上限4096条；模态覆盖已登记同线程窗口与owner，外部宿主和模态中新增窗口尚未完整覆盖，运行验收后置。 |
-| 🟡 | P1 / Application-08 | 保留线程局部 ThreadException/OnThreadException；新增 SetUnhandledExceptionMode 两重载、枚举/线程及应用策略与建窗时机守卫，Control/Form/context/dispatcher 原生异常统一接线。标准 ThreadExceptionDialog UI仍待；ThrowException 在 UnmanagedCallersOnly 边界采用 FailFast，明确不等同完整托管异常传播。 |
+| 🟡 | P1 / Application-07 | Idle/RaiseIdle、DoEvents、模态通知、MessageLoop/AllowQuit 及宿主循环回调已实现；本轮补外部窗口快照和动态窗口纳入 scope。实际宿主/模态运行仍待。 |
+| 🟡 | P1 / Application-08 | 已接 ThreadExceptionDialog 摘要/详情/Continue/Quit 默认路径、SetUnhandledExceptionMode 和重入保护；完整标准 UI/本地化与 UnmanagedCallersOnly 的托管异常传播仍待。 |
 | ⬜ | P1 / Application-09 | EnableVisualStyles、RenderWithVisualStyles/UseVisualStyles/VisualStyleState、SetCompatibleTextRenderingDefault 调用时机和实际控件影响对照；初始化后重复/过晚设置行为一致。 |
 | ⬜ | P1 / Application-10 | 实现 SetDefaultFont、SetColorMode、ColorMode/SystemColorMode/IsDarkModeEnabled 的 .NET10 契约，与现有 Lumina theme 的可选覆盖关系清楚；默认字体/系统颜色消息变化实际传播。 |
 | 🟡 | P1 / Application-11 | 040的11a线程HKL/集合/消息连接保留；041的11b补Current getter/setter的真实OleRequired前置。CurrentCulture/UseWaitCursor、完整输入法/模态与OLE宿主context仍缺；部分服务不关闭父项。 |
-| 🟡 | P2 / Application-12 | OleRequired 既有线程引用配对已接 Context/模态退出；RegisterMessageLoop/UnregisterMessageLoop 已实现。StartupPath/ExecutablePath、产品元数据、AppDataPath/Registry、Restart/SetSuspendState 和完整 OLE宿主仍待。 |
+| 🟡 | P2 / Application-12 | OleRequired 线程引用配对、Context/模态退出、RegisterMessageLoop/UnregisterMessageLoop 和外部宿主保留/恢复边界已实现。IMsoComponentManager/完整 COM 宿主、路径/元数据/Restart 等仍待。 |
 | ⬜ | P1 / Application-13 | Native AOT 全 Demo 真正可见主窗、输入、模态、关闭/退出后进程正常结束；资源/TypeConverter 的 IL2026/IL3053 追具体路径，测试不能只看 publish exit code。 |
 | 🟡 | P1 / Application-14 | activation handle/cookie 继续归属本线程；主循环/独立模态最外层退出后才释放，并汇总清理异常。窗口销毁不再决定全局退出；完整样式策略、外部宿主/多 UI/极端模态与实际运行仍待。 |
 | ⬜ | P2 / Application-15 | Linux 用 GtkApplication/GApplication + GMainContext 投递；Run(Context) 保持 application hold/release 与无窗口托盘模式；不能启动第二个互相竞争的 GTK 主循环。 |

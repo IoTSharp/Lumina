@@ -10,22 +10,24 @@
 
 已探测的关键默认值见 [真实 WinForms 参考端证据](../../assessments/2026-10-15/data-control-defaults.json)；该证据只覆盖参考端，未证明 Lumina 已支持。
 
-## 当前结论 · ⬜
+## 当前结论 · 🟡
 
-未实现。分组包含组属性与 Group.Items 双向所有权；GTK/AppKit 的分段标题仅提供视觉材料，不能据此声明完整组契约完成。
+已实现 Windows 组对象、Groups 集合、Group.Items/Item.Group 双向所有权、默认未分组回落、完整 LVGROUP 文本/标题图像/对齐/折叠字段和原生同步。事件、设计器、跨平台和完整成员验收仍待；GTK/AppKit 的分段标题仅提供视觉材料，不能据此声明完整组契约完成。
+
+2026-11-11 M0 检查：ListView/ImageList/Group 无窗口回归 5/5，Release 集成编译 0 错误；真实组交互、Designer、AOT 和平台验收为 NOT_RUN。
 
 - 标准继承/契约：`ListViewGroup` 普通对象；包含序列化契约，Items 为 ListView.ListViewItemCollection。
-- 代码证据：[Lumina.Forms 库目录](../../../Lumina.Forms/)（未找到本类型定义）。
+- 代码证据：[ListViewGroup.cs](../../../Lumina.Forms/ListViewGroup.cs)、[ListViewGroupCollection.cs](../../../Lumina.Forms/ListViewGroupCollection.cs)、[ListView.ImagesAndGroups.cs](../../../Lumina.Forms/ListView.ImagesAndGroups.cs)。
 - 前置顺序：公共基础 P0 → 本页 P0 → 本页 P1 → 本页 P2 → 本页 P3；跨平台实现必须复用相同公开契约，Windows 行为样本作为对照。
 
 ## 按顺序执行的任务
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `ListViewGroup-01` | 补全部构造、Name/Header/HeaderAlignment、Items/ListView/Tag 的基线；默认 Header、对齐和 CollapsedState 由 .NET10 固定，不猜占位字符串。 |
-| ⬜ | P1 | `ListViewGroup-02` | ListView.Groups Add/Insert/Remove/Clear/索引及按 key 操作；组单宿主、重复组、加入其他 ListView 项与官方异常/回退规则。 |
-| ⬜ | P1 | `ListViewGroup-03` | item.Group 与 group.Items 双向同步，移组/删组/移除 item 后所属和 ListView.Items 索引正确；普通模式与 VirtualMode 的限制。 |
-| ⬜ | P1 | `ListViewGroup-04` | ShowGroups、Header/Subtitle/Footer/TaskLink/TitleImageIndex/TitleImageKey、FooterAlignment/HeaderAlignment/CollapsedState；运行时每项更新真实原生显示。 |
+| 🟡 | P0 | `ListViewGroup-01` | 已补构造、Name/Header/HeaderAlignment、Items/ListView/Tag、Footer/Subtitle/TaskLink/TitleImage 等确定范围；默认值和完整基线对照仍待。 |
+| 🟡 | P1 | `ListViewGroup-02` | 已补 ListView.Groups Add/Insert/Remove/Clear/索引和 key 操作、单宿主与重复组拒绝；完整异常/回退规则仍待。 |
+| 🟡 | P1 | `ListViewGroup-03` | 已接 item.Group 与 group.Items 双向同步、移组/删组/跨 ListView 拒绝；VirtualMode 和完整索引差分仍待。 |
+| 🟡 | P1 | `ListViewGroup-04` | 已同步 ShowGroups、Header/Subtitle/Footer/TaskLink/TitleImage、1/2/4 对齐和折叠状态到 LVGROUP；真实运行事件仍待。 |
 | ⬜ | P1 | `ListViewGroup-05` | 组折叠/展开、任务链接点击，ListView.GroupCollapsedStateChanged/GroupTaskLinkClick 等实际公开事件核对并连接；键盘/鼠标/程序路径区别。 |
 | ⬜ | P2 | `ListViewGroup-06` | Groups 顺序、项排序、空组、默认未分组项、大数据滚动，View 模式/系统版本限制与标准实际行为。 |
 | ⬜ | P2 | `ListViewGroup-07` | 标题图像与 ImageList 更换/释放、DPI/RTL/高对比度/辅助技术 group role 和折叠状态。 |

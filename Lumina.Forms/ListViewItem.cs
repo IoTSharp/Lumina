@@ -21,6 +21,7 @@ public class ListViewItem
     private int _imageIndex = -1;
     private string _imageKey = string.Empty;
     private ListView? _listView;
+    private ListViewGroup? _group;
 
     /// <summary>
     /// Initializes a new list view item with empty primary text.
@@ -86,12 +87,38 @@ public class ListViewItem
     public ListView? ListView => _listView;
 
     /// <summary>
+    /// Gets or sets the group containing this item when it is attached to a list view.
+    /// </summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public ListViewGroup? Group
+    {
+        get => _group;
+        set
+        {
+            if (ReferenceEquals(_group, value)) { return; }
+            if (value is not null && value.ListView is not null && _listView is not null && !ReferenceEquals(value.ListView, _listView))
+            {
+                throw new ArgumentException("The group belongs to a different ListView.", nameof(value));
+            }
+
+            _group?.Items.Remove(this);
+            _group = null;
+            if (value is not null) { value.Items.Add(this); }
+
+            _listView?.SynchronizeItems();
+        }
+    }
+
+    /// <summary>
     /// Gets this item's index in its list view, or -1 when detached.
     /// </summary>
     [Browsable(false)]
     public int Index => _listView?.Items.IndexOf(this) ?? -1;
 
     internal void AttachToListView(ListView? listView) => _listView = listView;
+
+    internal void AttachToGroup(ListViewGroup? group) => _group = group;
 
     internal int SubItemCount => _subItemData.Count;
 

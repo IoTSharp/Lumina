@@ -17,6 +17,8 @@
 
 详细优先级和当前依赖见[执行顺序](docs/roadmap/execution.md)。里程碑均未完成；当前没有控件具有完整逐项 98% 验收结论。
 
+2026-11-11 M0 接续实现已完成一组可审查代码范围：MaskedTextBox 直接层级/真实模型、ListView 集合/ImageList/Group 确定范围、Application 外部宿主模态 scope 和 ThreadExceptionDialog 默认路径、Designer 资源转换的二进制 Font 与 AOT 组件容器。上述范围仍保持父任务 🟡；完整 API、Designer/真机/AOT 运行、平台和历史全量门槛没有因编译或定向回归关闭。
+
 ## 验收与不可变约束
 
 - [项目需求](PROJECT_REQUIREMENTS.md)规定 .NET 10、固定双目标 Demo、WinForms API/行为与 Drawing 平台策略；需求不充当实现或验收记录。

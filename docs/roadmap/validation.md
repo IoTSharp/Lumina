@@ -8,6 +8,10 @@
 
 M0 本轮的编译、回归与任务校验回执保存在 `artifacts/m0-20261111`；资源构建期转换的独立回执在 `artifacts/m0-resource-conversion/receipt.json`。Git 提交/推送及远端回读以最终交付回执为准。
 
+- 接续实现集成 Release 编译 PASS：完整 `Lumina.slnx` 双目标，0 错误、1332 警告，22.58 秒；警告未通过全局抑制隐藏。旧 1040 警告结果仍保留为接续前基点。
+- 接续新增无窗口回归 PASS：MaskedTextBox、ListView/ImageList/Group、ThreadExceptionDialog 共 12/12；既有 `ListViewItemImageTests` 363/363。真实窗口、Designer、设备和完整交互仍 NOT_RUN。
+- 接续资源探针 PASS：NRBF 四字段 Font 转换生成 LFR1 primitive 记录；Designer 转换副本将标准组件容器替换为 AOT 安全的本地组件容器，保留原始 Designer/resx。回执在 `artifacts/m0-followup-20261111/font-conversion.json`、`designer-conversion.json`。
+- 接续 Native AOT 发布 FAIL/环境门槛：`NativeFormsDemo net10.0 win-x64 PublishAot` 被宿主拒绝并报 `Cross-OS native compilation is not supported`；当前 AOT 交互为 NOT_RUN，回执在 `artifacts/m0-followup-20261111/aot-publish.json`，不把该失败归因于源码兼容性。
 - 最终 Release/固定 Demo 双目标编译 PASS，0 错误、1040 警告，30.359秒；未隐藏告警，详细输出保留在 `build-final.log`。首个完整集成编译同为0错/1040警告，47.328秒；两次均由Cordonix确认进程树已清理。
 - 必要轻量回归 PASS，18/18、0失败/跳过，测试执行93ms、命令2.531秒；`lightweight.trx`。仅覆盖9个新增Context/过滤器/集合归属回归及9个既有按钮路由/校验用例，不创建可见UI，不扩为消息泵/模态/真机验收。
 - 资源转换 PASS：实际 Roslyn MSBuild 任务检查 Font 字段/单位/样式、Icon 内联与文件引用及普通 byte[]；没有创建 UI 或运行期 Drawing 对象。首轮负例夹具的 WarnAndContinue 判断错误保留在 `conversion-initial.log`，修正后通过；生产转换未为夹具改成接受非法输入。

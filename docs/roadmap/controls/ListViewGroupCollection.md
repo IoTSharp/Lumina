@@ -10,23 +10,25 @@
 
 已探测的关键默认值见 [真实 WinForms 参考端证据](../../assessments/2026-10-15/data-control-defaults.json)；该证据只覆盖参考端，未证明 Lumina 已支持。
 
-## 当前结论 · ⬜
+## 当前结论 · 🟡
 
-【M2】未发现 Lumina 对应实现。ListView.Groups公开类型与Group.Items/Item.Group双向归属需要统一，不能只存列表。
+已实现 ListView.Groups 的稳定集合、嵌套/顶层兼容类型、IList/ICollection/IEnumerable 入口、Add/Insert/Remove/Clear、key 查找和组/条目归属同步。VirtualMode、设计器序列化、完整异常/接口逐成员验收仍待，不能只以列表数量关闭父项。
+
+2026-11-11 M0 检查：ListView/ImageList/Group 无窗口回归 5/5，Release 集成编译 0 错误；真实组交互、Designer、AOT 和平台验收为 NOT_RUN。
 
 - 标准继承/契约：`System.Windows.Forms.ListViewGroupCollection : System.Object`。
-- 代码证据：[Lumina.Forms 库目录](../../../Lumina.Forms/)（未找到本类型定义）。
+- 代码证据：[ListViewGroupCollection.cs](../../../Lumina.Forms/ListViewGroupCollection.cs)、[ListView.CollectionsNested.cs](../../../Lumina.Forms/ListView.CollectionsNested.cs)。
 - 前置顺序：公共基础 P0 → 本页 P0 → 本页 P1 → 本页 P2 → 本页 P3；跨平台实现必须复用相同公开契约，Windows 行为样本作为对照。
 
 ## 按顺序执行的任务
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `ListViewGroupCollection-01` | 真实ListViewGroupCollection类型、构造可见性及IList/ICollection/IEnumerable显式接口；通过ListView.Groups取得稳定实例。 |
-| ⬜ | P1 | `ListViewGroupCollection-02` | Add(group)/Add(key,headerText)、AddRange(array/collection)、Insert/Remove/RemoveAt/Clear、IndexOf/Contains全量签名与返回。 |
-| ⬜ | P1 | `ListViewGroupCollection-03` | 整数和字符串key索引器get/set，替换组、缺失key、键大小写/重复键/null与无效索引的标准行为。 |
-| ⬜ | P1 | `ListViewGroupCollection-04` | Count/CopyTo/GetEnumerator/接口IsFixedSize/IsReadOnly/SyncRoot，枚举中修改和不兼容对象IList操作。 |
-| ⬜ | P1 | `ListViewGroupCollection-05` | 加入/移除组时Group.ListView、Group.Items和ListViewItem.Group归属，跨ListView加入及已有条目移动。 |
+| 🟡 | P0 | `ListViewGroupCollection-01` | 已提供真实集合类型、嵌套/顶层兼容入口、IList/ICollection/IEnumerable 入口和 ListView.Groups 稳定实例；完整元数据逐成员验收仍待。 |
+| 🟡 | P1 | `ListViewGroupCollection-02` | 已补 Add/AddRange/Insert/Remove/RemoveAt/Clear、IndexOf/Contains 及返回值的确定范围；完整异常和重入行为仍待。 |
+| 🟡 | P1 | `ListViewGroupCollection-03` | 已补整数/key 索引器、替换组、缺失 key 和大小写查找的确定范围；完整 null/重复键标准对照仍待。 |
+| 🟡 | P1 | `ListViewGroupCollection-04` | 已补 Count/CopyTo/GetEnumerator/接口属性；枚举修改和不兼容 IList 对象的完整标准差分仍待。 |
+| 🟡 | P1 | `ListViewGroupCollection-05` | 已接 Group.ListView、Group.Items、ListViewItem.Group 归属、跨 ListView 拒绝和移除回落。 |
 | ⬜ | P2 | `ListViewGroupCollection-06` | ShowGroups=false、VirtualMode、排序/视图切换、句柄创建前后修改，组集合与可见组头实际同步。 |
 | ⬜ | P2 | `ListViewGroupCollection-07` | 插入/删除当前组、默认组、折叠状态/任务链接/子标题等Group属性更新；native ID不直接充当托管集合索引。 |
 | ⬜ | P2 | `ListViewGroupCollection-08` | 设计器Groups.AddRange静态初始化、键/Name序列化和AOT；移除/Dispose不释放条目共享ImageList/字体。 |

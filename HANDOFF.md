@@ -27,6 +27,15 @@
 - Icon/Font 资源静态转换与解码，保留原始 Designer/resx；完整 Demo 的 CI win-x64 AOT 发布/产物上传，Core DWM Windows 入口与依赖清单。
 - 所有控件任务页的日期/批次/提交历史归入根目录 CHANGELOG；任务页保留 ID 与完成状态，既有工具生成实施列与 tasks.csv。
 
+## 本次接续已完成的代码范围
+
+- `MaskedTextBox` 已直接继承 `TextBoxBase`，使用私有空掩码 provider 和真实 `MaskedTextProvider` 完成确定范围的构造、格式、选区、替换/插入/删除、拒绝、剪贴板和 AOT 安全已知类型验证。
+- `ListView` 已补嵌套集合兼容入口、ImageList SafeHandle/键映射/重建与消费释放、ListViewGroup/GroupCollection 所属和 LVGROUP 原生同步；默认 View 为 LargeIcon。
+- `Application` 已补外部宿主顶层窗口快照、模态期间动态窗口 scope、嵌套 scope 转移、宿主消息泵寿命边界和 ThreadExceptionDialog 默认路径。
+- 资源构建链已补 NRBF 四字段 Font → LFR1 primitive 记录，并在 Lumina Designer 副本中使用 AOT 安全组件容器；原始 Designer/resx 不改。
+
+上述范围均为父任务内的部分代码完成，不能关闭完整控件、Application、资源/AOT 或平台验收任务。完整 OLE/COM 宿主、ImageStream/Designer streamer、通用 ApplyResources、VirtualMode/OwnerDraw、真实窗口/Designer/完整 AOT 交互和 Linux/macOS 仍开放。
+
 ## 当前检查与剩余门槛
 
 - PASS：最终 Release 方案及固定 Demo 双目标编译，0错误/1040警告，30.359秒；未隐藏警告，日志为 `build-final.log`。
@@ -34,6 +43,7 @@
 - PASS：无窗口的实际资源构建期转换检查；`artifacts/m0-resource-conversion/receipt.json`。
 - PASS：最终文档导出及普通校验均0错误，462个Markdown、187控件/API页、2204任务及固定API基线保持；Git空白/链接检查通过，结果统一见[validation](docs/roadmap/validation.md)。
 - NOT_RUN：全量、Windows真机/设计器/完整AOT交互、Linux/macOS、本次Hosted CI运行。064全量FAIL、065超时与历史严格差分仍未整体重验或清除。
+- 本次接续：PASS，完整 Release 方案编译 0 错误/1332 警告；PASS，新增 M0 无窗口回归 12/12 及既有 ListViewItemImage 363/363；PASS，NRBF Font/Designer 容器转换探针。FAIL/环境门槛，当前 NativeFormsDemo win-x64 AOT 发布报 `Cross-OS native compilation is not supported`；真实 AOT/窗口运行仍 NOT_RUN。回执位于 `artifacts/m0-followup-20261111`。
 
 M0 尚不能整体标为完成。剩余真实代码包括 MaskedTextBox 模型/标准直接层级、完整列表集合API/ImageList/分组/样式、外部宿主模态/新增窗口策略、完整错误对话框/OLE宿主，以及资源二进制Font/ApplyResources和旧Container IL3050。各范围继续使用原任务ID，完成基础类不关闭整个控件或父项。真机验收依用户要求集中后置，不由本轮编译或18项回归推导98%。
 

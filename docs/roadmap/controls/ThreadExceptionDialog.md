@@ -1,22 +1,23 @@
 # ThreadExceptionDialog
 
-⬜ **现状：**无标准异常对话框；Application.ThreadException 也未形成完整处理链。
+🟡 **现状：**已补 Windows/Lumina.Forms 的标准 Form 继承异常对话框确定范围并接入 Application.ThreadException；完整按钮、系统资源、本地化、平台和逐成员验收仍开放。
 
 - 固定基线：`b83f534` / WinForms 引用程序集 10.0.11，2026-10-15。
 - [完整成员与继承成员](../api/ThreadExceptionDialog.md) · [基础前置](../foundations.md) · [三平台边界](../platforms.md) · [98%计量](../coverage.md)。未在正文逐字展开的成员仍逐行验收，不靠任务数计算兼容率。
-- 源码：同名标准类型尚未实现，无可冒充为完整契约的源码。
+- 源码：[ThreadExceptionDialog.cs](../../../Lumina.Forms/ThreadExceptionDialog.cs)、[Application.cs](../../../Lumina.Forms/Application.cs)。
+- 2026-11-11 代码证据：`Lumina.Forms/ThreadExceptionDialog.cs`、`Application.cs`；无窗口回归验证构造、Continue/Cancel、详情文本和 Warning 分支。
 - 排序：Form/MessageBox、Application 异常策略、文本/按钮与系统信息。
 
 ## 顺序任务
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
-| ⬜ | P1 / ThreadExceptionDialog-01 | 实现 ThreadExceptionDialog(Exception) : Form，继承属性/事件按固定基线；不要另造公开异常报告 API 或自动发送异常。 |
-| ⬜ | P2 / ThreadExceptionDialog-02 | 对照普通异常/嵌套异常/不同消息的按钮、DialogResult、详细信息展开/收起、堆栈/程序集文本；按钮条件和默认动作按真实端捕获，不猜。 |
-| ⬜ | P2 / ThreadExceptionDialog-03 | 接入 Application.ThreadException/SetUnhandledExceptionMode；用户关闭、继续/退出、对话框自身异常路径不能递归无限弹窗。 |
+| 🟡 | P1 / ThreadExceptionDialog-01 | 已实现 `ThreadExceptionDialog(Exception) : Form`，保持可派生公开类型和普通 Lumina 控件组合；继承成员逐项基线仍待。 |
+| 🟡 | P2 / ThreadExceptionDialog-02 | 已实现摘要、详情展开/收起、异常/程序集文本、Continue/条件 Quit；本地化、图标和完整按钮差分仍待。 |
+| 🟡 | P2 / ThreadExceptionDialog-03 | 已接 Application.ThreadException/默认错误路径、重入保护和 Quit→Application.Exit；完整 SetUnhandledExceptionMode/UI/异常分支仍待。 |
 | ⬜ | P2 / ThreadExceptionDialog-04 | ShowDialog owner 模态/焦点、Enter/Esc/Tab、复制文本、本地化长消息、高 DPI 和可访问性按真实端比较。 |
-| ⬜ | P2 / ThreadExceptionDialog-05 | AOT 堆栈可用性/裁剪的程序集信息差异清楚；只展示实际可取得数据，不把 JIT 特有细节伪造成相同。Dispose 与重复显示释放全部控件资源。 |
-| ⬜ | P2 / ThreadExceptionDialog-06 | Windows 用标准 Form HWND 与原生 Button/TextBox/Label 等组合；系统 error icon/资源静态读取，保留 Designer 风格布局。 |
+| 🟡 | P2 / ThreadExceptionDialog-05 | 已限制程序集摘要遍历并保持 AOT 可用的普通文本路径；完整裁剪、堆栈、Dispose 压力和重复显示仍待。 |
+| 🟡 | P2 / ThreadExceptionDialog-06 | 已使用标准 Form/Windows 原生 Button/TextBox/Label 组合；系统 error icon/Designer 静态资源仍待。 |
 | ⬜ | P2 / ThreadExceptionDialog-07 | Linux 用 GtkWindow/GtkAlertDialog + native text/button widgets，继续/退出结果路由标准 Application，不调用另一个进程弹窗代替。 |
 | ⬜ | P3 / ThreadExceptionDialog-08 | macOS 用 NSAlert 或 NSPanel+原生控件组合，详细文本/结果/主线程行为一致，系统按钮顺序差异明确。 |
 | ⬜ | 验收 / ThreadExceptionDialog-V | 逐属性/事件/方法与官方端比较签名、默认、运行变更、取消、异常、事件顺序和释放；NativeFormsDemo 保持双目标与静态 .Designer.cs/.resx，真实设计器往返、AOT 发布后交互/正常退出、原生资源与可访问性有证据。三平台分别验收，未实现/只存值/未运行均不得标 🧪 验收通过。 |

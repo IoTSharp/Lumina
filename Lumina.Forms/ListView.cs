@@ -7,9 +7,14 @@ public partial class ListView : Control
 {
     private readonly ListViewItemCollection _items;
     private readonly ColumnHeaderCollection _columns;
+    private readonly ListViewGroupCollection _groups;
+    private ImageList? _smallImageList;
+    private ImageList? _largeImageList;
+    private ImageList? _stateImageList;
+    private bool _showGroups = true;
     private bool _fullRowSelect;
     private bool _gridLines;
-    private View _view = View.Details;
+    private View _view = View.LargeIcon;
     private static readonly Win32.SubclassProc s_listViewSubclassProc = ListViewSubclassProc;
 
     [ThreadStatic]
@@ -31,6 +36,7 @@ public partial class ListView : Control
     {
         _items = new ListViewItemCollection(this);
         _columns = new ColumnHeaderCollection(this);
+        _groups = new ListViewGroupCollection(this);
         SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(6);
     }
@@ -43,6 +49,37 @@ public partial class ListView : Control
     public ListViewItemCollection Items => _items;
 
     public ColumnHeaderCollection Columns => _columns;
+
+    public ListViewGroupCollection Groups => _groups;
+
+    public bool ShowGroups
+    {
+        get => _showGroups;
+        set
+        {
+            if (_showGroups == value) { return; }
+            _showGroups = value;
+            SynchronizeGroups();
+        }
+    }
+
+    public ImageList? SmallImageList
+    {
+        get => _smallImageList;
+        set => SetImageList(ref _smallImageList, value);
+    }
+
+    public ImageList? LargeImageList
+    {
+        get => _largeImageList;
+        set => SetImageList(ref _largeImageList, value);
+    }
+
+    public ImageList? StateImageList
+    {
+        get => _stateImageList;
+        set => SetImageList(ref _stateImageList, value);
+    }
 
     public bool FullRowSelect
     {
@@ -67,6 +104,7 @@ public partial class ListView : Control
             }
             _view = value;
             if (NativeHandle != 0) { _ = Win32.SendMessageW(NativeHandle, LVM_SETVIEW, (nint)value, 0); }
+            SynchronizeItems();
         }
     }
 
@@ -74,7 +112,7 @@ public partial class ListView : Control
     protected override string ClassName => "SysListView32";
 
     /// <inheritdoc />
-    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.WS_VSCROLL;
+    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.WS_VSCROLL | 0x0040; // LVS_SHAREIMAGELISTS
 
     /// <inheritdoc />
     protected override uint ExStyle => Win32.WS_EX_CLIENTEDGE;
@@ -95,6 +133,8 @@ public partial class ListView : Control
         ApplyNativeThemeState();
         ApplyNativeColors();
         _ = Win32.SendMessageW(NativeHandle, LVM_SETVIEW, (nint)_view, 0);
+        RefreshImageLists();
+        SynchronizeGroups();
         SynchronizeColumns();
     }
 

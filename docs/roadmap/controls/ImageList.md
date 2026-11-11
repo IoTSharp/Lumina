@@ -10,23 +10,25 @@
 
 已探测的关键默认值见 [真实 WinForms 参考端证据](../../assessments/2026-10-15/data-control-defaults.json)；该证据只覆盖参考端，未证明 Lumina 已支持。
 
-## 当前结论 · ⬜
+## 当前结论 · 🟡
 
-未实现；ListView/TreeView/ToolStrip 等常用图片接口尚无标准 ImageList/键控 ImageCollection。现代 .NET 的默认 ColorDepth 已是 Depth32Bit，不能照搬旧资料的 8 位默认。
+已实现 Windows Native ImageList 的确定范围：Component/IContainer、ImageSize/ColorDepth/TransparentColor、键控集合、Image/Icon/Strip 添加、SafeHandle、重建和消费控件释放同步。`ImageStream`/Designer streamer、完整 API、跨平台后端和真实窗口验收仍待。现代 .NET 的默认 ColorDepth 已是 Depth32Bit，不能照搬旧资料的 8 位默认。
+
+2026-11-11 M0 检查：ImageList/Group/ListView 专属无窗口回归 5/5，当前 Release 集成编译 0 错误；NativeFormsDemo 当前 AOT 发布被宿主以 cross-OS 编译错误拒绝，实际 AOT 运行为 NOT_RUN。
 
 - 标准继承/契约：`ImageList : Component`；需要嵌套 ImageCollection、ImageListStreamer、ColorDepth。
-- 代码证据：[Lumina.Forms 库目录](../../../Lumina.Forms/)（未找到本类型定义）。
+- 代码证据：[ImageList.cs](../../../Lumina.Forms/ImageList.cs)、[ListView.ImagesAndGroups.cs](../../../Lumina.Forms/ListView.ImagesAndGroups.cs)。
 - 前置顺序：公共基础 P0 → 本页 P0 → 本页 P1 → 本页 P2 → 本页 P3；跨平台实现必须复用相同公开契约，Windows 行为样本作为对照。
 
 ## 按顺序执行的任务
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `ImageList-01` | Component 构造/IContainer、Images/Handle/HandleCreated、ImageStream、ImageSize/ColorDepth/TransparentColor/Tag；默认 ImageSize=16×16、ColorDepth=Depth32Bit、TransparentColor=Transparent（本机10.0.11实测）。 |
+| 🟡 | P0 | `ImageList-01` | 已实现 Component/IContainer、Images、Handle/HandleCreated、ImageSize/ColorDepth/TransparentColor/Tag 及默认值；`ImageStream` 与完整设计器往返仍待。 |
 | ⬜ | P0 | `ImageList-02` | 确定 System.Drawing.Image/Icon/Graphics 公共签名跨平台策略；不得让 GTK/AppKit 直接调用 Windows-only System.Drawing.Common，不能随意改为非标准公开图像类型。 |
-| ⬜ | P1 | `ImageList-03` | Images.Add/AddRange/Remove/RemoveAt/Clear、IList.Insert 的标准不支持/异常规则、整数/字符串索引、SetKeyName/IndexOfKey/ContainsKey/RemoveByKey、Keys、重复 key/null、异常索引；图像与 key 映射实时一致。 |
-| ⬜ | P1 | `ImageList-04` | Image/Icon/Bitmap 添加重载和 AddStrip、TransparentColor/color mask、alpha、不同源大小缩放；导入图像所有权与源 Dispose 后访问行为按标准核对。 |
-| ⬜ | P1 | `ImageList-05` | 延迟创建 Handle、ImageSize/ColorDepth 改变时 RecreateHandle 与内容丢失/保留的官方实际规则；每次重建通知消费控件重新绑定，旧 HIMAGELIST 不再被使用。 |
+| 🟡 | P1 | `ImageList-03` | 已实现键控集合、Add/AddRange/Remove/RemoveAt/Clear、IList 入口、SetKeyName/IndexOfKey/ContainsKey/RemoveByKey、Keys 及实时消费同步；完整异常/设计器成员对照仍待。 |
+| 🟡 | P1 | `ImageList-04` | 已实现 Image/Icon/Strip 添加、源图像克隆、透明色和临时位图释放；不同源大小、alpha/像素和完整官方行为仍待。 |
+| 🟡 | P1 | `ImageList-05` | 已实现延迟 Handle、ImageSize/ColorDepth 重建、内容快照、RecreateHandle 与消费控件重新绑定；完整官方重建差分仍待。 |
 | ⬜ | P1 | `ImageList-06` | ImageStream 的设计器 .resx 往返、ImageListStreamer 序列化/反序列化 AOT 安全路径；不以不受控 BinaryFormatter 或动态类型发现处理资源。 |
 | ⬜ | P2 | `ImageList-07` | Draw(Graphics,Point,index)、Draw 各重载、缩放/透明度/裁剪/无效索引；Windows 绘图实际像素与标准对照。 |
 | ⬜ | P2 | `ImageList-08` | DPI/多分辨率、ColorDepth 枚举和合法 ImageSize 边界，图像 key 在列表/树中映射；正在使用时清空或替换图像，控件索引回退一致。 |

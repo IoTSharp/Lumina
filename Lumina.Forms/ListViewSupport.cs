@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 
 namespace Lumina.Forms;
 
@@ -11,11 +12,18 @@ public enum View
     Tile = 4
 }
 
-public sealed class ColumnHeader
+public class ColumnHeader : Component, ICloneable
 {
     private string _text = string.Empty;
     private int _width = 60;
     private HorizontalAlignment _textAlign;
+    private int _imageIndex = -1;
+    private string _imageKey = string.Empty;
+    private int _displayIndex = -1;
+
+    public ColumnHeader() { }
+    public ColumnHeader(int imageIndex) => ImageIndex = imageIndex;
+    public ColumnHeader(string imageKey) => ImageKey = imageKey;
 
     public string Text
     {
@@ -43,13 +51,69 @@ public sealed class ColumnHeader
         }
     }
 
+    [DefaultValue(-1)]
+    public int ImageIndex
+    {
+        get => _imageIndex;
+        set
+        {
+            if (value < -1) throw new ArgumentOutOfRangeException(nameof(value));
+            _imageIndex = value;
+            _imageKey = string.Empty;
+            ListView?.SynchronizeColumns();
+        }
+    }
+
+    [DefaultValue("")]
+    public string ImageKey
+    {
+        get => _imageKey;
+        set
+        {
+            _imageKey = value ?? string.Empty;
+            _imageIndex = -1;
+            ListView?.SynchronizeColumns();
+        }
+    }
+
+    [Browsable(false)]
+    public ImageList? ImageList => ListView?.SmallImageList;
+
+    public int DisplayIndex
+    {
+        get => _displayIndex >= 0 ? _displayIndex : Index;
+        set
+        {
+            if (value < -1) throw new ArgumentOutOfRangeException(nameof(value));
+            _displayIndex = value;
+            ListView?.SynchronizeColumns();
+        }
+    }
+
     public string Name { get; set; } = string.Empty;
     public object? Tag { get; set; }
     public ListView? ListView { get; internal set; }
     public int Index => ListView?.Columns.IndexOf(this) ?? -1;
+
+    public object Clone()
+    {
+        ColumnHeader clone = new() { Text = Text, Width = Width, TextAlign = TextAlign, Name = Name, Tag = Tag };
+        clone._imageIndex = _imageIndex;
+        clone._imageKey = _imageKey;
+        clone._displayIndex = _displayIndex;
+        return clone;
+    }
+
+    public override string ToString() => $"ColumnHeader: Text: {Text}";
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing) { ListView?.Columns.Remove(this); }
+        base.Dispose(disposing);
+    }
 }
 
-public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
+public class ColumnHeaderCollection : IList, IEnumerable<ColumnHeader>
 {
     private readonly List<ColumnHeader> _headers = [];
     private readonly ListView? _owner;
@@ -57,7 +121,12 @@ public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
     public ColumnHeaderCollection() { }
     internal ColumnHeaderCollection(ListView owner) => _owner = owner;
     public int Count => _headers.Count;
+    public bool IsReadOnly => false;
     public ColumnHeader this[int index] => _headers[index];
+    public ColumnHeader? this[string key]
+    {
+        get { int index = IndexOfKey(key); return index < 0 ? null : _headers[index]; }
+    }
 
     public void Clear()
     {
@@ -81,6 +150,21 @@ public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
         return header;
     }
 
+    public ColumnHeader Add(string key, string text) => Add(key, text, 60, HorizontalAlignment.Left, -1);
+    public ColumnHeader Add(string key, string text, int width) => Add(key, text, width, HorizontalAlignment.Left, -1);
+    public ColumnHeader Add(string key, string text, int width, HorizontalAlignment alignment, int imageIndex)
+    {
+        ColumnHeader header = new(imageIndex) { Name = key ?? string.Empty, Text = text, Width = width, TextAlign = alignment };
+        Add(header);
+        return header;
+    }
+    public ColumnHeader Add(string key, string text, int width, HorizontalAlignment alignment, string imageKey)
+    {
+        ColumnHeader header = new(imageKey) { Name = key ?? string.Empty, Text = text, Width = width, TextAlign = alignment };
+        Add(header);
+        return header;
+    }
+
     public void AddRange(ColumnHeader[] values)
     {
         ArgumentNullException.ThrowIfNull(values);
@@ -100,6 +184,15 @@ public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
         _owner?.SynchronizeColumns();
     }
 
+    public void Insert(int index, string text) => Insert(index, new ColumnHeader { Text = text });
+    public void Insert(int index, string text, int width) => Insert(index, new ColumnHeader { Text = text, Width = width });
+    public void Insert(int index, string key, string text) => Insert(index, key, text, 60, HorizontalAlignment.Left, -1);
+    public void Insert(int index, string key, string text, int width) => Insert(index, key, text, width, HorizontalAlignment.Left, -1);
+    public void Insert(int index, string key, string text, int width, HorizontalAlignment alignment, int imageIndex)
+        => Insert(index, new ColumnHeader(imageIndex) { Name = key ?? string.Empty, Text = text, Width = width, TextAlign = alignment });
+    public void Insert(int index, string key, string text, int width, HorizontalAlignment alignment, string imageKey)
+        => Insert(index, new ColumnHeader(imageKey) { Name = key ?? string.Empty, Text = text, Width = width, TextAlign = alignment });
+
     public bool Contains(ColumnHeader header) => IndexOf(header) >= 0;
     public int IndexOf(ColumnHeader header)
     {
@@ -107,6 +200,15 @@ public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
         {
             if (ReferenceEquals(_headers[index], header)) { return index; }
         }
+        return -1;
+    }
+
+    public bool ContainsKey(string key) => IndexOfKey(key) >= 0;
+    public int IndexOfKey(string key)
+    {
+        if (string.IsNullOrEmpty(key)) return -1;
+        for (int index = 0; index < _headers.Count; index++)
+            if (string.Equals(_headers[index].Name, key, StringComparison.InvariantCultureIgnoreCase)) return index;
         return -1;
     }
 
@@ -124,17 +226,36 @@ public sealed class ColumnHeaderCollection : IEnumerable<ColumnHeader>
         _owner?.SynchronizeColumns();
     }
 
+    public void RemoveByKey(string key)
+    {
+        int index = IndexOfKey(key);
+        if (index >= 0) RemoveAt(index);
+    }
+
     public IEnumerator<ColumnHeader> GetEnumerator() => _headers.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    bool IList.IsFixedSize => false;
+    bool ICollection.IsSynchronized => false;
+    object ICollection.SyncRoot => this;
+    object? IList.this[int index] { get => this[index]; set => throw new NotSupportedException("Column replacement is not supported."); }
+    int IList.Add(object? value) => Add(value as ColumnHeader ?? throw new ArgumentException("The value must be a ColumnHeader.", nameof(value)));
+    void IList.Insert(int index, object? value) => Insert(index, value as ColumnHeader ?? throw new ArgumentException("The value must be a ColumnHeader.", nameof(value)));
+    bool IList.Contains(object? value) => value is ColumnHeader header && Contains(header);
+    int IList.IndexOf(object? value) => value is ColumnHeader header ? IndexOf(header) : -1;
+    void IList.Remove(object? value) { if (value is ColumnHeader header) Remove(header); }
+    void ICollection.CopyTo(Array array, int index) => _headers.ToArray().CopyTo(array, index);
 }
 
-public sealed class ListViewItemCollection : IEnumerable<ListViewItem>
+public class ListViewItemCollection : IList, IEnumerable<ListViewItem>
 {
     private readonly List<ListViewItem> _items = [];
     private readonly ListView? _owner;
+    private readonly ListViewGroup? _group;
 
     public ListViewItemCollection() { }
     internal ListViewItemCollection(ListView owner) => _owner = owner;
+    internal ListViewItemCollection(ListViewGroup group) => _group = group;
+    public bool IsReadOnly => false;
     public int Count => _items.Count;
     public ListViewItem this[int index]
     {
@@ -144,10 +265,10 @@ public sealed class ListViewItemCollection : IEnumerable<ListViewItem>
             ListViewItem old = _items[index];
             if (ReferenceEquals(value, old)) { return; }
             ValidateItem(value);
-            old.AttachToListView(null);
+            if (_group is null) old.AttachToListView(null); else old.AttachToGroup(null);
             _items[index] = value;
-            value.AttachToListView(_owner);
-            _owner?.SynchronizeItems();
+            Attach(value);
+            SynchronizeOwner();
         }
     }
 
@@ -178,16 +299,19 @@ public sealed class ListViewItemCollection : IEnumerable<ListViewItem>
         if ((uint)index > (uint)_items.Count) { throw new ArgumentOutOfRangeException(nameof(index)); }
         ValidateItem(item);
         _items.Insert(index, item);
-        item.AttachToListView(_owner);
-        _owner?.SynchronizeItems();
+        Attach(item);
+        SynchronizeOwner();
         return item;
     }
 
     public void Clear()
     {
-        foreach (ListViewItem item in _items) { item.AttachToListView(null); }
+        foreach (ListViewItem item in _items)
+        {
+            if (_group is null) item.AttachToListView(null); else item.AttachToGroup(null);
+        }
         _items.Clear();
-        _owner?.SynchronizeItems();
+        SynchronizeOwner();
     }
 
     public bool Contains(ListViewItem item) => IndexOf(item) >= 0;
@@ -227,19 +351,54 @@ public sealed class ListViewItemCollection : IEnumerable<ListViewItem>
     {
         ListViewItem item = _items[index];
         _items.RemoveAt(index);
-        item.AttachToListView(null);
-        _owner?.SynchronizeItems();
+        if (_group is null) item.AttachToListView(null); else item.AttachToGroup(null);
+        SynchronizeOwner();
     }
 
     private void ValidateItem(ListViewItem item)
     {
         ArgumentNullException.ThrowIfNull(item);
-        if (item.ListView is not null || Contains(item))
+        if (Contains(item))
         {
             throw new ArgumentException("The item already belongs to a ListView.", nameof(item));
         }
+
+        if (_group is null)
+        {
+            if (item.ListView is not null || (item.Group?.ListView is { } view && !ReferenceEquals(view, _owner)))
+                throw new ArgumentException("The item belongs to a different ListView.", nameof(item));
+        }
+        else if (item.ListView is { } itemView && _group.ListView is { } groupView && !ReferenceEquals(itemView, groupView))
+        {
+            throw new ArgumentException("The item belongs to a different ListView.", nameof(item));
+        }
+    }
+
+    private void Attach(ListViewItem item)
+    {
+        if (_group is null) item.AttachToListView(_owner);
+        else { item.Group?.Items.Remove(item); item.AttachToGroup(_group); }
+    }
+
+    private void SynchronizeOwner()
+    {
+        _owner?.SynchronizeItems();
+        _group?.ListView?.SynchronizeItems();
     }
 
     public IEnumerator<ListViewItem> GetEnumerator() => _items.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    bool IList.IsFixedSize => false;
+    bool ICollection.IsSynchronized => false;
+    object ICollection.SyncRoot => this;
+    object? IList.this[int index] { get => this[index]; set => this[index] = RequireItem(value); }
+    int IList.Add(object? value) { ListViewItem item = RequireItem(value); Add(item); return IndexOf(item); }
+    void IList.Insert(int index, object? value) => Insert(index, RequireItem(value));
+    bool IList.Contains(object? value) => value is ListViewItem item && Contains(item);
+    int IList.IndexOf(object? value) => value is ListViewItem item ? IndexOf(item) : -1;
+    void IList.Remove(object? value) { if (value is ListViewItem item) Remove(item); }
+    void ICollection.CopyTo(Array array, int index) => _items.ToArray().CopyTo(array, index);
+
+    private static ListViewItem RequireItem(object? value)
+        => value as ListViewItem ?? throw new ArgumentException("The value must be a ListViewItem.", nameof(value));
 }

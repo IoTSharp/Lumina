@@ -12,7 +12,9 @@
 
 ## 当前结论 · 🟡
 
-已有 SysListView32、Items/Columns 所属关系与真实 LVM 项/列插入更新；Text/SubItems/列修改同步到原生，结构重建按项身份保留选择/焦点/状态图像。View默认已改LargeIcon，FullRowSelect/GridLines按属性映射。完整集合API、ImageList/Group、虚拟模式、通知/样式/复杂重入和运行验收仍待。
+已有 SysListView32、Items/Columns 所属关系与真实 LVM 项/列插入更新；Text/SubItems/列修改同步到原生，结构重建按项身份保留选择/焦点/状态图像。View 默认已改为 LargeIcon，ImageList/Group 的确定范围也已接入原生句柄、键映射、分组和释放同步。完整集合成员、VirtualMode/OwnerDraw、通知/样式/复杂重入和运行验收仍待。
+
+2026-11-11 M0 代码检查：新增集合/ImageList/Group 的 5 项无窗口回归通过，既有 `ListViewItemImageTests` 363 项通过；当前 Release 集成编译 0 错误。真实窗口、Designer、完整 AOT 和平台验收仍为 NOT_RUN。
 
 - 标准继承/契约：`ListView : Control`；需要 ListViewItem、ColumnHeader、ListViewGroup、相关嵌套集合和事件参数类型。
 - 代码证据：[当前源码](../../../Lumina.Forms/ListView.cs)。
@@ -24,7 +26,7 @@
 | --- | --- | --- | --- |
 | 🟡 | P0 | `ListView-01` | 基础条目构造与Text/首子项一致性保留；本轮补Items/Columns的宿主所属、替换移除释放与真实原生同步。其余构造/精确集合接口及ColumnHeader完整继承默认仍待，父项保持部分。 |
 | 🟡 | P0 | `ListView-02` | 已修View=LargeIcon、FullRowSelect=false/GridLines=false的实际native样式；其余MultiSelect、HideSelection、LabelEdit、CheckBoxes、VirtualMode默认及完整原生读回仍待。 |
-| 🟡 | P1 | `ListView-03` | 已补Items/Columns增删插入/清空、Items索引替换/Name键查找、跨宿主拒绝及LVM_INSERTITEM/SETITEM/列同步；子项文字变更立即同步。完整标准集合类型/重载、列Name键接口及原生通知重入的运行检查仍待。 |
+| 🟡 | P1 | `ListView-03` | 已补 Items/Columns 增删插入/清空、索引替换/Name 键查找、跨宿主拒绝、标准嵌套集合类型及 LVM 项/列同步；子项文字变更立即同步。完整成员重载、列通知重入和真实交互检查仍待。 |
 | ⬜ | P1 | `ListView-04` | SelectedItems/SelectedIndices、FocusedItem、TopItem、EnsureVisible/GetItemAt/HitTest/GetItemRect；鼠标、Ctrl/Shift、键盘、程序选择产生 SelectedIndexChanged/ItemSelectionChanged 的顺序和批量次数。 |
 | 🟡 | P1 | `ListView-05` | View五值通过LVM_SETVIEW生效，ColumnHeader文字/宽度/对齐更新重新提交；完整Alignment/AutoArrange/TileSize、DisplayIndex及可取消表头通知仍待。 |
 | ⬜ | P1 | `ListView-06` | CheckBoxes、CheckedItems/CheckedIndices、StateImageList、ItemCheck（可改 NewValue）、ItemChecked 与 DoubleClick/ItemActivate；区分 checkbox 点击和普通选择。 |

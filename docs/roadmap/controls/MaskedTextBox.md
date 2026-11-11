@@ -1,10 +1,16 @@
 # MaskedTextBox
 
-本页任务表只列未完成范围；代码完成子项标记在[完成状态](#已完成任务)，任务 ID 与验收状态均不因整理改变。直接 TextBoxBase 层级、真实 MaskedTextProvider 模型、掩码输入与验证仍是前置缺口。
+本页任务表只列未完成范围；代码完成子项标记在[已完成任务](#已完成任务)，任务 ID 与验收状态均不因整理改变。直接 TextBoxBase 层级、真实 MaskedTextProvider 模型、掩码输入与验证已完成本轮确定范围，完整逐成员验收仍开放。
 
 [完整 API 与继承基线](../api/MaskedTextBox.md) · [任务索引](../README.md) · [依赖顺序](../execution.md) · [验证门槛](../validation.md) · [平台要求](../platforms.md)
 
 固定基线为 .NET 10.0.11。Windows、Linux、macOS 分别验收，当前没有完整逐控件 98% 结论。
+
+## 2026-11-11 M0 代码状态
+
+- ✅ `MaskedTextBox-001`：`MaskedTextBox` 已直接继承 `TextBoxBase`，提供标准 mask/provider 构造、只读 provider 快照、Culture/FormatProvider、MaskFormat/InsertKeyMode 及事件参数契约。
+- 🟡 `MaskedTextBox-002～008`：已接入真实 `MaskedTextProvider` 的空掩码、替换/插入/删除、选区、提示符/密码显示、拒绝策略、剪贴板消息和 AOT 安全的已知类型验证；完整官方成员、IME/Designer/平台行为仍未关闭。
+- PASS：5 项无窗口模型回归；`net10.0`/`net10.0-windows` 定向编译通过；当前集成 Release 编译 0 错误。真实窗口、Designer、完整 AOT 运行和跨平台验收为 NOT_RUN。
 
 ## 按依赖排序的任务
 
@@ -12,7 +18,7 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| MaskedTextBox-001 | P0 | ⬜ | 改为 MaskedTextBox : TextBoxBase；补标准构造重载（Mask/MaskedTextProvider），公开 MaskedTextProvider 只读对象、Culture/FormatProvider 与相关枚举/事件参数类型。 |
+| MaskedTextBox-001 | P0 | ✅ | 已改为 `MaskedTextBox : TextBoxBase`；补标准构造重载、空掩码私有模型、只读 `MaskedTextProvider` 快照、Culture/FormatProvider 与相关枚举/事件参数类型。真实 UI/Designer/AOT 运行仍按父项验收。 |
 | MaskedTextBox-002 | P1 | 🟡 | Mask=空字符串从存值改实际模型；标准掩码字符、必填/可选、文字转义、大小写与区域分隔符逐个用真实 WinForms 输入记录验收。 |
 | MaskedTextBox-003 | P1 | ⬜ | Text、TextLength、SelectedText、MaskCompleted、MaskFull、TextMaskFormat、CutCopyMaskFormat；包括提示符/文字的显示、返回与复制内容分开验证。 |
 | MaskedTextBox-004 | P1 | ⬜ | PromptChar、PasswordChar、UseSystemPasswordChar、AllowPromptAsInput、HidePromptOnLeave：默认值及不允许字符的异常，聚焦/失焦不误修改数据。 |
@@ -39,7 +45,7 @@
 
 ## 已完成任务
 
-当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
+本轮 `MaskedTextBox-001` 的定义范围已在上方任务表标记 ✅；完整控件父项及其余成员仍开放。变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

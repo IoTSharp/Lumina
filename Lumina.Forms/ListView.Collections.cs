@@ -19,6 +19,7 @@ public partial class ListView
         _itemsSynchronizationPending = false;
         _columnsSynchronizationPending = false;
         _synchronizationPosted = false;
+        _groupsSynchronizationPending = false;
         base.OnHandleDestroyed(e);
     }
 
@@ -26,7 +27,7 @@ public partial class ListView
     {
         nint handle = NativeHandle;
         if (handle == 0) { return; }
-        if (_synchronizingColumns || _synchronizingItems)
+        if (_synchronizingColumns || _synchronizingItems || _synchronizingGroups)
         {
             _columnsSynchronizationPending = true;
             return;
@@ -49,15 +50,17 @@ public partial class ListView
             {
                 ColumnHeader column = columns[index];
                 string text = column.Text;
+                int imageIndex = ResolveColumnImageIndex(column);
                 fixed (char* pointer = text)
                 {
                     Win32.LVCOLUMNW native = new()
                     {
-                        mask = 0x0001 | 0x0002 | 0x0004 | 0x0008,
-                        fmt = column.TextAlign switch { HorizontalAlignment.Right => 1, HorizontalAlignment.Center => 2, _ => 0 },
+                        mask = 0x0001 | 0x0002 | 0x0004 | 0x0008 | (imageIndex >= 0 ? 0x0010u : 0u),
+                        fmt = (column.TextAlign switch { HorizontalAlignment.Right => 1, HorizontalAlignment.Center => 2, _ => 0 }) | (imageIndex >= 0 ? 0x0800 : 0),
                         cx = Math.Max(0, column.Width),
                         pszText = (nint)pointer,
                         iSubItem = index,
+                        iImage = imageIndex,
                     };
                     if (Win32.SendMessageW(handle, Win32.LVM_INSERTCOLUMNW, index, (nint)(&native)) == -1)
                     {
@@ -86,7 +89,7 @@ public partial class ListView
     {
         nint handle = NativeHandle;
         if (handle == 0) { return; }
-        if (_synchronizingItems)
+        if (_synchronizingItems || _synchronizingGroups)
         {
             _itemsSynchronizationPending = true;
             return;
@@ -117,10 +120,11 @@ public partial class ListView
                 {
                     Win32.LVITEMW native = new()
                     {
-                        mask = Win32.LVIF_TEXT | Win32.LVIF_IMAGE | Win32.LVIF_STATE,
+                        mask = Win32.LVIF_TEXT | Win32.LVIF_IMAGE | Win32.LVIF_STATE | (_showGroups && _groups.Count > 0 ? 0x100u : 0u),
                         iItem = index,
                         pszText = (nint)pointer,
-                        iImage = item.ImageIndex,
+                        iImage = ResolveImageIndex(item),
+                        iGroupId = ResolveGroupId(item),
                         state = states.GetValueOrDefault(item),
                         stateMask = 0xF003,
                     };
@@ -146,7 +150,7 @@ public partial class ListView
     internal void SynchronizeItem(ListViewItem item)
     {
         if (NativeHandle == 0) { return; }
-        if (_synchronizingItems)
+        if (_synchronizingItems || _synchronizingGroups)
         {
             _itemsSynchronizationPending = true;
             return;
@@ -174,7 +178,7 @@ public partial class ListView
         {
             texts[position] = position < item.SubItemCount ? item.GetSubItem(position).Text : string.Empty;
         }
-        int imageIndex = item.ImageIndex;
+        int imageIndex = ResolveImageIndex(item);
         int previousCount = _nativeSubItemCounts.GetValueOrDefault(item);
         for (int subItem = 0; subItem < Math.Max(count, previousCount); subItem++)
         {
@@ -183,11 +187,12 @@ public partial class ListView
             {
                 Win32.LVITEMW native = new()
                 {
-                    mask = Win32.LVIF_TEXT | (subItem == 0 ? Win32.LVIF_IMAGE : 0),
+                    mask = Win32.LVIF_TEXT | (subItem == 0 ? Win32.LVIF_IMAGE | (_showGroups && _groups.Count > 0 ? 0x100u : 0u) : 0),
                     iItem = index,
                     iSubItem = subItem,
                     pszText = (nint)pointer,
                     iImage = imageIndex,
+                    iGroupId = ResolveGroupId(item),
                 };
                 nint updated = Win32.SendMessageW(handle, Win32.LVM_SETITEMW, 0, (nint)(&native));
                 if (NativeHandle != handle || IsDisposed) { return; }
@@ -202,8 +207,8 @@ public partial class ListView
 
     private void SchedulePendingSynchronization()
     {
-        if (_synchronizingItems || _synchronizingColumns || _synchronizationPosted
-            || (!_itemsSynchronizationPending && !_columnsSynchronizationPending)
+        if (_synchronizingItems || _synchronizingColumns || _synchronizingGroups || _synchronizationPosted
+            || (!_itemsSynchronizationPending && !_columnsSynchronizationPending && !_groupsSynchronizationPending)
             || NativeHandle == 0 || IsDisposed)
         {
             return;
@@ -219,9 +224,12 @@ public partial class ListView
                 _synchronizationPosted = false;
                 bool columns = _columnsSynchronizationPending;
                 bool items = _itemsSynchronizationPending;
+                bool groups = _groupsSynchronizationPending;
                 _columnsSynchronizationPending = false;
                 _itemsSynchronizationPending = false;
+                _groupsSynchronizationPending = false;
                 if (NativeHandle == 0 || IsDisposed) { return; }
+                if (groups) { SynchronizeGroups(); }
                 if (columns) { SynchronizeColumns(); }
                 else if (items) { SynchronizeItems(); }
             }));
