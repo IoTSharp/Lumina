@@ -44,12 +44,9 @@
 
 固定引用程序集还包含非公开 `System.Windows.Forms.UpDownBase+UpDownEdit : TextBox` 和 `System.Windows.Forms.UpDownBase+UpDownButtons : Control`。它们不是额外公开控件，不增加 API 支持率分母，也不要求照抄其私有类型结构。前者的输入/选择/验证归 UpDownBase-002/004/005/006，后者的步进/长按/取消/释放归 UpDownBase-003/009；Windows 原生 EDIT+UPDOWN、GTK/AppKit 原生组合均须通过同样行为。阶段为 P1，依赖本页 P0 继承修正。
 
-## 修改历史
+## 已完成任务
 
-以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
-
-- 尚无该类型实现文件的提交历史；不将其他控件或本轮规划计为已实现。
-- 2026-10-15 · 本轮新增此独立路线图与验收任务，未修改该类型实现；后续实现需在此追加日期、提交、修复范围与验收证据。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

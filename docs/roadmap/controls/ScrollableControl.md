@@ -37,11 +37,9 @@
 
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
@@ -54,24 +52,6 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 | ✅ | P1 / ScrollableControl-06a | 批次031：保护状态常量、Get/SetScrollState、HScroll/VScroll、AdjustFormScrollbars、SetDisplayRectLocation和范围刷新接线完成；不代表完整 ScrollableControl。 |
 | ✅ | P1 / ScrollableControl-07a | 批次033：`ScrollControlIntoView` 计算后代当前可见坐标时扣除既有水平/垂直偏移，修复后代移动到视口上方/左侧或嵌套 `AutoScrollOffset` 场景无法重新滚入视口的问题。真实 Tab 聚焦、物理设备、RTL/DPI 组合和平台滚动仍归父项。 |
 | ✅ | P2 / ScrollableControl-08a | 批次032：补WS_HSCROLL/WS_VSCROLL、SCROLLINFO、Get/SetScrollInfo、ScrollWindowEx及WndProc命令映射；复用托管范围/Scroll事件，Dispose后忽略注入消息。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次034收尾：纠正01父项仍称Panel使用历史基类的滞后描述，保留032已完成迁移与033聚焦滚动范围；本批未修改ScrollableControl源码或关闭完整滚动任务。
-
-- 2026-10-26 · 批次032：完成08a Windows滚动消息与SCROLLINFO代码首范围，Panel迁移并消费共享滚动层；真实物理输入、平台后端和完整验收仍待，见[032](../batches/032.md)。
-
-- 2026-10-26 · 批次031：完成02a～06a托管滚动首范围，补正设负读、内容范围、ScrollProperties/事件、受保护状态位和滚动路径；真实Win32滚动条消息、Panel迁移、平台和完整验收仍待，见[031](../batches/031.md)。
-
-- 2026-10-17 · 批次029：完成01b必要验证容器style；标准构造位有固定源码依据，未扩大为完整滚动或默认样式验收，见[029](../batches/029.md)。
-
-- 2026-10-16 · 批次021：按官方OnVisibleChanged补Visible时真正请求本体布局/缓存失效，ContainerControl/Form继承消费。原无滚动DisplayRectangle保留，未实现AutoScroll/ScrollProperties，也未迁移Panel；父项继续部分。
-
-- 2026-10-16 · 批次020：移除第二份暂停计数/延期状态与无条件子树遍历，继承Control标准事务，基础恢复不会强制对子孙调用PerformLayout。既有无滚动DisplayRectangle保留；Panel继承、滚动状态/坐标/平台后端仍缺，不能由本改动关闭滚动父项。
-
-- 2026-10-16 · 批次018：新增标准类支持Form真实继承，共用Control状态并提供客户区DisplayRectangle/布局暂停衔接。纠正历史“同名类不存在”为当前部分状态；Panel、所有滚动和GTK4/AppKit仍缺，未新增整类型验收，见[018](../batches/018.md)。
-- 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料
 

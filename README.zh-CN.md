@@ -9,7 +9,7 @@
 - [项目目标、需求与实施原则](PROJECT_REQUIREMENTS.md)：兼容约束、Windows 官方 / Linux 自有 Drawing 策略及验收边界。
 - [文档导航](docs/index.md)：需求、状态、使用指南与历史证据各自的入口。
 - [剩余路线图](ROADMAP.md)：未完成里程碑与依赖；连续代码实施已在 069 后停止。
-- [当前任务索引](docs/roadmap/README.md)：实施状态的统一入口；完成任务 ID 保留在原页修改历史。
+- [当前任务索引](docs/roadmap/README.md)：实施状态的统一入口；完成任务 ID 在原页标记，变更历史统一见根目录 CHANGELOG。
 - [变更记录](CHANGELOG.md) · [批次历史](docs/roadmap/batches/README.md) · [验证及未关闭门槛](docs/roadmap/validation.md)。
 - [98% 验收口径](docs/roadmap/coverage.md)：属性、事件、行为分别统计。
 - [2026-10 历史评估](docs/zh/luminaforms-reassessment-2026-10.md)：当时的项目价值和缺口，不能作为当前实施状态。

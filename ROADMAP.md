@@ -1,8 +1,8 @@
 # LuminaForms 剩余路线图
 
-更新：2026-11-07（Asia/Shanghai），以批次 069 后的文档交接为基点。**连续代码实施已停止，本轮仅整理文档；此路线不授权启动 070 或恢复监督。**
+更新：2026-11-11（Asia/Shanghai），以批次 069 后的文档交接为基点。**用户已授权恢复 M0 公共基础、Application 和项目收敛实现；M1 及后续范围保持未授权。**
 
-本页只保留尚未完成的工作与依赖。任务状态的唯一维护来源是[逐控件/公共任务页](docs/roadmap/README.md)，实施列与 [tasks.csv](docs/roadmap/tasks.csv)由现有工具生成。已完成的明确子范围在原任务页“修改历史”和[变更记录](CHANGELOG.md)，不再作为当前待办重复列出。
+本页只保留尚未完成的工作与依赖。任务状态的唯一维护来源是[逐控件/公共任务页](docs/roadmap/README.md)，实施列与 [tasks.csv](docs/roadmap/tasks.csv)由现有工具生成。已完成的明确子范围在原任务页“已完成任务”中标记，变更历史统一见根目录 [CHANGELOG](CHANGELOG.md)。
 
 ## 未完成里程碑
 

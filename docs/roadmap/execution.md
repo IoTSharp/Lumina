@@ -1,14 +1,14 @@
 # 剩余工作依赖与验收顺序
 
-更新：2026-11-07，代码停在批次 069。本页说明未来恢复实施时的依赖，不是启动授权；当前只做文档整理。归属与授权以[HANDOFF](../../HANDOFF.md)为准。
+更新：2026-11-11，用户已授权恢复 M0 实现。本页说明当前 M0 依赖、后续顺序和验收边界；M1 及后续仍以[HANDOFF](../../HANDOFF.md)授权为准。
 
-状态只在[控件与公共任务页](README.md)维护；本页不重复完成子项或每批测试总述。已完成范围见各任务页“修改历史”和[批次历史](batches/README.md)，失败和未运行门槛见[验证](validation.md)。
+状态只在[控件与公共任务页](README.md)维护；本页不重复完成子项或每批测试总述。已完成范围在各任务页直接标记，变更统一见根目录 [CHANGELOG](../../CHANGELOG.md)，详细证据见[批次历史](batches/README.md)；失败和未运行门槛见[验证](validation.md)。
 
 ## 当前最接近的剩余依赖
 
 | 依赖链 | 原任务范围 | 下一步需解决的问题 | 保持开放的边界 |
 | --- | --- | --- | --- |
-| UI 线程/循环归属 → 退出与模态 | FND-002；Application-01/03/04/06/12；Form-07；同步上下文父项 | 原同步上下文回调超时、Run 外关闭 WM_QUIT、关闭 LostFocus 严格差异、ApplicationContext/多 UI 线程及模态寿命 | 064 全量 FAIL 与 065 超时原因未定；独立分组通过不关闭失败 |
+| UI 线程/循环归属 → 退出与模态 | FND-002；Application-01/03/04/06/12；Form-07；同步上下文父项 | 标准Context/循环归属/模态/过滤代码已接；后续补外部宿主、极端退出/并发，并集中重验原同步上下文超时、关闭LostFocus与历史WM_QUIT差分 | 064 全量 FAIL 与 065 超时原因未定；本轮代码修复和必要轻量回归不清除历史全量失败 |
 | 原生通知来源 → 接收者寿命 | FND-011；Control-17；TextBoxBase-006；Form-16 | 原反射父 Form 销毁/重建关系、其他通知结果语义和完整派生恢复 | 069 的结果 0/1 回传不等于完整反射或任意高位返回值验证 |
 | RichEdit 文本/游标 → 余下通知与编辑 | RichTextBox-002/005/006/007/008/009/010/011 | LinkClicked/完整 TextChanged 与通知顺序；文件重载/StreamType/编码/锁；Undo/Redo/动作名/OLE；Find、选择方向与测量 | ambient/主题、字符段落交互、RTL/缩放/DPI、辅助技术仍待 |
 | TextBoxBase → MaskedTextProvider → 掩码输入/验证 | MaskedTextBox-001～011；FND-001；TextBoxBase 未完父项 | 直接层级、构造与真实模型，继而文本/选区、输入拒绝、覆盖模式、文化和类型验证 | 不能以存值属性、基类完成或 RichEdit 进展代替真实掩码模型 |
@@ -35,6 +35,6 @@ P0 是当前阶段的前置阻塞，P1 是共同基础和高频场景，P2 是�
 
 明确范围实现并通过必要编译/轻量检查后才可标 ✅ 代码完成；父项仍有工作就保持 🟡/🚧。平台、设计器、AOT 实际运行、设备和完整兼容验收分别记录，🧪 只用于匹配其平台与范围的可复现证据。[完整 Control 专项](controls/Control.md)既定的 Windows/AOT/相关 Designer 验收仍是其完成条件。
 
-未来获授权继续时，只更新对应任务状态与历史，使用 `tools/compatibility/Validate-Roadmap.ps1 -ExportTasks` 生成索引实施列及 tasks.csv，再普通校验。行为变更写 CHANGELOG；完整命令/首失败/诊断写批次页；当前未解门槛写 validation；HANDOFF 只写当前归属。入口页不再逐批复制相同摘要。
+当前M0实施只更新对应任务状态和根目录CHANGELOG，使用 `tools/compatibility/Validate-Roadmap.ps1 -ExportTasks` 生成索引实施列及 tasks.csv，再普通校验。实际命令/首失败/诊断保存在现有artifacts，当前未解门槛写validation，HANDOFF只写当前归属与接续范围；入口页不逐批复制相同摘要。
 
-本轮文档检查只核链接、任务导出、归档可追溯性和状态一致性；不运行产品构建、全量/设备测试，不用文档检查 PASS 清除现有产品失败。
+本轮只运行必要编译、少量与实现风险直接相关的轻量回归，以及文档链接/任务导出检查；全量、设备、设计器和实际AOT交互集中后置。文档检查PASS不能清除现有产品失败。

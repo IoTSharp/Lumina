@@ -3,17 +3,12 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a standard two-state check box control.
 /// </summary>
-public class CheckBox : Control
+public class CheckBox : ButtonBase
 {
     private bool _checked;
 
     /// <summary>Initializes a check box drawn by the native button control.</summary>
-    public CheckBox() => SetStyle(ControlStyles.UserPaint | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the control should use system visual styles for its background.
-    /// </summary>
-    public bool UseVisualStyleBackColor { get; set; } = true;
+    public CheckBox() => SetStyle(ControlStyles.StandardDoubleClick, false);
 
     /// <summary>
     /// Occurs when the <see cref="Checked"/> state changes.
@@ -63,9 +58,6 @@ public class CheckBox : Control
     }
 
     /// <inheritdoc />
-    protected override string ClassName => "BUTTON";
-
-    /// <inheritdoc />
     protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.BS_AUTOCHECKBOX;
 
     /// <inheritdoc />
@@ -78,7 +70,6 @@ public class CheckBox : Control
     protected override void OnHandleCreated()
     {
         base.OnHandleCreated();
-        ApplyNativeThemeState();
         Checked = _checked;
     }
 
@@ -99,23 +90,6 @@ public class CheckBox : Control
 
         OnClick(EventArgs.Empty);
         return true;
-    }
-
-    /// <inheritdoc />
-    protected override void ApplyTheme()
-    {
-        ApplyNativeThemeState();
-        ApplyExplorerTheme();
-    }
-
-    private void ApplyNativeThemeState()
-    {
-        if (NativeHandle == 0)
-        {
-            return;
-        }
-
-        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <summary>

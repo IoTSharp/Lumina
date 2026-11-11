@@ -101,13 +101,14 @@ All agents working in this repository must treat the following rules as hard con
 - Do not invent replacement APIs when WinForms already has the answer.
 - Aim for drop-in migration with the same control names, methods, properties, events, defaults, and behavior.
 
-## Current phase: documentation cleanup (user direction, 2026-11-07)
+## Current phase: M0 implementation (user direction, 2026-11-11)
 
-- Continuous product implementation stopped after batch 069. The current authorization covers documentation cleanup and necessary existing documentation-tool adjustments only. Do not start batch 070, product/test changes, builds, full/device tests, new continuation chats or supervision automations.
-- Keep ROADMAP and execution focused on unfinished work and dependencies. Move completed task rows to the original task page's history, preserving IDs, statuses, scope and evidence. The task pages remain authoritative; regenerate the existing index and tasks.csv without reducing the fixed API denominator.
-- Use README/docs navigation for document roles, CHANGELOG and batch pages for delivered changes, validation.md for current evidence and unresolved gates, and HANDOFF for current ownership. Do not copy long batch summaries into every entry page.
-- Preserve historical FAIL, timeout, UNKNOWN and NOT_RUN results. Documentation checks cannot establish product or platform acceptance.
-- Documentation commit/push, independent HEAD/tracking/remote verification and single-lead ownership remain authorized. Complete this documentation delivery and stop; later user pause/stop instructions take precedence.
+- M0 implementation is authorized again after the 069 documentation stop. Work is limited to the public foundation, Application lifecycle, list/tree ownership and synchronization, resource/AOT warning path, and project-consolidation dependencies named by the user; do not start M1 or a new batch framework.
+- Multiple internal agents may implement disjoint source files in parallel. The lead owns shared interfaces, integration, roadmap/task status, CHANGELOG, HANDOFF, builds and Git delivery. Preserve unrelated dirty files and stage only owned paths.
+- Write only necessary tests and checks for a confirmed implementation risk. Defer real Windows device, designer, full Native AOT runtime and other platform acceptance until the M0 code is complete and then validate them on the Windows host; compilation or a light check cannot claim those gates.
+- Keep ROADMAP and execution focused on unfinished work and dependencies. Mark completed task ranges on the original task page, preserving IDs, statuses, scope and evidence. Put dated/batch/source change history only in the root CHANGELOG. The task pages remain authoritative; regenerate the existing index and tasks.csv without reducing the fixed API denominator.
+- Use README/docs navigation for document roles, CHANGELOG for delivered changes, validation.md for current evidence and unresolved gates, and HANDOFF for current ownership. Preserve historical FAIL, timeout, UNKNOWN and NOT_RUN results.
+- Do not create continuation chats or supervision automations for this M0 work. Later user pause/stop instructions take precedence.
 
 ## Historical implementation workflow (applies only after new implementation authorization)
 

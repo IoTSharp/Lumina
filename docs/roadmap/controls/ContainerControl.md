@@ -36,11 +36,9 @@
 
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
@@ -53,34 +51,6 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 | ✅ | P1 / ContainerControl-05a | 批次031：受保护 `AutoScaleFactor` 按当前/设计尺寸返回双轴比例，设计基线或单轴缺失时返回中性1.0；不关闭完整字体/DPI/嵌套缩放。 |
 | ✅ | P1 / ContainerControl-06a | 批次031：标准 `ParentForm` 按当前父级链动态解析，重新挂载或脱离后立即反映宿主；不冒称BindingContext或键盘路由已完成。 |
 | ✅ | P1 / ContainerControl-06b | 批次033：`ProcessDialogKey` 将 Tab/Shift+Tab 交给 `ProcessTabKey`，按活动控件路径执行标准选择；`ProcessDialogChar`/`ProcessMnemonic` 遍历可见启用后代，首个处理成功项终止并按父链回退。完整验证取消/点击提交、BindingContext、IsDialogMessage、Enter/Escape、全部派生和真实设备仍待。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次039：ContainerControl.cs未改，继承Control-12l的有限语言消息/非Form根传播；未完成模态宿主、完整输入语言/IME和全部派生验证，父任务状态保留，见[039](../batches/039.md)。
-
-- 2026-11-07 · 批次038：ContainerControl.cs本批no-op；UserControl标准AutoSize声明继续消费共享布局，固定源码无UserControl独立算法。Control有限ImeMode继承/上下文不关闭完整容器输入/验证/缩放与平台，见[038](../batches/038.md)。
-
-- 2026-11-07 · 批次037：UserControl派生新增原生焦点入口，7项真实HWND回归验证共享活动链与Prevent/Allow/CausesValidation、Tab正反导航。ContainerControl.cs本批no-op；有限派生消费不关闭完整03/04/06/07，见[037](../batches/037.md)。
-
-- 2026-11-07 · 批次035：06d按固定10.0.11调用点通知Form默认按钮，基类空扩展点是标准派生契约，不代表验证成功；实际按钮激活仍消费真实验证结果。嵌套活动链/三种验证策略和队列Enter/Escape有回归，完整容器与点击输入不关闭，见[035](../batches/035.md)。
-
-- 2026-11-07 · 批次036：Control共享验证状态改为父链读取并在鼠标抬起后清理，真实HWND Prevent/Allow按钮回归覆盖取消不点击与允许点击；未扩展容器的完整原生提交、BindingContext、设备和平台，见[036](../batches/036.md)。
-
-- 2026-11-07 · 批次034：完成06c嵌套Tab不回绕、修饰键过滤及失败父链回退；纠正06父项遗漏033已完成子范围的描述。普通后代助记键终止依赖Control-12g默认false修复；完整输入/验证/平台仍待，见[034](../batches/034.md)。
-
-- 2026-10-26 · 批次031：补05a AutoScaleFactor和06a ParentForm的明确代码子范围；完整嵌套缩放、绑定、键盘和平台仍待，见[031](../batches/031.md)。
-
-- 2026-10-17 · 批次029：完成02b/03a有限子范围，将03/07由全待办改部分；移除后恢复可见树创建以维持旧父子集合行为。验证状态机按固定10.0.11源码适配，未将有限验证等同全容器或全部派生兼容，见[029](../batches/029.md)。
-
-- 2026-10-16 · 批次028：关闭02a限定逻辑链与程序焦点恢复子范围，04由全待办改部分，08补实际路由证据。公开/接口差异、嵌套重入、错误报告和TextBox去重有26项消费回归；未改AutoScale算法，自动候选、验证/Tab及完整容器仍待办，见[028](../batches/028.md)。
-
-- 2026-10-16 · 批次021：补GetPreferredSizeCore经真实LayoutEngine测量内容、边框/Padding和必要缓存，属于Control-09d的容器依赖；未改现有AutoScale算法，未以基础测量关闭完整容器/验证。
-
-- 2026-10-16 · 批次020：随ScrollableControl移除重复布局状态，Form继承统一标准Layout；未修改现有AutoScale算法，也未完成验证/滚动/完整布局。01既有继承完成范围保留，其他父项不随基类完成关闭。
-
-- 2026-10-16 · 批次018：新增标准类与IContainerControl，迁入Form缩放；按固定参考区分公开setter与显式接口、嵌套选择与释放。将历史“同名类不存在”和“Form独立IDisposable”更新为当前事实；02/05/08保持部分，其余验证/键盘/平台未关闭，见[018](../batches/018.md)。
-- 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料
 

@@ -3,17 +3,12 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a standard radio button control.
 /// </summary>
-public class RadioButton : Control
+public class RadioButton : ButtonBase
 {
     private bool _checked;
 
     /// <summary>Initializes a radio button drawn by the native button control.</summary>
-    public RadioButton() => SetStyle(ControlStyles.UserPaint | ControlStyles.StandardClick, false);
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the control should use system visual styles for its background.
-    /// </summary>
-    public bool UseVisualStyleBackColor { get; set; } = true;
+    public RadioButton() { }
 
     /// <summary>
     /// Occurs when the <see cref="Checked"/> state changes.
@@ -57,9 +52,6 @@ public class RadioButton : Control
     }
 
     /// <inheritdoc />
-    protected override string ClassName => "BUTTON";
-
-    /// <inheritdoc />
     protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.BS_AUTORADIOBUTTON;
 
     /// <inheritdoc />
@@ -72,7 +64,6 @@ public class RadioButton : Control
     protected override void OnHandleCreated()
     {
         base.OnHandleCreated();
-        ApplyNativeThemeState();
         Checked = _checked;
     }
 
@@ -93,23 +84,6 @@ public class RadioButton : Control
 
         OnClick(EventArgs.Empty);
         return true;
-    }
-
-    /// <inheritdoc />
-    protected override void ApplyTheme()
-    {
-        ApplyNativeThemeState();
-        ApplyExplorerTheme();
-    }
-
-    private void ApplyNativeThemeState()
-    {
-        if (NativeHandle == 0)
-        {
-            return;
-        }
-
-        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <summary>

@@ -58,6 +58,9 @@ public class Form : ContainerControl
     private IButtonControl? _cancelButton;
     private IButtonControl? _defaultButton;
     private DialogResult _dialogResult;
+    private bool _modal;
+    private bool _dialogCloseAccepted;
+    private bool _dialogClosing;
 
     /// <summary>
     /// Initializes a new top-level LuminaForms window.
@@ -115,6 +118,11 @@ public class Form : ContainerControl
             _dialogResult = value;
         }
     }
+
+    /// <summary>Gets whether this form is currently displayed as a modal dialog.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool Modal => _modal;
 
     /// <inheritdoc />
     protected override bool ProcessDialogKey(Keys keyData)
@@ -196,6 +204,9 @@ public class Form : ContainerControl
     /// Occurs when the form is closed.
     /// </summary>
     public event EventHandler? Closed;
+
+    /// <summary>Occurs after a close request has been accepted.</summary>
+    public event FormClosedEventHandler? FormClosed;
 
     /// <summary>
     /// Occurs before the form closes.
@@ -342,6 +353,11 @@ public class Form : ContainerControl
         try
         {
             base.SetVisibleCore(true);
+            if (NativeHandle != 0 && !_registeredOpenForm && !_dialogCloseAccepted)
+            {
+                Application.RegisterOpenForm(this);
+                _registeredOpenForm = true;
+            }
             PerformLayout();
             if (NativeHandle != 0)
             {
@@ -354,11 +370,78 @@ public class Form : ContainerControl
         }
     }
 
+    /// <summary>Shows the form as a modal dialog without an explicit owner.</summary>
+    public DialogResult ShowDialog() => ShowDialog(null);
+
+    /// <summary>Shows the form as a modal dialog owned by the supplied native window.</summary>
+    public DialogResult ShowDialog(IWin32Window? owner)
+    {
+        ThrowIfDisposed();
+        if (Visible) { throw new InvalidOperationException("A visible form cannot be shown as a modal dialog."); }
+        if (!Enabled) { throw new InvalidOperationException("A disabled form cannot be shown as a modal dialog."); }
+        if (!GetTopLevel()) { throw new InvalidOperationException("A modal dialog must be a top-level form."); }
+        if (_modal) { throw new InvalidOperationException("The form is already displayed as a modal dialog."); }
+        if (ReferenceEquals(owner, this)) { throw new ArgumentException("A dialog cannot own itself.", nameof(owner)); }
+
+        nint ownerHandle = owner?.Handle ?? Win32.GetActiveWindow();
+        if (ownerHandle != 0) { ownerHandle = Win32.GetAncestor(ownerHandle, 2 /* GA_ROOT */); }
+        if (ownerHandle != 0 && ownerHandle == NativeHandle)
+        {
+            throw new ArgumentException("A dialog cannot own itself.", nameof(owner));
+        }
+
+        _dialogResult = DialogResult.None;
+        _dialogCloseAccepted = false;
+        _modal = true;
+        nint previousOwner = 0;
+        List<nint> disabledWindows = [];
+        try
+        {
+            if (NativeHandle == 0) { _ = Handle; }
+            previousOwner = Win32.GetWindowLongPtrW(NativeHandle, -8 /* GWLP_HWNDPARENT */);
+            if (ownerHandle != 0)
+            {
+                _ = Win32.SetWindowLongPtrW(NativeHandle, -8 /* GWLP_HWNDPARENT */, ownerHandle);
+            }
+
+            disabledWindows = Application.DisableThreadWindowsForModal(this, ownerHandle);
+            Application.RunDialog(this);
+            if (_dialogResult == DialogResult.None) { _dialogResult = DialogResult.Cancel; }
+            return _dialogResult;
+        }
+        finally
+        {
+            try
+            {
+                UnregisterOpenForm();
+                if (NativeHandle != 0)
+                {
+                    Hide();
+                    _ = Win32.SetWindowLongPtrW(NativeHandle, -8 /* GWLP_HWNDPARENT */, previousOwner);
+                    DestroyHandle();
+                }
+            }
+            finally
+            {
+                _modal = false;
+                _dialogClosing = false;
+                _dialogCloseAccepted = false;
+                Application.EnableThreadWindowsAfterModal(disabledWindows);
+                if (ownerHandle != 0 && Win32.IsWindow(ownerHandle))
+                {
+                    _ = Win32.SetActiveWindow(ownerHandle);
+                }
+            }
+        }
+    }
+
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
         if (_showing && !_loaded)
         {
+            Application.RegisterOpenForm(this);
+            _registeredOpenForm = true;
             _loaded = true;
             OnCreated();
             OnLoad();
@@ -460,8 +543,6 @@ public class Form : ContainerControl
             CenterToScreen();
         }
 
-        Application.RegisterOpenForm(this);
-        _registeredOpenForm = true;
         NotifyNativeHandleCreated();
         if (Visible && NativeHandle != 0)
         {
@@ -813,6 +894,51 @@ public class Form : ContainerControl
         FormClosing?.Invoke(this, e);
     }
 
+    /// <summary>Raises the FormClosed event after removing this form from OpenForms.</summary>
+    protected virtual void OnFormClosed(FormClosedEventArgs e)
+    {
+        UnregisterOpenForm();
+        FormClosed?.Invoke(this, e);
+    }
+
+    internal bool PrepareApplicationExit()
+    {
+        FormClosingEventArgs e = new(CloseReason.ApplicationExitCall);
+        OnFormClosing(e);
+        return !e.Cancel;
+    }
+
+    internal void CompleteApplicationExit()
+    {
+        OnClosed();
+        OnFormClosed(new FormClosedEventArgs(CloseReason.ApplicationExitCall));
+        Dispose();
+    }
+
+    internal bool CheckCloseDialog(bool validate = false)
+    {
+        if (_dialogCloseAccepted || IsDisposed) { return true; }
+        if (_dialogClosing || (_dialogResult == DialogResult.None && Visible)) { return false; }
+
+        _dialogClosing = true;
+        try
+        {
+            FormClosingEventArgs e = new(CloseReason.UserClosing) { Cancel = validate && !Validate(true) };
+            OnFormClosing(e);
+            if (e.Cancel)
+            {
+                _dialogResult = DialogResult.None;
+                return false;
+            }
+
+            _dialogCloseAccepted = true;
+            OnClosed();
+            OnFormClosed(new FormClosedEventArgs(CloseReason.UserClosing));
+            return true;
+        }
+        finally { _dialogClosing = false; }
+    }
+
     /// <summary>
     /// Called when the form size changes.
     /// </summary>
@@ -932,10 +1058,7 @@ public class Form : ContainerControl
     {
         if (!_registeredOpenForm) { return; }
         _registeredOpenForm = false;
-        if (Application.UnregisterOpenForm(this))
-        {
-            Win32.PostQuitMessage(0);
-        }
+        _ = Application.UnregisterOpenForm(this);
     }
 
     internal void AttachControl(Control control, Control? parent)
@@ -1298,7 +1421,7 @@ public class Form : ContainerControl
 
     private static void ReportNativeWindowException(Exception exception)
     {
-        try { Application.OnThreadException(exception); }
+        try { Application.ReportNativeThreadException(exception); }
         catch (Exception reportingException)
         {
             Environment.FailFast("The application UI thread exception handler failed.", reportingException);
@@ -1404,6 +1527,13 @@ public class Form : ContainerControl
 
             case Win32.WM_CLOSE:
             {
+                if (_modal)
+                {
+                    if (_dialogResult == DialogResult.None) { _dialogResult = DialogResult.Cancel; }
+                    _ = CheckCloseDialog(validate: true);
+                    return 0;
+                }
+
                 FormClosingEventArgs closingArgs = new(CloseReason.UserClosing) { Cancel = !Validate(true) };
                 OnFormClosing(closingArgs);
                 if (closingArgs.Cancel)
@@ -1412,6 +1542,7 @@ public class Form : ContainerControl
                 }
 
                 OnClosed();
+                OnFormClosed(new FormClosedEventArgs(CloseReason.UserClosing));
                 Dispose();
                 return 0;
             }

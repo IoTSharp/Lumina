@@ -4,9 +4,9 @@
 
 ## 当前证据与依赖
 
-⬜ 当前没有 Lumina.Forms/ButtonBase.cs，也没有公开 ButtonBase 类型。三个按钮类各自直接继承 Control，公共图片、排列、命令和默认按钮契约尚未集中到 WinForms 的既有基类。
+🟡 已恢复标准 abstract ButtonBase : Control，Button/CheckBox/RadioButton 直接继承；共用原生 BUTTON、主题/句柄与默认按钮标志。图片、排列、命令和完整输入/外观契约仍待，不把继承恢复当整个按钮族完成。
 
-源码定位：`Lumina.Forms/ButtonBase.cs`（尚不存在）；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control 的句柄、键盘、布局、焦点和 Component/IDisposable 契约；随后 Button、CheckBox、RadioButton 同时迁移。
+源码定位：[ButtonBase.cs](../../../Lumina.Forms/ButtonBase.cs)；共同问题见 [Control](../../../Lumina.Forms/Control.cs) 和 [Win32 interop](../../../Lumina.Forms/Win32.cs)。先决依赖：Control 的句柄、键盘、布局、焦点和 Component/IDisposable 契约；随后 Button、CheckBox、RadioButton 同时迁移。
 
 公开成员（含继承的全部属性、事件和方法）逐项见 [ButtonBase API 清单](../api/ButtonBase.md)；共同行为、AOT、设计器与计数方法见 [基础任务](../foundations.md)。本表列出具体实现/验收动作，API 清单中余下成员也必须逐条关闭，不能把表外成员当作已支持。
 
@@ -16,7 +16,7 @@
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
-| ButtonBase-001 | P0 | ⬜ | 恢复 abstract ButtonBase : Control；Button、CheckBox、RadioButton 的赋值、多态、受保护覆盖点和 IButtonControl 由正确派生层提供，不能增加另一套公开基类。 |
+| ButtonBase-001 | P0 | ✅ | 已恢复 abstract ButtonBase : Control、protected构造、protected internal IsDefault；Button/CheckBox/RadioButton直接继承并共用已有BUTTON/主题/建窗行为。IButtonControl仍由Button提供，不新增另一套公开基类。 |
 | ButtonBase-002 | P1 | ⬜ | 属性逐项：Text、Image、ImageList、ImageIndex、ImageKey、ImageAlign、TextAlign、TextImageRelation；检验索引/键互斥、图文布局、图片替换、RTL 和句柄重建前后状态。 |
 | ButtonBase-003 | P1 | ⬜ | UseMnemonic=true、AutoEllipsis=false 的默认值按基线确认；& 与 &&、长文本省略、Alt 激活和焦点提示分别列场景，不用静态文字显示代替助记键。 |
 | ButtonBase-004 | P1 | ⬜ | AutoSize、GetPreferredSize、Padding、Margin 与 AutoSizeChanged：图片/字体/DPI/文本变更须触发布局；PreferredSize 在有无句柄时均有效。 |
@@ -40,12 +40,9 @@
 
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
-## 修改历史
+## 已完成任务
 
-以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
-
-- 尚无该类型实现文件的提交历史；不将其他控件或本轮规划计为已实现。
-- 2026-10-15 · 本轮新增此独立路线图与验收任务，未修改该类型实现；后续实现需在此追加日期、提交、修复范围与验收证据。
+代码完成范围已在上表标记；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

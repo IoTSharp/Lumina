@@ -19,7 +19,7 @@ dotnet add package Lumina.Forms
 ## WinForms
 
 ```csharp
-using Lumina.WinForms;
+using System.Windows.Forms;
 
 public partial class MainForm : Form
 {

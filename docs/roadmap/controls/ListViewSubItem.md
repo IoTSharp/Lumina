@@ -23,7 +23,7 @@
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
 | 🟡 | P0 | `ListViewSubItem-01` | 批次 004/005 已完成三种公共构造、继承、Text/Name/Tag 与独立/未挂接样式（01a/b）；已挂接控件及全局默认字体资源继承仍待后续。 |
-| 🟡 | P1 | `ListViewSubItem-02` | 批次 007～012 完成公共集合构造、共享 owner 数据、整数索引/首项规则、typed Add/AddRange/Insert/void Remove/RemoveAt/Clear、非泛型 IList/ICollection、引用查询/数组复制及枚举首范围（02a～f）；真实多线程/压力、完整所属与原生对应列同步仍待实现，不新增公开 Owner。 |
+| 🟡 | P1 | `ListViewSubItem-02` | 既有集合typed/非泛型契约及共享view保持；本轮补挂接后的文字/集合增删同步到真实LVM单元格。完整所属、样式、并发压力/异常事务仍待，不新增公开Owner。 |
 | 🟡 | P1 | `ListViewSubItem-03` | 批次 004～012 已有 Name/Tag、string key 四成员、公共集合/共享视图/整数索引、非泛型查询复制及枚举首范围；保留重复 key/Name 修改/缓存位置语义。真正多线程/压力、完整所属与 native 仍待实现。 |
 | 🟡 | P1 | `ListViewSubItem-04` | 批次 005 完成独立/未挂接的颜色字体及空值恢复，016补主项样式首项代理、主/子项共享默认Font及UseItemStyleForSubItems未挂接状态（ListViewItem-06a）；已挂接绘制时UseItemStyle消费、父控件继承优先级及全局默认字体仍待后续。 |
 | ⬜ | P1 | `ListViewSubItem-05` | Bounds、文本/图像对齐、列重排、水平滚动、非 Details 模式/未挂载的结果；不能以固定矩形占位。 |
@@ -54,11 +54,9 @@ NSTableCellView/NSTextField 对应列单元格，按 owner 样式决定字体/�
 
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
@@ -72,36 +70,6 @@ Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保�
 | ✅ | P1 | `ListViewSubItem-02f` | 批次 012：public IEnumerator GetEnumerator 直接实现 IEnumerable，标准 virtual-final 形状与 Current/MoveNext/Reset、开始前/中途/结束后的双 view 变更共 2,531 条固定参考/JIT 相同，347 项新增回归通过。结构变更使 MoveNext/Reset 失效但保留缓存 Current；空 Clear 不失效，owner.SubItems 恢复首项换数据表，旧空枚举器仍为空，全部 view 共享新数据。历史泛型顺序/身份及 typed 无效 Current=null 保留。真正多线程/压力、完整所属/挂接样式/native 另列。 |
 | ✅ | P1 | `ListViewSubItem-03a` | 批次 006：四个标准 virtual key 成员，209 条固定参考/Lumina 观测相同，新增 38 项回归。null/空不匹配且保留缓存，等长+InvariantCultureIgnoreCase、重复 key 的上次位置、Name/集合修改及单项移除、身份与首项延迟恢复已检。完整所属/IList/构造/整数索引及 native 不随此关闭。 |
 | ✅ | P2 | `ListViewSubItem-06a` | 批次 013：标准 ToString override 的元数据、原样文本和空/null/Unicode/换行/Text 变更及独立/owner/共享 view/重复/派生分派完成；58 条固定参考/JIT 相同，63 项新增回归通过。读取不恢复首项、不改变集合/枚举/独立 key 缓存，不读取 Tag 或样式、不释放借用 Font。Clone/样式序列化/设计器资源、挂接样式/native 另列，新字符串未计实际 AOT 运行验收。 |
-
-### 变更记录
-
-
-- 2026-10-16 · 批次016历史回标：02c/d/e曾笼统写尚缺IList/Insert/Remove/枚举，现明确引用后续已完成02d/e/f首范围，真正并发/完整所属/已挂接样式/native仍未完成；保留原批次快照与任务ID，不把集合首范围扩大为完整所属验收。
-
-- 2026-10-16 · 批次 016：主项样式新增后，默认惰性 Font 从子项私有存储移到主项/子项共享存储；借用 Font 寿命及既有 ResetStyle/直接子项样式保持，541 条主项样式对照含三枚举与各 view key 缓存，全部旧子项驱动通过。任务04仍部分完成，明确区分 UseItemStyleForSubItems 未挂接存值与已挂接绘制消费，后者、全局字体及所属/native仍未完成，见 [016](../batches/016.md)。
-
-- `b8a98eb` · 2026-04-09：ListViewItem.cs 同时加入基础 Text 子项及集合；未覆盖公开构造和样式契约。
-- 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
-- 2026-10-16 · 批次 004：先运行固定 WinForms 10.0.11 的 37 条观测，再补公共无参/owner-text、可继承性和 Text/Name/Tag；构造不会自动插入 owner.SubItems 或替换首项，null 字符串归空且保留非 null 字符串/Tag 身份。增加 13 项无 UI 回归，保留原构造与清空/恢复行为。Owner 只在库内保存，不新增公开属性；颜色字体/完整集合/native 未实现，不从指定场景推算完整兼容。
-
-- 2026-10-16 · 批次 005：先运行固定 WinForms 10.0.11 参考端，再补五参构造、ForeColor/BackColor/Font 与 ResetStyle；37 条两端样式观测相同，新增 15 项测试。默认使用 WindowText/Window 与惰性共享的官方 SystemFonts.MessageBoxFont（本机为 Microsoft YaHei UI 9，不能代以 SystemFonts.DefaultFont）；显式 Font 保留借用身份，不因置空/替换/Reset 而释放。保留 owner/文字/首项语义。未接 Control.DefaultFont/Application 自定义默认字体与 item→ListView 回链，不能据此宣称已挂接继承/native 或完整样式兼容。
-
-- 2026-10-16 · 批次 006：先运行固定参考端的 209 条观测，再补集合 string key 索引器、ContainsKey/IndexOfKey/RemoveByKey，新增 38 项回归。解除历史集合 sealed 以提供四个标准 virtual 成员；不改变现有泛型接口和内部构造形状。只保存一个最后命中索引，按参考端保留 Name 修改、Insert/Remove/Clear 后槽位的可观察选择，非空 miss 清除、null/空查询不清除；RemoveByKey 使用同一次查找结果只移除一项。比较先检 UTF-16 长度，再用不变文化忽略大小写，保留等长软连字符/NUL、Angstrom/Kelvin 等边界；不能以 OrdinalIgnoreCase 代替。完整集合构造、IList、所属和 native 缺口保留。
-
-历史按对应源码路径的相关内容摘要，不把提交标题当成功能验收证明。
-
-- 2026-10-16 · 批次 007：先固定参考，再让 owner 持有唯一子项数据，各公共集合为独立视图而非独立数据；构造 null owner 抛参数 owner，构造本身不生成首项，也不替换 owner.SubItems 的缓存视图。Text 直接读取 owner 数据；Clear 后访问 SubItems 或设置 Text 才恢复首项。整数 setter 先校验 index、后拒绝 null value，失败不改变数据；替换保留对象/Text/Tag 身份和各视图缓存。72 条对照与 27 项回归通过，旧基础/样式/key 回归保留。完整所属、Add/Insert/Remove/IList 和 native 仍缺，见 [批次 007](../batches/007.md)。
-
-- 2026-10-16 · 批次 008：先固定参考端，再补三个 typed Add 标准返回、参数及样式语义。Add(item) 拒绝 null（参数 item），保留派生/Tag/文字/字体身份，接受重复和其他 owner 的同一对象，原集合仍保留该对象；不将此行为当完整所属/native 同步。外部视图首次添加、Clear 后添加、主项 Text、共享数据与各视图最后 key 位置均保留。显式 ICollection<T>.Add 承接历史 void 消费；74 条参考/JIT 观测相同，40 项新增回归通过，原构造/样式/key/集合回归保留。清空、移除、ResetStyle、替换字体或子项不释放借用 Font，见 [批次 008](../batches/008.md)。
-
-- 2026-10-16 · 批次 009：先固定参考端，再补三个标准 typed AddRange。三重载 null 数组均抛 ArgumentNullException(items)，失败/空数组不改变共享数据或初始化首项；三者均跳过 null 元素，包括文本数组的 null 文字，与单项 Add(null) 归空不同。非 null 空 Text 对象与空字符串仍添加；原构造器的 null 元素归空行为保持，不改用 AddRange。顺序、原对象/派生/Tag/字符串身份、输入槽复制、重复/其他 owner、样式与借用 Font 寿命均有对照，外部首次/Clear 后视图、主项 Text 及各视图最后 key 索引保留。151 条固定参考/JIT 相同，121 项新增回归通过；未将本批新 AddRange 计为实际 AOT 运行验收，完整 IList/Insert/Remove/所属/native 仍缺，见 [批次 009](../batches/009.md)。
-
-- 2026-10-16 · 批次 010：先固定参考再实现 typed Insert/Remove 首范围。Insert 先校验 index（允许 Count），再拒绝 null item，原对象/文字/Tag/样式/其他 owner 数据及共享视图保留；公开非虚 void Remove 按 ReferenceEquals 查找首项，null/缺失不操作，派生 Equals 不参与。历史泛型 Insert 和 bool Remove 显式适配保留；Clear/RemoveAt 保持接口 virtual-final，不新增可覆盖 API。203 条固定参考/JIT 观测相同，110 项新增回归通过；首项移除、空集合惰性恢复、各视图独立 key 缓存与借用 Font 寿命均覆盖。未将新集合范围记为实际 AOT 运行验收，非泛型 IList、Contains/IndexOf/CopyTo 全契约、完整所属/挂接样式/native 仍缺，见 [批次 010](../batches/010.md)。
-
-- 2026-10-16 · 批次 011：固定参考后补非泛型 IList/ICollection 消费。对象 setter/Insert/Add 先验证类型，null/错型为 ArgumentException（value/item），typed 索引/Insert 的既有验证顺序保持；重复 Add 返回首次引用索引。Contains/IndexOf 标准 subItem 参数与非 virtual 形状、泛型显式适配均按引用身份，不调用派生 Equals。ICollection.CopyTo 为 private virtual-final 显式槽（dest/index），没有 public Array 重载；历史 typed CopyTo 通过同一路径保留。空集合跳过全部数组校验且不恢复首项，非空保留 rank/index/容量/类型顺序、非零下界和派生数组失败前写入；只把不兼容数组的 ArrayTypeMismatchException 转为标准 ArgumentException，保留 InvalidCastException。各 view 的 SyncRoot 是自身，IsSynchronized 按参考报告 true，不等于完整并发已验收。1,406 条固定参考/JIT 相同、270 项新增回归通过，共享数据/独立 key 缓存、借用 Font 与其他 owner 对象保持；新接口未提前计为实际 AOT 运行验收，完整枚举/并发、所属/挂接样式/native 另列，见 [批次 011](../batches/011.md)。
-
-- 2026-10-16 · 批次 012：固定参考后修正 public GetEnumerator 为 IEnumerator，并以 public virtual-final 直接实现 IEnumerable；历史 IEnumerable<T> 显式消费、typed 无效 Current=null 保留。2,531 条固定参考/JIT 全同，347 项新增回归通过。成功替换（包括同对象）/Add/Insert/Remove/非空 Clear 使 MoveNext/Reset 失效而 Current 保留缓存身份；失败/移除缺失/文字修改不失效。空 Clear 不改变版本，owner.SubItems 在空集合恢复首项时换数据表，所有 view 共享新表而旧空枚举器保持为空；不依赖 Array/List 内部反射或新增公开枚举类型。重复派生身份/双 view/独立 key 缓存与借用 Font 寿命保留。新枚举未记实际 AOT 运行验收；真实多线程/压力、完整所属/挂接样式/native 仍另列，见 [批次 012](../batches/012.md)。
-- 2026-10-16 · 批次 013：固定参考后补 public override string ToString()，复用 Object 虚槽，输出固定 ListViewSubItem 前缀与原样 Text（空值已归一为空括号）。58 条固定参考/JIT 相同，63 项新增回归通过，覆盖 Unicode/换行/嵌入 NUL、文本变更、派生覆盖/隐藏成员/原异常、共享 view/重复/移除/跨 owner、三种枚举消费与独立 key 缓存。不触发首项恢复，不修改数据表或枚举版本，不读取 Tag/样式或消费已释放的借用 Font。Clone/序列化/完整所属/已挂接样式/native 仍缺，新字符串未计实际 AOT 运行验收，见 [批次 013](../batches/013.md)。
 
 ## 官方资料
 

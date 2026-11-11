@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 namespace Lumina.Forms.Resources;
 
 /// <summary>
-/// Reads standard resources and the Bitmap byte resources emitted by the LuminaForms build path.
+/// Reads standard resources and the Drawing byte resources emitted by the LuminaForms build path.
 /// </summary>
 /// <remarks>
-/// Bitmap conversion uses a statically referenced decoder. Other resource objects retain the
+/// Bitmap, Icon and Font conversion uses statically referenced decoders. Other resource objects retain the
 /// behavior of <see cref="System.Resources.ResourceManager"/>.
 /// </remarks>
 public class ResourceManager : System.Resources.ResourceManager
@@ -38,10 +38,10 @@ public class ResourceManager : System.Resources.ResourceManager
 }
 
 /// <summary>
-/// Reads designer resources with the standard ComponentResourceManager API and direct Bitmap decoding.
+/// Reads designer resources with the standard ComponentResourceManager API and direct Drawing decoding.
 /// </summary>
 /// <remarks>
-/// This first resource path covers GetObject for Bitmap resources. ApplyResources and other
+/// This resource path covers GetObject for Bitmap, Icon and invariant-string Font resources. ApplyResources and other
 /// reflection based component conversion continue to follow the base implementation.
 /// </remarks>
 public class ComponentResourceManager : System.ComponentModel.ComponentResourceManager
@@ -71,6 +71,7 @@ internal static class BitmapResourceDecoder
     // System.Drawing requires the input stream to remain open for the lifetime of the Bitmap.
     // MemoryStream has no native handle; the association expires when the Bitmap is collected.
     private static readonly ConditionalWeakTable<Bitmap, MemoryStream> s_streams = new();
+    private static readonly ConditionalWeakTable<Icon, MemoryStream> s_iconStreams = new();
 
     internal static object GetObject(byte[] bytes, string? resourceType)
     {
@@ -79,9 +80,19 @@ internal static class BitmapResourceDecoder
             return bytes;
         }
 
+        if (string.Equals(resourceType, "System.Drawing.Icon", StringComparison.Ordinal))
+        {
+            return CreateIcon(bytes);
+        }
+
+        if (string.Equals(resourceType, "System.Drawing.Font", StringComparison.Ordinal))
+        {
+            return CreateFont(bytes);
+        }
+
         if (!string.Equals(resourceType, "System.Drawing.Bitmap", StringComparison.Ordinal))
         {
-            throw new NotSupportedException($"The resource object type '{resourceType}' is not supported by the Bitmap resource path.");
+            throw new NotSupportedException($"The resource object type '{resourceType}' is not supported by the Drawing resource path.");
         }
 
         // The preserialized Bitmap path used by the WinForms baseline decodes each lookup.
@@ -100,5 +111,48 @@ internal static class BitmapResourceDecoder
             stream.Dispose();
             throw;
         }
+    }
+
+    private static Icon CreateIcon(byte[] bytes)
+    {
+        var stream = new MemoryStream(bytes, writable: false);
+        Icon? icon = null;
+        try
+        {
+            icon = new Icon(stream);
+            s_iconStreams.Add(icon, stream);
+            return icon;
+        }
+        catch
+        {
+            icon?.Dispose();
+            stream.Dispose();
+            throw;
+        }
+    }
+
+    private static Font CreateFont(byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var reader = new BinaryReader(stream, System.Text.Encoding.UTF8, leaveOpen: false);
+        if (reader.ReadInt32() != 0x3152464C) // LFR1: versioned, primitive-only font record.
+        {
+            throw new InvalidDataException("The Font resource record has an unsupported format.");
+        }
+
+        string name = reader.ReadString();
+        float size = reader.ReadSingle();
+        FontStyle style = (FontStyle)reader.ReadInt32();
+        GraphicsUnit unit = (GraphicsUnit)reader.ReadInt32();
+        byte charSet = reader.ReadByte();
+        bool vertical = reader.ReadBoolean();
+        if (stream.Position != stream.Length)
+        {
+            throw new InvalidDataException("The Font resource record has trailing data.");
+        }
+
+        // Keep the original family name until the target OS resolves it. Building
+        // must not bake a build-machine font substitution into a deployed resource.
+        return new Font(name, size, style, unit, charSet, vertical);
     }
 }

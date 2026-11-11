@@ -2994,7 +2994,7 @@ public partial class Control : Component, IWin32Window, ISynchronizeInvoke
 
     private static void ReportNativeWindowException(Exception exception)
     {
-        try { Application.OnThreadException(exception); }
+        try { Application.ReportNativeThreadException(exception); }
         catch (Exception reportingException)
         {
             Environment.FailFast("The application UI thread exception handler failed.", reportingException);

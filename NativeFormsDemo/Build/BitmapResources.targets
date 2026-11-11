@@ -13,11 +13,17 @@
     <Task>
       <Using Namespace="System" />
       <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.Globalization" />
       <Using Namespace="System.IO" />
       <Using Namespace="System.Text" />
       <Using Namespace="System.Xml" />
       <Code Type="Fragment" Language="cs"><![CDATA[
         const string typeSuffix = ".__LuminaResourceType";
+        var conversionBudget = System.Diagnostics.Stopwatch.StartNew();
+        if (Resources.Length > 128 || DesignerSources.Length > 128)
+        {
+            throw new InvalidDataException("A Drawing resource conversion is limited to 128 resource files and 128 designer files.");
+        }
         var convertedResources = new List<Microsoft.Build.Framework.ITaskItem>();
         var convertedSources = new List<Microsoft.Build.Framework.ITaskItem>();
         var primitiveTypes = new HashSet<string>(StringComparer.Ordinal)
@@ -33,12 +39,15 @@
         Directory.CreateDirectory(resourceOutput);
         Directory.CreateDirectory(sourceOutput);
         int bitmapCount = 0;
+        int iconCount = 0;
+        int fontCount = 0;
         foreach (var item in Resources)
         {
+            if (conversionBudget.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("Drawing resource conversion exceeded 30 seconds.");
             string sourcePath = Path.GetFullPath(item.ItemSpec);
             if (!string.Equals(Path.GetExtension(sourcePath), ".resx", StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidDataException("The Bitmap resource input must be a resx file: " + sourcePath);
+                throw new InvalidDataException("The Drawing resource input must be a resx file: " + sourcePath);
             }
             string manifestName = item.GetMetadata("ManifestResourceName");
             if (string.IsNullOrEmpty(manifestName))
@@ -50,10 +59,14 @@
             document.XmlResolver = null;
             document.Load(sourcePath);
             var dataNodes = document.SelectNodes("/root/data");
+            if (dataNodes.Count > 4096) throw new InvalidDataException("A converted resx file is limited to 4096 resources: " + sourcePath);
             var markers = new List<XmlElement>();
             int resourceBitmapCount = 0;
+            int resourceIconCount = 0;
+            int resourceFontCount = 0;
             foreach (XmlElement data in dataNodes)
             {
+                if (conversionBudget.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("Drawing resource conversion exceeded 30 seconds.");
                 string name = data.GetAttribute("name");
                 if (name.EndsWith(typeSuffix, StringComparison.Ordinal))
                 {
@@ -67,23 +80,33 @@
                     throw new InvalidDataException("The resource has no value: " + name);
                 }
                 byte[] bytes = null;
+                string resourceType = type;
                 if (type == "System.Resources.ResXFileRef")
                 {
                     string[] fileReference = value.InnerText.Split(';');
-                    if (fileReference.Length != 2 || fileReference[1].Split(',')[0].Trim() != "System.Drawing.Bitmap")
+                    if (fileReference.Length != 2)
                     {
-                        throw new InvalidDataException("Only Bitmap file references are supported by this resource path: " + name);
+                        throw new InvalidDataException("A Drawing file reference must contain its path and type: " + name);
+                    }
+                    resourceType = fileReference[1].Split(',')[0].Trim();
+                    if (resourceType != "System.Drawing.Bitmap" && resourceType != "System.Drawing.Icon")
+                    {
+                        throw new InvalidDataException("Only Bitmap and Icon file references are supported by this resource path: " + name);
                     }
                     string filePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sourcePath), fileReference[0]));
                     bytes = File.ReadAllBytes(filePath);
                 }
-                else if (type == "System.Drawing.Bitmap")
+                else if (type == "System.Drawing.Bitmap" || type == "System.Drawing.Icon")
                 {
                     if (mimeType != "application/x-microsoft.net.object.bytearray.base64")
                     {
-                        throw new InvalidDataException("Only byte-array serialized Bitmap resources are supported: " + name);
+                        throw new InvalidDataException("Only byte-array serialized Bitmap and Icon resources are supported: " + name);
                     }
                     bytes = Convert.FromBase64String(value.InnerText);
+                }
+                else if (type == "System.Drawing.Font" && string.IsNullOrEmpty(mimeType))
+                {
+                    bytes = EncodeInvariantFont(value.InnerText);
                 }
                 else if ((!string.IsNullOrEmpty(type) && !primitiveTypes.Contains(type)) || !string.IsNullOrEmpty(mimeType))
                 {
@@ -99,18 +122,20 @@
                     XmlElement marker = document.CreateElement("data");
                     marker.SetAttribute("name", name + typeSuffix);
                     XmlElement markerValue = document.CreateElement("value");
-                    markerValue.InnerText = "System.Drawing.Bitmap";
+                    markerValue.InnerText = resourceType;
                     marker.AppendChild(markerValue);
                     markers.Add(marker);
-                    bitmapCount++;
-                    resourceBitmapCount++;
+                    switch (resourceType)
+                    {
+                        case "System.Drawing.Bitmap": bitmapCount++; resourceBitmapCount++; break;
+                        case "System.Drawing.Icon": iconCount++; resourceIconCount++; break;
+                        case "System.Drawing.Font": fontCount++; resourceFontCount++; break;
+                    }
                 }
             }
-            int expectedBitmapCount = int.Parse(item.GetMetadata("BitmapCount"), System.Globalization.CultureInfo.InvariantCulture);
-            if (resourceBitmapCount != expectedBitmapCount)
-            {
-                throw new InvalidDataException("Bitmap resource count changed in " + sourcePath + ": expected " + expectedBitmapCount + ", found " + resourceBitmapCount);
-            }
+            ValidateCount(item, "BitmapCount", resourceBitmapCount, sourcePath);
+            ValidateCount(item, "IconCount", resourceIconCount, sourcePath);
+            ValidateCount(item, "FontCount", resourceFontCount, sourcePath);
             foreach (XmlElement marker in markers)
             {
                 document.DocumentElement.AppendChild(marker);
@@ -128,12 +153,13 @@
             converted.SetMetadata("DependentUpon", "");
             convertedResources.Add(converted);
         }
-        if (bitmapCount == 0)
+        if (bitmapCount + iconCount + fontCount == 0)
         {
-            throw new InvalidDataException("No Bitmap resources were found in the configured resource inputs.");
+            throw new InvalidDataException("No supported Drawing resources were found in the configured resource inputs.");
         }
         foreach (var item in DesignerSources)
         {
+            if (conversionBudget.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("Drawing resource conversion exceeded 30 seconds.");
             string sourcePath = Path.GetFullPath(item.ItemSpec);
             string source = File.ReadAllText(sourcePath, Encoding.UTF8);
             string[] names = { "System.ComponentModel.ComponentResourceManager", "System.Resources.ResourceManager" };
@@ -161,7 +187,123 @@
         }
         ConvertedResources = convertedResources.ToArray();
         ConvertedSources = convertedSources.ToArray();
-        Log.LogMessage(Microsoft.Build.Framework.MessageImportance.Low, "Converted {0} Bitmap resources without TypeConverter; original Designer/resx files were preserved.", bitmapCount);
+        Log.LogMessage(Microsoft.Build.Framework.MessageImportance.Low, "Converted {0} Bitmap, {1} Icon and {2} Font resources without runtime TypeConverter; original Designer/resx files were preserved.", bitmapCount, iconCount, fontCount);
+
+        static void ValidateCount(Microsoft.Build.Framework.ITaskItem item, string metadata, int actual, string sourcePath)
+        {
+            string configured = item.GetMetadata(metadata);
+            int expected = string.IsNullOrEmpty(configured) ? 0 : int.Parse(configured, CultureInfo.InvariantCulture);
+            if (actual != expected)
+            {
+                throw new InvalidDataException(metadata + " changed in " + sourcePath + ": expected " + expected + ", found " + actual);
+            }
+        }
+
+        static byte[] EncodeInvariantFont(string value)
+        {
+            // Match the string form written by FontConverter using InvariantCulture:
+            // name[, size[unit][, style=style1[, style2...]]]. That format has no
+            // escaping for commas in a family name and carries no charset/vertical
+            // fields; do not guess an extended grammar or use the build machine's
+            // installed fonts to resolve a family name.
+            string text = value.Trim();
+            if (text.Length == 0 || text.Length > 16384)
+            {
+                throw new InvalidDataException("A Font resource must have a nonempty invariant FontConverter string of at most 16384 characters.");
+            }
+            string familyName = text;
+            float size = 8.25f;
+            int style = 0;
+            int unit = 3; // GraphicsUnit.Point
+            int separator = text.IndexOf(',');
+            if (separator >= 0)
+            {
+                familyName = text.Substring(0, separator);
+                if (separator < text.Length - 1)
+                {
+                    int styleIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(text, "style=", CompareOptions.IgnoreCase);
+                    if (styleIndex >= 0 && styleIndex <= separator)
+                    {
+                        throw new InvalidDataException("The Font resource has an invalid style section: " + value);
+                    }
+                    string sizeText = (styleIndex >= 0
+                        ? text.Substring(separator + 1, styleIndex - separator - 1)
+                        : text.Substring(separator + 1)).Trim();
+                    int split = 0;
+                    for (; split < sizeText.Length && !char.IsLetter(sizeText[split]); split++) { }
+                    char[] trim = { ',', ' ' };
+                    if (split > 0)
+                    {
+                        string number = sizeText.Substring(0, split).Trim(trim);
+                        if (!float.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out size))
+                        {
+                            throw new InvalidDataException("The Font resource size is not invariant: " + value);
+                        }
+                    }
+                    if (split < sizeText.Length)
+                    {
+                        string units = sizeText.Substring(split).TrimEnd(trim);
+                        switch (units)
+                        {
+                            case "world": unit = 0; break;
+                            case "display": unit = 1; break;
+                            case "px": unit = 2; break;
+                            case "pt": unit = 3; break;
+                            case "in": unit = 4; break;
+                            case "doc": unit = 5; break;
+                            case "mm": unit = 6; break;
+                            default: throw new InvalidDataException("The Font resource unit is unsupported: " + value);
+                        }
+                    }
+                    if (styleIndex >= 0)
+                    {
+                        string[] styles = text.Substring(styleIndex + 6).Split(',');
+                        if (styles.Length > 16)
+                        {
+                            throw new InvalidDataException("The Font resource has too many style tokens: " + value);
+                        }
+                        foreach (string token in styles)
+                        {
+                            string flag = token.Trim();
+                            int parsed;
+                            if (string.Equals(flag, "Regular", StringComparison.OrdinalIgnoreCase)) parsed = 0;
+                            else if (string.Equals(flag, "Bold", StringComparison.OrdinalIgnoreCase)) parsed = 1;
+                            else if (string.Equals(flag, "Italic", StringComparison.OrdinalIgnoreCase)) parsed = 2;
+                            else if (string.Equals(flag, "Underline", StringComparison.OrdinalIgnoreCase)) parsed = 4;
+                            else if (string.Equals(flag, "Strikeout", StringComparison.OrdinalIgnoreCase)) parsed = 8;
+                            else if (!int.TryParse(flag, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed))
+                            {
+                                throw new InvalidDataException("The Font resource style is unsupported: " + value);
+                            }
+                            if ((parsed & ~15) != 0)
+                            {
+                                throw new InvalidDataException("The Font resource style has invalid flags: " + value);
+                            }
+                            style |= parsed;
+                        }
+                    }
+                }
+            }
+            if (!(size > 0) || float.IsInfinity(size))
+            {
+                throw new InvalidDataException("The Font resource size must be finite and positive: " + value);
+            }
+
+            using (var output = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(output, new UTF8Encoding(false, true), true))
+                {
+                    writer.Write(0x3152464C); // LFR1; consumed directly by the runtime resource decoder.
+                    writer.Write(familyName);
+                    writer.Write(size);
+                    writer.Write(style);
+                    writer.Write(unit);
+                    writer.Write((byte)1); // FontConverter's default GDI charset.
+                    writer.Write(false);  // FontConverter's default vertical flag; @ names remain intact.
+                }
+                return output.ToArray();
+            }
+        }
       ]]></Code>
     </Task>
   </UsingTask>

@@ -44,11 +44,9 @@
 
 固定程序集中的非公开 `System.Windows.Forms.ToolStripScrollButton : ToolStripControlHost` 与 `System.Windows.Forms.ToolStripScrollButton+StickyLabel : Label` 属于下拉内容滚动实现，行为归 [ToolStripOverflow](ToolStripOverflow.md)、[ToolStripDropDown](ToolStripDropDown.md) 的超长内容/键盘/按住滚动/释放任务（P2/P3）。`System.Windows.Forms.ToolStripGrip : ToolStripButton` 的拖拽手柄行为归 [ToolStrip](ToolStrip.md) 与 [ToolStripPanel](ToolStripPanel.md)（P2）。它们不是遗漏的公开控件；不新增公开 API，也不要求照搬微软内部类。
 
-## 修改历史
+## 已完成任务
 
-- 截至 `b83f534` 未发现本类型的实现文件，无可归属的本类型实现提交。
-- 宿主相关历史（不代表 overflow 已实现）：`ed64510` · 2026-04-08 · 菜单下拉状态与相邻导航；`275c479` · 2026-04-08 · 文本布局和高 DPI；`83e9356` · 2026-04-08 · 菜单图像资源处理。均来自 `git log -3 -- Lumina.Forms/ToolStrip.cs`。
-- 2026-10-15 · 新增本独立规划，未修改实现。后续实现需记录日期、提交、具体溢出场景与验收证据。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

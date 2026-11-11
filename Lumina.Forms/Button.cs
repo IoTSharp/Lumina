@@ -9,24 +9,18 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a standard push button control.
 /// </summary>
-public class Button : Control, IButtonControl
+public class Button : ButtonBase, IButtonControl
 {
     private DialogResult _dialogResult;
-    private bool _isDefault;
 
     /// <summary>
     /// Initializes a button with Windows-style default spacing.
     /// </summary>
     public Button()
     {
-        SetStyle(ControlStyles.UserPaint | ControlStyles.StandardClick | ControlStyles.StandardDoubleClick, false);
+        SetStyle(ControlStyles.StandardDoubleClick, false);
         Margin = new Padding(3);
     }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the control should use system visual styles for its background.
-    /// </summary>
-    public bool UseVisualStyleBackColor { get; set; } = true;
 
     /// <summary>Gets or sets the result assigned to the containing form when clicked.</summary>
     [DefaultValue(DialogResult.None)]
@@ -46,9 +40,7 @@ public class Button : Control, IButtonControl
     /// <summary>Updates whether this button is the form's current default button.</summary>
     public virtual void NotifyDefault(bool value)
     {
-        if (_isDefault == value) { return; }
-        _isDefault = value;
-        UpdateStyles();
+        IsDefault = value;
     }
 
     /// <summary>
@@ -67,14 +59,8 @@ public class Button : Control, IButtonControl
     }
 
     /// <inheritdoc />
-    protected override string ClassName => "BUTTON";
-
-    /// <inheritdoc />
     protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP
-        | Win32.BS_PUSHBUTTON | (_isDefault ? 0x00000001u : 0u); // BS_DEFPUSHBUTTON
-
-    /// <inheritdoc />
-    protected override bool UseParentBackgroundForTheming => UseVisualStyleBackColor;
+        | Win32.BS_PUSHBUTTON | (IsDefault ? 0x00000001u : 0u); // BS_DEFPUSHBUTTON
 
     /// <inheritdoc />
     protected override int GetNativeHeight(int requestedHeight)
@@ -90,30 +76,6 @@ public class Button : Control, IButtonControl
 
         if (!ValidationCancelled) { OnClick(EventArgs.Empty); }
         return true;
-    }
-
-    /// <inheritdoc />
-    protected override void ApplyTheme()
-    {
-        ApplyNativeThemeState();
-        ApplyExplorerTheme();
-    }
-
-    /// <inheritdoc />
-    protected override void OnHandleCreated()
-    {
-        base.OnHandleCreated();
-        ApplyNativeThemeState();
-    }
-
-    private void ApplyNativeThemeState()
-    {
-        if (NativeHandle == 0)
-        {
-            return;
-        }
-
-        DarkModeNative.ApplyThemeToWindow(NativeHandle, CurrentVisualStyle.IsDarkMode);
     }
 
     /// <summary>

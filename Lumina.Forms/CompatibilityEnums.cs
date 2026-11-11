@@ -28,9 +28,12 @@ public enum CheckState
 public enum CloseReason
 {
     None = 0,
-    UserClosing = 1,
-    ApplicationExitCall = 2,
-    FormOwnerClosing = 3
+    WindowsShutDown = 1,
+    MdiFormClosing = 2,
+    UserClosing = 3,
+    TaskManagerClosing = 4,
+    FormOwnerClosing = 5,
+    ApplicationExitCall = 6
 }
 
 public enum FormStartPosition

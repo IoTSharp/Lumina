@@ -133,9 +133,16 @@ public sealed class WindowsFormsSynchronizationContext : SynchronizationContext,
         }
     }
 
+    internal static void ReleaseCurrentThread()
+    {
+        SynchronizationContextWindow? window = t_window;
+        t_window = null;
+        window?.Dispose();
+    }
+
     private static void ReportNativeWindowException(Exception exception)
     {
-        try { Application.OnThreadException(exception); }
+        try { Application.ReportNativeThreadException(exception); }
         catch (Exception reportingException)
         {
             Environment.FailFast("The application UI thread exception handler failed.", reportingException);

@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-当前只有 List<TreeNode> 存储、Add/AddRange、Count/整数只读索引和枚举；无 owner、插入删除、键查找、IList、原生更新和所有权约束。
+已建立TreeView/父TreeNode所属、可写索引、增删插入替换、键查找/Find及TVM原生更新；完整IList/ICollection、图像重载、排序、编辑事件和平台验收仍待。
 
 - 标准继承/契约：`TreeNodeCollection : IList, ICollection, IEnumerable`；TreeView.Nodes 与 TreeNode.Nodes 的标准集合。
 - 代码证据：[当前源码](../../../Lumina.Forms/TreeNode.cs)。
@@ -22,15 +22,15 @@
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `TreeNodeCollection-01` | IList/ICollection 显式契约、整数可写/字符串只读索引、IsReadOnly/IsFixedSize/SyncRoot/CopyTo；Add(TreeNode) 返回索引等重载签名准确。 |
-| ⬜ | P1 | `TreeNodeCollection-02` | Add(text)、Add(key,text)、含 imageIndex/imageKey 重载、AddRange(TreeNode[])、Insert/Remove/RemoveAt/Clear；返回 node/index、异常参数和重复节点规则一致。 |
-| ⬜ | P1 | `TreeNodeCollection-03` | owner 连接 TreeView 或父 TreeNode，维护 Parent/TreeView/Index；加入已有宿主节点、自身/祖先、跨树移动不留下两份所属关系。 |
-| ⬜ | P1 | `TreeNodeCollection-04` | Contains/IndexOf/ContainsKey/IndexOfKey/RemoveByKey/Find(key,searchAllChildren)，大小写与重复 key、空 key、递归查找顺序按基线固定。 |
-| ⬜ | P1 | `TreeNodeCollection-05` | 原生创建前增删、挂载后增删、索引替换、子树删除；托管 Count/顺序与 TVM_GETCOUNT/枚举一致，不只检查托管集合。 |
+| 🟡 | P0 | `TreeNodeCollection-01` | 已补整数可写/字符串只读索引与Add(TreeNode)索引；完整IList/ICollection显式接口、SyncRoot/CopyTo等仍待。 |
+| 🟡 | P1 | `TreeNodeCollection-02` | 已补Add(text)/Add(key,text)、AddRange、Insert/Remove/RemoveAt/Clear与基础返回值；含图像重载和完整异常参数对照仍待。 |
+| ✅ | P1 | `TreeNodeCollection-03` | owner连接TreeView或父TreeNode并维护Parent/TreeView/Index；重复宿主、自身及祖先循环先拒绝，移除后可重挂。插入/替换原生失败会恢复托管所属及句柄映射。 |
+| 🟡 | P1 | `TreeNodeCollection-04` | 已补Contains/IndexOf及按key查询、RemoveByKey/Find；完整重复key/大小写/空key及深层查找顺序的固定基线运行对照仍待。 |
+| 🟡 | P1 | `TreeNodeCollection-05` | 建窗前后增删、索引替换、子树移除已连接真实TVM消息；Windows原生Count/顺序与回调重入的实际验证后置。 |
 | ⬜ | P1 | `TreeNodeCollection-06` | 删除选中/正在编辑/展开节点时 TreeView 事件顺序、取消权限和当前节点回退；批量 AddRange 与 BeginUpdate/EndUpdate 不丢最终状态。 |
 | ⬜ | P2 | `TreeNodeCollection-07` | Sorted/TreeViewNodeSorter 下插入位置和返回索引、Name 变更后的键缓存失效、枚举中修改集合的实际行为。 |
 | ⬜ | P2 | `TreeNodeCollection-08` | 设计器 Serialize/Clone 子树与 .resx 场景、嵌套节点静态布局；AOT 无运行时动态类型创建。 |
-| ⬜ | P2 | `TreeNodeCollection-09` | Clear/Remove 释放 native handle 映射/回调根，节点对象按标准可重新插入；不引入 IDisposable 集合或自创销毁流程。 |
+| ✅ | P2 | `TreeNodeCollection-09` | Clear/Remove与句柄销毁清理全部子树HTREEITEM映射；托管节点可重新插入，子节点保留其父节点关系；不释放外部共享资源、不新增IDisposable或自创销毁API。 |
 | ⬜ | P3 | `TreeNodeCollection-10` | GTK GListModel items-changed 与 AppKit reloadItem/insert/remove 原生更新，插入删除后的展开/选中保持，同一任务三平台分别验收。 |
 
 ## 三平台实现分析
@@ -55,12 +55,9 @@ NSOutlineViewDataSource 从同一集合读取，通过 insertItems/removeItems/r
 
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
-## 修改历史
+## 已完成任务
 
-- `dcdc7e9` · 2026-03-31：TreeNode.cs 初次加入基础集合；未建立节点所属关系及原生同步。
-- 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
-
-历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
+代码完成范围已在上表标记；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方资料
 

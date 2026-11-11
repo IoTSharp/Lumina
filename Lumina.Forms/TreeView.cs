@@ -3,7 +3,7 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a tree view backed by the native common control.
 /// </summary>
-public class TreeView : Control
+public partial class TreeView : Control
 {
     private const uint ModernExtendedStyles =
         Win32.TVS_EX_DOUBLEBUFFER |
@@ -17,7 +17,7 @@ public class TreeView : Control
     {
         SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(6);
-        Nodes = new TreeNodeCollection();
+        Nodes = new TreeNodeCollection(this);
     }
 
     /// <summary>
@@ -29,7 +29,12 @@ public class TreeView : Control
     protected override string ClassName => "SysTreeView32";
 
     /// <inheritdoc />
-    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.WS_VSCROLL;
+    protected override uint Style => Win32.WS_CHILD | Win32.WS_VISIBLE | Win32.WS_TABSTOP | Win32.WS_VSCROLL
+        | (_showPlusMinus ? 0x0001u : 0)
+        | (_showLines ? 0x0002u : 0)
+        | (_showRootLines ? 0x0004u : 0)
+        | (!_hideSelection ? 0x0020u : 0)
+        | (_hotTracking ? 0x0200u : 0);
 
     /// <inheritdoc />
     protected override uint ExStyle => Win32.WS_EX_CLIENTEDGE;
@@ -49,6 +54,7 @@ public class TreeView : Control
         ApplyExtendedStyles();
         ApplyNativeThemeState();
         ApplyNativeColors();
+        RealizeNodes();
     }
 
     private void ApplyNativeThemeState()

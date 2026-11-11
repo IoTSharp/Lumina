@@ -10,7 +10,7 @@ LuminaForms 通过 Lumina.Forms 包和命名空间提供 .NET 10 WinForms 替代
 
 ## 查看当前能力
 
-控件与公共契约的状态只在[任务索引](../roadmap/README.md)维护。完成的明确子范围保留在原页修改历史，未完成父项继续列在任务表。[验证门槛](../roadmap/validation.md)另列完整测试、设计器、Native AOT 实际运行与各平台状态。
+控件与公共契约的状态只在[任务索引](../roadmap/README.md)维护。完成的明确子范围在原页标记，变更历史统一见根目录 [CHANGELOG](../../CHANGELOG.md)，未完成父项继续列在任务表。[验证门槛](../roadmap/validation.md)另列完整测试、设计器、Native AOT 实际运行与各平台状态。
 
 现有主题/视觉 API 的用法见[主题指南](nativeforms-themes.md)，配置和构建命令见[快速开始](../quickstart.md)。主题能力、旧 Windows 视觉映射与控件兼容验收是不同范围；本页不由旧版本视觉样式映射推断 .NET 10 的系统支持。
 

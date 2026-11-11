@@ -29,10 +29,9 @@
 
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
-## 修改历史
+## 已完成任务
 
-- 无同名实现的 Git 修改历史。
-- 2026-10-15：增加评估和待办；本轮未实现运行库功能。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 原始资料
 

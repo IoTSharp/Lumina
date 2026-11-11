@@ -37,11 +37,9 @@
 
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
@@ -49,22 +47,6 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 | ✅ | P0 / Panel-01a | 批次029：保持历史基类，构造设置标准ContainerControl style，使ValidateChildren可进入Panel/TabPage/FlowLayoutPanel/TableLayoutPanel后代；Panel和TabPage内leaf先于容器验证有无HWND回归。只完成此验证消费，不关闭标准继承/Selectable默认/滚动/全部派生。 |
 | ✅ | P0 / Panel-02a | 批次032：Panel直接使用ScrollableControl的AutoScroll契约，覆盖正设负读、DisplayRectangle、范围和关闭状态；不关闭Panel完整属性表。 |
 | ✅ | P0 / Panel-03a | 批次021：Padding客户区DisplayRectangle、默认引擎测量子项/边距并加边框和Padding、PreferredSize缓存及Visible显示时真实本体布局完成；Dock/隐藏/改变尺寸、58×21 Flow及104×24 Table必要有限协作有对照。仅无滚动测量/接入范围，标准ScrollableControl继承和完整滚动不在此项。 |
-
-### 变更记录
-
-
-- 2026-10-26 · 批次032：完成01b标准ScrollableControl迁移和02a共享AutoScroll消费；完整Panel属性、派生布局、真实设备、Designer/AOT和平台仍待，见[032](../batches/032.md)。
-
-- 2026-10-17 · 批次029：完成01a必要验证容器style；未迁移历史基类或宣称整Panel/全部派生完成，见[029](../batches/029.md)。
-
-- 2026-10-16 · 批次021：03a按基础真实测量/布局子范围完成；继承迁移仍留01。Visible布局源于官方ScrollableControl.OnVisibleChanged，暂在历史Panel路径承接，不给所有Control伪造事件。未用局部测量关闭Panel或滚动。
-
-- 2026-10-16 · 批次020：按实际代码纠正历史“没有独立ScrollableControl层”与“布局暂停空实现”：标准层自018存在但Panel未迁入，集合自018共用，020事务由Control提供。Panel-01/03回标部分，保留继承迁移/几何/滚动缺口；不把基类10b完成转为Panel完成。
-
-- `7d38999`（2026-04-08）：涉及 Panel 的深色主题应用调整。
-- `ce86ab5`（2026-03-31）：接入 BackColor/ForeColor、继承主题和实时刷新。
-- `3323e20`（2026-03-31）：容器与布局交互改进涉及本文件。
-- 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料
 

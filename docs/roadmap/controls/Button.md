@@ -40,11 +40,9 @@
 
 验收口径：基线固定为 .NET 10.0.11 WinForms。Windows 的公开属性、公开事件、行为场景分别 ≥98%；Linux/macOS 在逐项确认的可移植分母中分别 ≥98%。每个重载、访问器、事件参数与行为场景独立登记，继承成员不遗漏；签名同名、字段存值、任务写完均不能作为通过分子。原生外观差异与 Windows 专属成员保留在清单中，不能用“平台不可等价”自动划掉普通业务需求。当前各项尚无完整对照证据，不发布已达标百分比。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 任务 | 优先级 | 状态 | 具体范围与完成条件 |
 |---|---|---|---|
@@ -54,24 +52,6 @@
 | Button-003a | P1 | ✅ | 批次035：Button.DialogResult合法值与默认None，属性变更不关闭窗体；点击经FindForm先写结果再发Click，嵌套容器/无父和非模态范围有回归。DialogResult补齐Abort/Retry/Ignore/TryAgain/Continue，8/9仍非法；不宣称模态已实现。 |
 | Button-004a | P1 | ✅ | 批次035：NotifyDefault更新默认创建样式，Form活动链切换旧/新默认通知；Enter/Escape及CancelButton的None→Cancel规则有回归，实际队列集成通过。未建句柄样式检查不等于屏幕外观或物理键盘验收。 |
 | Button-005a | P1 | ✅ | 批次027：移除遮蔽Control的独立Click事件，OnClick覆盖转发base，PerformClick/BN_CLICKED进入同一虚事件槽；StandardClick/StandardDoubleClick关闭以避免base鼠标重复激活。只关闭该必要接入，ButtonBase/FlatStyle/验证/默认按钮仍缺。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次035：实现001a/002a/003a/004a作为Form-12b必要消费者，18项按钮/默认路由新测试和1项真实队列集成通过。Button仍继承Control，001/003/004按实际局部实现由全待办改部分；原生点击前置、完整ButtonBase/模态/移除释放组合、辅助技术及平台仍缺，见[035](../batches/035.md)。
-
-- 2026-11-07 · 批次036：完成002b源码审计和真实HWND鼠标按下/抬起回归；Button.cs保留官方BN_CLICKED仅检查ValidationCancelled的路径，未添加重复验证，验证取消/父链清理由Control共享实现。完整ButtonBase、设备、样式、辅助技术和模态仍待，见[036](../batches/036.md)。
-
-- 2026-10-16 · 批次027：移除遮蔽Control的独立Click事件，OnClick覆盖转发base，PerformClick/BN_CLICKED进入同一虚事件槽；StandardClick/StandardDoubleClick关闭以避免base鼠标重复激活。只关闭该必要接入，ButtonBase/FlatStyle/验证/默认按钮仍缺。 027完成005a共享Click/原生通知衔接；鼠标与空格/Enter/Alt助记键、辅助技术、命令/验证/FormClosing完整顺序仍待对照。默认owner draw/UserMouse与当前native样式及BM_CLICK顺序差异保留。 25项必要消费回归合计通过；固定参考消费者差异及锁屏限制见[027](../batches/027.md)，不关闭整个控件/平台。
-
-- 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
-
-以下为该类型源路径的真实最近提交，提交标题是历史描述，不是本次完整验收结论：
-
-- 2026-04-08 · `7d7a67e` · Add initial implementation of Lumina.Forms library。
-- 2026-04-08 · `108ef2b` · feat: 添加对 Win32 黑暗模式的支持，重构多个控件以优化主题应用逻辑。
-- 2026-04-01 · `1c89c0a` · feat: 增强 Lumina.Forms 的主题支持，添加控件初始化和样式逻辑。
-- 2026-10-15 · 本轮新增此独立路线图与验收任务，未修改该类型实现；后续实现需在此追加日期、提交、修复范围与验收证据。
 
 ## 官方依据
 

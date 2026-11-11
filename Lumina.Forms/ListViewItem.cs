@@ -20,6 +20,7 @@ public class ListViewItem
     private string _toolTipText = string.Empty;
     private int _imageIndex = -1;
     private string _imageKey = string.Empty;
+    private ListView? _listView;
 
     /// <summary>
     /// Initializes a new list view item with empty primary text.
@@ -79,6 +80,31 @@ public class ListViewItem
     }
 
     /// <summary>
+    /// Gets the list view that contains this item.
+    /// </summary>
+    [Browsable(false)]
+    public ListView? ListView => _listView;
+
+    /// <summary>
+    /// Gets this item's index in its list view, or -1 when detached.
+    /// </summary>
+    [Browsable(false)]
+    public int Index => _listView?.Items.IndexOf(this) ?? -1;
+
+    internal void AttachToListView(ListView? listView) => _listView = listView;
+
+    internal int SubItemCount => _subItemData.Count;
+
+    internal ListViewSubItem GetSubItem(int index) => _subItemData[index];
+
+    internal void NotifyChanged() => _listView?.SynchronizeItem(this);
+
+    /// <summary>
+    /// Removes this item from its list view without disposing its borrowed resources.
+    /// </summary>
+    public void Remove() => _listView?.Items.Remove(this);
+
+    /// <summary>
     /// Gets or sets application data associated with the item.
     /// </summary>
     [Bindable(true)]
@@ -119,6 +145,7 @@ public class ListViewItem
             // while the stored index is already -1. Invalid input changes neither.
             _imageIndex = value;
             _imageKey = string.Empty;
+            NotifyChanged();
         }
     }
 
@@ -139,6 +166,7 @@ public class ListViewItem
             // non-null string identity rather than skipping equal replacements.
             _imageKey = value ?? string.Empty;
             _imageIndex = -1;
+            NotifyChanged();
         }
     }
 
@@ -302,7 +330,7 @@ public class ListViewItem
         public string Text
         {
             get => _text;
-            set => _text = value ?? string.Empty;
+            set { _text = value ?? string.Empty; Owner?.NotifyChanged(); }
         }
 
         /// <summary>
@@ -367,6 +395,8 @@ public class ListViewItem
 
                 ArgumentNullException.ThrowIfNull(value);
                 _items[index] = value;
+                value.Owner = _owner;
+                _owner.NotifyChanged();
             }
         }
 
@@ -417,6 +447,7 @@ public class ListViewItem
             ArgumentNullException.ThrowIfNull(item);
             item.Owner = _owner;
             _items.Add(item);
+            _owner.NotifyChanged();
             return item;
         }
 
@@ -504,6 +535,7 @@ public class ListViewItem
             if (_items.Count > 0)
             {
                 _items.Clear();
+                _owner.NotifyChanged();
             }
         }
 
@@ -599,6 +631,7 @@ public class ListViewItem
             ArgumentNullException.ThrowIfNull(item);
             item.Owner = _owner;
             _items.Insert(index, item);
+            _owner.NotifyChanged();
         }
 
         /// <summary>
@@ -629,6 +662,7 @@ public class ListViewItem
         public void RemoveAt(int index)
         {
             _items.RemoveAt(index);
+            _owner.NotifyChanged();
         }
 
         private bool RemoveItem(ListViewSubItem? item)

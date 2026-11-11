@@ -12,7 +12,7 @@
 
 ## 当前结论 · 🟡
 
-已有 SysTreeView32、深色样式与 TreeNode/Nodes 托管结构；没有 TVM_INSERTITEM 及节点通知接线。审计中托管 Nodes.Count=1，TVM_GETCOUNT=0；显示宿主存在不能算树内容已实现。
+已接 SysTreeView32 的节点插入/文本更新/子树删除与稳定 HTREEITEM 映射；建窗前节点会在建窗时实现，Parent/TreeView/Index与原生所属同步。选择/展开/编辑/复选通知、图像、句柄重建交互状态及平台运行仍待，历史审计缺口不能继续当作当前无节点实现。
 
 - 标准继承/契约：`TreeView : Control`；TreeNode、TreeNodeCollection、TreeViewEventArgs/TreeViewCancelEventArgs 等为独立契约。
 - 代码证据：[当前源码](../../../Lumina.Forms/TreeView.cs)。
@@ -22,14 +22,14 @@
 
 | 状态 | 优先级 | 任务 | 范围与可验收结果 |
 | --- | --- | --- | --- |
-| ⬜ | P0 | `TreeView-01` | TreeNode/Nodes 建立 owner/parent/handle/index 关系；Add/Insert/Remove/Clear 同步原生，禁止同节点多宿主和循环父子结构；构造前后数据可见。 |
-| ⬜ | P0 | `TreeView-02` | 默认 ShowLines=true、ShowRootLines=true、ShowPlusMinus=true、HideSelection=true、HotTracking=false、CheckBoxes=false、LabelEdit=false、Sorted=false；当前强开样式逐项对齐。 |
-| ⬜ | P1 | `TreeView-03` | SelectedNode、TopNode、VisibleCount、GetNodeAt/HitTest、GetNodeCount、EnsureVisible；选择前 BeforeSelect 可取消，成功后 AfterSelect；Action 区分鼠标/键盘/程序。 |
+| ✅ | P0 | `TreeView-01` | TreeNode/Nodes owner、parent、handle、index及增删插入清空已接真实TVM_INSERTITEMW/SETITEMW/DELETEITEM；拒绝重复所属和循环，失败回滚托管所属/句柄映射。代码完成，真实Windows交互与平台验收后置。 |
+| 🟡 | P0 | `TreeView-02` | 已补ShowLines/ShowRootLines/ShowPlusMinus/HideSelection=true、HotTracking=false及实际native样式；CheckBoxes/LabelEdit/Sorted及完整默认读回仍待。 |
+| 🟡 | P1 | `TreeView-03` | GetNodeCount已使用托管节点树计算；SelectedNode/TopNode/VisibleCount/命中/EnsureVisible及可取消选择事件仍待。 |
 | ⬜ | P1 | `TreeView-04` | ExpandAll/CollapseAll、TreeNode.Expand/Collapse/Toggle/ExpandAll；BeforeExpand/AfterExpand、BeforeCollapse/AfterCollapse 的取消、重复调用、懒加载插节点和子孙状态。 |
 | ⬜ | P1 | `TreeView-05` | CheckBoxes、TreeNode.Checked/StateImageIndex、BeforeCheck/AfterCheck；取消不改原生勾选，父子节点不擅自联动；空格键/鼠标/程序入口一致。 |
 | ⬜ | P1 | `TreeView-06` | LabelEdit、BeginEdit/EndEdit、BeforeLabelEdit/AfterLabelEdit、CancelEdit；F2/Esc/Enter、null Label 表示取消与空字符串区别，提交前后 Text 同步。 |
 | ⬜ | P2 | `TreeView-07` | ImageList/StateImageList、ImageIndex/ImageKey/SelectedImageIndex/SelectedImageKey、Indent/ItemHeight、FullRowSelect/LineColor/ShowNodeToolTips；运行时变化与 DPI 兼容。 |
-| ⬜ | P2 | `TreeView-08` | Sorted/TreeViewNodeSorter/Sort；TreeNode.Name/FullPath/Tag/NodeFont/ForeColor/BackColor、节点查找/Clone；排序后选择与路径正确，重复 key 按官方集合规则。 |
+| 🟡 | P2 | `TreeView-08` | 已有Name/Tag/FullPath及节点键查找；Sorted/Sorter/Sort、Clone、字体颜色与完整排序选择保持仍待。 |
 | ⬜ | P2 | `TreeView-09` | NodeMouseClick/NodeMouseDoubleClick/NodeMouseHover、ItemDrag、键盘 Left/Right/Home/End/PageUp/Down/增量搜索；节点切换时焦点和事件顺序可对照。 |
 | ⬜ | P2 | `TreeView-10` | DrawMode/DrawNode、BeginUpdate/EndUpdate、节点移除时句柄映射清理，重建原生树保留展开、选中、滚动；Dispose 解绑图像列表和所有 native 回调。 |
 | ⬜ | P3 | `TreeView-11` | GTK TreeListModel 的折叠前仲裁与 AppKit delegate 的允许展开/选择仲裁，各运行取消/懒加载/大树场景；按行为分母计分，不因系统默认动画/外观不同判为API失败。 |
@@ -56,16 +56,9 @@ TreeView 没有标准 DataSource，不新增公开绑定概念。Before* 取消�
 
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
-## 修改历史
+## 已完成任务
 
-- 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
-
-- `108ef2b` · 2026-04-08：原生深色模式。
-- `7149595` · 2026-04-08：深色模式与菜单绘制相关增强。
-- `1c89c0a` · 2026-04-01：主题、控件初始化与样式逻辑。
-- 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
-
-历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
+代码完成范围已在上表标记；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方资料
 

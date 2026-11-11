@@ -37,11 +37,9 @@
 
 System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生后端的可行方案不等于现有代码已经支持。HWND、GDI 句柄、Win32 消息级扩展等 Windows 契约分别标记 🚫 或 🔎，普通属性和事件不能因后端选择而任意排除。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 修改内容与验收证据 |
 | --- | --- | --- |
@@ -52,27 +50,6 @@ System.Drawing.Font/Image/Icon 的跨平台可用性属于前置阻塞；原生�
 | ✅ | P0 / UserControl-02a | 批次031：移除重复AutoScale存值属性，UserControl直接消费ContainerControl的ActiveControl/AutoValidate/AutoScale契约；不关闭完整默认值和设计器语义。 |
 | ✅ | P0 / UserControl-03a | 批次032：增加标准Load/OnLoad，首次成功OnCreateControl后一次触发；重复Visible切换和句柄重建不重复，创建失败不伪造成功，处理器异常原样传播。 |
 | ✅ | P1 / UserControl-05a | 批次037：OnMouseDown焦点不在内部时先Focus再事件；WM_SETFOCUS无活动项时选首个可选后代，并消费ValidationCancelled守卫。7项真实HWND回归覆盖嵌套首次/已有子焦点、鼠标事件顺序、三种验证组合及Tab双向活动链。完整05和AutoSize仍未完成。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次039：UserControl.cs未改，继续继承有限Control IME路径；未以非Form根消息测试关闭HostedInWin32DialogManager、完整输入或AutoSize/共享约束，父任务保持原状态，见[039](../batches/039.md)。
-
-- 2026-11-07 · 批次038：02d接入标准AutoSize覆盖与事件公开，复用共享状态/布局链。源码审计确认固定UserControl无独立OnLayout/GetPreferredSize算法，不为补属性而新增布局覆盖；完整AutoSize/复杂约束和Designer往返仍归02/04。检查结果见[038](../batches/038.md)。
-
-- 2026-11-07 · 批次037：05a按固定10.0.11接入OnMouseDown/WM_SETFOCUS，7项真实HWND回归通过；完整HostedInWin32DialogManager、输入/验证/AutoSize、Designer/AOT/设备和平台仍待，见[037](../batches/037.md)。
-
-- 2026-11-07 · 批次035：02c修复历史数值反置，并显式保留基础Control的GrowOnly默认；UserControl.cs按名字实现本已正确，本批不重复修改。03父项仍全待办遗漏032的03a，04遗漏已有内容测量/基础布局，按真实局部实现纠正为部分并保留剩余范围。旧持久化整数和已编译枚举常量须复核；按名字源码重编译保持名字语义。10项限定回归通过，不关闭完整AutoSize，见[035](../batches/035.md)。
-
-- 2026-11-07 · 批次034：完成02b默认150×150、GrowOnly名字默认、AutoSizeMode合法值/布局通知和BorderStyle参数/真实HWND样式更新。CompatibilityEnums中AutoSizeMode数值身份与官方相反未修改，明确保留父项；完整AutoSize、Designer、AOT与平台仍待，见[034](../batches/034.md)。
-
-- 2026-10-26 · 批次032：完成03a Load一次触发生命周期；完整Designer/resx、BorderStyle、验证/键盘、AOT和平台仍待，见[032](../batches/032.md)。
-
-- 2026-10-26 · 批次031：完成01a标准ContainerControl继承和02a共享容器属性首范围；Load、BorderStyle、Designer/resx、键盘/验证和平台仍待，见[031](../batches/031.md)。
-
-- `70a08e7`（2026-04-09）：加入 UserControl 自动缩放相关属性。
-- `b8a98eb`（2026-04-09）：加入 UserControl 与资源/主题管理支持。
-- 2026-10-15：新增本控件评估与分平台待办；本轮仅规划，未实现上述任务。
 
 ## 原始资料
 

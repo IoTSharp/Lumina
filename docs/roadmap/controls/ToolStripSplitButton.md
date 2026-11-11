@@ -44,12 +44,9 @@
 
 `System.Windows.Forms.ToolStripSplitButton+ToolStripSplitButtonButton` 是固定程序集中的非公开 ToolStripButton 派生实现。它承载主按钮区域，但不是另外一个消费端公开控件：主区几何/状态/点击分别归 ToolStripSplitButton-002/003/004，DefaultItem 归 -005，释放归 -009，阶段 P2。跨平台可以用原生按钮组合实现同样契约，无需复制此内部类型。
 
-## 修改历史
+## 已完成任务
 
-以下是该类型源路径的真实最近提交；提交标题说明历史变更范围，不能代替本轮验收：
-
-- 2026-03-31 · `52f5662` · Add core UI components for Lumina.Forms。
-- 2026-10-15 · 本轮新增独立路线图，未修改实现。后续每次实现需在此追加日期、提交、具体差异与验收结果，宿主侧修改也需记录在本类型历史中。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

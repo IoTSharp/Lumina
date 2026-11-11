@@ -91,7 +91,7 @@ foreach ($page in $pageMap) {
 }
 
 $files = @(Get-ChildItem -LiteralPath $roadmapRoot -Recurse -File -Filter '*.md')
-$files += Get-Item -LiteralPath (Join-Path $taskRepoRoot 'ROADMAP.md'), (Join-Path $taskRepoRoot 'README.md'), (Join-Path $taskRepoRoot 'README.zh-CN.md'), (Join-Path $taskRepoRoot 'HANDOFF.md')
+$files += Get-Item -LiteralPath (Join-Path $taskRepoRoot 'ROADMAP.md'), (Join-Path $taskRepoRoot 'README.md'), (Join-Path $taskRepoRoot 'README.zh-CN.md'), (Join-Path $taskRepoRoot 'HANDOFF.md'), (Join-Path $taskRepoRoot 'CHANGELOG.md')
 foreach ($file in $files) {
     $body = [IO.File]::ReadAllText($file.FullName, $utf8)
     if ($body.Contains([char]0)) { $errors.Add("NUL byte: $($file.FullName)") }
@@ -131,7 +131,7 @@ foreach ($file in $files) {
     }
     if ($file.Directory.Name -eq 'controls') {
         if (-not $documentNames.Contains($file.BaseName)) { $errors.Add("Page not in full-type map: $($file.Name)") }
-        foreach ($term in @('Windows', 'Linux', 'macOS', '修改历史')) {
+        foreach ($term in @('Windows', 'Linux', 'macOS', '已完成任务')) {
             if (-not $body.Contains($term)) { $errors.Add("Missing $term section: $($file.Name)") }
         }
         if (-not $body.Contains('../api/' + $file.Name)) { $errors.Add("Missing full API link: $($file.Name)") }

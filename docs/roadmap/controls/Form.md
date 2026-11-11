@@ -1,6 +1,6 @@
 # Form
 
-本页任务表只列未完成范围；代码完成子项保留在[修改历史](#修改历史)，任务 ID 与验收状态均不因整理改变。剩余重点是完整关闭事件/原因、关闭焦点与 WM_QUIT 差异、模态/Owner/MDI、多 UI 线程退出及设计器。
+本页任务表只列未完成范围；代码完成子项标记在[完成状态](#已完成任务)，任务 ID 与验收状态均不因整理改变。剩余重点是完整关闭事件/原因、关闭焦点与 WM_QUIT 差异、模态/Owner/MDI、多 UI 线程退出及设计器。
 
 [完整 API 与继承基线](../api/Form.md) · [任务索引](../README.md) · [依赖顺序](../execution.md) · [验证门槛](../validation.md) · [平台要求](../platforms.md)
 
@@ -11,11 +11,11 @@
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
 | 🟡 | P0 / Form-02 | 020已移除历史EventHandler Layout，继承Control标准LayoutEventHandler/LayoutEventArgs及OnLayout(LayoutEventArgs)。FormClosingEventHandler/FormClosedEventHandler、旧Closing/Closed仍待对齐；Created历史自有事件不能抵扣标准属性/HandleCreated。 |
-| ⬜ | P0 / Form-03 | 实现 ShowDialog()/ShowDialog(IWin32Window)、Show(owner)、DialogResult、Modal；owner 禁用恢复、嵌套消息循环、Esc/Enter、取消关闭与对话框复用完整验收。 |
+| 🟡 | P0 / Form-03 | 已实现ShowDialog()/ShowDialog(IWin32Window)、DialogResult结束模态、Modal、独立嵌套泵、可取消关闭和对话框复用；恢复owner/同线程已登记窗口启用状态。Show(owner)、完整外部宿主与新增窗口模态策略及实际运行仍待。 |
 | 🟡 | P0 / Form-04 | 003～007的真实投递/context/await恢复已于018合入Control标准继承路径；019保留句柄重建前已排队回调，直接DestroyHandle/外部销毁不等于Close、不退出消息循环。完整关闭/重建/退出与多UI/模态竞态仍缺。 |
 | 🟡 | P1 / Form-05 | 018已校准空Text、300×300默认Size、TabStop=true和初始Visible=false，并消费共享客户区。StartPosition、完整ClientSize/AutoScaleMode等默认与派生元数据仍待对照，父任务不关闭。 |
 | 🟡 | P1 / Form-06 | 019完成06a与Control标准句柄路径的必要衔接；BindingContextChanged/Activated、完整Visible/WindowState/Handle联动、所有显示入口及标准事件委托仍待对齐。历史Created事件隐藏Control.Created是已知表面差异，不计为标准属性兼容。 |
-| 🟡 | P1 / Form-07 | 已有Close/WM_CLOSE、FormClosing.Cancel及继承Dispose；029完成07a关闭验证前置。正常关闭多余LostFocus根因未定位，Run外最后窗体额外WM_QUIT继续归Application-01/04。完整FormClosed/标准委托、CloseReason、owner/MDI/Application.Exit/关机及异常事务仍缺。 |
+| 🟡 | P1 / Form-07 | 已有Close/WM_CLOSE及验证取消，新增标准FormClosed参数/委托、CloseReason 0～6、Application.Exit预检和普通关闭不再全局PostQuit。历史LostFocus及WM_QUIT严格差分未重验；owner/MDI/关机与极端异常/重入事务仍待。旧CloseReason整数及已编译常量需复核。 |
 | 🟡 | P1 / Form-08 | 已继承Focused，原Activate/BringToFront调用SetForegroundWindow；原全待办遗漏这些局部实现，028按实际代码纠正并完成08a。Owner/OwnedForms/AddOwnedForm/RemoveOwnedForm、TopLevel/TopMost/ShowInTaskbar/ShowIcon、ActiveForm、Activated/Deactivate、完整激活/Z序/MDI及关闭owner焦点恢复仍缺。 |
 | ⬜ | P1 / Form-09 | 实现 FormBorderStyle、ControlBox/MinimizeBox/MaximizeBox/HelpButton、SizeGripStyle、StartPosition/Location/RestoreBounds/DesktopBounds 与屏幕工作区；重建句柄不丢状态。 |
 | 🟡 | P1 / Form-10 | 020事务10a、021默认布局10b完成；真实父级Dock替代历史条带专用定位。完整Form AutoSize/AutoSizeMode、客户区/MinMax、AutoScroll、全部嵌套测量/DPI/RTL与Designer仍缺。 |
@@ -37,11 +37,9 @@
 
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
@@ -58,65 +56,6 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 | ✅ | P1 / Form-16a | 批次023：Form.CreateParams及标准WndProc/ref Message.Result接真实创建/重建；默认绘制进入Control标准入口、DefWndProc保留原生类过程；外层销毁finally清映射/GCHandle/画刷，不依赖派生WndProc调用base。创建参数、虚消息覆盖、Paint及截获/抛销毁消息有指定回归；Param的AOT限制同Control-17a，完整Form生命周期/绘制/关闭仍属父项。 |
 | ✅ | P1 / Form-16b | 批次024必要背景绘制衔接：默认WindowExStyle移除WS_EX_COMPOSITED，保留虚扩展供派生显式选择。真实父失效矩形12,10,8,6与参考一致，STATIC原生类测试去除旧样式补丁仍通过；Demo实际AOT显示/交互/正常关闭有证据。完整Form绘制/缓冲/关闭异常仍属16父项。 |
 | ✅ | P1 / Form-16c | 批次025：Form native窗口过程捕获回调异常后继续逐项释放菜单、palette、句柄、GCHandle和OpenForms注册；清理异常独立报告且不覆盖原回调异常。外部销毁双错场景和实际AOT边界探针通过；完整Close/FormClosing/FormClosed、模态、Dispose事务和多UI退出仍归父项。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次069：069在Control-17g必要范围将Form的WM_NOTIFY按来源HWND转发并回传Rich保护通知0/1，原内部布尔入口保留，不新增Form完成项。活原Form重挂/冲突ID/未映射源有定向回归；原父Form销毁重建寿命、完整线程/模态/反射和平台仍待。064FAIL/065超时保持，见[069](../batches/069.md)；下述为历史。
-
-- 2026-11-07 · 批次049：非零lParam的控件WM_COMMAND先按来源HWND反射，修复重挂后旧Form字典不再拥有控件/ID已重用的通知缺口；OnCommand扩展仍由收到原生命令的Form调用，菜单限零lParam。8项新重挂回归及4,954全量通过，完整16/原反射父寿命仍部分，范围交叉引用Control-17e，见[049](../batches/049.md)。
-
-- 2026-11-07 · 批次042：只读核模态前置，Form.cs no-op。固定Control.Ime的模态失焦恢复依赖真实Modal，当前ShowDialog/owner禁用恢复和模态循环仍缺；不新增假状态或把普通嵌套循环测试算作模态完成。Form-03/12及Application/ApplicationContext依赖保留，见[042](../batches/042.md)。
-
-- 2026-11-07 · 批次040：12d补两组标准输入语言事件与参数/委托，保留组件事件槽、虚派发、订退、原异常和请求取消。Control共享路径先更新IME再向FindForm通知，不另造Form专用输入管线；完整模态/IME/OLE/Designer及平台仍待，见[040](../batches/040.md)。
-
-- 2026-11-07 · 批次039：Form.cs未改；普通Form根不走非Form宿主传播恢复，Form语言事件/取消、InputLanguage服务及模态传播仍缺，不把Control-12l消息接入算作完整Form输入或模态实现，见[039](../batches/039.md)。
-
-- 2026-11-07 · 批次038：Form.cs本批no-op，继承Control有限ImeMode/IMM路径；共享销毁通知新增的IME清理与原通知双错均保留。TextBox多行重建和UserControl声明不关闭Form输入/模态/生命周期，完整派生IME和设备仍待，见[038](../batches/038.md)。
-
-- 2026-11-07 · 批次037：TextBox多行Enter/AcceptsReturn通过现有Form.AcceptButton路由，UserControl嵌套活动链消费现有Form验证策略，Form.cs本批no-op。完整IME/模态/生命周期/平台仍待，见[037](../batches/037.md)。
-
-- 2026-11-07 · 批次035：12b实现标准默认/取消路由和结果消费；保留固定源码CancelButton重复赋值的None→Cancel及非Control接口Enter消费语义，不自造所有权限制。首轮编译发现当前Keys无Return别名，改用同值Enter，别名仍归附属契约缺口；模态/Designer/AOT仍待，见[035](../batches/035.md)。
-
-- 2026-11-07 · 批次036：12c按固定WinForms Dispose顺序清理默认/接受/取消按钮引用并撤销默认通知；Dispose(false)保持托管状态，未扩大为移除/隐藏/禁用自动清空。2项生命周期回归通过，模态、完整关闭与平台仍待，见[036](../batches/036.md)。
-
-- 2026-11-07 · 批次034：完成12a KeyPreview父链消费、可修改字符和顶层Tab正反回绕；默认隐藏窗体不可选择，测试改为真实可见HWND后通过，不以程序导航冒充物理键盘。完整默认/取消按钮、IME、Designer及AOT仍待，见[034](../batches/034.md)。
-
-- 2026-10-17 · 批次029：完成07a有限WM_CLOSE验证前置；验证取消不会跳过FormClosing处理器，无句柄关闭不验证。关闭LostFocus是本批记录的未定位差异，与既有WM_QUIT分别留待办，完整Form不关闭，见[029](../batches/029.md)。
-
-- 2026-10-16 · 批次028：完成08a限定激活/选择链；初次接入WM_ACTIVATE暴露外部销毁后Handle读取提前创建子项的回归，依据固定参考改SW_SHOWNOACTIVATE，保留原测试期望并恢复旧204行全同。补两项延迟恢复测试；原Form-08/12全待办遗漏既有Activate/Focused/ActiveControl已纠正为部分。额外WM_QUIT记录为未完成，完整Form/模态/Designer不关闭，见[028](../batches/028.md)。
-
-- 2026-10-16 · 批次027：Form.cs未改；既有标准消息路径继承027坐标/捕获/鼠标基础，真实Form父子与订阅/坐标回归通过。Demo程序BM_CLICK与WM_CLOSE证据单列，锁屏下成功命中及物理输入未验收；Form-12/完整容器导航、模态/Designer保持未完，见[027](../batches/027.md)。
-
-- 2026-10-16 · 批次026：继承05c/08c的真实Form队列关闭/重建、异步工作与托管子树/Site清理通过独立回归；未改Form.cs，不据基类完成关闭完整Form。按实际代码纠正Form-07仍全待办的历史状态：Close、WM_CLOSE、FormClosing.Cancel和Dispose已存在，父项改部分并保留所有剩余关闭原因/标准事件/资源事务。Demo AOT真实显示/复选框/正常退出/原始HWND失效通过，完整Designer/模态仍未验收，见[026](../batches/026.md)。
-
-- 2026-10-16 · 批次025：Form-16c补齐外部`WM_NCDESTROY` callback与清理同时失败时的异常边界和资源收尾；callback、清理与窗口过程错误按独立顺序报告。外部销毁的待执行 callback 在Lumina中随HWND销毁而得到`ObjectDisposedException`，该与固定WinForms参考的真实差异保留；完整Form/模态/Designer仍未关闭，见[025](../batches/025.md)。
-
-- 2026-10-16 · 批次024：独立诊断先仅清除真实Form的COMPOSITED位即恢复父失效矩形，随后修正默认样式；不伪造失效区域，也不扩大矩形。继承Control背景图像/透明绘制及04b关闭收尾，16b仅为必要衔接；外部NCDESTROY回调与清理同时失败可能覆盖原异常，完整Form未关闭，见[024](../batches/024.md)。
-
-- 2026-10-16 · 批次023：标准CreateParams/Message/WndProc接入Control共享入口，早期消息绑定和销毁清理移入原生callback异常边界；修复Form绘制绕过Control及派生截获NCDESTROY漏清理。06a历史限定范围保留，16a为本批必要衔接，完整Form/资源/模态/Designer仍未关闭，见[023](../batches/023.md)。
-
-- 2026-10-16 · 批次022：移除Form共享UiFontHandle，创建/销毁复用Control-08b独占HFONT，避免重建失败时停放子窗口引用已释放父字体。有效颜色与局部/theme默认分开，显式默认色与Reset即便不发属性事件也更新palette画刷。补实际资源寿命回归，完整Font/DPI缩放仍缺；纠正Form-11遗漏018继承缩放、Form-16遗漏已有Win32实现的全待办状态。完整资源、模态、Designer及平台验收不关闭，见[022](../batches/022.md)。
-
-- 2026-10-16 · 批次021：移除直属条带专用定位及旧GetClientContentTopInset，由标准父级DefaultLayout统一布局；ContainerControl首选测量供Form消费。更新020历史定位描述以免把旧算法当当前行为；Created事件仍隐藏Control.Created，完整模态/资源/设计器未关闭。
-
-- 2026-10-16 · 批次020：标准Layout移到Control并统一事务入口，保留直接子条带定位、移除WM_SIZE重复布局。历史Form.Layout的EventHandler类型和protected无参OnLayout不再保留，消费者改用LayoutEventHandler和OnLayout(LayoutEventArgs)；仓库无旧覆盖消费者，固定Demo源码未变。Form-02/10按实际部分回标，10a为完成的必要衔接；完整Form/几何/Designer不关闭。
-
-- 2026-10-16 · 批次019：Form覆盖标准protected CreateHandle并复用Control映射/事件/dispatcher。创建恢复真实ShowWindow时仅抑制内部恢复消息的重复托管通知，外部销毁后Handle重读保持Created=false及子窗未创建；直接销毁/重建不再冒充Close。Shown经UI队列触发；历史Created事件为兼容保留并明确其隐藏属性的差异。Form-06由全部未开始纠正为部分完成，06a为本批明确子范围；Form-02/03/07及完整窗口/设计器/资源/跨平台不关闭，见[019](../batches/019.md)。
-
-- 2026-10-16 · 批次018：Form由独立IDisposable类改为标准ContainerControl/ScrollableControl/Control/Component链，删除重复的属性、句柄/投递、集合和释放状态；保留真实顶层HWND、主题、菜单及原始Demo源码。原生移动/尺寸写回共享Bounds/ClientSize；Dispose清活动控件，销毁已显示窗口时静默清可见态。默认Text/Size/TabStop/Visible按参考校准，历史“Form独立状态/不存在标准链”回标。完整Form事件委托/模态/默认/布局/缩放/Designer/平台仍缺，见[018](../batches/018.md)。
-
-- `b83f534`（2026-04-09）：加入 Form.Invoke/BeginInvoke，当前实现仍需修正线程语义。
-- `70a08e7`（2026-04-09）：增强布局/释放状态兼容。
-- `2fb513a`（2026-04-09）：异步调用和布局改进涉及窗体。
-- 2026-10-15：增加评估和待办；本轮未实现运行库功能。
-- 2026-10-15 · 批次 001：在首个原生窗口创建前通知 Application 的永久 DPI 设置门禁，覆盖原生建窗回调期间的晚调用；未改变继承链、布局或关闭行为。实际建窗/DPI 交互验收后置。
-- 2026-10-16 · 批次 003：真实顶层 HWND 创建时建立库内投递队列，WindowProc 分发注册消息、Dispose/WM_NCDESTROY 结束队列；同步/异步 Delegate、args、Action 和同步 Func 重载及接口已接入。指定线程探针在 WinForms/JIT/AOT 三端相同；Form 仍未继承 Control，InvokeAsync、所有关闭竞态和完整生命周期另列待办。
-- 2026-10-16 · 批次 004：因标准继承链尚缺，在 Form 增加同名 Action/Func<T> 的 InvokeAsync(CancellationToken) 入口，复用 WindowThreadDispatcher；UI/工作线程及结果/释放后的指定观测纳入 59 条三端对照。没有改变 Form 继承链；ValueTask、标准同步上下文和完整关闭/生命周期仍保留。
-
-- 2026-10-16 · 批次 005：增加标准 Func<CancellationToken,ValueTask> / ValueTask<T> 同名入口，复用 WindowThreadDispatcher；UI 首次调用、返回值与 async token lambda 纳入 90 条参考/JIT/AOT 观测。未改变独立 Form 的继承链；同步上下文与 callback 内 await 后 UI 恢复、全部关闭竞态继续待后续。
-
-- 2026-10-16 · 批次 007：Form 构造接入默认 context，现有 Application.Run 在 Show 前安装并于最外层 finally 还原；默认 await/工作线程投递有对照。Form 仍独立于 Control，最后窗体退出判断仍使用进程全局 OpenForms 计数，多 UI 线程与 ApplicationContext 退出语义继续缺失；不把当前子范围写成完整 Form 生命周期兼容，见 [批次 007](../batches/007.md)。
 
 ## 原始资料
 

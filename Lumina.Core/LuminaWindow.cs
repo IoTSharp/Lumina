@@ -14,9 +14,11 @@ public static class LuminaWindow
     /// <param name="kind">效果类型。</param>
     /// <param name="options">效果参数，传 <c>null</c> 使用默认值。</param>
     /// <exception cref="ArgumentException"><paramref name="hwnd"/> 为零。</exception>
+    /// <exception cref="PlatformNotSupportedException">当前系统不是 Windows。</exception>
     public static void SetEffect(nint hwnd, EffectKind kind, EffectOptions? options = null)
     {
         if (hwnd == 0) throw new ArgumentException("hwnd 不能为零。", nameof(hwnd));
+        EnsureWindows();
         options ??= EffectOptions.Default;
 
         // 先清除旧效果
@@ -48,13 +50,23 @@ public static class LuminaWindow
     }
 
     /// <summary>移除窗口上的所有 Lumina 效果。</summary>
+    /// <exception cref="PlatformNotSupportedException">句柄非零且当前系统不是 Windows。</exception>
     public static void Clear(nint hwnd)
     {
         if (hwnd == 0) return;
+        EnsureWindows();
         ClearBackdrop(hwnd);
     }
 
     // ── 内部实现 ─────────────────────────────────────────────────
+
+    private static void EnsureWindows()
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException("DWM window effects require Windows.");
+        }
+    }
 
     private static void SetSystemBackdrop(nint hwnd, DwmSystemBackdropType type)
     {

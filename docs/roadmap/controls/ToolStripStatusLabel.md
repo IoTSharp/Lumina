@@ -39,13 +39,9 @@
 
 各平台最少覆盖：代码与用户动作双向同步，Owner/Parent/overflow关系，事件顺序/取消/重入，键盘/助记键/输入法（适用时），DPI/RTL/本地化，无障碍，静态Designer和资源，AOT运行，移除与Dispose。没有完整证据时保持🟡/⬜，不发布已达标百分比。
 
-## 修改历史
+## 已完成任务
 
-以下是该类型源路径的真实最近提交；提交标题说明历史变更范围，不能代替本轮验收：
-
-- 2026-04-08 · `7d7a67e` · Add initial implementation of Lumina.Forms library。
-- 2026-03-31 · `52f5662` · Add core UI components for Lumina.Forms。
-- 2026-10-15 · 本轮新增独立路线图，未修改实现。后续每次实现需在此追加日期、提交、具体差异与验收结果，宿主侧修改也需记录在本类型历史中。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方依据
 

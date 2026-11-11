@@ -35,9 +35,6 @@ jobs:
       - name: Restore solution
         run: dotnet restore Lumina.slnx
 
-      - name: Restore demo publish graph
-        run: dotnet restore Lumina.NotepadDemo/Lumina.NotepadDemo.csproj -r win-x64
-
       - name: Build solution
         run: dotnet build Lumina.slnx -c $env:CONFIGURATION --no-restore /p:ContinuousIntegrationBuild=true
 
@@ -67,6 +64,9 @@ jobs:
             }
           }
 
+      - name: Restore demo publish graph
+        run: dotnet restore Lumina.NotepadDemo/Lumina.NotepadDemo.csproj -r win-x64
+
       - name: Smoke publish demo
         run: |
           $output = Join-Path $PWD 'artifacts/demo/Lumina.NotepadDemo-win-x64'
@@ -81,6 +81,32 @@ jobs:
             --no-restore `
             -o $output `
             /p:ContinuousIntegrationBuild=true
+
+      - name: Restore full demo publish graph
+        run: dotnet restore NativeFormsDemo/NativeFormsDemo.csproj -r win-x64
+
+      - name: Smoke publish full NativeFormsDemo
+        run: |
+          $output = Join-Path $PWD 'artifacts/demo/NativeFormsDemo-win-x64'
+          if (Test-Path $output) {
+            Remove-Item $output -Recurse -Force
+          }
+
+          dotnet publish NativeFormsDemo/NativeFormsDemo.csproj `
+            -c $env:CONFIGURATION `
+            -f net10.0 `
+            -r win-x64 `
+            --self-contained true `
+            --no-restore `
+            -o $output `
+            /p:ContinuousIntegrationBuild=true
+
+      - name: Upload NativeFormsDemo AOT publish
+        uses: actions/upload-artifact@v4
+        with:
+          name: NativeFormsDemo-win-x64-aot
+          path: artifacts/demo/NativeFormsDemo-win-x64/**
+          if-no-files-found: error
 
       - name: Upload test results
         if: always()

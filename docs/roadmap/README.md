@@ -1,6 +1,6 @@
 # 逐控件与公共任务索引
 
-更新：2026-11-07，代码实施停在 069；当前仅文档整理。**本索引是当前实施状态入口，控件/公共任务页是状态的唯一维护来源**。每页当前表只列未完成项，完成的明确子范围迁入同页“修改历史”；ID、状态与范围保留，父项不随子项完成。实施列和 [tasks.csv](tasks.csv)仍由现有工具生成。
+更新：2026-11-11，用户已授权恢复 M0 公共基础、Application 与项目收敛代码。**本索引是当前实施状态入口，控件/公共任务页是状态的唯一维护来源**。完成的明确子范围在同页“已完成任务”标记；ID、状态与范围保留，父项不随子项完成。按日期/批次的变更历史统一放在根目录 [CHANGELOG](../../CHANGELOG.md)。实施列和 [tasks.csv](tasks.csv)仍由现有工具生成。
 
 [剩余路线](../../ROADMAP.md) · [依赖顺序](execution.md) · [公共基础](foundations.md) · [附属契约](contracts.md) · [平台闸门](platforms.md) · [仓库任务](project-consolidation.md) · [验证门槛](validation.md) · [变更历史](../../CHANGELOG.md) · [文档导航](../index.md)
 
@@ -8,22 +8,22 @@
 
 下表“当前类型”和成员数来自固定 10.0.11 库存快照，存在只代表同名类型；包括 TextBoxBase 在内的后续代码变化以实施列和任务页为准，不手改历史库存。187 独立页覆盖控件及其他 UI/组件对象，不等于已实现 187 个控件。1,095 类型、61,240 成员记录和 2,204 任务 ID 均保留。
 
-表中完成 ID 是历史交付导航，不是待办；完整定义与证据在对应页的历史台账。任务数不计算兼容率，Windows/Linux/macOS 验收单列。
+表中完成 ID 用于定位已完成范围；完整定义与剩余边界在对应任务页。变更历史统一放在根目录 CHANGELOG。任务数不计算兼容率，Windows/Linux/macOS 验收单列。
 
 ## 基础与继承链
 
 | 类型与独立任务 | 实施阶段 | 当前类型 | 公开属性 / 事件 / 方法 | Windows / Linux / macOS验收 | 代码实施与已完成子任务 |
 | --- | --- | --- | --- | --- | --- |
 | [Control](controls/Control.md) | M0→M1 | 🟡 存在 | 84 / 72 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Control-01a、Control-01b、Control-01c、Control-02a、Control-02b、Control-02c、Control-03a、Control-04a、Control-04b、Control-04c、Control-05a、Control-05b、Control-05c、Control-06a、Control-07a、Control-07b、Control-08a、Control-08b、Control-08c、Control-09a、Control-09b、Control-09c、Control-09d、Control-10a、Control-10b、Control-10c、Control-11a、Control-11b、Control-11c、Control-12a、Control-12b、Control-12c、Control-12d、Control-12e、Control-12f、Control-12g、Control-12h、Control-12i、Control-12j、Control-12k、Control-12l、Control-12m、Control-13a、Control-13b、Control-14a、Control-14b、Control-14c、Control-17a、Control-17b、Control-17c、Control-17d、Control-17e、Control-17f、Control-17g；其余任务未完成 |
-| [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-06a、Application-08a、Application-11a、Application-11b、Application-12a；其余任务未完成 |
+| [Application](controls/Application.md) | M0→M1 | 🟡 存在 | 24 / 6 / 24 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Application-01a、Application-02、Application-05、Application-06a、Application-08a、Application-11a、Application-11b、Application-12a；其余任务未完成 |
 | [ApplicationConfiguration](controls/ApplicationConfiguration.md) | M1 | 🟡 SDK生成契约 | 见消费项目生成源码 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
+| [ApplicationContext](controls/ApplicationContext.md) | M1 | ⬜ 缺失 | 2 / 1 / 2 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ApplicationContext-01、ApplicationContext-02、ApplicationContext-03、ApplicationContext-05、ApplicationContext-06；其余任务未完成 |
 | [WindowsFormsSynchronizationContext](controls/WindowsFormsSynchronizationContext.md) | M0 | 🟡 存在 | 2 / 0 / 10 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ WindowsFormsSynchronizationContext-01a、WindowsFormsSynchronizationContext-01b、WindowsFormsSynchronizationContext-06a；其余任务未完成 |
 | [ScrollableControl](controls/ScrollableControl.md) | M1 | 🟡 存在 | 91 / 73 / 76 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ScrollableControl-01a、ScrollableControl-01b、ScrollableControl-02a、ScrollableControl-03a、ScrollableControl-04a、ScrollableControl-05a、ScrollableControl-06a、ScrollableControl-07a、ScrollableControl-08a；其余任务未完成 |
 | [ContainerControl](controls/ContainerControl.md) | M1 | 🟡 存在 | 97 / 74 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ContainerControl-01、ContainerControl-02a、ContainerControl-02b、ContainerControl-03a、ContainerControl-05a、ContainerControl-06a、ContainerControl-06b、ContainerControl-06c、ContainerControl-06d；其余任务未完成 |
 | [UserControl](controls/UserControl.md) | M1 | 🟡 存在 | 99 / 75 / 81 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ UserControl-01a、UserControl-02a、UserControl-02b、UserControl-02c、UserControl-02d、UserControl-03a、UserControl-05a；其余任务未完成 |
 | [Form](controls/Form.md) | M0→M1 | 🟡 存在 | 143 / 99 / 95 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ Form-01、Form-06a、Form-07a、Form-08a、Form-10a、Form-10b、Form-12a、Form-12b、Form-12c、Form-12d、Form-16a、Form-16b、Form-16c；其余任务未完成 |
-| [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
+| [ButtonBase](controls/ButtonBase.md) | M1 | ⬜ 缺失 | 99 / 75 / 74 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ButtonBase-001；其余任务未完成 |
 | [TextBoxBase](controls/TextBoxBase.md) | M1 | ⬜ 缺失 | 100 / 78 / 91 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TextBoxBase-001a、TextBoxBase-002a、TextBoxBase-002b、TextBoxBase-002c、TextBoxBase-002d、TextBoxBase-003a、TextBoxBase-003b、TextBoxBase-003c、TextBoxBase-003d、TextBoxBase-003e、TextBoxBase-003f、TextBoxBase-003g、TextBoxBase-003h、TextBoxBase-005a、TextBoxBase-005b、TextBoxBase-005c、TextBoxBase-005d、TextBoxBase-005e、TextBoxBase-005f、TextBoxBase-007a、TextBoxBase-007b、TextBoxBase-007c、TextBoxBase-007d、TextBoxBase-007e、TextBoxBase-008a、TextBoxBase-008b、TextBoxBase-008c、TextBoxBase-009a；其余任务未完成 |
 | [ListControl](controls/ListControl.md) | M1 | ⬜ 缺失 | 92 / 80 / 75 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [UpDownBase](controls/UpDownBase.md) | M1 | ⬜ 缺失 | 103 / 74 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -73,9 +73,9 @@
 | [ListBox](controls/ListBox.md) | M3 | 🟡 存在 | 112 / 83 / 88 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [CheckedListBox](controls/CheckedListBox.md) | M3 | ⬜ 缺失 | 117 / 84 / 92 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
 | [ListView](controls/ListView.md) | M2b | 🟡 存在 | 126 / 95 / 94 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
-| [TreeView](controls/TreeView.md) | M2b | 🟡 存在 | 113 / 88 / 84 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [TreeNode](controls/TreeNode.md) | M3 | 🟡 存在 | 33 / 0 / 13 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
-| [TreeNodeCollection](controls/TreeNodeCollection.md) | M3 | 🟡 存在 | 4 / 0 / 26 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
+| [TreeView](controls/TreeView.md) | M2b | 🟡 存在 | 113 / 88 / 84 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TreeView-01；其余任务未完成 |
+| [TreeNode](controls/TreeNode.md) | M3 | 🟡 存在 | 33 / 0 / 13 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；暂无独立任务完成记录 |
+| [TreeNodeCollection](controls/TreeNodeCollection.md) | M3 | 🟡 存在 | 4 / 0 / 26 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ TreeNodeCollection-03、TreeNodeCollection-09；其余任务未完成 |
 | [ListViewItem](controls/ListViewItem.md) | M0→M2b | 🟡 存在 | 22 / 0 / 8 | ⬜ / ⬜ / ⬜ | 🟡 部分完成；✅ ListViewItem-01a、ListViewItem-01b、ListViewItem-01c、ListViewItem-04a、ListViewItem-04b、ListViewItem-06a；其余任务未完成 |
 | [ColumnHeader](controls/ColumnHeader.md) | M3 | 🟡 存在 | 13 / 1 / 4 | ⬜ / ⬜ / ⬜ | ⬜ 开发任务待实现；已有类型待逐项核实；暂无独立任务完成记录 |
 | [ListViewGroup](controls/ListViewGroup.md) | M3 | ⬜ 缺失 | 13 / 0 / 1 | ⬜ / ⬜ / ⬜ | ⬜ 待实现；暂无独立任务完成记录 |
@@ -266,6 +266,6 @@
 
 [固定基线/指纹](api/baseline.json) · [全部类型](api/types.json) · [页与完整类型映射](api/page-map.csv) · [成员](api/members.csv) · [接口](api/interfaces.csv) · [责任映射](api/ownership.csv)
 
-维护顺序：复核原任务页中的范围/状态 → 更新该页修改历史 → 执行 `tools/compatibility/Validate-Roadmap.ps1 -ExportTasks` → 普通校验。已归档完成行仍位于原控件/公共页，现有导出读取当前与历史两部分，tasks.csv 保留全量台账。不要手工改生成列，也不要移除未完任务或重新编号。
+维护顺序：复核原任务页中的范围/状态 → 标记已完成任务并更新根目录 CHANGELOG → 执行 `tools/compatibility/Validate-Roadmap.ps1 -ExportTasks` → 普通校验。完成行仍位于原控件/公共页，现有导出读取未完与完成两部分，tasks.csv 保留全量台账。不要手工改生成列，也不要移除未完任务或重新编号。
 
 静态库存、实施状态与验收证据各自独立。[98% 计量](coverage.md)、[行为目录](behavior-catalog.md)、[2026-10-15 范围审计](scope-audit.md)保留完整基线。历史批次与早期状态纠正见[批次索引](batches/README.md)，不再在本页重复复制。

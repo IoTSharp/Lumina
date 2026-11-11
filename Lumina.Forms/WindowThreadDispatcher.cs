@@ -349,7 +349,7 @@ internal sealed class WindowThreadDispatcher
             {
                 try
                 {
-                    Application.OnThreadException(exception);
+                    Application.ReportNativeThreadException(exception);
                 }
                 catch (Exception reportingException)
                 {

@@ -1,6 +1,6 @@
 # 附属类型与命名空间任务
 
-本页保存共享契约的任务状态；逐成员库存与责任映射保持固定。完成子范围列入[修改历史](#修改历史)，当前表保留完整父项和未完工作。参见[任务索引](README.md)、[依赖顺序](execution.md)和[验证门槛](validation.md)。
+本页保存共享契约的任务状态；逐成员库存与责任映射保持固定。完成子范围列入[完成状态](#已完成任务)，当前表保留完整父项和未完工作。变更历史统一见根目录 [CHANGELOG](../../CHANGELOG.md)。参见[任务索引](README.md)、[依赖顺序](execution.md)和[验证门槛](validation.md)。
 
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
@@ -23,7 +23,7 @@
 
 不为每个EventArgs/枚举创建新项目或复制一套共性模板；精确签名放机器清单，行为归所属控件，降低维护成本。附属类型若成为独立迁移阻塞，再从控件页拆出独立文档。
 
-## 修改历史
+## 已完成任务
 
 ### 已完成任务（历史台账）
 
@@ -32,60 +32,3 @@
 | ID | 顺序/状态 | 负责范围与细节 | 验收 |
 | --- | --- | --- | --- |
 | CNS-006a | P1 ✅ | 批次053：标准TextRenderer.MeasureText三个string及三个ReadOnlySpan无DC重载、完整TextFormatFlags值和必要Padding.Size；真实DrawTextExW/字体ceil与质量0/字形padding/约束/flags分离，初始系统DPI缓存只在成功SetHighDpiMode后刷新，自有HFONT/DC在finally释放。62例含独立DrawTextW字体/Unicode/布局对照通过。IDeviceContext/DrawText、整个TextRenderer、字体缓存优化、Designer/AOT/多DPI与跨平台不计完成 | 只关闭无DC测量必要子范围；为TextBoxBase-007b服务，不由API/测试数量推兼容率 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次069：005d/17g限定完成；旧ID/未完父项/固定分母与064FAIL/065超时保持，见[069](batches/069.md)。
-
-- 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](batches/068.md)。
-
-- 2026-11-07 · 批次067：标准尺寸事件参数/delegate归Rich-005a，不以类型存在关闭共享契约；原ID/未完父项/分母及064FAIL/065超时保持，见[067](batches/067.md)。
-
-- 2026-11-07 · 批次066：仅Rich-003e，不增加共享完成项，原ID/未完父项/固定分母保持；详见[066](batches/066.md)。
-
-- 2026-11-07 · 批次065：SelectionFont仅增加Rich私有字体转换，不增加公共类型/依赖或CNS完成项；原ID/未完父项/分母保持，见[065](batches/065.md)。
-
-- 2026-11-07 · 批次064：增加SelectionType所需标准五值flags，三项Rich位置/行查询沿既有内部POINT；CNS-002与完整附属契约仍部分，不重复计数，见[064](batches/064.md)。
-
-- 2026-11-07 · 批次063：限定Rich-004c/004d，不增共享完成项、不关父项；同步真实代码/检查，纠正索引总述停060的滞后文字。原ID/1,095类型/61,240成员行/分母保持，见[063](batches/063.md)。
-
-- 2026-11-07 · 批次062：复用既有Pack4结构/SendMessage与GetDC/GetDeviceCaps/ReleaseDC，DC在finally释放；无新PInvoke/依赖/公共模型，不新增CNS完成任务，原ID与分母保持，见[062](batches/062.md)。
-
-- 2026-11-07 · 批次061：Rich-003a/004a使用私有Pack4 CHARFORMAT2W/PARAFORMAT映射及既有SendMessage，新增SelectionBackColor/SelectionAlignment标准属性，纠正SelectionColor存值行为；无新公共类型/依赖/PInvoke。不新增CNS完成项，完整格式/Font/ForeColor/BackColor、Designer/AOT运行与平台仍待，见[061](batches/061.md)。
-
-- 2026-11-07 · 批次060：Rich新增标准Rtf/SelectedRtf与静态Stdcall流出回调、逐调用cookie/MemoryStream，复用Pack4 EDITSTREAM和既有SendMessage，无新PInvoke/公共流模型/依赖。归Rich-002c/011a，不新增CNS完成项；完整文件/Protected/OLE、格式API与Designer/AOT运行仍待，见[060](batches/060.md)。
-
-- 2026-11-07 · 批次059：Rich纯文回调以静态UnmanagedCallersOnly/Stdcall和独立cookie实现，复用现有SendMessage；SDK核GETTEXTEX/EDITSTREAM的Pack4。必要内部结构归Rich-002a/002b，不新增公共契约或CNS完成项，完整RTF/格式/Protected/OLE/Designer/AOT运行保持待办，见[059](batches/059.md)。
-
-- 2026-11-07 · 批次058：补标准RichTextBoxScrollBars七值0/1/2/3/17/18/19及真实消费者，归RichTextBox-007a，不新增共同完成任务或命名；复用现有Win32加载/消息声明，未扩写完整绘制/绑定/Designer/OLE。原CNS父项、ID及固定分母保持，见[058](batches/058.md)。
-
-- 2026-11-07 · 批次057：默认事件/默认绑定、Paint转发和选区/编辑分类限定声明归TextBoxBase-003h，TextLength声明/原生读取归002d；不新增公开类型、绑定引擎或Designer，不扩写CNS-005/007/006等父项。原ID/固定分母与完整待办保持，见[057](batches/057.md)。
-
-- 2026-11-07 · 批次056：必要隐藏/可见成员元数据与基类转发归TextBoxBase-003g，Click声明及构造样式/左键链归003f；无新公开类型或名称，不扩写VisualStyles/可访问性完成范围。原附属类型父项、任务ID与固定类型/成员分母保持，见[056](batches/056.md)。
-
-- 2026-11-07 · 批次055：必要SM2/3按线程感知读取归TextBox-004b，创建请求/前置主题标志归TextBoxBase-003e；无新增公共类型/API，不扩写CNS-006a或主题VisualStyles完成范围。原父项、任务ID与固定类型/成员分母保持，见[055](batches/055.md)。
-
-- 2026-11-07 · 批次054：新增尺寸范围及必要控件DPI/原生边框度量归TextBoxBase-007c/007d/007e；CNS-006a只保留053无DC测量范围，不将其扩写为完整TextRenderer/IDeviceContext/DrawText完成。原附属类型父项、任务ID及固定分母保持，见[054](batches/054.md)。
-
-- 2026-11-07 · 批次053：CNS-006从全待办纠正为无DC测量子范围完成/完整父项部分，保留未完Drawing/VisualStyles任务；006a登记六重载及必要TextFormatFlags/Padding.Size/DPI辅助，控件页不重复计数。固定API库存与原ID/分母不改，见[053](batches/053.md)。
-
-- 2026-11-07 · 批次041：CNS-012沿Application-11b/12a补OLE前置及最小owner退出配对；CNS-001/003的040事件/集合保持，未关闭任何完整父项。完整context/模态/输入法及平台仍待，固定源码其他失败HRESULT与MUI有界差异单列，见[041](batches/041.md)。
-
-- 2026-11-07 · 批次040：CNS-001/003/012分别补标准输入语言事件参数/委托、只读集合和HKL服务，行为归Application-11a、Form-12d及Control-12m。所有父任务保持部分，OLE持久前置/完整输入法和平台验收不由新类型存在关闭，见[040](batches/040.md)。
-
-- 2026-11-07 · 批次035：CNS-002同步AutoSizeMode修正和DialogResult/IButtonControl必要消费。原固定API10.0.11引用包缺失，新增面未重导库存，不以旧库存证明新API匹配；Keys.Return别名缺口由首次编译暴露并保留，见[035](batches/035.md)。
-
-- 2026-10-16 · 批次027：CNS-001/002补MouseEventArgs.Location/可继承、HandledMouseEventArgs和XButton1/2及真实事件消费。错误委托强转的命名空间/Native AOT异常文本差异原样保留，完整契约和平台仍未关闭，见[027](batches/027.md)。
-
-- 2026-10-16 · 批次024：CNS-002补ImageLayout与实际背景绘制消费，继承页面/API索引同步；五值存在不等于全部枚举或整个Control完成，见[024](batches/024.md)。
-
-- 2026-10-16 · 批次023：CNS-001/002补标准绘制参数/委托、Message/CreateParams和ControlStyles明确首范围，未关闭所有附属契约；GetLParam(Type)/自定义Param动态封送与完整事件/平台仍保留，见[023](batches/023.md)。
-
-- 2026-10-16 · 批次021：CNS-008由全待办纠正为LayoutEngine基础扩展已存在；LayoutSettings、非Control arranged对象与完整Flow/Table样式/序列化未关闭。标准默认base engine无几何策略，实际Control使用真实DefaultLayout；不将签名存在当完整布局验收。
-
-- 2026-10-16 · 批次020：纠正CNS-001遗漏018 ControlEventArgs/Handler的全待办状态，并加入020 LayoutEventArgs/Handler明确范围；CNS-003补018标准父子集合。CNS-008的LayoutEngine/LayoutSettings仍待实现，不能把布局事件事务当完整布局命名空间；固定分母/历史ID均保留。
-
-2026-10-15：本次新增全类型责任入口和验收要求，未新增上述缺失实现；各已有源文件历史以Git为准。公共类型已有历史名称不重命名，实施时优先标准WinForms契约。
-
-2026-10-16 · 批次016历史回标：CNS-002补001的HighDpiMode与010的BoundsSpecified，CNS-003补006～012子项集合明确首范围，CNS-012补004/005标准InvokeAsync与007默认await恢复；从过时的全待办纠正为部分完成，其他枚举/集合/异步命令/完整所属/native及验收继续保留。仅整理已有实现和证据，不改变历史提交、任务ID或固定分母。

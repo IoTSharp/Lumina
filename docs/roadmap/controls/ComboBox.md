@@ -55,16 +55,9 @@ DropDownList 可用 GtkDropDown + GListModel + GtkSingleSelection；可编辑 Dr
 
 Windows 使用 `NativeFormsDemo` 固定双目标对照：`net10.0-windows` 保持真实 WinForms 与设计器，`net10.0` 保持 Lumina.Forms 和 Native AOT。数据模型、资源、事件处理代码尽量共用；不能通过 Demo 特殊分支掩盖库缺口。平台验证记录附 SDK、OS、GUI 后端版本与 AOT 发布/实际启动证据。
 
-## 修改历史
+## 已完成任务
 
-- 2026-10-16 · 批次023：基础Control启用标准UserPaint后，本控件构造显式保留UserPaint=false，使现有系统窗口类过程及原生字体/绘制继续生效。仅属消息与绘制基础的必要衔接，不代表本控件完整Styles、Paint事件或视觉/输入兼容完成，见[023](../batches/023.md)。
-
-- `108ef2b` · 2026-04-08：接入 Win32 深色模式。
-- `2e8431f` · 2026-04-01：主题和 Demo UI 改进；不代表全部列表行为已完成。
-- `ce86ab5` · 2026-03-31：接入公共主题、颜色和窗口实时刷新能力。
-- 2026-10-15：本页首次细化任务、平台方案与验收顺序；仅规划变更，未实现上述缺口。
-
-历史来自对应源码路径的 `git log -3 --date=short`；说明按本类型相关内容摘要，不把提交标题当成功能验收证明。
+当前尚无已关闭的代码范围；变更历史统一见根目录 [CHANGELOG](../../../CHANGELOG.md)。
 
 ## 官方资料
 

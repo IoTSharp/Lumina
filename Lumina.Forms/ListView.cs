@@ -3,10 +3,13 @@ namespace Lumina.Forms;
 /// <summary>
 /// Represents a WinForms-compatible list view backed by the native common control.
 /// </summary>
-public class ListView : Control
+public partial class ListView : Control
 {
-    private readonly ListViewItemCollection _items = new();
-    private readonly ColumnHeaderCollection _columns = new();
+    private readonly ListViewItemCollection _items;
+    private readonly ColumnHeaderCollection _columns;
+    private bool _fullRowSelect;
+    private bool _gridLines;
+    private View _view = View.Details;
     private static readonly Win32.SubclassProc s_listViewSubclassProc = ListViewSubclassProc;
 
     [ThreadStatic]
@@ -18,11 +21,16 @@ public class ListView : Control
         Win32.LVS_EX_FULLROWSELECT |
         Win32.LVS_EX_HEADERDRAGDROP;
 
+    private const uint LVS_EX_GRIDLINES = 0x00000001;
+    private const int LVM_SETVIEW = Win32.LVM_FIRST + 142;
+
     /// <summary>
     /// Initializes a list view with more spacious default layout metrics.
     /// </summary>
     public ListView()
     {
+        _items = new ListViewItemCollection(this);
+        _columns = new ColumnHeaderCollection(this);
         SetStyle(ControlStyles.UserPaint, false);
         Margin = new Padding(6);
     }
@@ -36,11 +44,31 @@ public class ListView : Control
 
     public ColumnHeaderCollection Columns => _columns;
 
-    public bool FullRowSelect { get; set; }
+    public bool FullRowSelect
+    {
+        get => _fullRowSelect;
+        set { _fullRowSelect = value; ApplyExtendedStyles(); }
+    }
 
-    public bool GridLines { get; set; }
+    public bool GridLines
+    {
+        get => _gridLines;
+        set { _gridLines = value; ApplyExtendedStyles(); }
+    }
 
-    public View View { get; set; } = View.Details;
+    public View View
+    {
+        get => _view;
+        set
+        {
+            if ((uint)value > (uint)View.Tile)
+            {
+                throw new System.ComponentModel.InvalidEnumArgumentException(nameof(value), (int)value, typeof(View));
+            }
+            _view = value;
+            if (NativeHandle != 0) { _ = Win32.SendMessageW(NativeHandle, LVM_SETVIEW, (nint)value, 0); }
+        }
+    }
 
     /// <inheritdoc />
     protected override string ClassName => "SysListView32";
@@ -66,6 +94,8 @@ public class ListView : Control
         InstallDarkModeSubclass();
         ApplyNativeThemeState();
         ApplyNativeColors();
+        _ = Win32.SendMessageW(NativeHandle, LVM_SETVIEW, (nint)_view, 0);
+        SynchronizeColumns();
     }
 
     /// <inheritdoc />
@@ -85,11 +115,15 @@ public class ListView : Control
             return;
         }
 
+        uint mask = ModernExtendedStyles | LVS_EX_GRIDLINES;
+        uint styles = Win32.LVS_EX_DOUBLEBUFFER | Win32.LVS_EX_LABELTIP;
+        if (_fullRowSelect) { styles |= Win32.LVS_EX_FULLROWSELECT; }
+        if (_gridLines) { styles |= LVS_EX_GRIDLINES; }
         _ = Win32.SendMessageW(
             NativeHandle,
             Win32.LVM_SETEXTENDEDLISTVIEWSTYLE,
-            (nint)ModernExtendedStyles,
-            (nint)ModernExtendedStyles);
+            (nint)mask,
+            (nint)styles);
     }
 
     private void InstallDarkModeSubclass()

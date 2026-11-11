@@ -8,8 +8,8 @@ The current implementation uses native Windows controls. Common controls and AOT
 
 - [Project requirements](PROJECT_REQUIREMENTS.md): product goals, compatibility principles, and the Windows official / Linux custom Drawing strategy.
 - [Documentation map](docs/index.md): where to find requirements, current status, guides and historical evidence.
-- [Remaining roadmap](ROADMAP.md): unfinished milestones and dependencies; continuous implementation stopped after batch 069.
-- [Current task index](docs/roadmap/README.md): the single entry for implementation status. Task pages retain completed IDs in their history.
+- [Remaining roadmap](ROADMAP.md): unfinished milestones and dependencies; M0 implementation resumed on 2026-11-11.
+- [Current task index](docs/roadmap/README.md): the single entry for implementation status. Task pages mark completed IDs; dated change history lives in the root Changelog.
 - [Changelog](CHANGELOG.md) · [Batch history](docs/roadmap/batches/README.md) · [Validation and unresolved gates](docs/roadmap/validation.md).
 - [98% acceptance criteria](docs/roadmap/coverage.md): properties, events, and behavior measured separately.
 - [2026-10 project reassessment](docs/zh/luminaforms-reassessment-2026-10.md): historical findings, not current implementation status.

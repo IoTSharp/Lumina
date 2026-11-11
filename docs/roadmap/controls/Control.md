@@ -1,6 +1,6 @@
 # Control
 
-本页任务表只列未完成范围；代码完成子项保留在[修改历史](#修改历史)，任务 ID 与验收状态均不因整理改变。剩余重点是原反射父 Form 销毁/重建寿命、完整线程与模态、派生输入/布局、缩放/DPI、资源和可访问性。
+本页任务表只列未完成范围；代码完成子项标记在[完成状态](#已完成任务)，任务 ID 与验收状态均不因整理改变。剩余重点是原反射父 Form 销毁/重建寿命、完整线程与模态、派生输入/布局、缩放/DPI、资源和可访问性。
 
 [完整 API 与继承基线](../api/Control.md) · [任务索引](../README.md) · [依赖顺序](../execution.md) · [验证门槛](../validation.md) · [平台要求](../platforms.md)
 
@@ -39,11 +39,9 @@
 
 Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共同前置；内部换 GTK/AppKit 不会自动解决，不能把普通图形能力排除来抬高可移植分数。Windows 消息/OLE 等真实专属契约逐成员审核并记录 🚫；该状态不等于 Windows 已完成。
 
-## 修改历史
+## 已完成任务
 
-### 已完成任务（历史台账）
-
-以下原任务行从当前任务表迁入历史，ID、状态、明确范围与验证限制原样保留；现有导出工具仍读取这些行。✅ 仅表示定义范围代码完成，未完父项与平台验收仍在当前表。
+✅ 表示该行定义范围代码完成；父项的剩余代码与平台验收仍按当前任务表记录。
 
 | 状态 | 优先级 / ID | 具体工作与验收 |
 | --- | --- | --- |
@@ -101,130 +99,6 @@ Font/Image/Icon/Graphics 的公开 System.Drawing.Common 类型身份属于共�
 | ✅ | P1 / Control-17e | 批次049：保留当前原生句柄创建时使用的自有停车通知接收者至该句柄销毁；WM_COMMAND接受真实停车子或仍有映射且原接收者归属匹配的重挂控件，外部销毁/重建均回收旧接收者。Form非零lParam按来源HWND反射，零lParam保留既有菜单/命令路径，不因相同ID误通知其他控件。8项回归含独立原生EDIT目的地、parking→Form编辑/Undo、活Form间重挂、释放/外部销毁/重建、错误来源及ID碰撞通过。048“重挂即销毁停车窗”假设按固定反射寿命纠正，旧TextChanged=2期望保持；完整原反射父Form寿命/WM_NOTIFY/context不关闭。 |
 | ✅ | P1 / Control-17f | 批次067必要依赖：自有停车WM_NOTIFY以NMHDR.hwndFrom查映射，只接当前真实子窗或匹配且仍为原通知父的保留接收者，交既有HandleNotify；未映射/错误接收者/未处理走DefWindowProc，异常沿既有native边界报告。32例Rich尺寸组含4项错误来源/同ID/重挂及真实parentless检查，旧停车/重挂EDIT命令组同时回归。仅关闭该连接，原父Form寿命/其他通知结果和17父项仍待。 |
 | ✅ | P1 / Control-17g | 批次069必要依赖：内部HandleNotifyWithResult保留旧OnNotify布尔钩子并默认结果0；Form按NMHDR.hwndFrom路由，容器/Owner和停车接收者回传Rich保护通知的精确0/1。49例覆盖四接收路径、旧入口/钩子一次调用、冲突ID/未映射源、仍活原Form重挂/停车归属和既有Resize/Selection零结果；不扩原父Form销毁重建寿命或公共API，任意高位nint可控返回覆盖NOT_RUN，完整17父项不关闭。 |
-
-### 变更记录
-
-
-- 2026-11-07 · 批次069：069的Control-17g限定补WM_NOTIFY原生结果传递：保留旧OnNotify/内部入口默认0结果，Rich的拒改决定经Form、容器和自有停车接收者回到原生。Form以来源HWND识别发送者，避免ID碰撞；原父Form销毁/重建寿命、其他完整反射/平台仍待，见[069](../batches/069.md)。064FAIL/065超时保持；下述068及以前为历史。
-
-- 2026-11-07 · 批次068：005b/005c只关闭对应选择/滚动/IME程序通知范围；原ID/未完父项/固定分母及064FAIL/065超时保持，见[068](../batches/068.md)。
-
-- 2026-11-07 · 批次067：17f限定停车WM_NOTIFY连接，主仅改该分支，不关闭原父Form寿命/完整反射/17父项；原ID/平台/固定分母及064FAIL/065超时保持，见[067](../batches/067.md)。
-
-- 2026-11-07 · 批次066：限定RichTextBox-003e颜色同步，原ID/未完父项/固定分母保持；064全量FAIL及065超时不由本批检查清除，见[066](../batches/066.md)。
-
-- 2026-11-07 · 批次065：源码/原任务状态no-op；Rich-003d不增加本类型完成项，原ID/未完父项/固定分母保持。 本批全量180秒超时未完成，064全量FAIL/超时未解门槛保留，见[065](../batches/065.md)。
-
-- 2026-11-07 · 批次064：Rich选择类型与专有位置/行查询复用现有内部结构和消息入口，本类源码不变，不由局部查询关闭完整Windows后端或平台任务，见[064](../batches/064.md)。
-
-- 2026-11-07 · 批次063：限定完成Rich-004c/004d；86新增/6,045全量及固定双目标Release通过，首85/86的新AllowNull反射夹具失败回执保留。原ID/未完父项/固定分母保持，见[063](../batches/063.md)。
-
-- 2026-11-07 · 批次062：源码no-op，Rich偏移/保护标记/段落缩进沿既有interop，不新增公共API或Control完成范围；完整父项与平台门槛保持，见[062](../batches/062.md)。
-
-- 2026-11-07 · 批次061：源码/任务no-op，Rich-003a/004a的私有blittable格式结构与标准属性不扩写Control完成范围，原父项/ID/分母保持，见[061](../batches/061.md)。
-
-- 2026-11-07 · 批次060：源码no-op，Rich静态RTF流回调/缓存归002c/011a，现有生命周期连接保持；不由隐藏窗口格式往返关闭完整反射/线程/资源或平台父项，见[060](../batches/060.md)。
-
-- 2026-11-07 · 批次059：既有父链Disposing查询仅放宽同库可见性，无算法/公共面扩写，64新增/5,728全量通过；不新增Control完成项，见[059](../batches/059.md)。
-
-- 2026-11-07 · 批次058：源码与原父项no-op，复用现有系统类注册/消息/生命周期；真实Rich后端不关闭完整Control-17或其他Control任务，见[058](../batches/058.md)。
-
-- 2026-11-07 · 批次057：源码no-op，必要TextLength原生读取/编辑元数据归TextBoxBase-002d/003h；不新增Control完成项或改变现有Paint调用语义，完整父任务保持，见[057](../batches/057.md)。
-
-- 2026-11-07 · 批次056：生产no-op，专用文本框点击链保留通用鼠标异常finally边界，不将有限负向命中/元数据检查计为完整Control输入或Designer完成，见[056](../batches/056.md)。
-
-- 2026-11-07 · 批次055：源码no-op，固定Control重建guard与DPI内部读取只为TextBox-004b提供依赖；不把新增两个系统度量helper计作完整DPI或Control完成，见[055](../batches/055.md)。
-
-- 2026-11-07 · 批次054：补标准DeviceDpi/独立内部缓存和真实窗口创建读取，为TextBoxBase-007c服务；保持完整Control/DPI父任务部分，不以初值/窗口读取代替缩放及跨屏事件验收，见[054](../batches/054.md)。
-
-- 2026-11-07 · 批次051：14c仅补TextBox词删除必要内部redraw依赖，默认Invalidate不强制子树；10例新增及5,119全量通过。Handle销毁后End必要重建和原异常按固定10.0.11保持，完整绘制/生命周期/设备及平台仍待，见[051](../batches/051.md)。
-
-- 2026-11-07 · 批次049：新增17e，原因由固定Control.ReflectParent/UpdateReflectParent与独立原生EDIT对照闭环，不再把实际GetParent等同通知接收者。首跑13例11通过，两项重挂通知失败保留；修复后新18与旧停车/行为8组合26/26、完整4,954/4,954。048最终停车测试“重挂即释放”的断言是历史实现假设，现改为原EDIT销毁时释放；048原失败/诊断及17d限定历史保留，旧2次事件硬期望未改。完整17父项仍部分，见[049](../batches/049.md)。
-
-- 2026-11-07 · 批次048：全量首轮4,930/4,931暴露旧ControlBehaviorTests的TextChanged=2变1；保留旧硬断言与失败回执，根因是裸STATIC停车窗吞WM_COMMAND。只补17d通知连接，不在AppendText手工补发事件、不改固定基类算法，也不新建完整context；标准ParkingWindow固定源码依据及最终证据见[048](../batches/048.md)。
-
-- 2026-11-07 · 批次048未完成范围：新重挂探针在Form.Show后实际父映射/同HWND/停车窗销毁及native ID=1001均通过，但后续EDIT修改文本不触发Form/child命令和TextChanged。两份有界诊断JSON/TRX保留048；原因未闭环，不以本批停车期间通知测试称重挂后兼容，继续Control-17/TextBoxBase-006，下一批优先核此依赖。
-
-- 2026-11-07 · 批次046：新宿主测试暴露旧superclass缓存跨activation context混用EDIT的潜在缺陷。首轮全量6个旧RTL失败，隔离28项通过、与新测试组合再次6失败；直接回归读到源过程与缓存原过程不一致，修复前两例全失败。仅在NativeWindowClass当前源类解析与缓存键加入真实源身份，保留旧RTL硬断言；Control.cs不改，完整17及平台/线程/模态仍待，见[046](../batches/046.md)。
-
-- 2026-11-07 · 批次045：为TextBoxBase-005a增加标准内部WindowText扩展点，将现有Text setter的native提交与公开OnTextChanged分开；仅EDIT在native提交期间抑制反射通知，处理器内native编辑仍正常通知。Control公开Text判等/提交/通知规则保持；相关ControlText/编辑等892项与全量4,782项通过。首次两例夹具父Form未建窗被停车窗承载，补真实父HWND和托管映射断言后通过；不改变生产Parent/创建/反射管线，不重复新增Control完成任务，完整11/17与生命周期仍待，见[045](../batches/045.md)。
-
-- 2026-11-07 · 批次044：Control.cs源码no-op。TextBox对齐夹具定位既有RTL创建后UpdateStyles会重新提交USER32规范化过的样式；独立EDIT复现此管线，仅验证TextAlign创建样式消费。原38/42失败保留，完整运行时RTL/镜像视觉及11/17父项不关闭，见[044](../batches/044.md)。
-
-- 2026-11-07 · 批次042：生产Control及Control.Ime均no-op；核固定源码确认组合/SETCONTEXT/候选通知交原生默认过程，新增11项消息参数/结果、去重状态/默认异常及真实隐藏EDIT回传回归。沿12父项记录审计，不新增重复实现子项；物理IME/候选UI、模态与平台仍待，见[042](../batches/042.md)。
-
-- 2026-11-07 · 批次040：12m将039语言变化消息接入标准Form通知，并补请求取消与原始参数/默认结果保留；上下文更新、unsupported传播和默认过程先后遵循固定源码。只关闭明确共享消息子范围，模态/OLE/组合串/设备与平台仍待，见[040](../batches/040.md)。
-
-- 2026-11-07 · 批次039：12l接语言消息和非Form宿主传播，普通Form不冒充模态宿主。9项新增、50项组合及4,590全量通过；原始夹具失败保留，旧028无句柄焦点用例隔离并还原未初始化传播缓存，原默认/LostFocus/不建句柄断言保留。完整IME与设备仍待，见[039](../batches/039.md)。
-
-- 2026-11-07 · 批次038：12k按固定10.0.11补有效ImeMode与CJK IMM上下文首范围；保留037字符计数语义。新interop用LibraryImport，HIMC借用与自有寿命分开；完整输入法/派生/平台仍未关闭，见[038](../batches/038.md)。
-
-- 2026-11-07 · 批次037：按固定10.0.11补12j，7项IME消息回归及4,536全量通过。纠正12父项遗漏036已完成子范围的滞后；完整IME/context/候选窗/派生与平台不关闭，详见[037](../batches/037.md)。
-
-- 2026-11-07 · 批次035：12h接入真实消息循环，默认按钮消费复用内部验证结果；AutoSizeMode修正数值身份时将基础字段显式初始化GrowOnly，保留原命名默认。旧整数0/1及已编译常量须复核，不以新增队列用例关闭完整键盘/Control，见[035](../batches/035.md)。
-
-- 2026-11-07 · 批次036：12i按固定WinForms 10.0.11源码补原生WM_GETDLGCODE判别和WM_SYSCHAR分流；SuppressKeyPress在真实队列中有界移除字符消息，直接消息测试仍保持兼容；验证取消状态按父链读取，并在鼠标抬起后清理。新增5项输入测试、真实HWND按钮验证2项及既有键盘14项通过；完整IME、派生路由、设备和平台仍未验收，见[036](../batches/036.md)。
-
-- 2026-11-07 · 批次034：完成12g键事件实际消息管线首范围，修复033中WndProc绕过预览、Handled返回误判及默认助记键回父递归；保留033已完成预处理范围，完整IME/队列字符抑制/设备及命令对话框仍待，见[034](../batches/034.md)。
-
-- 2026-10-26 · 批次030：补Control-12e基础键消息/事件契约和5项Windows STA回归；4,397项全线测试通过，完整键盘预处理、IME、物理设备、Designer/AOT和跨平台仍未关闭，见[030](../batches/030.md)。
-
-- 2026-10-17 · 批次029：新增49项回归与有限12c/12d实现；最终16场景仅5场景JIT/AOT严格一致，11场景相差关闭LostFocus的33行；对参考保留关闭LostFocus和既有WM_QUIT差异。父子集合初次回归发现可见兄弟句柄未创建，恢复既有创建路径后重新检查；原始失败保留。修正Control-02遗漏028基础Select/CanSelect的历史表述；整Control/98%不关闭，见[029](../batches/029.md)。
-
-- 2026-10-16 · 批次028：补12a/12b及必要容器合作，54项新增核心/消费回归与全部4,343测试通过。固定参考30场景18同，JIT/AOT全部30同；11个额外WM_QUIT和1个SplitContainer继承投影差异原样保留。修复Form句柄恢复误激活，旧生命周期204行恢复严格全同。基础导航不等于自动转移、验证/键盘或物理设备验收；父项/完整Control不关闭，见[028](../batches/028.md)。
-
-- 2026-10-16 · 批次027：Control-13由全待办改部分，只关闭13a/13b明确代码范围；核心21例、消费25例通过。固定参考25场景20同/5差异，JIT/AOT24同/1异常文本差异；LockScreenBackstopFrame阻止10/20次命中，成功Click命中与物理输入待解锁后验证。Control-12已有Enter/Leave/On*和局部焦点接入，纠正全待办但不关闭完整焦点/键盘。生命周期204、消息绘制558行参考/JIT回归同；旧AOT边界保留，见[027](../batches/027.md)。
-
-- 2026-10-16 · 批次026：05c/08c有限范围实现，48项新回归与全部4,243测试通过。25标准场景16同/9增强差异，另7旧Task仅Lumina；32场景JIT/实际AOT全同。旧Action59行/ValueTask90行各两条关闭差异首次出现并保留strict失败，其余观测不变；历史004/005原全同证据不删除。修正当前“所有InvokeAsync关闭均悬挂”“原生错后托管清理必需第二次Dispose”的过时描述，明确Parent/child/Site再失败仍需重试，未关闭完整父项/平台或98%。见[026](../batches/026.md)。
-
-- 2026-10-16 · 批次025：完成普通Drain的完成信号失败收尾，以及Control/Form/同步上下文的native callback与`WM_NCDESTROY`双错边界。固定参考/JIT/AOT各8场景全部正常退出；4项真实差异保留，未将增强行为归一化。完整Control、InvokeAsync关闭、Dispose后续托管事务、输入/Designer/资源、Linux/macOS仍未关闭，见[025](../batches/025.md)。
-
-- 2026-10-16 · 批次024：完成04b/14b，关闭失败仍遍历余队列并销毁实际HWND，明确偏离10.0.11的收尾行为。补基础背景图像和真实屏幕透明/alpha证据，Form取消默认COMPOSITED后修复唯一意外失效矩形差异。更新“背景/透明全缺”及“Close必被首个wait打断”的当前描述；普通Drain、Dispose后续清理和native回调/清理双错仍有缺口，父项/历史失败/固定分母不变，见[024](../batches/024.md)。
-
-- 2026-10-16 · 批次023：14a/17a补标准消息、样式和基础绘制，内部HandleWindowMessage收进标准虚入口，系统原生控件显式保留原生绘制。修复UpdateStyles后的客户区缓存、重建文本和公共OnPrint状态；Form默认绘制接共享入口，最外层销毁清理不依赖派生调用base。022基础Control字体差异由实际UserPaint类解决，保留默认palette差异与历史失败。AOT自定义Param/GetLParam动态封送、透明可见合成、完整绘制/输入/Designer和平台仍缺；仅明确子范围代码完成，详见[023](../batches/023.md)。
-
-- 2026-10-16 · 批次022：完成11b基础外观父链与08b借用Font/独占HFONT明确范围，移除TextBox隐藏Font所有权；父重挂/Reset/通知/FontHeight/布局缓存与内部theme局部值分离。固定参考仍记录基础Control原生字体和默认palette前景色差异，完整Styles/UserPaint由14接续；不以托管一致关闭原生绘制。历史Control-14从全待办纠正为已有Invalidate/内部窗口过程的部分状态，全部未完成员与原ID保留。详细运行、首次失败和剩余边界见[022](../batches/022.md)。
-
-- 2026-10-16 · 批次021：09d/10c完成有限基础几何/引擎/缓存。固定10.0.11默认AnchorLayoutV2=false，另进程显式true覆盖；不把V2误当默认。Dock↔Anchor内部切换避免多余DockChanged，真实几何提交保留标准事件；移除旧Form菜单高度二次偏移，native矩形与托管一致。13核心+11容器新测试及全部4,107项通过，512行JIT/实际AOT同参考；020七行差异已修，旧失败不覆盖。Control-17从全待办纠正为已有Win32部分实现，未把它或09/10父项关闭；完整边界见021。
-
-- 2026-10-16 · 批次020：新增标准Layout参数/委托和非virtual公共布局入口，属性/集合/尺寸变更进入同一事务；OnLayout为标准派生扩展。历史Lumina覆盖virtual SuspendLayout/ResumeLayout/PerformLayout的消费者须按标准改为OnLayout(LayoutEventArgs)，这是对WinForms表面的兼容修正。byte暂停计数、缓存消费/重入/原异常有对照，不制造Dock缺失的Bounds事件。10父项及09/LayoutEngine/PreferredSize/InitLayout完整语义继续部分；56项新增回归与全部4,083项通过，394行JIT/AOT严格相同，参考7行几何差异保留，不宣称完整Control或98%。
-
-- 2026-10-16 · 批次019：补07a标准句柄入口、事件、状态与映射。历史内部读Handle的调用改用NativeHandle，避免普通属性/销毁路径意外建窗；保留旧无参OnHandleCreated扩展。WM_SHOWWINDOW接入标准可见树与通知，018的391行父子集合参考/JIT差异已清零，历史失败不改写。重建期间保留dispatcher、子窗停放和重挂，普通销毁仍终止待执行项；Dispose覆盖异常/跳过base按固定参考保留对象/窗口状态。07父项保留全部派生恢复、资源与竞态；Form历史Created事件隐藏标准属性仍明确披露。全Control、Windows完整验收和GTK4/AppKit未关闭，详见[019](../batches/019.md)。
-
-- 2026-10-16 · 批次018：新增标准嵌套集合和Parent setter/含parent构造，共用所有控件父子树；Form进入标准继承后复用同一状态。Windows通过SetParent/停放窗口保留重挂HWND、恢复Z序；级联Dispose先销毁原生树再解除Parent，释放后重挂再次Dispose仍清理当前树。数组复制保留接口存储的逐元素转换与标准异常；对Find及释放通知失败补最小固定参考。同步集合布局暴露的ToolStrip重入由库内修复。历史“Parent/Controls/Form完全未实现”已改为明确首范围，Control-01/03/06/08/09/11及FND父项仍有剩余，不新增整控件或98%声明。最终记录与已知差异见[018](../batches/018.md)。
-
-- 2026-10-16 · 批次017：补ResetText标准虚槽、Text/TextChanged英文属性及OnTextChanged的Advanced，移除Text setter的释放后拒绝；维持虚getter判等、存值后通知和016构造顺序。固定参考/JIT 3,774条相同，实际AOT行为及其余元数据相同；内置COM关闭时CoreLib的RemoveAttributeInstances主动删除DispId=-517，保留原始差异，不改库AOT策略或全局根化。首轮一项新测试把setter退出回调中的嵌套Reset尾记录预期写错，已按参考改为完整16步断言并通过；219项新测试全部通过。父任务11保持部分完成；已有HWND/native、Parent/Form、布局、中文Designer和动态属性转换未关闭，见[017](../batches/017.md)。
-
-- 2026-10-16 · 批次016历史回标：任务11补构造必需的Text子范围为部分完成并引用01c，重置/完整运行期与native/继承仍缺；02b/c、09a、10a的后续基础构造/MinMax/客户区/通知/换算改为交叉引用已完成子任务，保留真实布局/派生/外部通知缺口。原批次快照和ID不变，不新增验收。
-
-- 2026-10-16 · 批次 016：新增 Control(string? text) 与五参文本/几何构造，默认初始化和 context 安装后经虚 Text，再分别设置 Location、Size；约束可在 Location 阶段改变尺寸并发通知。Text 允许 null 且为标准 virtual；虚 getter 判等时保留原存储，不被空写覆盖。4,584 条固定参考/JIT/实际 AOT 指定观测相同，311 项新增回归，覆盖 null/Unicode/NUL、极值几何、隐藏/覆盖/不调 base/重入/原异常和 context 时序。初次有效空值差异已按参考修正；构造 NullableContext 放置按有效契约比较，CoreCLR 的 Standard|HasThis 与 Native AOT 的 HasThis 原始编码单列 stderr，只比较实例/变参等实际契约。精确 #ctor/Text 根化仅在探针，AOT EXE 2,075,648 字节、无 CLR Header/IL2xxx/IL3xxx。含 parent 构造、完整 Text/native/重置/继承、布局与 Form 仍缺，见 [016](../batches/016.md)。
-
-- 2026-10-16 · 批次 015：基础无参构造由固定 120×24 改为标准初始 0×0，新增 protected virtual DefaultSize。构造按参考重复读取非空默认 Min/Max 并调用公共虚 setter，再直接提交 DefaultSize 的宽高；双轴非零才计算边框客户区，否则保留构造重入留下的缓存，位置不被默认尺寸覆盖。默认扩展原异常发生时 context 尚未安装，成功后才安装、派生构造体可见。2,677 条固定 10.0.11/JIT/实际 AOT 全同，387 项新增回归；25 个旧差分驱动和全线 2,713 项测试通过，无旧测试或派生构造修改。AOT EXE 2,020,864 字节，无 CLR Header/IL2xxx/IL3xxx。已有派生构造显式尺寸保留；尚未自设默认尺寸的具体控件现在继承基础 0×0，其专属默认值仍待后续。其余公共构造、Parent/Controls、完整布局/DPI/Form 与全语言元数据另列，见 [015](../batches/015.md)。
-
-- `70a08e7`（2026-04-09）：补 ResumeLayout/IsDisposed 等设计器兼容表面。
-- `2fb513a`（2026-04-09）：加入异步调用相关实现。
-- `9d5165f`（2026-04-09）：扩展基础属性与控件功能。
-- 2026-10-15：增加评估和待办；本轮未实现运行库功能。
-- 2026-10-15 · 批次 002：Control 接入 Component/IWin32Window 并可实例化；新增标准 Disposing，资源清理幂等且重复 Dispose 继续触发 Disposed；终结器分支不遍历托管子树。新增 9 项纯托管测试及 1 项基础 HWND 测试通过，`Test-ControlComponent.ps1` 的 5 项观测与真实 WinForms 10.0.11 一致。Form 继承链、UI 子控件级联、构造族、UI 投递及复杂设备/设计器验收保留。
-- 2026-10-16 · 批次 003：接入真实窗口队列、ISynchronizeInvoke 和 Action/Delegate/args/Func 的同步调用、BeginInvoke/EndInvoke。对照无句柄、UI/工作线程、父级回退、FIFO、ExecutionContext、特殊委托参数及释放唤醒；69 条三端观测相同。已有 HWND 的 null Delegate 在参考端会挂起，本实现以 ArgumentNullException 明确拒绝；无 HWND 的 null 仍按参考端抛 InvalidOperationException。异步异常报 ThreadException；无订阅者仅显示原生 OK 提示继续，完整标准异常对话框/模式和广泛关闭竞态待后续。
-- 2026-10-16 · 批次 004：Action/Func<T> 的标准 InvokeAsync 与取消及既有两条直接调用路径统一复用真实队列；59 条固定参考/JIT/AOT 观测相同，旧 Task 路径另检初始 UI 线程、等待内层 Task、原异常身份与取消。按参考端保留 null 校验先于句柄、无自身句柄返回 Faulted Task、预取消成功并跳过回调（Func 返回 default）、排队后/回调内取消及原 token；任务异常不报告 ThreadException。Dispose 前已排队而未执行的 Task 等待后续 token 取消，与参考端相同；无 token 的关闭/重建/退出竞态、ValueTask 与标准同步上下文仍待后续。
-
-- 2026-10-16 · 批次 005：Control/Form 补标准 ValueTask 两族并共用真实 HWND 队列；IValueTaskSource 同步/延迟/取消后单次消费，原异常（含 wrapper/OCE 身份）与结果/token 保留。固定 WinForms 10.0.11、JIT、实际 Native AOT 的 90 条观测相同；旧 Task 虚方法保留，用 OverloadResolutionPriority(-1) 使未强转 async token lambda 选择标准 ValueTask，显式 Task 委托和派生 override 专项通过。预取消/无自身句柄/释放后边界按独立参考观测保留；同步上下文/await 后 UI 恢复及关闭竞态未关闭。
-
-- 2026-10-16 · 批次 007：Control 构造接入默认 context 安装，保留已有 custom Current 与禁用策略；dispatcher 将目的 UI Current 用于回调的 ExecutionContext 并 finally 还原。默认直接/BeginInvoke/ValueTask/带结果/工作线程投递 await UI 恢复有固定三端对照，旧 Task 专项保留；完整构造、继承、Controls/Parent 与竞态不关闭，见 [批次 007](../batches/007.md)。
-
-- 2026-10-16 · 批次 008：先固定 WinForms 10.0.11 参考，补标准 Focus 返回及三个查询属性和 Advanced/Browsable/Hidden 元数据。真实 HWND 程序切换、重复请求、外部原生切换/清空、原生 descendant、隐藏/禁用及释放后均按原生状态返回；不因查询或无自身句柄 Focus 创建窗口，也不回退 owner HWND。157 条参考/JIT/实际 AOT 相同，新增 17 项测试；未修改同步上下文/投递与现有 setter。禁用原生父窗口时 CanFocus 为 true 而实际 Focus 返回 false 的差异也按固定参考保留。Select、键盘/验证、Form 继承与广泛重建竞态仍待后续，见 [批次 008](../batches/008.md)。
-
-- 2026-10-16 · 批次 009：先固定参考再改尺寸链。未创建自身 HWND 时 WinForms 保留负尺寸，不能统一钳制到零；已有 HWND 时负数归零且零宽高真实应用到 MoveWindow。首次创建保留原始参数，负尺寸通过 GetWindowRect 回读；int.MinValue 宽度按 USER32 的 CW_USEDEFAULT 结果得到 0×0，HandleCreated 前完成缓存更新。已有 GetNativeHeight 的正逻辑高度扩展不写回为下拉区高度。756 条固定参考/JIT/实际 AOT 相同，新增 33 项独立 STA/原生矩形回归，AOT EXE 2,562,048 字节、无 CLR Header 和 IL2xxx/IL3xxx。构造默认、全部派生限制、Form.ScaleSize、完整布局/事件与 Min/Max 未关闭，见 [批次 009](../batches/009.md)。
-
-- 2026-10-16 · 批次 010：先固定 WinForms 10.0.11，再实现 BoundsSpecified 的八个标准值/Flags、x/y 命名的两族 SetBounds 和 protected virtual SetBoundsCore。外层按已知位保留其他分量，未知位原样交给 core，有效矩形未变不调用；core 本身接受完整矩形，包括派生调整的未指定分量和 specified=None，重复直接调用仍可被覆盖观察。七个位置/尺寸属性按对应标志进入同一路径，派生可拒绝、调整或抛异常。2,034 条固定参考/JIT/实际 AOT 完全相同，60 项新增回归通过；AOT EXE 2,576,896 字节，无 IL2xxx/IL3xxx。保留旧零/负尺寸、首次创建回读、GetNativeHeight 与 OnBoundsChanged，完整布局/Min/Max/事件和派生约束继续另列，见 [批次 010](../batches/010.md)。
-
-- 2026-10-16 · 批次 011：先运行固定 WinForms 10.0.11 参考，再接入 LocationChanged/Move、SizeChanged/Resize 与四个标准 protected virtual On*。整矩形先提交，两族变化先快照，保持 Move→LocationChanged→Resize→SizeChanged 的顺序及重入后外层待发通知。OnLocationChanged 向 OnMove 透传参数，OnSizeChanged 仅向 OnResize 传 EventArgs.Empty，SizeChanged 仍用原参数；覆盖不调 base 按标准抑制对应通知链。无自身 HWND setter 和直接 On* 传播原异常；有 HWND setter 转交既有 Application.ThreadException，默认异常 UI/模式仍按既有缺口披露。旧 ApplyBounds→OnBoundsChanged 布局衔接保留，标准通知独立于该旧 hook。2,280 条固定参考/JIT/实际 AOT 相同，99 项新增测试；通知 AOT EXE 2,618,880 字节，无 CLR Header 或 IL2xxx/IL3xxx。客户区、外部原生自主通知、完整布局、构造默认/全部派生约束与 Form 生命周期未关闭，见 [批次 011](../batches/011.md)。
-
-- 2026-10-16 · 批次 012：先固定参考，再补基础客户区与标准元数据。四有限边框/无有 HWND/11 入口/重复/零负恢复/覆盖重入异常及缓存异常态后仅位置更新共 5,556 条固定 WinForms 10.0.11/JIT/实际 AOT 全同，80 项新增回归通过。外框先提交，随后同步客户区缓存，位置/尺寸通知与客户区通知按参考顺序触发；缓存变化也算尺寸变化。SetClientSizeCore 正常执行至末尾时提交原始客户区请求并调用 OnClientSizeChanged（不检查是否同值，事件异常同步传播），故同值仍通知，raw 负值/重入可使缓存不同于原生客户区；不能简单实时 native getter 替换。GetClientRect/AdjustWindowRectEx 失败真实抛错，旧 OnBoundsChanged/GetNativeHeight 保留。客户区 AOT EXE 2,592,256 字节，无 CLR Header 或 IL2xxx/IL3xxx；探针的五个反射成员精确保留不改变库裁剪策略。SizeFromClientSize、构造默认、全部派生约束/外部自主通知/完整布局/Form 生命周期继续另列，见 [批次 012](../batches/012.md)。
-- 2026-10-16 · 批次 013：先取得固定参考，再新增标准 SizeFromClientSize 虚方法，复用真实非客户区计算并保留 unchecked 溢出。四有限边框/无有 HWND/极值、直接/base 绕过/覆盖不调 base/返回调整、重入和原异常共 10,086 条固定参考/JIT/实际 AOT 全同，257 项新增独立 STA/元数据/原生矩形回归通过。基础 ClientSize/SetClientSizeCore 不调用该虚扩展，原路由保留；直接 base 换算不创建 HWND，不改变外框/客户区缓存或发通知，负值和重入形成的缓存差异也不被读取操作刷新。探针仅精确保留实际反射的两个方法；构造默认、尺寸约束、全部派生/外部自主通知/完整布局/DPI/Form 生命周期仍另列，见 [批次 013](../batches/013.md)。
-
-- 2026-10-16 · 批次 014：明确初始化后的基础 Min/Max 运行期约束及默认虚扩展完成，33,408 条固定 10.0.11/JIT/实际 AOT 相同，新增 394 项回归；冲突保留属性值、负值/零轴、Empty 取消差异、getter/default/core 调用顺序与缓存/通知均按参考。core 原始相等先返回，约束后无 HWND 的重复矩形仍可能刷新客户区。AOT 仅精确保留六个 accessor，AmbientValue 构造元数据用 CustomAttributeData 核对，动态 Value/TypeDescriptor 转换初次实测失败仍单列；英文元数据相同不代表中文分类/描述本地化。构造期 DefaultMin/Max 在 DefaultSize 之前的状态已有独立参考，但实现统一留批次 015 的 01b。全部派生/完整布局/DPI/外部自主通知/Form 保持缺口，见 [014](../batches/014.md)。
 
 ## 原始资料
 
