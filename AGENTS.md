@@ -108,7 +108,7 @@ All agents working in this repository must treat the following rules as hard con
 - Write only necessary tests and checks for a confirmed implementation risk. Defer real Windows device, designer, full Native AOT runtime and other platform acceptance until the M0 code is complete and then validate them on the Windows host; compilation or a light check cannot claim those gates.
 - Keep ROADMAP and execution focused on unfinished work and dependencies. Mark completed task ranges on the original task page, preserving IDs, statuses, scope and evidence. Put dated/batch/source change history only in the root CHANGELOG. The task pages remain authoritative; regenerate the existing index and tasks.csv without reducing the fixed API denominator.
 - Use README/docs navigation for document roles, CHANGELOG for delivered changes, validation.md for current evidence and unresolved gates, and HANDOFF for current ownership. Preserve historical FAIL, timeout, UNKNOWN and NOT_RUN results.
-- Do not create continuation chats or supervision automations for this M0 work. Later user pause/stop instructions take precedence.
+- The user explicitly requested one continuation chat on 2026-11-11 to implement the remaining M0 code with multiple internal agents. Follow the committed/pushed ownership handoff in HANDOFF before starting that chat's writes. Do not create further continuation chats or supervision automations without another explicit user request. Later user pause/stop instructions take precedence.
 
 ## Historical implementation workflow (applies only after new implementation authorization)
 
